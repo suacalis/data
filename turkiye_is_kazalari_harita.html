@@ -1,0 +1,2535 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_e29008c4716a7b1f521994abed7408df {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.1.0/MarkerCluster.Default.css"/>
+</head>
+<body>
+    
+    
+    <div style="position: fixed;
+                top: 10px; right: 10px; width: 280px; height: auto;
+                background-color: white; border:2px solid grey; z-index:9999;
+                font-size:14px; padding: 10px; border-radius: 5px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.3);">
+        <h4 style="margin-top: 0; color: #d32f2f;">İş Kazaları İstatistikleri</h4>
+        <hr style="margin: 5px 0;">
+        <p><b>Toplam Kaza Sayısı:</b> <span style="color: #d32f2f; font-weight: bold;">340</span></p>
+        <p><b>Ölümlü Kaza:</b> <span style="color: #c62828; font-weight: bold;">19</span></p>
+        <p><b>Yaralanmalı:</b> <span style="color: #f57c00; font-weight: bold;">321</span></p>
+        <hr style="margin: 5px 0;">
+        <p style="font-size: 12px; margin: 5px 0;"><b>Renk Açıklaması:</b></p>
+        <p style="font-size: 11px; margin: 2px 0;">
+            <span style="color: darkred;">⬤</span> 15+ kaza<br>
+            <span style="color: red;">⬤</span> 10-14 kaza<br>
+            <span style="color: orange;">⬤</span> 7-9 kaza<br>
+            <span style="color: lightcoral;">⬤</span> 5-6 kaza<br>
+            <span style="color: lightblue;">⬤</span> 1-4 kaza
+        </p>
+    </div>
+    
+    
+            <div class="folium-map" id="map_e29008c4716a7b1f521994abed7408df" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_e29008c4716a7b1f521994abed7408df = L.map(
+                "map_e29008c4716a7b1f521994abed7408df",
+                {
+                    center: [39.0, 35.0],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 6,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_046457964337d35f3a2da174d12939e2 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_046457964337d35f3a2da174d12939e2.addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+            var marker_cluster_6ad0972cda1aca8a226ca73f461d9e34 = L.markerClusterGroup(
+                {
+}
+            );
+        
+    
+            var marker_5c1ebaf2fda07fe44f847d651ead3db5 = L.marker(
+                [37.02, 35.341300000000004],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_c97c1de3b753580d9641d680ab84508d = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_739103d65ff6f0ba889d5d8ca294b670 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_cde4b0d34230970e21ddb03992a47161 = $(`<div id="html_cde4b0d34230970e21ddb03992a47161" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Adana - Seyhan</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             14                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             2                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             12                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             Tarım                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_739103d65ff6f0ba889d5d8ca294b670.setContent(html_cde4b0d34230970e21ddb03992a47161);
+            
+        
+
+        marker_5c1ebaf2fda07fe44f847d651ead3db5.bindPopup(popup_739103d65ff6f0ba889d5d8ca294b670)
+        ;
+
+        
+    
+    
+            marker_5c1ebaf2fda07fe44f847d651ead3db5.bindTooltip(
+                `<div>
+                     Adana - Seyhan: 14 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_5c1ebaf2fda07fe44f847d651ead3db5.setIcon(icon_c97c1de3b753580d9641d680ab84508d);
+            
+    
+            var marker_10a5af0116ef3db04f45d1689953738c = L.marker(
+                [37.05, 35.3713],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_81b5289e917691c9e71a9bf66c826a7c = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_01c7493ece469560d24c8df481faa973 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_50781e4f74cf6adca8f3bdddabad9f19 = $(`<div id="html_50781e4f74cf6adca8f3bdddabad9f19" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Adana - Çukurova</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             12                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             2                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             10                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             Tarım                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_01c7493ece469560d24c8df481faa973.setContent(html_50781e4f74cf6adca8f3bdddabad9f19);
+            
+        
+
+        marker_10a5af0116ef3db04f45d1689953738c.bindPopup(popup_01c7493ece469560d24c8df481faa973)
+        ;
+
+        
+    
+    
+            marker_10a5af0116ef3db04f45d1689953738c.bindTooltip(
+                `<div>
+                     Adana - Çukurova: 12 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_10a5af0116ef3db04f45d1689953738c.setIcon(icon_81b5289e917691c9e71a9bf66c826a7c);
+            
+    
+            var marker_d659a55324c20f4688b5a8e9e142a2f5 = L.marker(
+                [39.8834, 32.909699999999994],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_9980975fca568ba51c4aaad1bb3f36d2 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_b1fc05258a157e884a2517ed2d0b4b8a = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_28f800d8421de6bb600a1c0f6f9aaf09 = $(`<div id="html_28f800d8421de6bb600a1c0f6f9aaf09" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Ankara - Keçiören</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             9                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             9                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İnşaat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_b1fc05258a157e884a2517ed2d0b4b8a.setContent(html_28f800d8421de6bb600a1c0f6f9aaf09);
+            
+        
+
+        marker_d659a55324c20f4688b5a8e9e142a2f5.bindPopup(popup_b1fc05258a157e884a2517ed2d0b4b8a)
+        ;
+
+        
+    
+    
+            marker_d659a55324c20f4688b5a8e9e142a2f5.bindTooltip(
+                `<div>
+                     Ankara - Keçiören: 9 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_d659a55324c20f4688b5a8e9e142a2f5.setIcon(icon_9980975fca568ba51c4aaad1bb3f36d2);
+            
+    
+            var marker_bf542ef5c140a055facd68b4d0b938fc = L.marker(
+                [39.983399999999996, 32.909699999999994],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_215556ab26641f6e90d95c51ba414dcb = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_f779e0d11c72f9086bae31fefd29b674 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_6e30a188e4e5878acbaedbf62e74a0d5 = $(`<div id="html_6e30a188e4e5878acbaedbf62e74a0d5" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Ankara - Çankaya</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             12                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             12                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İnşaat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_f779e0d11c72f9086bae31fefd29b674.setContent(html_6e30a188e4e5878acbaedbf62e74a0d5);
+            
+        
+
+        marker_bf542ef5c140a055facd68b4d0b938fc.bindPopup(popup_f779e0d11c72f9086bae31fefd29b674)
+        ;
+
+        
+    
+    
+            marker_bf542ef5c140a055facd68b4d0b938fc.bindTooltip(
+                `<div>
+                     Ankara - Çankaya: 12 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_bf542ef5c140a055facd68b4d0b938fc.setIcon(icon_215556ab26641f6e90d95c51ba414dcb);
+            
+    
+            var marker_c9ac0d7a77511f577e49c8c977c7cf1d = L.marker(
+                [36.846900000000005, 30.7633],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_6ca6f0d2de248830ae33120aa4577511 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_630254f69cfa1edabb6e764f74e68ba3 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_0ecc6d8ac8026e946b522fe2c54c51e2 = $(`<div id="html_0ecc6d8ac8026e946b522fe2c54c51e2" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Antalya - Kepez</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             8                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             8                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İnşaat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_630254f69cfa1edabb6e764f74e68ba3.setContent(html_0ecc6d8ac8026e946b522fe2c54c51e2);
+            
+        
+
+        marker_c9ac0d7a77511f577e49c8c977c7cf1d.bindPopup(popup_630254f69cfa1edabb6e764f74e68ba3)
+        ;
+
+        
+    
+    
+            marker_c9ac0d7a77511f577e49c8c977c7cf1d.bindTooltip(
+                `<div>
+                     Antalya - Kepez: 8 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_c9ac0d7a77511f577e49c8c977c7cf1d.setIcon(icon_6ca6f0d2de248830ae33120aa4577511);
+            
+    
+            var marker_8afefa2f814c88f3cd4d3ef3456ca8e8 = L.marker(
+                [36.9469, 30.7633],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_855770c472f8f161910f03f9d7adcdfc = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightred",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_f8bbff482874ca95e02defa7940dd48d = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_99a32040880405761a5a3d70c217eb4f = $(`<div id="html_99a32040880405761a5a3d70c217eb4f" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Antalya - Muratpaşa</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             5                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             5                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             Turizm                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_f8bbff482874ca95e02defa7940dd48d.setContent(html_99a32040880405761a5a3d70c217eb4f);
+            
+        
+
+        marker_8afefa2f814c88f3cd4d3ef3456ca8e8.bindPopup(popup_f8bbff482874ca95e02defa7940dd48d)
+        ;
+
+        
+    
+    
+            marker_8afefa2f814c88f3cd4d3ef3456ca8e8.bindTooltip(
+                `<div>
+                     Antalya - Muratpaşa: 5 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_8afefa2f814c88f3cd4d3ef3456ca8e8.setIcon(icon_855770c472f8f161910f03f9d7adcdfc);
+            
+    
+            var marker_54ae3774848468b154b816f4df06bcec = L.marker(
+                [37.876000000000005, 27.8616],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_dca21ce586619f330475f1f3e58ab143 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightred",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_32328615cf80723ee6c708dad0a80096 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_53378c5b1625fb1ab7d317928c528989 = $(`<div id="html_53378c5b1625fb1ab7d317928c528989" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Aydın - Efeler</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             6                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             6                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             Tarım                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_32328615cf80723ee6c708dad0a80096.setContent(html_53378c5b1625fb1ab7d317928c528989);
+            
+        
+
+        marker_54ae3774848468b154b816f4df06bcec.bindPopup(popup_32328615cf80723ee6c708dad0a80096)
+        ;
+
+        
+    
+    
+            marker_54ae3774848468b154b816f4df06bcec.bindTooltip(
+                `<div>
+                     Aydın - Efeler: 6 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_54ae3774848468b154b816f4df06bcec.setIcon(icon_dca21ce586619f330475f1f3e58ab143);
+            
+    
+            var marker_6b3326e33fb7d0271291a09ad5391810 = L.marker(
+                [39.668400000000005, 27.9026],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_9759627b9055c132523e3c370d230a7e = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightblue",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_3d547f5d31cceeb780f1becf7c3c22ae = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_ec5c96fc3be91d57865fbba6b88c6599 = $(`<div id="html_ec5c96fc3be91d57865fbba6b88c6599" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Balıkesir - Karesi</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             4                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             4                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             Tarım                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_3d547f5d31cceeb780f1becf7c3c22ae.setContent(html_ec5c96fc3be91d57865fbba6b88c6599);
+            
+        
+
+        marker_6b3326e33fb7d0271291a09ad5391810.bindPopup(popup_3d547f5d31cceeb780f1becf7c3c22ae)
+        ;
+
+        
+    
+    
+            marker_6b3326e33fb7d0271291a09ad5391810.bindTooltip(
+                `<div>
+                     Balıkesir - Karesi: 4 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_6b3326e33fb7d0271291a09ad5391810.setIcon(icon_9759627b9055c132523e3c370d230a7e);
+            
+    
+            var marker_1d2ef3735203461e1ca319a297341b74 = L.marker(
+                [40.2326, 29.0165],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_ae7dabbd699a17213cdaf9b6f3c924e1 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightred",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_79b492b2e9c45eb0e5b6936704e47f7a = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_3d6b1bc7fe9356a3a8ceaab4aaf2ddca = $(`<div id="html_3d6b1bc7fe9356a3a8ceaab4aaf2ddca" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Bursa - Nilüfer</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             6                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             6                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İmalat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_79b492b2e9c45eb0e5b6936704e47f7a.setContent(html_3d6b1bc7fe9356a3a8ceaab4aaf2ddca);
+            
+        
+
+        marker_1d2ef3735203461e1ca319a297341b74.bindPopup(popup_79b492b2e9c45eb0e5b6936704e47f7a)
+        ;
+
+        
+    
+    
+            marker_1d2ef3735203461e1ca319a297341b74.bindTooltip(
+                `<div>
+                     Bursa - Nilüfer: 6 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_1d2ef3735203461e1ca319a297341b74.setIcon(icon_ae7dabbd699a17213cdaf9b6f3c924e1);
+            
+    
+            var marker_1d6d49e1171a331ced0246b5a547d727 = L.marker(
+                [40.2126, 29.096500000000002],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_c167b37a09e223e3b626b74aaac1f03d = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_b2281a61b19339e4570dd541e1a73d04 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_52ada641ff3d004e7507c39fc71e8149 = $(`<div id="html_52ada641ff3d004e7507c39fc71e8149" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Bursa - Osmangazi</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             10                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             1                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             9                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İmalat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_b2281a61b19339e4570dd541e1a73d04.setContent(html_52ada641ff3d004e7507c39fc71e8149);
+            
+        
+
+        marker_1d6d49e1171a331ced0246b5a547d727.bindPopup(popup_b2281a61b19339e4570dd541e1a73d04)
+        ;
+
+        
+    
+    
+            marker_1d6d49e1171a331ced0246b5a547d727.bindTooltip(
+                `<div>
+                     Bursa - Osmangazi: 10 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_1d6d49e1171a331ced0246b5a547d727.setIcon(icon_c167b37a09e223e3b626b74aaac1f03d);
+            
+    
+            var marker_3de6a68750a4a9cdfe875d2c812bd243 = L.marker(
+                [37.8065, 29.116400000000002],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_1f2bb12a6a310311bd4a5f95010b0a62 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_45c891ae49e6c2c9b85b4c655c773379 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_cc66a80a750f0ad44ce2a5bf129051c5 = $(`<div id="html_cc66a80a750f0ad44ce2a5bf129051c5" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Denizli - Pamukkale</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             9                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             9                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İmalat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_45c891ae49e6c2c9b85b4c655c773379.setContent(html_cc66a80a750f0ad44ce2a5bf129051c5);
+            
+        
+
+        marker_3de6a68750a4a9cdfe875d2c812bd243.bindPopup(popup_45c891ae49e6c2c9b85b4c655c773379)
+        ;
+
+        
+    
+    
+            marker_3de6a68750a4a9cdfe875d2c812bd243.bindTooltip(
+                `<div>
+                     Denizli - Pamukkale: 9 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_3de6a68750a4a9cdfe875d2c812bd243.setIcon(icon_1f2bb12a6a310311bd4a5f95010b0a62);
+            
+    
+            var marker_11ab3d378b2fda65dbeb1a82a49bd8c2 = L.marker(
+                [37.934400000000004, 40.250600000000006],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_2625951ca1a5795a8bae21172b9bd2d8 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightred",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_3400f955c57b185562c2fbfd3a098736 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_23d0b714cc03a0c28962f493879dd379 = $(`<div id="html_23d0b714cc03a0c28962f493879dd379" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Diyarbakır - Bağlar</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             6                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             1                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             5                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İnşaat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_3400f955c57b185562c2fbfd3a098736.setContent(html_23d0b714cc03a0c28962f493879dd379);
+            
+        
+
+        marker_11ab3d378b2fda65dbeb1a82a49bd8c2.bindPopup(popup_3400f955c57b185562c2fbfd3a098736)
+        ;
+
+        
+    
+    
+            marker_11ab3d378b2fda65dbeb1a82a49bd8c2.bindTooltip(
+                `<div>
+                     Diyarbakır - Bağlar: 6 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_11ab3d378b2fda65dbeb1a82a49bd8c2.setIcon(icon_2625951ca1a5795a8bae21172b9bd2d8);
+            
+    
+            var marker_b2082334992ce53d2dcaf6e8cbece75a = L.marker(
+                [39.93, 41.300000000000004],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_f1b1c4d2e947a8867aeca3209e28e0f7 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightred",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_393c716f00c6d47cc1ff8c3d626c54a9 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_42f88435739ef8cd14a7fc83bf665769 = $(`<div id="html_42f88435739ef8cd14a7fc83bf665769" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Erzurum - Yakutiye</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             6                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             1                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             5                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İnşaat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_393c716f00c6d47cc1ff8c3d626c54a9.setContent(html_42f88435739ef8cd14a7fc83bf665769);
+            
+        
+
+        marker_b2082334992ce53d2dcaf6e8cbece75a.bindPopup(popup_393c716f00c6d47cc1ff8c3d626c54a9)
+        ;
+
+        
+    
+    
+            marker_b2082334992ce53d2dcaf6e8cbece75a.bindTooltip(
+                `<div>
+                     Erzurum - Yakutiye: 6 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b2082334992ce53d2dcaf6e8cbece75a.setIcon(icon_f1b1c4d2e947a8867aeca3209e28e0f7);
+            
+    
+            var marker_be082cd3e529e9b9f74739644e4f6f6d = L.marker(
+                [37.0962, 37.4133],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_01e36707eee5f4a2eaaac0b6729b4873 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_5d73bb1a2a3dccc5217d95c8749c6613 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_28eee4471e4c0f5ef30eb1b411d871e9 = $(`<div id="html_28eee4471e4c0f5ef30eb1b411d871e9" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Gaziantep - Şahinbey</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             11                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             1                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             10                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İmalat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_5d73bb1a2a3dccc5217d95c8749c6613.setContent(html_28eee4471e4c0f5ef30eb1b411d871e9);
+            
+        
+
+        marker_be082cd3e529e9b9f74739644e4f6f6d.bindPopup(popup_5d73bb1a2a3dccc5217d95c8749c6613)
+        ;
+
+        
+    
+    
+            marker_be082cd3e529e9b9f74739644e4f6f6d.bindTooltip(
+                `<div>
+                     Gaziantep - Şahinbey: 11 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_be082cd3e529e9b9f74739644e4f6f6d.setIcon(icon_01e36707eee5f4a2eaaac0b6729b4873);
+            
+    
+            var marker_1cb58dc016c94c53e65571db751ad90f = L.marker(
+                [37.1162, 37.433299999999996],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_5ec7b061672fbf700a18f82a723773cd = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_7bea7bde0053146dbb840bd89d0199c1 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_d87e6b5d2c1d40ccec20e050833a791e = $(`<div id="html_d87e6b5d2c1d40ccec20e050833a791e" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Gaziantep - Şehitkamil</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             9                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             9                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İmalat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_7bea7bde0053146dbb840bd89d0199c1.setContent(html_d87e6b5d2c1d40ccec20e050833a791e);
+            
+        
+
+        marker_1cb58dc016c94c53e65571db751ad90f.bindPopup(popup_7bea7bde0053146dbb840bd89d0199c1)
+        ;
+
+        
+    
+    
+            marker_1cb58dc016c94c53e65571db751ad90f.bindTooltip(
+                `<div>
+                     Gaziantep - Şehitkamil: 9 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_1cb58dc016c94c53e65571db751ad90f.setIcon(icon_5ec7b061672fbf700a18f82a723773cd);
+            
+    
+            var marker_f57e49559e0faa02ce40a133f6e0680c = L.marker(
+                [36.421800000000005, 36.369800000000005],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_e2289cc5ba1762fa661e98ec7cff33e6 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_b567947dc50c4a94c8fbffa5c27e6335 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_d92bc71159e87bcf5a6c7e13a13e432c = $(`<div id="html_d92bc71159e87bcf5a6c7e13a13e432c" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Hatay - Antakya</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             9                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             9                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İnşaat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_b567947dc50c4a94c8fbffa5c27e6335.setContent(html_d92bc71159e87bcf5a6c7e13a13e432c);
+            
+        
+
+        marker_f57e49559e0faa02ce40a133f6e0680c.bindPopup(popup_b567947dc50c4a94c8fbffa5c27e6335)
+        ;
+
+        
+    
+    
+            marker_f57e49559e0faa02ce40a133f6e0680c.bindTooltip(
+                `<div>
+                     Hatay - Antakya: 9 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_f57e49559e0faa02ce40a133f6e0680c.setIcon(icon_e2289cc5ba1762fa661e98ec7cff33e6);
+            
+    
+            var marker_5848b88e73c50aa60de5ce46cff963c1 = L.marker(
+                [37.6058, 36.957100000000004],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_190e21f032c2d08978788229d8a228af = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_4203d60ced1d07a2d223036ab180605f = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_dc04eddafff1c5a65bab4d85b665edb4 = $(`<div id="html_dc04eddafff1c5a65bab4d85b665edb4" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Kahramanmaraş - Onikişubat</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             8                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             1                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             7                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İmalat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_4203d60ced1d07a2d223036ab180605f.setContent(html_dc04eddafff1c5a65bab4d85b665edb4);
+            
+        
+
+        marker_5848b88e73c50aa60de5ce46cff963c1.bindPopup(popup_4203d60ced1d07a2d223036ab180605f)
+        ;
+
+        
+    
+    
+            marker_5848b88e73c50aa60de5ce46cff963c1.bindTooltip(
+                `<div>
+                     Kahramanmaraş - Onikişubat: 8 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_5848b88e73c50aa60de5ce46cff963c1.setIcon(icon_190e21f032c2d08978788229d8a228af);
+            
+    
+            var marker_e2489602d043c45d6f89a1294311959f = L.marker(
+                [38.7812, 35.5287],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_ddc50a8dbcd6fd19ff617492d8824ef8 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_eb824b67344ecb1e8914a920b2da9451 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_fe8729be68e83da5e0ab377b1f67307f = $(`<div id="html_fe8729be68e83da5e0ab377b1f67307f" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Kayseri - Kocasinan</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             7                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             7                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İmalat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_eb824b67344ecb1e8914a920b2da9451.setContent(html_fe8729be68e83da5e0ab377b1f67307f);
+            
+        
+
+        marker_e2489602d043c45d6f89a1294311959f.bindPopup(popup_eb824b67344ecb1e8914a920b2da9451)
+        ;
+
+        
+    
+    
+            marker_e2489602d043c45d6f89a1294311959f.bindTooltip(
+                `<div>
+                     Kayseri - Kocasinan: 7 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_e2489602d043c45d6f89a1294311959f.setIcon(icon_ddc50a8dbcd6fd19ff617492d8824ef8);
+            
+    
+            var marker_57766e61c3a8285de3e25a5528519d30 = L.marker(
+                [40.9533, 29.9815],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_b6f53ce9e05c594b444930a581544e6d = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "darkred",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_982d7adc7c74a77d7a190199e8a7728d = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_0a3672d45b95eb395feb76fd0b7b415f = $(`<div id="html_0a3672d45b95eb395feb76fd0b7b415f" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Kocaeli - Gebze</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             15                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             1                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             14                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İmalat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_982d7adc7c74a77d7a190199e8a7728d.setContent(html_0a3672d45b95eb395feb76fd0b7b415f);
+            
+        
+
+        marker_57766e61c3a8285de3e25a5528519d30.bindPopup(popup_982d7adc7c74a77d7a190199e8a7728d)
+        ;
+
+        
+    
+    
+            marker_57766e61c3a8285de3e25a5528519d30.bindTooltip(
+                `<div>
+                     Kocaeli - Gebze: 15 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_57766e61c3a8285de3e25a5528519d30.setIcon(icon_b6f53ce9e05c594b444930a581544e6d);
+            
+    
+            var marker_469b2dd69e1c3ac412d64729f8992d99 = L.marker(
+                [40.8733, 29.9015],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_81b21bf8fe3f6b8e9145f71427778771 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_029ac2491d7f19d02b3034e125581b81 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_308985a5bc67d95f626810171421f8eb = $(`<div id="html_308985a5bc67d95f626810171421f8eb" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Kocaeli - İzmit</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             13                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             1                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             12                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İmalat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_029ac2491d7f19d02b3034e125581b81.setContent(html_308985a5bc67d95f626810171421f8eb);
+            
+        
+
+        marker_469b2dd69e1c3ac412d64729f8992d99.bindPopup(popup_029ac2491d7f19d02b3034e125581b81)
+        ;
+
+        
+    
+    
+            marker_469b2dd69e1c3ac412d64729f8992d99.bindTooltip(
+                `<div>
+                     Kocaeli - İzmit: 13 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_469b2dd69e1c3ac412d64729f8992d99.setIcon(icon_81b21bf8fe3f6b8e9145f71427778771);
+            
+    
+            var marker_0a6318c235ac3c2e34a6c1dc87e1403e = L.marker(
+                [37.816700000000004, 32.5333],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_71def7a20b559281c21c99d721b89251 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_7521c7b0d913ab78d2ae20d1fa26e7f9 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_1c40c323d7cd033da3e680fb1b52f6e2 = $(`<div id="html_1c40c323d7cd033da3e680fb1b52f6e2" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Konya - Meram</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             10                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             1                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             9                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İmalat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_7521c7b0d913ab78d2ae20d1fa26e7f9.setContent(html_1c40c323d7cd033da3e680fb1b52f6e2);
+            
+        
+
+        marker_0a6318c235ac3c2e34a6c1dc87e1403e.bindPopup(popup_7521c7b0d913ab78d2ae20d1fa26e7f9)
+        ;
+
+        
+    
+    
+            marker_0a6318c235ac3c2e34a6c1dc87e1403e.bindTooltip(
+                `<div>
+                     Konya - Meram: 10 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_0a6318c235ac3c2e34a6c1dc87e1403e.setIcon(icon_71def7a20b559281c21c99d721b89251);
+            
+    
+            var marker_9b379c2f1741b049cd66fa2588dfc0bd = L.marker(
+                [37.9167, 32.5333],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_a6debbb83fa1388794a0feea210285b2 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_d56a21d452c1a7e64cedb8d716f20894 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_2ef20595df670e00c968be5f06fa46bf = $(`<div id="html_2ef20595df670e00c968be5f06fa46bf" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Konya - Selçuklu</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             9                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             9                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İnşaat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_d56a21d452c1a7e64cedb8d716f20894.setContent(html_2ef20595df670e00c968be5f06fa46bf);
+            
+        
+
+        marker_9b379c2f1741b049cd66fa2588dfc0bd.bindPopup(popup_d56a21d452c1a7e64cedb8d716f20894)
+        ;
+
+        
+    
+    
+            marker_9b379c2f1741b049cd66fa2588dfc0bd.bindTooltip(
+                `<div>
+                     Konya - Selçuklu: 9 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_9b379c2f1741b049cd66fa2588dfc0bd.setIcon(icon_a6debbb83fa1388794a0feea210285b2);
+            
+    
+            var marker_b701f9228f8702ecda5e2d8580ed8368 = L.marker(
+                [38.385200000000005, 38.3395],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_7bec30af28dcbce4025f0f859072f5d1 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_8c59c68830c8e5b115765827a6e4716c = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_29224a1632db20cbe93c21fde3dff915 = $(`<div id="html_29224a1632db20cbe93c21fde3dff915" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Malatya - Yeşilyurt</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             7                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             1                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             6                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İnşaat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_8c59c68830c8e5b115765827a6e4716c.setContent(html_29224a1632db20cbe93c21fde3dff915);
+            
+        
+
+        marker_b701f9228f8702ecda5e2d8580ed8368.bindPopup(popup_8c59c68830c8e5b115765827a6e4716c)
+        ;
+
+        
+    
+    
+            marker_b701f9228f8702ecda5e2d8580ed8368.bindTooltip(
+                `<div>
+                     Malatya - Yeşilyurt: 7 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b701f9228f8702ecda5e2d8580ed8368.setIcon(icon_7bec30af28dcbce4025f0f859072f5d1);
+            
+    
+            var marker_b24eba7820fdad9add01f9f55483e537 = L.marker(
+                [38.649100000000004, 27.4589],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_ff4f657f37a95d18dfdedeabd5b3ca57 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightred",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_3ef1fe720419fb7472f5003c28b3e68d = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_21867fcbdd5e4b6e2ab1ba8bdd3ca0ac = $(`<div id="html_21867fcbdd5e4b6e2ab1ba8bdd3ca0ac" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Manisa - Yunusemre</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             5                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             5                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             Tarım                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_3ef1fe720419fb7472f5003c28b3e68d.setContent(html_21867fcbdd5e4b6e2ab1ba8bdd3ca0ac);
+            
+        
+
+        marker_b24eba7820fdad9add01f9f55483e537.bindPopup(popup_3ef1fe720419fb7472f5003c28b3e68d)
+        ;
+
+        
+    
+    
+            marker_b24eba7820fdad9add01f9f55483e537.bindTooltip(
+                `<div>
+                     Manisa - Yunusemre: 5 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b24eba7820fdad9add01f9f55483e537.setIcon(icon_ff4f657f37a95d18dfdedeabd5b3ca57);
+            
+    
+            var marker_9c2f959a825aa9d5ebc5fc165eabb53a = L.marker(
+                [37.3412, 40.7445],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_08a54534b5ba95b622a68057b2839fa0 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightred",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_c83b8e6fb9a94c2cea19ca3f4fd6983d = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_04a1fb5f2795e7d1e28a75acd0a347d2 = $(`<div id="html_04a1fb5f2795e7d1e28a75acd0a347d2" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Mardin - Artuklu</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             5                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             5                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             Tarım                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_c83b8e6fb9a94c2cea19ca3f4fd6983d.setContent(html_04a1fb5f2795e7d1e28a75acd0a347d2);
+            
+        
+
+        marker_9c2f959a825aa9d5ebc5fc165eabb53a.bindPopup(popup_c83b8e6fb9a94c2cea19ca3f4fd6983d)
+        ;
+
+        
+    
+    
+            marker_9c2f959a825aa9d5ebc5fc165eabb53a.bindTooltip(
+                `<div>
+                     Mardin - Artuklu: 5 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_9c2f959a825aa9d5ebc5fc165eabb53a.setIcon(icon_08a54534b5ba95b622a68057b2839fa0);
+            
+    
+            var marker_0906285ae04d4b8d48bb7c5ee8a43e53 = L.marker(
+                [36.8421, 34.6715],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_a7ab55960f0e27b077e79ecd3c169316 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_41555e9b57182ba12a5ca8145fc0897c = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_45af6b4e15801ff47b9bd3015a9db6cf = $(`<div id="html_45af6b4e15801ff47b9bd3015a9db6cf" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Mersin - Akdeniz</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             8                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             8                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             Lojistik                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_41555e9b57182ba12a5ca8145fc0897c.setContent(html_45af6b4e15801ff47b9bd3015a9db6cf);
+            
+        
+
+        marker_0906285ae04d4b8d48bb7c5ee8a43e53.bindPopup(popup_41555e9b57182ba12a5ca8145fc0897c)
+        ;
+
+        
+    
+    
+            marker_0906285ae04d4b8d48bb7c5ee8a43e53.bindTooltip(
+                `<div>
+                     Mersin - Akdeniz: 8 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_0906285ae04d4b8d48bb7c5ee8a43e53.setIcon(icon_a7ab55960f0e27b077e79ecd3c169316);
+            
+    
+            var marker_0f29867c445edddd9daca3497e49f6f5 = L.marker(
+                [37.2353, 28.3836],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_dadd5a3005eb25087f0bd2c1d5acf3fd = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_1c92523cf11f178c1e4a9e6120c54adb = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_f1af2799e1546207f47f09bab438ac1b = $(`<div id="html_f1af2799e1546207f47f09bab438ac1b" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Muğla - Menteşe</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             7                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             7                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             Turizm                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_1c92523cf11f178c1e4a9e6120c54adb.setContent(html_f1af2799e1546207f47f09bab438ac1b);
+            
+        
+
+        marker_0f29867c445edddd9daca3497e49f6f5.bindPopup(popup_1c92523cf11f178c1e4a9e6120c54adb)
+        ;
+
+        
+    
+    
+            marker_0f29867c445edddd9daca3497e49f6f5.bindTooltip(
+                `<div>
+                     Muğla - Menteşe: 7 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_0f29867c445edddd9daca3497e49f6f5.setIcon(icon_dadd5a3005eb25087f0bd2c1d5acf3fd);
+            
+    
+            var marker_7e9902e7739baf9aabf7348a4a03d683 = L.marker(
+                [41.0039, 37.8964],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_400024678299b8cf968fc294fd486fec = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightblue",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_1de278cbb584e647a18c230c9bcbf461 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_b92f34b516563c7dff0a2c8cd36eab99 = $(`<div id="html_b92f34b516563c7dff0a2c8cd36eab99" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Ordu - Altınordu</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             4                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             4                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             Tarım                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_1de278cbb584e647a18c230c9bcbf461.setContent(html_b92f34b516563c7dff0a2c8cd36eab99);
+            
+        
+
+        marker_7e9902e7739baf9aabf7348a4a03d683.bindPopup(popup_1de278cbb584e647a18c230c9bcbf461)
+        ;
+
+        
+    
+    
+            marker_7e9902e7739baf9aabf7348a4a03d683.bindTooltip(
+                `<div>
+                     Ordu - Altınordu: 4 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_7e9902e7739baf9aabf7348a4a03d683.setIcon(icon_400024678299b8cf968fc294fd486fec);
+            
+    
+            var marker_a775d50fe4f4eae94b1fce8e41f35685 = L.marker(
+                [40.776900000000005, 30.3983],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_8dd41d98e875815477f36caeca7f239e = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_3f60c69c2150e775f2235d4f0499aa0d = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_e7006ef4a9c238ba5725d3566af458dc = $(`<div id="html_e7006ef4a9c238ba5725d3566af458dc" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Sakarya - Adapazarı</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             11                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             11                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İmalat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_3f60c69c2150e775f2235d4f0499aa0d.setContent(html_e7006ef4a9c238ba5725d3566af458dc);
+            
+        
+
+        marker_a775d50fe4f4eae94b1fce8e41f35685.bindPopup(popup_3f60c69c2150e775f2235d4f0499aa0d)
+        ;
+
+        
+    
+    
+            marker_a775d50fe4f4eae94b1fce8e41f35685.bindTooltip(
+                `<div>
+                     Sakarya - Adapazarı: 11 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_a775d50fe4f4eae94b1fce8e41f35685.setIcon(icon_8dd41d98e875815477f36caeca7f239e);
+            
+    
+            var marker_763a46eb74e1ad89b2aceb3447046f7b = L.marker(
+                [41.316700000000004, 36.36],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_b127db56fecf4c23cc1528e2c57cb8a1 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_0048d25ed328ade28961eb598f515f8c = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_85724007e7d4ef7608910c13a8b12d55 = $(`<div id="html_85724007e7d4ef7608910c13a8b12d55" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Samsun - İlkadım</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             10                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             1                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             9                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             Lojistik                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_0048d25ed328ade28961eb598f515f8c.setContent(html_85724007e7d4ef7608910c13a8b12d55);
+            
+        
+
+        marker_763a46eb74e1ad89b2aceb3447046f7b.bindPopup(popup_0048d25ed328ade28961eb598f515f8c)
+        ;
+
+        
+    
+    
+            marker_763a46eb74e1ad89b2aceb3447046f7b.bindTooltip(
+                `<div>
+                     Samsun - İlkadım: 10 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_763a46eb74e1ad89b2aceb3447046f7b.setIcon(icon_b127db56fecf4c23cc1528e2c57cb8a1);
+            
+    
+            var marker_4685f08e1dbe11e77d1e8bc2afd1fc4e = L.marker(
+                [41.0033, 27.5367],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_ecc44666c1418016bb41c26c820ec092 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightred",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_37035386b82847043e3e8179cb73dbc5 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_35e324de4c6a85bf4bb666780f89ef39 = $(`<div id="html_35e324de4c6a85bf4bb666780f89ef39" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Tekirdağ - Süleymanpaşa</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             5                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             5                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             Tarım                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_37035386b82847043e3e8179cb73dbc5.setContent(html_35e324de4c6a85bf4bb666780f89ef39);
+            
+        
+
+        marker_4685f08e1dbe11e77d1e8bc2afd1fc4e.bindPopup(popup_37035386b82847043e3e8179cb73dbc5)
+        ;
+
+        
+    
+    
+            marker_4685f08e1dbe11e77d1e8bc2afd1fc4e.bindTooltip(
+                `<div>
+                     Tekirdağ - Süleymanpaşa: 5 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_4685f08e1dbe11e77d1e8bc2afd1fc4e.setIcon(icon_ecc44666c1418016bb41c26c820ec092);
+            
+    
+            var marker_ec75dfa5294e8799c389332df5528044 = L.marker(
+                [41.0215, 39.7378],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_99262ce9a1da17b5e1680ae867b5f718 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightblue",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_33aab0b6fabb8fe6f56475527ddd1671 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_eab0717f3642639bd1f8e26ccabc3db5 = $(`<div id="html_eab0717f3642639bd1f8e26ccabc3db5" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Trabzon - Ortahisar</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             3                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             3                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             Lojistik                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_33aab0b6fabb8fe6f56475527ddd1671.setContent(html_eab0717f3642639bd1f8e26ccabc3db5);
+            
+        
+
+        marker_ec75dfa5294e8799c389332df5528044.bindPopup(popup_33aab0b6fabb8fe6f56475527ddd1671)
+        ;
+
+        
+    
+    
+            marker_ec75dfa5294e8799c389332df5528044.bindTooltip(
+                `<div>
+                     Trabzon - Ortahisar: 3 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_ec75dfa5294e8799c389332df5528044.setIcon(icon_99262ce9a1da17b5e1680ae867b5f718);
+            
+    
+            var marker_43b78249fee4668fe112037f90726482 = L.marker(
+                [38.5191, 43.438900000000004],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_3e1bf94ab58a5ed616d1a3cd49553c6d = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_958eb96af54ac62edc6d17a594efbaf0 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_d97cd931791d57506b3a39db2cee191b = $(`<div id="html_d97cd931791d57506b3a39db2cee191b" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Van - İpekyolu</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             8                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             2                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             6                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İnşaat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_958eb96af54ac62edc6d17a594efbaf0.setContent(html_d97cd931791d57506b3a39db2cee191b);
+            
+        
+
+        marker_43b78249fee4668fe112037f90726482.bindPopup(popup_958eb96af54ac62edc6d17a594efbaf0)
+        ;
+
+        
+    
+    
+            marker_43b78249fee4668fe112037f90726482.bindTooltip(
+                `<div>
+                     Van - İpekyolu: 8 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_43b78249fee4668fe112037f90726482.setIcon(icon_3e1bf94ab58a5ed616d1a3cd49553c6d);
+            
+    
+            var marker_ad70be9ab5a33578ecd663795c7156f4 = L.marker(
+                [41.0582, 29.1284],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_f5929d3c858308732ae97ba464f7b154 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "darkred",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_f6cfbe2bea6f89337a9ff6dc166d69c9 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_f906d88c6233e4a9f9199e86d74eeb8d = $(`<div id="html_f906d88c6233e4a9f9199e86d74eeb8d" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">İstanbul - Kadıköy</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             33                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             1                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             32                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İnşaat, İmalat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_f6cfbe2bea6f89337a9ff6dc166d69c9.setContent(html_f906d88c6233e4a9f9199e86d74eeb8d);
+            
+        
+
+        marker_ad70be9ab5a33578ecd663795c7156f4.bindPopup(popup_f6cfbe2bea6f89337a9ff6dc166d69c9)
+        ;
+
+        
+    
+    
+            marker_ad70be9ab5a33578ecd663795c7156f4.bindTooltip(
+                `<div>
+                     İstanbul - Kadıköy: 33 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_ad70be9ab5a33578ecd663795c7156f4.setIcon(icon_f5929d3c858308732ae97ba464f7b154);
+            
+    
+            var marker_a6302b944b6e58ad2a295515db0388fd = L.marker(
+                [40.958200000000005, 28.9284],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_bb8bd16998909783008c04e5833c1fb0 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_8c6454b8f28053a58a7923d4f8a29a1d = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_57c7e76aa091427d4967439778d4819d = $(`<div id="html_57c7e76aa091427d4967439778d4819d" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">İstanbul - Şişli</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             8                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             1                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             7                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İmalat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_8c6454b8f28053a58a7923d4f8a29a1d.setContent(html_57c7e76aa091427d4967439778d4819d);
+            
+        
+
+        marker_a6302b944b6e58ad2a295515db0388fd.bindPopup(popup_8c6454b8f28053a58a7923d4f8a29a1d)
+        ;
+
+        
+    
+    
+            marker_a6302b944b6e58ad2a295515db0388fd.bindTooltip(
+                `<div>
+                     İstanbul - Şişli: 8 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_a6302b944b6e58ad2a295515db0388fd.setIcon(icon_bb8bd16998909783008c04e5833c1fb0);
+            
+    
+            var marker_1aa8a17c98cd81ea801b21576372c0b7 = L.marker(
+                [38.473699999999994, 27.192800000000002],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_6da7963bf0a822382a355f6adc59390a = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_0aecae84ea4735c46cfb097793b34256 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_bf8b94acad54cb9ace191c1520358535 = $(`<div id="html_bf8b94acad54cb9ace191c1520358535" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">İzmir - Bornova</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             7                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             7                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İmalat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_0aecae84ea4735c46cfb097793b34256.setContent(html_bf8b94acad54cb9ace191c1520358535);
+            
+        
+
+        marker_1aa8a17c98cd81ea801b21576372c0b7.bindPopup(popup_0aecae84ea4735c46cfb097793b34256)
+        ;
+
+        
+    
+    
+            marker_1aa8a17c98cd81ea801b21576372c0b7.bindTooltip(
+                `<div>
+                     İzmir - Bornova: 7 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_1aa8a17c98cd81ea801b21576372c0b7.setIcon(icon_6da7963bf0a822382a355f6adc59390a);
+            
+    
+            var marker_102f4e08e42395a5c3f556df0857daad = L.marker(
+                [38.4437, 27.1628],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_91f126015e5063b8261b352edd33acc9 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "lightred",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_e720d673b63888a5b389da3b765cda75 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_06288f46b48607dbdb5304df0c8b90c3 = $(`<div id="html_06288f46b48607dbdb5304df0c8b90c3" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">İzmir - Konak</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             6                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             6                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             Lojistik                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_e720d673b63888a5b389da3b765cda75.setContent(html_06288f46b48607dbdb5304df0c8b90c3);
+            
+        
+
+        marker_102f4e08e42395a5c3f556df0857daad.bindPopup(popup_e720d673b63888a5b389da3b765cda75)
+        ;
+
+        
+    
+    
+            marker_102f4e08e42395a5c3f556df0857daad.bindTooltip(
+                `<div>
+                     İzmir - Konak: 6 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_102f4e08e42395a5c3f556df0857daad.setIcon(icon_91f126015e5063b8261b352edd33acc9);
+            
+    
+            var marker_ffe35746eb90247a42c16cfcc72dafc0 = L.marker(
+                [37.2091, 38.8469],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_42486131b2c4c24fac1ee0495ebfaae7 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_28e436ee13062f5dda3c445dc868da06 = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_3183a4b97ced2aa7b514f507ae3cb5d6 = $(`<div id="html_3183a4b97ced2aa7b514f507ae3cb5d6" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Şanlıurfa - Eyyübiye</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             7                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             0                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             7                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             Tarım                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_28e436ee13062f5dda3c445dc868da06.setContent(html_3183a4b97ced2aa7b514f507ae3cb5d6);
+            
+        
+
+        marker_ffe35746eb90247a42c16cfcc72dafc0.bindPopup(popup_28e436ee13062f5dda3c445dc868da06)
+        ;
+
+        
+    
+    
+            marker_ffe35746eb90247a42c16cfcc72dafc0.bindTooltip(
+                `<div>
+                     Şanlıurfa - Eyyübiye: 7 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_ffe35746eb90247a42c16cfcc72dafc0.setIcon(icon_42486131b2c4c24fac1ee0495ebfaae7);
+            
+    
+            var marker_54198e0d56e69d1c763bc8a5a1f718fc = L.marker(
+                [37.109100000000005, 38.8469],
+                {
+}
+            ).addTo(marker_cluster_6ad0972cda1aca8a226ca73f461d9e34);
+        
+    
+            var icon_2a4677651c21cb95e8f7254124d56271 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "orange",
+  "iconColor": "white",
+  "icon": "warning-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_99d5eaf3115280b5cd73a12c2cd482bc = L.popup({
+  "maxWidth": 300,
+});
+
+        
+            
+                var html_af6eb96453c4260c1ab81c6db67020eb = $(`<div id="html_af6eb96453c4260c1ab81c6db67020eb" style="width: 100.0%; height: 100.0%;">             <div style="font-family: Arial; width: 250px;">                 <h4 style="margin-bottom: 10px; color: #d32f2f;">Şanlıurfa - Haliliye</h4>                 <hr style="margin: 5px 0;">                 <table style="width: 100%; font-size: 12px;">                     <tr>                         <td><b>Toplam Kaza:</b></td>                         <td style="text-align: right; font-weight: bold; color: #d32f2f;">                             8                         </td>                     </tr>                     <tr>                         <td><b>Ölümlü Kaza:</b></td>                         <td style="text-align: right; color: #c62828;">                             1                         </td>                     </tr>                     <tr>                         <td><b>Yaralanmalı:</b></td>                         <td style="text-align: right; color: #f57c00;">                             7                         </td>                     </tr>                     <tr>                         <td><b>Sektör:</b></td>                         <td style="text-align: right; font-size: 11px;">                             İnşaat                         </td>                     </tr>                     <tr>                         <td><b>İş Seviyesi:</b></td>                         <td style="text-align: right;">                             İşçi                         </td>                     </tr>                 </table>             </div>             </div>`)[0];
+                popup_99d5eaf3115280b5cd73a12c2cd482bc.setContent(html_af6eb96453c4260c1ab81c6db67020eb);
+            
+        
+
+        marker_54198e0d56e69d1c763bc8a5a1f718fc.bindPopup(popup_99d5eaf3115280b5cd73a12c2cd482bc)
+        ;
+
+        
+    
+    
+            marker_54198e0d56e69d1c763bc8a5a1f718fc.bindTooltip(
+                `<div>
+                     Şanlıurfa - Haliliye: 8 kaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_54198e0d56e69d1c763bc8a5a1f718fc.setIcon(icon_2a4677651c21cb95e8f7254124d56271);
+            
+    
+            marker_cluster_6ad0972cda1aca8a226ca73f461d9e34.addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+            var circle_marker_aa7804f937d33c58f459e31cc04066d6 = L.circleMarker(
+                [37.02, 35.341300000000004],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_9f1ebd889be18e45c8001ed770bf2332 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_7a5de11b43879394361c373e7206e40f = $(`<div id="html_7a5de11b43879394361c373e7206e40f" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 2</div>`)[0];
+                popup_9f1ebd889be18e45c8001ed770bf2332.setContent(html_7a5de11b43879394361c373e7206e40f);
+            
+        
+
+        circle_marker_aa7804f937d33c58f459e31cc04066d6.bindPopup(popup_9f1ebd889be18e45c8001ed770bf2332)
+        ;
+
+        
+    
+    
+            circle_marker_aa7804f937d33c58f459e31cc04066d6.bindTooltip(
+                `<div>
+                     Ölümlü: 2
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d551928d715512d14552dd9b5446925a = L.circleMarker(
+                [37.05, 35.3713],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_e09db1bb37b2512d1e00f7f71d84ee75 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_5056bb375c6f25eacb29bf7e23bf0fcf = $(`<div id="html_5056bb375c6f25eacb29bf7e23bf0fcf" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 2</div>`)[0];
+                popup_e09db1bb37b2512d1e00f7f71d84ee75.setContent(html_5056bb375c6f25eacb29bf7e23bf0fcf);
+            
+        
+
+        circle_marker_d551928d715512d14552dd9b5446925a.bindPopup(popup_e09db1bb37b2512d1e00f7f71d84ee75)
+        ;
+
+        
+    
+    
+            circle_marker_d551928d715512d14552dd9b5446925a.bindTooltip(
+                `<div>
+                     Ölümlü: 2
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_86a78fdfc3c0221322f02339b4163aef = L.circleMarker(
+                [40.2126, 29.096500000000002],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_0eb3cdce9c561c7b2f9e248c6e4d9fff = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_6c4678cf8f8da02a6b5bd505b1d791d9 = $(`<div id="html_6c4678cf8f8da02a6b5bd505b1d791d9" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 1</div>`)[0];
+                popup_0eb3cdce9c561c7b2f9e248c6e4d9fff.setContent(html_6c4678cf8f8da02a6b5bd505b1d791d9);
+            
+        
+
+        circle_marker_86a78fdfc3c0221322f02339b4163aef.bindPopup(popup_0eb3cdce9c561c7b2f9e248c6e4d9fff)
+        ;
+
+        
+    
+    
+            circle_marker_86a78fdfc3c0221322f02339b4163aef.bindTooltip(
+                `<div>
+                     Ölümlü: 1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_55dcae66eab6116b2b895ed27ee28f14 = L.circleMarker(
+                [37.934400000000004, 40.250600000000006],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_3f814c670c11e3d9bdca81d00b815025 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_8f8dfea61593b68f89788168f3c7b051 = $(`<div id="html_8f8dfea61593b68f89788168f3c7b051" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 1</div>`)[0];
+                popup_3f814c670c11e3d9bdca81d00b815025.setContent(html_8f8dfea61593b68f89788168f3c7b051);
+            
+        
+
+        circle_marker_55dcae66eab6116b2b895ed27ee28f14.bindPopup(popup_3f814c670c11e3d9bdca81d00b815025)
+        ;
+
+        
+    
+    
+            circle_marker_55dcae66eab6116b2b895ed27ee28f14.bindTooltip(
+                `<div>
+                     Ölümlü: 1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_dfbe27c0d5e4f53cf5e794b0e609e0f2 = L.circleMarker(
+                [39.93, 41.300000000000004],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_ed536390e49730c9ebfce4ad73e9f2d6 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_9c3950b6e8e0bfc08d65f503973c10f0 = $(`<div id="html_9c3950b6e8e0bfc08d65f503973c10f0" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 1</div>`)[0];
+                popup_ed536390e49730c9ebfce4ad73e9f2d6.setContent(html_9c3950b6e8e0bfc08d65f503973c10f0);
+            
+        
+
+        circle_marker_dfbe27c0d5e4f53cf5e794b0e609e0f2.bindPopup(popup_ed536390e49730c9ebfce4ad73e9f2d6)
+        ;
+
+        
+    
+    
+            circle_marker_dfbe27c0d5e4f53cf5e794b0e609e0f2.bindTooltip(
+                `<div>
+                     Ölümlü: 1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_1c97b9e4cbb157619aa2142096d016dd = L.circleMarker(
+                [37.0962, 37.4133],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_ccbe16b05653f56b0b0823703bf3dd6e = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_40759fc95e7bf652d8c5e51c3e2b9a68 = $(`<div id="html_40759fc95e7bf652d8c5e51c3e2b9a68" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 1</div>`)[0];
+                popup_ccbe16b05653f56b0b0823703bf3dd6e.setContent(html_40759fc95e7bf652d8c5e51c3e2b9a68);
+            
+        
+
+        circle_marker_1c97b9e4cbb157619aa2142096d016dd.bindPopup(popup_ccbe16b05653f56b0b0823703bf3dd6e)
+        ;
+
+        
+    
+    
+            circle_marker_1c97b9e4cbb157619aa2142096d016dd.bindTooltip(
+                `<div>
+                     Ölümlü: 1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_15007161efe8fbae7e500b7ee88a55f5 = L.circleMarker(
+                [37.6058, 36.957100000000004],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_5fa7be6a3ec49db11f8b1aaa21231b20 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_00fa42e0b69647d428fe73a150efcc96 = $(`<div id="html_00fa42e0b69647d428fe73a150efcc96" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 1</div>`)[0];
+                popup_5fa7be6a3ec49db11f8b1aaa21231b20.setContent(html_00fa42e0b69647d428fe73a150efcc96);
+            
+        
+
+        circle_marker_15007161efe8fbae7e500b7ee88a55f5.bindPopup(popup_5fa7be6a3ec49db11f8b1aaa21231b20)
+        ;
+
+        
+    
+    
+            circle_marker_15007161efe8fbae7e500b7ee88a55f5.bindTooltip(
+                `<div>
+                     Ölümlü: 1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_3e3c9466c6ffec79967464fa8baac6d5 = L.circleMarker(
+                [40.9533, 29.9815],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_1c001985e0106b4ccc4b1a768ddb6ad5 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_cc16c5533a1c0d07ee81938057abf209 = $(`<div id="html_cc16c5533a1c0d07ee81938057abf209" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 1</div>`)[0];
+                popup_1c001985e0106b4ccc4b1a768ddb6ad5.setContent(html_cc16c5533a1c0d07ee81938057abf209);
+            
+        
+
+        circle_marker_3e3c9466c6ffec79967464fa8baac6d5.bindPopup(popup_1c001985e0106b4ccc4b1a768ddb6ad5)
+        ;
+
+        
+    
+    
+            circle_marker_3e3c9466c6ffec79967464fa8baac6d5.bindTooltip(
+                `<div>
+                     Ölümlü: 1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_daffd9d82fb9c632be51bc2841044c7d = L.circleMarker(
+                [40.8733, 29.9015],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_4d273c55c126e2645b213d3a095d8b4b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_ead810590e05a6307c38bcbec4cd841a = $(`<div id="html_ead810590e05a6307c38bcbec4cd841a" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 1</div>`)[0];
+                popup_4d273c55c126e2645b213d3a095d8b4b.setContent(html_ead810590e05a6307c38bcbec4cd841a);
+            
+        
+
+        circle_marker_daffd9d82fb9c632be51bc2841044c7d.bindPopup(popup_4d273c55c126e2645b213d3a095d8b4b)
+        ;
+
+        
+    
+    
+            circle_marker_daffd9d82fb9c632be51bc2841044c7d.bindTooltip(
+                `<div>
+                     Ölümlü: 1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_96a43456fdcaa0871a705a52eb72f048 = L.circleMarker(
+                [37.816700000000004, 32.5333],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_963d614b70129c2ccce2b03983be7a17 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_bee194a304a059c039b87c8f64e752ca = $(`<div id="html_bee194a304a059c039b87c8f64e752ca" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 1</div>`)[0];
+                popup_963d614b70129c2ccce2b03983be7a17.setContent(html_bee194a304a059c039b87c8f64e752ca);
+            
+        
+
+        circle_marker_96a43456fdcaa0871a705a52eb72f048.bindPopup(popup_963d614b70129c2ccce2b03983be7a17)
+        ;
+
+        
+    
+    
+            circle_marker_96a43456fdcaa0871a705a52eb72f048.bindTooltip(
+                `<div>
+                     Ölümlü: 1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_d6d67082dad6c3ee356e56284140c677 = L.circleMarker(
+                [38.385200000000005, 38.3395],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_00dcbf6288c3fce557d941e2a0a6a45d = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_ae944fca5946f4fbd921b23bdd32f829 = $(`<div id="html_ae944fca5946f4fbd921b23bdd32f829" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 1</div>`)[0];
+                popup_00dcbf6288c3fce557d941e2a0a6a45d.setContent(html_ae944fca5946f4fbd921b23bdd32f829);
+            
+        
+
+        circle_marker_d6d67082dad6c3ee356e56284140c677.bindPopup(popup_00dcbf6288c3fce557d941e2a0a6a45d)
+        ;
+
+        
+    
+    
+            circle_marker_d6d67082dad6c3ee356e56284140c677.bindTooltip(
+                `<div>
+                     Ölümlü: 1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_e200098f6aec94a44ccadf1d6ae96c8b = L.circleMarker(
+                [41.316700000000004, 36.36],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_f234315cdaab6fde20bfa3875932db4a = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_e5fecadd7eb08c43b9f4ea3b0677116b = $(`<div id="html_e5fecadd7eb08c43b9f4ea3b0677116b" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 1</div>`)[0];
+                popup_f234315cdaab6fde20bfa3875932db4a.setContent(html_e5fecadd7eb08c43b9f4ea3b0677116b);
+            
+        
+
+        circle_marker_e200098f6aec94a44ccadf1d6ae96c8b.bindPopup(popup_f234315cdaab6fde20bfa3875932db4a)
+        ;
+
+        
+    
+    
+            circle_marker_e200098f6aec94a44ccadf1d6ae96c8b.bindTooltip(
+                `<div>
+                     Ölümlü: 1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_5c3cd8aa774f1d1e2dea0e299381ce04 = L.circleMarker(
+                [38.5191, 43.438900000000004],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 6, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_d5b1e677a3108da8a325471bd47a694a = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_2e51433a9f35e8701040483a88b58c4e = $(`<div id="html_2e51433a9f35e8701040483a88b58c4e" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 2</div>`)[0];
+                popup_d5b1e677a3108da8a325471bd47a694a.setContent(html_2e51433a9f35e8701040483a88b58c4e);
+            
+        
+
+        circle_marker_5c3cd8aa774f1d1e2dea0e299381ce04.bindPopup(popup_d5b1e677a3108da8a325471bd47a694a)
+        ;
+
+        
+    
+    
+            circle_marker_5c3cd8aa774f1d1e2dea0e299381ce04.bindTooltip(
+                `<div>
+                     Ölümlü: 2
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_3c42a32caae90c849e42d6a8471de744 = L.circleMarker(
+                [41.0582, 29.1284],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_a70b64c772168d42d7d5d3e9ec8b0f18 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_da5c0ff9a4b4247c470a480c59352400 = $(`<div id="html_da5c0ff9a4b4247c470a480c59352400" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 1</div>`)[0];
+                popup_a70b64c772168d42d7d5d3e9ec8b0f18.setContent(html_da5c0ff9a4b4247c470a480c59352400);
+            
+        
+
+        circle_marker_3c42a32caae90c849e42d6a8471de744.bindPopup(popup_a70b64c772168d42d7d5d3e9ec8b0f18)
+        ;
+
+        
+    
+    
+            circle_marker_3c42a32caae90c849e42d6a8471de744.bindTooltip(
+                `<div>
+                     Ölümlü: 1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_615a91558d958c44577b21c54957be89 = L.circleMarker(
+                [40.958200000000005, 28.9284],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_e7c31b04dd50d09069f6b3e021fa5aec = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_ca273e183cac1060d931d6a250695290 = $(`<div id="html_ca273e183cac1060d931d6a250695290" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 1</div>`)[0];
+                popup_e7c31b04dd50d09069f6b3e021fa5aec.setContent(html_ca273e183cac1060d931d6a250695290);
+            
+        
+
+        circle_marker_615a91558d958c44577b21c54957be89.bindPopup(popup_e7c31b04dd50d09069f6b3e021fa5aec)
+        ;
+
+        
+    
+    
+            circle_marker_615a91558d958c44577b21c54957be89.bindTooltip(
+                `<div>
+                     Ölümlü: 1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var circle_marker_8dce4ef20f358dbc1cea92bfb4f3e264 = L.circleMarker(
+                [37.109100000000005, 38.8469],
+                {"bubblingMouseEvents": true, "color": "darkred", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "red", "fillOpacity": 0.3, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1.0, "radius": 3, "stroke": true, "weight": 3}
+            ).addTo(map_e29008c4716a7b1f521994abed7408df);
+        
+    
+        var popup_d059581719cd461300bed4ae6e1dd1c1 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_da660465981f32b5d6625b79b4dcbae5 = $(`<div id="html_da660465981f32b5d6625b79b4dcbae5" style="width: 100.0%; height: 100.0%;">Ölümlü kaza: 1</div>`)[0];
+                popup_d059581719cd461300bed4ae6e1dd1c1.setContent(html_da660465981f32b5d6625b79b4dcbae5);
+            
+        
+
+        circle_marker_8dce4ef20f358dbc1cea92bfb4f3e264.bindPopup(popup_d059581719cd461300bed4ae6e1dd1c1)
+        ;
+
+        
+    
+    
+            circle_marker_8dce4ef20f358dbc1cea92bfb4f3e264.bindTooltip(
+                `<div>
+                     Ölümlü: 1
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+</script>
+</html>
