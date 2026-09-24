@@ -20,7 +20,8 @@ KULLANIM
   python tezara_pdf_indir_v3.py tezara_export.json
 PDF'ler ./tezler/ içine
   {TezNo}_{Yazar}_{Yıl}_{Üniversite}_{TezTürü}_{Dil}_{AnaBilimDalı}_{Danışmanlar}.pdf
-olarak iner (boş/[[[[Yok]]]] alanlar atlanır, dosya adı 200 karakterde kırpılır),
+olarak iner (alanlar "_" ile, alan içi boşlukla; boş/[[[[Yok]]]] alanlar atlanır,
+dosya adı 200 karakterde kırpılır),
 tekrar çalıştırınca kaldığı yerden devam eder.
 KENDİ bilgisayarında çalıştır (sunucuda 403 olası).
 
@@ -59,11 +60,28 @@ YAPILAN DEĞİŞİKLİKLER
   f) Eski sürümle inmiş (ABD'siz adlı) bir PDF varsa yeniden indirilmez;
      yeni ada taşınır (yeniden adlandırılır).
 
+BİLGİ NOTU — v3.2 düzeltmesi (ayraç kuralı)
+-------------------------------------------
+SORUN
+  v3.1 alanların İÇİNDEKİ boşlukları da "_" yapıyordu; bu yüzden alan sınırı
+  belli olmuyordu ("TURGAY_MERINC" iki alan mı, tek alan mı?).
+
+YENİ KURAL
+  * Alanlar arasında "_", alan İÇİNDE boşluk (" ") kullanılır.
+  * Noktalama (., ', ( ) vb.) boşluğa çevrilir, art arda boşluk teke indirilir.
+  * Alan içindeki "_" karakteri boşluğa çevrilir (ayraçla karışmasın diye).
+  * Danışmanlar: baştaki akademik unvan (Prof, Doç, Dr, Yrd, Öğr Üyesi, Arş Gör,
+    Uzm ...) addan "_" ile ayrılır:  "PROF. DR. ALİ ÇUBUK" -> "PROF DR_ALI CUBUK".
+    Birden çok danışman (";", ",", "/", "|" ile ayrılmış) yine "_" ile eklenir:
+    "Doç. Dr. Mehmet Işık; Dr. Öğr. Üyesi Can Öz"
+      -> "Doc Dr_Mehmet Isik_Dr Ogr Uyesi_Can Oz"
+  * v3 ve v3.1 ile inmiş dosyalar (her yerde "_" olan adlar) bulunursa yeniden
+    indirilmez, yeni ada taşınır.
+
 SONUÇ (aynı kayıt için)
-  Önce : 18000_TURGAY_MERINC_1991_Gazi_Universitesi_Yuksek_Lisans_Turkce_PROF_DR_ALI_CUBUK.pdf
-  Sonra: 18000_TURGAY_MERINC_1991_Gazi_Universitesi_Yuksek_Lisans_Turkce_<ANA_BILIM_DALI>_PROF_DR_ALI_CUBUK.pdf
-  örn.  18000_TURGAY_MERINC_1991_Gazi_Universitesi_Yuksek_Lisans_Turkce_Isletme_Anabilim_Dali_PROF_DR_ALI_CUBUK.pdf
-  (Ana Bilim Dalı kaydın kendisinde gerçekten boşsa/[[[[Yok]]]] ise yine atlanır.)
+  v3   : 18000_TURGAY_MERINC_1991_Gazi_Universitesi_Yuksek_Lisans_Turkce_PROF_DR_ALI_CUBUK.pdf
+  v3.2 : 18000_TURGAY MERINC_1991_Gazi Universitesi_Yuksek Lisans_Turkce_Isletme Anabilim Dali_PROF DR_ALI CUBUK.pdf
+  (Ana Bilim Dalı kaydın kendisinde boşsa/[[[[Yok]]]] ise o parça atlanır.)
 """
 
 import sys, os, re, csv, json, time, unicodedata
@@ -89,19 +107,48 @@ AD_SINIRI     = 200
 TR_HARF = str.maketrans("ıİşŞğĞçÇöÖüÜâÂîÎûÛ", "iIsSgGcCoOuUaAiIuU")
 
 
-def _ascii(metin):
-    metin = str(metin).translate(TR_HARF)
+def _ascii(metin, tr=True):
+    metin = str(metin)
+    if tr:  # tr=False yalnızca v3'ün ("ı"yı silen) eski adlarını yeniden üretmek için
+        metin = metin.translate(TR_HARF)
     metin = unicodedata.normalize("NFKD", metin)
     return metin.encode("ascii", "ignore").decode("ascii")
 
 
-def slug(metin, uzunluk=60):
+def slug(metin, uzunluk=60, bosluk=" ", tr=True):
+    """Alanı dosya adına uygun ASCII metne çevirir; alan içindeki boşluklar korunur
+    (bosluk=" "). Alanlar arası ayraç "_" olduğundan alan içinde "_" kullanılmaz."""
     if not metin:
         return ""
-    metin = _ascii(metin)
-    metin = re.sub(r"[^A-Za-z0-9 _-]", "", metin).strip()
-    metin = re.sub(r"\s+", "_", metin)
-    return metin[:uzunluk].rstrip("_-")
+    metin = _ascii(metin, tr)
+    metin = re.sub(r"[^A-Za-z0-9 _-]", " " if bosluk == " " else "", metin)
+    if bosluk == " ":
+        metin = metin.replace("_", " ")
+    metin = re.sub(r"\s+", bosluk, metin.strip())
+    return metin[:uzunluk].strip().rstrip("_-")
+
+
+# Danışman adının başındaki akademik unvan sözcükleri (nokta/Türkçe harf temizlenmiş)
+UNVANLAR = {"PROF", "DR", "DOC", "YRD", "YARD", "OGR", "UYESI", "GOR", "ARS",
+            "UZM", "ASSOC", "ASST", "ASSIST", "PHD"}
+
+
+def danisman_parcasi(metin, bosluk=" ", tr=True):
+    """'PROF. DR. ALİ ÇUBUK' -> 'PROF DR_ALI CUBUK' (unvan ile ad '_' ile ayrılır).
+    Birden çok danışman (; , / | ile ayrılmış) da '_' ile birleştirilir."""
+    if not metin:
+        return ""
+    if bosluk != " ":                      # eski (v3/v3.1) biçim: her şey '_' ile
+        return slug(metin, 10_000 if tr else 50, bosluk, tr)  # v3 danışmanı 50 karakterde kesiyordu
+    sonuc = []
+    for kisi in re.split(r"[;,/|\n]+", str(metin)):
+        sozler = slug(kisi, 10_000).split()
+        i = 0
+        while i < len(sozler) and sozler[i].upper() in UNVANLAR:
+            i += 1
+        unvan, ad = " ".join(sozler[:i]), " ".join(sozler[i:])
+        sonuc.append("_".join(x for x in (unvan, ad) if x))
+    return "_".join(x for x in sonuc if x)
 
 
 def _anahtar(ad):
@@ -175,24 +222,26 @@ def kayitlari_oku(yol):
     return kayitlar
 
 
-def dosya_adi_uret(tezno, k, abd_dahil=True):
-    """{TezNo}_{Yazar}_{Yıl}_{Üniversite}_{TezTürü}_{Dil}_{AnaBilimDalı}_{Danışmanlar}.pdf"""
+def dosya_adi_uret(tezno, k, abd_dahil=True, bosluk=" ", tr=True):
+    """{TezNo}_{Yazar}_{Yıl}_{Üniversite}_{TezTürü}_{Dil}_{AnaBilimDalı}_{Danışmanlar}.pdf
+    Alanlar '_' ile ayrılır, alan içindeki boşluklar korunur. bosluk="_" ve
+    abd_dahil=False eski sürümlerin ürettiği adları verir (yeniden adlandırma için)."""
     parcalar = [
-        slug(tezno, 30),
-        slug(k["yazar"], 40),
-        slug(k["yil"], 10),
-        slug(k["uni"], 40),
-        slug(k["tur"], 20),
-        slug(k["dil"], 15),
-        slug(k["abd"], 40) if abd_dahil else "",
+        slug(tezno, 30, bosluk, tr),
+        slug(k["yazar"], 40, bosluk, tr),
+        slug(k["yil"], 10, bosluk, tr),
+        slug(k["uni"], 40, bosluk, tr),
+        slug(k["tur"], 20, bosluk, tr),
+        slug(k["dil"], 15, bosluk, tr),
+        slug(k["abd"], 40, bosluk, tr) if abd_dahil else "",
     ]
     # boş (Yok) alanları atla, kalanları _ ile birleştir
     bas = "_".join(p for p in parcalar if p)
     # sınır aşılırsa yalnızca en sondaki Danışmanlar kısaltılır
     kalan = AD_SINIRI - len(bas) - 1
-    dan = slug(k["danisman"], max(kalan, 0)) if kalan > 0 else ""
+    dan = danisman_parcasi(k["danisman"], bosluk, tr)[:max(kalan, 0)].strip().rstrip("_-")
     govde = f"{bas}_{dan}" if dan else bas
-    return govde[:AD_SINIRI].rstrip("_-") + ".pdf"
+    return govde[:AD_SINIRI].strip().rstrip("_-") + ".pdf"
 
 
 def pdf_mi(resp):
@@ -333,9 +382,12 @@ def main():
         if os.path.exists(hedef) and os.path.getsize(hedef) > 1000:
             atlanan += 1
             continue
-        # eski sürümle (Ana Bilim Dalı'sız adla) inmiş dosya varsa yeni ada taşı
-        eski = os.path.join(CIKTI_KLASORU, dosya_adi_uret(tezno, k, abd_dahil=False))
-        if eski != hedef and os.path.exists(eski) and os.path.getsize(eski) > 1000:
+        # eski sürümlerle (v3: '_'li ve ABD'siz, v3.1: '_'li) inmiş dosya varsa yeni ada taşı
+        eskiler = [os.path.join(CIKTI_KLASORU, dosya_adi_uret(tezno, k, abd, "_", tr))
+                   for abd, tr in ((False, False), (True, True))]
+        eski = next((e for e in eskiler if e != hedef and os.path.exists(e)
+                     and os.path.getsize(e) > 1000), None)
+        if eski:
             os.replace(eski, hedef)
             print(f"[{i}/{len(linkli)}] {tezno} — yeniden adlandırıldı -> {ad}")
             atlanan += 1
