@@ -1,0 +1,74 @@
+İK FONKSİYONLARI SÖZLÜĞÜ - DEĞİŞİKLİK VE KANIT RAPORU
+(sayılar: toplam geçiş / geçtiği kitap sayısı (8 kitaptan))
+
+[F01] İK Planlama & İş Analizi
+  EKLENEN: iş gerekler (150/6); iş dizayn (114/6); iş zenginleştir (44/7); iş genişlet (38/7); iş şartname (16/4); iş sınıflandır (6/3); insangücü planla (21/6); personel planla (20/4); insan kaynakları envanter (5/2); talep tahmin (13/3); stratejik insan kaynakları (228/7)
+  ÇIKARILAN: 
+  KİTAPLARDA GEÇMEYEN (korundu): workforce plan
+  TEMEL TERİMLER (ilk 10): iş analiz (643); iş tanım (379); insan kaynakları planla (364); stratejik insan kaynakları (228); iş gerekler (150); iş dizayn (114); personel ihtiya (81); örgüt yapı (69); iş tasarım (66); küçülme (58)
+
+[F02] İşe Alım, Seçme & Uyum
+  EKLENEN: işe alıştır (33/6); iş başvur (60/7); işe giriş (37/7); başvuru form (89/7); yapılandırılmış mülakat (7/3); personel temin (42/5); eleman temin (5/4); işgören seçim (111/6); seçme süreci (22/5); yeni işgören (22/4)
+  ÇIKARILAN: eleman ilan; seçme yerleştirme; yetkinlik bazlı görüşme; yönetici arama
+  KİTAPLARDA GEÇMEYEN (korundu): headhunt; executive search; kariyer fuar; onboarding
+  TEMEL TERİMLER (ilk 10): aday (1228); mülakat (300); işe alım (218); işe alma (214); işe alın (180); işgören seçim (111); personel seçim (105); oryantasyon (102); başvuru form (89); staj (81)
+
+[F03] Eğitim & Gelişim
+  EKLENEN: eğitim yöntem (114/7); eğitim faaliyet (90/6); eğitim değerlendir (9/3); eğitim süreci (22/5); eğitim merkez (31/6); işbaşı eğitim (38/6); işbaşında eğitim (9/4); mesleki eğitim (26/6); sürekli eğitim (19/5); koçluk (71/7); mentorluk (35/6); öğrenen örgüt (27/4); yönetici gelişt (37/6); yönetim gelişt (17/5); akademi$ (15/3)
+  ÇIKARILAN: akademi; eğitimin geri dönüş; yeniden beceri
+  KİTAPLARDA GEÇMEYEN (korundu): elearning; kurumsal akademi; reskill; upskill
+  TEMEL TERİMLER (ilk 10): öğrenme (684); eğitimler (260); eğitim program (208); eğitim ihtiya (205); eğitim yöntem (114); eğitim faaliyet (90); eğitim al (86); mentor (79); seminer (74); eğitime katıl (72)
+
+[F04] Performans Yönetimi
+  EKLENEN: amaçlara göre yönetim (19/4); performans ölçüm (24/8); performans standart (49/8); performans değerleme (309/8)
+  ÇIKARILAN: 
+  KİTAPLARDA GEÇMEYEN (korundu): okr$; okr'; kpi; anahtar performans; dengeli puan kart
+  TEMEL TERİMLER (ilk 10): performans (3680); performans değerleme (309); 360 derece (89); geri bildirim (56); performans standart (49); hedef belirle (47); değerlendirme form (44); performans ölçüm (24); feedback (23); amaçlara göre yönetim (19)
+
+[F05] Ücret & Yan Haklar
+  EKLENEN: yan ödeme (22/6); sosyal yardım (61/6); hisse senedi (38/6); kar payı (2/2); kâr payı (1/1); ek ödeme (7/4); dolaylı ödeme (4/2); ücret dışı (21/5)
+  ÇIKARILAN: esnek yan hak; tanınma ve ödül
+  KİTAPLARDA GEÇMEYEN (korundu): hisse opsiyon; takdir ve tanın
+  TEMEL TERİMLER (ilk 10): ücret (5870); iş değerleme (443); maaş (240); ödüllendir (197); prim$ (173); primi (105); ikramiye (85); compensation (71); sosyal yardım (61); primler (45)
+
+[F06] Kariyer & Yetenek Yönetimi
+  EKLENEN: yükselme (249/7); yedekleme planla (16/5)
+  ÇIKARILAN: 
+  KİTAPLARDA GEÇMEYEN (korundu): halef; hipo$; iç atama; yetenek program; genç yetenek; management trainee
+  TEMEL TERİMLER (ilk 10): kariyer (4619); terfi (335); yükselme (249); rotasyon (159); yetenek yönetim (82); yüksek potansiyel (66); yedekleme (60); talent (47); yedekleme planla (16); yetenek havuz (15)
+
+[F07] Çalışma & Endüstri İlişkileri
+  EKLENEN: toplu pazarlık (163/7); uzlaştır (21/6); iş barışı (4/3); yüksek hakem (13/1); işçi sendika (80/8); sendikalaş (40/7)
+  ÇIKARILAN: 
+  KİTAPLARDA GEÇMEYEN (korundu): hak-iş
+  TEMEL TERİMLER (ilk 10): sendika (1386); grev (406); toplu iş sözleşme (258); endüstri ilişki (165); toplu pazarlık (163); lokavt (123); arabulucu (122); toplu sözleşme (99); işçi sendika (80); işçi ve işveren (54)
+
+[F08] İş Sağlığı & Güvenliği
+  EKLENEN: 6331 (49/4); tükenmişlik (28/5); yıldırma (18/2); cinsel taciz (26/5); zorbalık (8/4); tehlike (232/8); sağlık ve güvenlik (62/7); risk analiz (13/2)
+  ÇIKARILAN: 
+  KİTAPLARDA GEÇMEYEN (korundu): 
+  TEMEL TERİMLER (ilk 10): iş güvenliği (500); iş kaza (359); tehlike (232); iş sağlığı (222); stres (220); işçi sağlığı (178); meslek hastalı (173); sağlık ve güvenlik (62); mobbing (55); ergonomi (53)
+
+[F09] İş Hukuku & Mevzuat
+  EKLENEN: 5510 (35/3); 6698 (1/1); deneme süresi (31/5); belirli süreli (46/4); haklı neden (41/4); geçerli neden (16/2); hafta tatili (30/4); genel tatil (22/3); çalışma süre (169/8); çalışma saat (97/8); işsizlik sigorta (36/5); sosyal sigorta (26/5); iş akdi (8/2); uluslararası çalışma (26/6)
+  ÇIKARILAN: asgari ücret
+  KİTAPLARDA GEÇMEYEN (korundu): sgk'; kvkk; istihdam teşvik; sgk teşvik
+  TEMEL TERİMLER (ilk 10): kanun (691); iş sözleşme (628); iş kanun (230); iş hukuk (209); kıdem tazminat (204); fesih (195); çalışma süre (169); yönetmelik (142); iş güvence (112); ihbar (110)
+
+[F10] İK Bilgi Sistemleri & Analitik
+  EKLENEN: bilgi sistem (240/8); yönetim bilgi sistem (4/3); elektronik insan kaynakları (9/2); bilişim (49/6); dijital (84/4); yapay zeka (3/2); veri madenciliği (1/1); özlük (27/6)
+  ÇIKARILAN: 
+  KİTAPLARDA GEÇMEYEN (korundu): hris; ik yazılım; ik analiti; insan kaynakları analiti; people analytics; hr analytics; big data; dashboard; cloud; saas
+  TEMEL TERİMLER (ilk 10): bilgi sistem (240); ikbs (127); dijital (84); insan kaynakları bilgi sistem (74); yazılım (61); analitik (60); bilişim (49); raporlama (33); özlük (27); metrik (22)
+
+[F11] İç İletişim & Çalışan Katılımı
+  EKLENEN: içi iletişim (4/3); örgütsel iletişim (6/3); örgüt iklimi (23/5); tutum anket (3/2); şikâyet (35/5); şikayet (135/8); çalışan bağlılığı (12/6); işe bağlılık (9/4); örgütsel bağlılık (54/4); yönetime katılım (1/1); bülten (19/6)
+  ÇIKARILAN: 
+  KİTAPLARDA GEÇMEYEN (korundu): kurum içi iletişim; çalışan anket; bağlılık anket; town hall; çalışan sesi; employee voice
+  TEMEL TERİMLER (ilk 10): şikayet (135); örgütsel bağlılık (54); şikâyet (35); örgüt iklimi (23); bülten (19); öneri sistem (14); çalışan katılım (14); iletişim kanal (12); çalışan bağlılığı (12); intranet (11)
+
+[F12] İşten Ayrılma & Elde Tutma
+  EKLENEN: işten çıkarma (73/8); işten ayrılma (73/7); devir hızı (61/7); devir oranı (41/7); işgören devir (23/7); elde tutma (52/8); emekliliğe hazırlık (2/2); işe son ver (3/3); yeniden yerleştirme (14/5); işten atma (2/2); ayrılma niyeti (3/3)
+  ÇIKARILAN: 
+  KİTAPLARDA GEÇMEYEN (korundu): çıkış görüşme; çalışan kaybı; kalıcılık
+  TEMEL TERİMLER (ilk 10): işten çıkar (134); emeklilik (131); işten ayrıl (119); elde tut (85); işten çıkarma (73); işten ayrılma (73); devir hızı (61); elde tutma (52); devir oranı (41); personel devir (24)

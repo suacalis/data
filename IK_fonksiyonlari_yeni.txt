@@ -1,0 +1,39 @@
+# İK FONKSİYONLARI SÖZLÜĞÜ (yeniden düzenlenmiş)
+# Kaynak: 8 İKY ders kitabı (txt) üzerinde terim sıklığı doğrulaması. Her fonksiyonda terimler kitaplardaki sıklığa göre (çoktan aza) dizilidir;
+# kitaplarda hiç geçmeyen (güncel/İngilizce/kısaltma) terimler satırın sonundadır. '$' = kelime sonu eşleşmesi; diğerleri kelime başı (önek) eşleşmesidir.
+
+[F01] İK Planlama & İş Analizi
+iş analiz, iş tanım, insan kaynakları planla, stratejik insan kaynakları, iş gerekler, iş dizayn, personel ihtiya, örgüt yapı, iş tasarım, küçülme, yeniden yapılan, iş zenginleştir, organizasyon yapı, iş genişlet, işgücü ihtiya, işgücü planla, görev tanım, insangücü planla, personel planla, iş şartname, ik planla, talep tahmin, insan gücü planla, organizasyon şema, iş gereksinim, organizasyonel yapı, downsizing, iş sınıflandır, insan kaynakları envanter, iş gücü planla, norm kadro, kadro planla, pozisyon tanım, workforce plan
+
+[F02] İşe Alım, Seçme & Uyum
+aday, mülakat, işe alım, işe alma, işe alın, işgören seçim, personel seçim, oryantasyon, başvuru form, staj, işe yerleştir, iş başvur, özgeçmiş, personel temin, iş görüşme, iş ilan, işe giriş, cv$, işe alıştır, yetenek test, seçme ve yerleştirme, seçme süreci, yeni işgören, recruit, personel alım, işe uyum, referans kontrol, eleman seçim, değerlendirme merkezi, yapılandırılmış mülakat, eleman alım, psikometri, eleman temin, kişilik envanter, assessment center, headhunt, executive search, kariyer fuar, onboarding
+
+[F03] Eğitim & Gelişim
+öğrenme, eğitimler, eğitim program, eğitim ihtiya, eğitim yöntem, eğitim faaliyet, eğitim al, mentor, seminer, eğitime katıl, koçluk, eğitim yönetim, eğitim ver, kişisel gelişim, eğitim plan, işbaşı eğitim, uzaktan eğitim, yönetici gelişt, mentorluk, eğitim merkez, eğitmen, öğrenen örgüt, eğitim ve gelişim, hizmet içi eğitim, mesleki eğitim, eğitim birim, eğitim bütçe, workshop, eğitim süreci, sürekli eğitim, yönetim gelişt, gelişim program, akademi$, e-öğrenme, eğitimin etki, kirkpatrick, mesleki gelişim, eğitim değerlendir, işbaşında eğitim, eğitim uzman, hizmetiçi eğitim, yetkinlik geliştir, beceri geliştir, eğitim müdür, eğitim departman, eğitim yatırım, e-learning, atölye çalışma, elearning, kurumsal akademi, reskill, upskill
+
+[F04] Performans Yönetimi
+performans, performans değerleme, 360 derece, geri bildirim, performans standart, hedef belirle, değerlendirme form, performans ölçüm, feedback, amaçlara göre yönetim, balanced scorecard, başarı değerlendir, değerlendirme dönem, hedeflerle yönetim, yetkinlik değerlendir, verimlilik ölç, hedef yönetim, 360°, okr$, okr', kpi, anahtar performans, dengeli puan kart
+
+[F05] Ücret & Yan Haklar
+ücret, iş değerleme, maaş, ödüllendir, prim$, primi, ikramiye, compensation, sosyal yardım, primler, asgari ücret, bordro, hisse senedi, sosyal hak, ödül sistem, yan ödeme, prim sistem, ücret dışı, yan hak, toplam ödül, benefit, bonus, ödül yönetim, ek ödeme, dolaylı ödeme, total reward, özel sağlık sigorta, bireysel emeklilik, kar payı, kâr payı, hisse opsiyon, takdir ve tanın
+
+[F06] Kariyer & Yetenek Yönetimi
+kariyer, terfi, yükselme, rotasyon, yetenek yönetim, yüksek potansiyel, yedekleme, talent, yedekleme planla, yetenek havuz, yönetici adayı, potansiyel değerlendir, succession, high potential, halef, hipo$, iç atama, yetenek program, genç yetenek, management trainee
+
+[F07] Çalışma & Endüstri İlişkileri
+sendika, grev, toplu iş sözleşme, endüstri ilişki, toplu pazarlık, lokavt, arabulucu, toplu sözleşme, işçi sendika, işçi ve işveren, çalışma ilişki, işveren sendika, iş uyuşmazlı, sendikalaş, işçi-işveren, mess$, uzlaştır, endüstriyel ilişki, çalışan ilişki, yüksek hakem, disk$, işçi işveren, işyeri temsilci, sosyal diyalog, türk-iş, iş barışı, kolektif pazarlık, hak-iş
+
+[F08] İş Sağlığı & Güvenliği
+iş güvenliği, iş kaza, tehlike, iş sağlığı, stres, işçi sağlığı, meslek hastalı, sağlık ve güvenlik, mobbing, ergonomi, 6331, isg$, işyeri hekim, tükenmişlik, cinsel taciz, güvenlik kültür, yıldırma, risk değerlendirme, psikolojik taciz, risk analiz, zorbalık, çalışan sağlığı, psikolojik şiddet, işyeri sağlı
+
+[F09] İş Hukuku & Mevzuat
+kanun, iş sözleşme, iş kanun, iş hukuk, kıdem tazminat, fesih, çalışma süre, yönetmelik, iş güvence, ihbar, sgk$, feshi, fazla çalışma, sosyal güvenlik, mevzuat, çalışma saat, 4857, fazla mesai, belirli süreli, haklı neden, yasal düzenleme, işsizlik sigorta, 5510, yargıtay, deneme süresi, hafta tatili, sosyal sigorta, uluslararası çalışma, resmi gazete, iş mahkeme, yıllık izin, genel tatil, işe iade, 1475, geçerli neden, iş akdi, kişisel veri, kişisel verilerin korunma, 6698, sgk', kvkk, istihdam teşvik, sgk teşvik
+
+[F10] İK Bilgi Sistemleri & Analitik
+bilgi sistem, ikbs, dijital, insan kaynakları bilgi sistem, yazılım, analitik, bilişim, raporlama, özlük, metrik, bulut, sap$, e-ik, veritabanı, e-hr, portal, elektronik insan kaynakları, veri tabanı, yönetim bilgi sistem, ik bilgi sistem, veri analiz, büyük veri, yapay zeka, insan kaynakları yazılım, gösterge panel, self-servis, hrms, self servis, veri madenciliği, hris, ik yazılım, ik analiti, insan kaynakları analiti, people analytics, hr analytics, big data, dashboard, cloud, saas
+
+[F11] İç İletişim & Çalışan Katılımı
+şikayet, örgütsel bağlılık, şikâyet, örgüt iklimi, bülten, öneri sistem, çalışan katılım, iletişim kanal, çalışan bağlılığı, intranet, işe bağlılık, katılımcı yönetim, örgütsel iletişim, açık kapı, içi iletişim, tutum anket, iç iletişim, şirket içi iletişim, memnuniyet anket, iklim anket, yönetime katılım, kurum içi iletişim, çalışan anket, bağlılık anket, town hall, çalışan sesi, employee voice
+
+[F12] İşten Ayrılma & Elde Tutma
+işten çıkar, emeklilik, işten ayrıl, elde tut, işten çıkarma, işten ayrılma, devir hızı, elde tutma, devir oranı, personel devir, işgören devir, istifa, işgücü devir, yeniden yerleştirme, işine son, turnover, işten çıkış, çıkış mülakat, outplacement, iş gücü devir, işe son ver, ayrılma niyeti, retention, kariyer geçiş, emekliliğe hazırlık, işten atma, tutundur, çıkış görüşme, çalışan kaybı, kalıcılık
