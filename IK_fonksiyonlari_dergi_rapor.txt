@@ -1,0 +1,98 @@
+İK FONKSİYONLARI - DERGİ DERLEMİ KANIT RAPORU
+(sayılar: toplam geçiş / geçtiği yazı sayısı, 3.670 yazıdan)
+
+[F01] İK Planlama & İş Analizi
+  EKLENEN: organizasyon yapısı (213/153); yetenek planla (60/25); yetenek ihtiyac (36/24); işgücü maliyet (34/18); rol tanım (23/17); iş gücü ihtiya (14/13); organizasyon tasarım (14/12)
+  ÇIKARILAN/TAŞINAN: stratejik insan kaynakları
+  DERLEMDE GEÇMEYEN (korundu): iş genişlet; insan kaynakları envanter
+  EN GÜÇLÜ 12: yeniden yapılan (726/400); iş tanım (366/212); organizasyon yapı (299/205); görev tanım (248/166); organizasyon yapısı (213/153); organizasyonel yapı (188/141); küçülme (198/116); işgücü planla (201/81); organizasyon şema (78/70); iş gücü planla (110/43); ik planla (62/40); iş analiz (77/38)
+
+[F02] İşe Alım, Seçme & Uyum
+  EKLENEN: alım süreci (800/301); yeni mezun (294/143); işe başlama (116/105); yetenek kazanım (107/72); stajyer (185/69); üniversite mezun (69/58); işe alım stratej (75/50); işe alım uzman (68/48); aday havuzu (62/42); oyunlaştır (120/38); kişilik test (48/36); psikometrik (52/35); aday takip (30/24); işe girişi (23/23); linkedin (20/18); video mülakat (18/12); ats$ (25/8); yetenek avcı (22/8); headhunter (17/8); kariyer sitesi (8/6); davranışsal mülakat (12/5); talent acquisition (9/4)
+  ÇIKARILAN/TAŞINAN: -
+  DERLEMDE GEÇMEYEN (korundu): işgören seçim
+  EN GÜÇLÜ 12: işe alım (4281/1027); aday (4879/971); mülakat (1400/528); işe alma (823/420); işe alın (658/370); oryantasyon (907/353); alım süreci (800/301); staj (504/165); yeni mezun (294/143); özgeçmiş (273/141); değerlendirme merkezi (176/106); işe başlama (116/105)
+
+[F03] Eğitim & Gelişim
+  EKLENEN: gelişim plan (503/261); gelişim fırsat (340/259); liderlik gelişim (217/144); atölye (302/117); öğrenme ve gelişim (243/101); e-öğren (244/66); öğrenme kültür (77/46); dijital öğren (47/23); yönetici gelişim (23/16); mikro öğren (26/12); çevrimiçi eğitim (11/9)
+  ÇIKARILAN/TAŞINAN: -
+  DERLEMDE GEÇMEYEN (korundu): -
+  EN GÜÇLÜ 12: öğrenme (5526/1449); eğitimler (3949/1124); eğitim program (1119/574); koçluk (1184/492); kişisel gelişim (627/397); eğitim al (456/340); mentor (859/326); eğitim ve gelişim (651/314); eğitmen (660/302); eğitim ver (427/295); gelişim program (507/292); seminer (624/282)
+
+[F04] Performans Yönetimi
+  EKLENEN: performans değerlendir (1643/584); performans yönetim (1740/526); yüksek performans (898/406); performans sistem (207/125); performans görüşme (76/54); sürekli geri bildirim (34/32); başarı ölçü (23/21); performans iyileş (21/18); kalibrasyon (24/17); performans primi (13/13)
+  ÇIKARILAN/TAŞINAN: -
+  DERLEMDE GEÇMEYEN (korundu): dengeli puan kart
+  EN GÜÇLÜ 12: performans (14940/2201); geri bildirim (1633/694); performans değerlendir (1643/584); performans yönetim (1740/526); yüksek performans (898/406); 360 derece (314/178); performans sistem (207/125); hedef belirle (173/122); performans ölçüm (115/68); performans görüşme (76/54); değerlendirme form (82/40); yetkinlik değerlendir (46/32)
+
+[F05] Ücret & Yan Haklar
+  EKLENEN: yan haklar (617/198); ücret yönetim (284/124); tanınma (127/114); sağlık sigorta (173/110); esnek yan hak (130/52); ücret araştır (101/45); yan fayda (35/27); maaş zam (32/23); ücret skala (29/17); tanıma ve takdir (6/6)
+  ÇIKARILAN/TAŞINAN: -
+  DERLEMDE GEÇMEYEN (korundu): total reward; kâr payı
+  EN GÜÇLÜ 12: ücret (4680/1082); ödüllendir (1640/728); maaş (1093/528); yan hak (699/205); yan haklar (617/198); bordro (372/192); prim$ (305/152); ücret yönetim (284/124); ikramiye (152/115); tanınma (127/114); sağlık sigorta (173/110); ödül sistem (143/93)
+
+[F06] Kariyer & Yetenek Yönetimi
+  EKLENEN: kariyer planla (636/333); kariyer gelişim (537/302); yetenek havuzu (217/136); kariyer yönetim (201/132); kariyer hedef (164/112); kariyer fırsat (142/109); kritik rol (109/93); kariyer basamak (59/52); kariyer patika (74/50); kariyer yolculuk (51/35); yetenek değerl (63/29); kritik pozisyon (51/27); iç terfi (27/20); yetenek haritası (6/5); 9 kutu (2/2)
+  ÇIKARILAN/TAŞINAN: -
+  DERLEMDE GEÇMEYEN (korundu): -
+  EN GÜÇLÜ 12: kariyer (6000/1584); terfi (1046/530); yetenek yönetim (1646/464); kariyer planla (636/333); kariyer gelişim (537/302); yedekleme (660/243); yükselme (315/243); yüksek potansiyel (449/169); rotasyon (273/168); yetenek havuz (284/161); yetenek havuzu (217/136); kariyer yönetim (201/132)
+
+[F07] Çalışma & Endüstri İlişkileri
+  EKLENEN: arabuluculuk (73/20); işçi temsil (12/8); sosyal taraf (9/7); işçi hakları (7/6); çalışan temsil (5/4); iş konseyi (3/2)
+  ÇIKARILAN/TAŞINAN: -
+  DERLEMDE GEÇMEYEN (korundu): sosyal diyalog; kolektif pazarlık
+  EN GÜÇLÜ 12: sendika (293/138); çalışan ilişki (146/124); çalışma ilişki (69/52); endüstri ilişki (85/51); endüstriyel ilişki (59/46); arabulucu (144/39); grev (43/25); toplu iş sözleşme (50/24); arabuluculuk (73/20); uzlaştır (36/17); disk$ (18/16); toplu sözleşme (20/15)
+
+[F08] İş Sağlığı & Güvenliği
+  EKLENEN: ruh sağlığı (84/47); sağlıklı yaşam (62/43); çalışan destek program (47/37); psikolojik güvenlik (72/35); wellbeing (87/32); esenlik (126/29); mental sağlık (57/17); çalışan esenliği (18/12); iş yaşam denge (14/11); burnout (10/6); psikolojik sağlık (6/5)
+  ÇIKARILAN/TAŞINAN: -
+  DERLEMDE GEÇMEYEN (korundu): -
+  EN GÜÇLÜ 12: stres (1312/480); tehlike (620/395); iş güvenliği (229/106); tükenmişlik (200/76); iş sağlığı (235/72); ruh sağlığı (84/47); iş kaza (157/45); sağlıklı yaşam (62/43); çalışan destek program (47/37); psikolojik güvenlik (72/35); ergonomi (50/34); wellbeing (87/32)
+
+[F09] İş Hukuku & Mevzuat
+  EKLENEN: mahkeme (100/54); esnek çalışma düzenle (42/27); eşit davranma (13/12)
+  ÇIKARILAN/TAŞINAN: -
+  DERLEMDE GEÇMEYEN (korundu): -
+  EN GÜÇLÜ 12: çalışma saat (437/252); kanun (862/213); çalışma süre (245/126); mevzuat (188/94); sosyal güvenlik (202/79); fazla mesai (175/75); yönetmelik (153/74); iş kanun (180/69); iş sözleşme (290/66); iş güvence (154/66); yasal düzenleme (82/66); iş hukuk (169/63)
+
+[F10] İK Bilgi Sistemleri & Analitik
+  EKLENEN: yapay zekâ (1023/164); veriye dayalı (79/46); makine öğren (72/44); ik teknoloji (71/43); mobil uygulama (61/40); veri odaklı (73/35); robotik (41/28); chatbot (70/21); ik analitik (158/20); chatgpt (49/12); üretken yapay (45/11); dijital ik (15/10); insan kaynakları analitiği (7/5)
+  ÇIKARILAN/TAŞINAN: -
+  DERLEMDE GEÇMEYEN (korundu): ikbs; e-hr; hrms; hris
+  EN GÜÇLÜ 12: dijital (2335/527); yazılım (914/368); analitik (584/236); raporlama (347/192); yapay zekâ (1023/164); yapay zeka (286/129); portal (188/109); bilgi sistem (168/106); özlük (114/95); bilişim (196/93); bulut (136/82); büyük veri (128/76)
+
+[F11] İç İletişim & Çalışan Katılımı
+  EKLENEN: çalışan memnuniyet (515/293); aidiyet (328/192); geri bildirim kültür (44/23); engagement (17/16); nabız anket (5/4)
+  ÇIKARILAN/TAŞINAN: -
+  DERLEMDE GEÇMEYEN (korundu): tutum anket; employee voice
+  EN GÜÇLÜ 12: çalışan bağlılığı (997/427); çalışan memnuniyet (515/293); şikayet (418/253); aidiyet (328/192); iç iletişim (372/153); intranet (286/132); iletişim kanal (131/103); içi iletişim (100/82); bülten (86/61); şikâyet (68/59); memnuniyet anket (71/52); açık kapı (59/43)
+
+[F12] İşten Ayrılma & Elde Tutma
+  EKLENEN: işten ayrılan (95/56); sessiz istifa (62/25); büyük istifa (35/24); yetenek kaybı (17/14); ayrılma niyet (10/5); great resignation (4/3); quiet quitting (3/3)
+  ÇIKARILAN/TAŞINAN: -
+  DERLEMDE GEÇMEYEN (korundu): işgören devir; emekliliğe hazırlık
+  EN GÜÇLÜ 12: elde tut (1090/533); elde tutma (799/417); işten çıkar (1005/310); işten ayrıl (658/300); devir oranı (618/239); emeklilik (792/233); işten çıkarma (629/229); işten ayrılma (430/217); işgücü devir (502/191); istifa (275/139); işten ayrılan (95/56); iş gücü devir (73/53)
+
+[F13] İK Stratejisi, Yönetişim & Profesyonellik (YENİ FONKSİYON)
+  EKLENEN: ik profesyon (1714/517); ik yönetici (1274/432); ik departman (1032/382); insan kaynakları departman (598/322); ik uygulama (577/321); ik süreç (497/269); insan kaynakları profesyon (319/228); ik direktör (339/216); insan sermaye (529/213); dış kaynak (503/205); insan kaynakları direktör (268/194); ik fonksiyon (295/183); ik liderl (467/176); iş ortağı (229/168); outsourc (505/154); ik stratej (235/145); ik müdür (197/132); insan kaynakları fonksiyon (166/119); yatırım getiri (331/107); insan kaynakları stratej (135/103); ik uzman (145/100); ik hizmet (123/99); stratejik ortak (117/88); stratejik ik (257/74); iş ortaklığı (74/59); ik danışman (71/50); stratejik insan kaynak (97/48); ik operasyon (57/43); ik stratejisi (49/38); chro (54/34); ik dönüşüm (57/33); ik iş ortak (44/32); ortak hizmet (45/23); ik bütçe (60/21); business partner (16/13); ik maliyet (20/10); ik metrik (33/9); insan kaynakları denetim (24/6); shared service (7/5); hrbp (6/4)
+  ÇIKARILAN/TAŞINAN: -
+  DERLEMDE GEÇMEYEN (korundu): -
+  EN GÜÇLÜ 12: ik profesyon (1714/517); ik yönetici (1274/432); ik departman (1032/382); insan kaynakları departman (598/322); ik uygulama (577/321); ik süreç (497/269); insan kaynakları profesyon (319/228); ik direktör (339/216); insan sermaye (529/213); dış kaynak (503/205); insan kaynakları direktör (268/194); ik fonksiyon (295/183)
+
+[F14] Çalışan Deneyimi & İşveren Markası (YENİ FONKSİYON)
+  EKLENEN: çalışan deneyim (852/246); işveren marka (590/215); aday deneyim (62/29); yetenek çek (32/23); evp$ (41/10); kurumsal marka (10/10); çalışan yolculuğu (8/4); employer brand (7/4); çalışan değer önerisi (2/2); deneyim yönetim (2/2); employee experience (2/1)
+  ÇIKARILAN/TAŞINAN: -
+  DERLEMDE GEÇMEYEN (korundu): -
+  EN GÜÇLÜ 12: çalışan deneyim (852/246); işveren marka (590/215); aday deneyim (62/29); yetenek çek (32/23); evp$ (41/10); kurumsal marka (10/10); çalışan yolculuğu (8/4); employer brand (7/4); çalışan değer önerisi (2/2); deneyim yönetim (2/2); employee experience (2/1)
+
+[F15] Örgütsel Gelişim, Değişim & Kültür (YENİ FONKSİYON)
+  EKLENEN: kurum kültür (756/397); şirket kültür (531/307); ekip çalışma (378/274); takım çalışma (375/239); çevik (593/224); değişim yönetim (301/174); organizasyonel gelişim (301/146); liderlik program (86/60); kültür değişim (44/38); değişim süreç (38/35); liderlik modeli (45/29); takım oluştur (32/28); değişime direnç (34/27); birleşme ve satın alma (48/18); organizasyonel dönüşüm (19/15); kültür dönüşüm (20/13); agile (14/9); kurumsal dönüşüm (9/7); yönetici koçluk (4/4)
+  ÇIKARILAN/TAŞINAN: -
+  DERLEMDE GEÇMEYEN (korundu): -
+  EN GÜÇLÜ 12: kurum kültür (756/397); şirket kültür (531/307); ekip çalışma (378/274); takım çalışma (375/239); çevik (593/224); değişim yönetim (301/174); organizasyonel gelişim (301/146); liderlik program (86/60); kültür değişim (44/38); değişim süreç (38/35); liderlik modeli (45/29); takım oluştur (32/28)
+
+[F16] Çeşitlilik, Kapsayıcılık & Eşitlik (YENİ FONKSİYON)
+  EKLENEN: çeşitlilik (702/269); kapsayıcı (656/221); kapsayıcılık (277/118); kadın çalışan (208/103); ayrımcılık (148/75); kadın yönetici (160/73); çeşitlilik ve kapsayıcılık (144/68); fırsat eşitliği (101/64); cinsiyet eşitliği (151/48); farklı kuşak (50/39); eşit fırsat (42/35); toplumsal cinsiyet (121/34); kadın lider (65/33); kuşaklar arası (57/32); çok kültürlü (35/29); diversity (39/20); eşit ücret (23/14); cam tavan (20/13); engelli çalış (23/10); lgbt (11/8); yaş ayrımcılığ (8/5); çok kuşaklı (6/5); engelli istihdam (7/4); dei$ (3/3); ücret eşitliği (3/2); inclusion (1/1)
+  ÇIKARILAN/TAŞINAN: -
+  DERLEMDE GEÇMEYEN (korundu): -
+  EN GÜÇLÜ 12: çeşitlilik (702/269); kapsayıcı (656/221); kapsayıcılık (277/118); kadın çalışan (208/103); ayrımcılık (148/75); kadın yönetici (160/73); çeşitlilik ve kapsayıcılık (144/68); fırsat eşitliği (101/64); cinsiyet eşitliği (151/48); farklı kuşak (50/39); eşit fırsat (42/35); toplumsal cinsiyet (121/34)

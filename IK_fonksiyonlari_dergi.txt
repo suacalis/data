@@ -1,0 +1,52 @@
+# İK FONKSİYONLARI VE ANAHTAR KAVRAMLARI (dergi derlemine göre)
+# Kaynak: hr_dergi_3670.csv (3.670 İK dergisi yazısı, 1997-2025). Terimler her fonksiyonda yazı sayısına (kaç yazıda geçtiği) göre çoktan aza dizilidir;
+# derlemde hiç geçmeyen (kitap/İngilizce/kısaltma kaynaklı) terimler satırın sonundadır. '$' = kelime sonu eşleşmesi; diğerleri kelime başı (önek) eşleşmesidir.
+# F01-F12: önceki fonksiyon sözlüğünün dergi derlemiyle doğrulanmış hali. F13-F16: dergide öne çıkan, önceki listede olmayan yeni fonksiyonlar.
+
+[F01] İK Planlama & İş Analizi
+yeniden yapılan, iş tanım, organizasyon yapı, görev tanım, organizasyon yapısı, organizasyonel yapı, küçülme, işgücü planla, organizasyon şema, iş gücü planla, ik planla, iş analiz, insan kaynakları planla, yetenek planla, yetenek ihtiyac, iş zenginleştir, işgücü maliyet, iş tasarım, rol tanım, norm kadro, iş gereksinim, işgücü ihtiya, örgüt yapı, iş gücü ihtiya, personel ihtiya, organizasyon tasarım, kadro planla, iş gerekler, talep tahmin, personel planla, downsizing, insan gücü planla, pozisyon tanım, iş dizayn, iş şartname, insangücü planla, iş sınıflandır, workforce plan, iş genişlet, insan kaynakları envanter
+
+[F02] İşe Alım, Seçme & Uyum
+işe alım, aday, mülakat, işe alma, işe alın, oryantasyon, alım süreci, staj, yeni mezun, özgeçmiş, değerlendirme merkezi, işe başlama, seçme ve yerleştirme, iş ilan, iş görüşme, iş başvur, cv$, yetenek kazanım, işe giriş, stajyer, üniversite mezun, işe alım stratej, eleman seçim, eleman alım, işe alım uzman, onboarding, kişilik envanter, aday havuzu, oyunlaştır, işe yerleştir, kişilik test, psikometri, psikometrik, başvuru form, referans kontrol, işe uyum, yetenek test, seçme süreci, aday takip, personel alım, işe girişi, personel seçim, linkedin, eleman temin, yapılandırılmış mülakat, recruit, video mülakat, kariyer fuar, assessment center, executive search, headhunt, ats$, yetenek avcı, headhunter, kariyer sitesi, davranışsal mülakat, personel temin, yeni işgören, talent acquisition, işe alıştır, işgören seçim
+
+[F03] Eğitim & Gelişim
+öğrenme, eğitimler, eğitim program, koçluk, kişisel gelişim, eğitim al, mentor, eğitim ve gelişim, eğitmen, eğitim ver, gelişim program, seminer, gelişim plan, gelişim fırsat, mentorluk, eğitim ihtiya, akademi$, workshop, liderlik gelişim, atölye, eğitim plan, öğrenme ve gelişim, eğitim süreci, eğitim yönetim, mesleki gelişim, yönetici gelişt, e-öğren, e-öğrenme, eğitim merkez, eğitim müdür, beceri geliştir, eğitim departman, yönetim gelişt, eğitime katıl, sürekli eğitim, eğitim yatırım, eğitim faaliyet, e-learning, öğrenme kültür, eğitim yöntem, uzaktan eğitim, atölye çalışma, eğitim birim, eğitim uzman, işbaşı eğitim, eğitim değerlendir, eğitimin etki, eğitim bütçe, mesleki eğitim, yetkinlik geliştir, kirkpatrick, dijital öğren, kurumsal akademi, yönetici gelişim, hizmet içi eğitim, reskill, mikro öğren, upskill, çevrimiçi eğitim, işbaşında eğitim, öğrenen örgüt, hizmetiçi eğitim, elearning
+
+[F04] Performans Yönetimi
+performans, geri bildirim, performans değerlendir, performans yönetim, yüksek performans, 360 derece, performans sistem, hedef belirle, performans ölçüm, performans görüşme, değerlendirme form, yetkinlik değerlendir, sürekli geri bildirim, okr$, hedeflerle yönetim, balanced scorecard, değerlendirme dönem, feedback, başarı ölçü, okr', performans standart, performans iyileş, kalibrasyon, performans değerleme, performans primi, 360°, verimlilik ölç, hedef yönetim, anahtar performans, amaçlara göre yönetim, başarı değerlendir, kpi, dengeli puan kart
+
+[F05] Ücret & Yan Haklar
+ücret, ödüllendir, maaş, yan hak, yan haklar, bordro, prim$, ücret yönetim, ikramiye, tanınma, sağlık sigorta, ödül sistem, primler, hisse senedi, prim sistem, ödül yönetim, sosyal hak, esnek yan hak, ücret araştır, iş değerleme, primi, bireysel emeklilik, sosyal yardım, bonus, özel sağlık sigorta, asgari ücret, yan fayda, toplam ödül, maaş zam, yan ödeme, ücret skala, benefit, ücret dışı, ek ödeme, compensation, kar payı, tanıma ve takdir, takdir ve tanın, dolaylı ödeme, hisse opsiyon, total reward, kâr payı
+
+[F06] Kariyer & Yetenek Yönetimi
+kariyer, terfi, yetenek yönetim, kariyer planla, kariyer gelişim, yedekleme, yükselme, yüksek potansiyel, rotasyon, yetenek havuz, yetenek havuzu, kariyer yönetim, kariyer hedef, kariyer fırsat, yedekleme planla, kritik rol, genç yetenek, talent, kariyer basamak, kariyer patika, yetenek program, yönetici adayı, kariyer yolculuk, yetenek değerl, halef, kritik pozisyon, iç terfi, potansiyel değerlendir, management trainee, yetenek haritası, succession, high potential, iç atama, 9 kutu, hipo$
+
+[F07] Çalışma & Endüstri İlişkileri
+sendika, çalışan ilişki, çalışma ilişki, endüstri ilişki, endüstriyel ilişki, arabulucu, grev, toplu iş sözleşme, arabuluculuk, uzlaştır, disk$, toplu sözleşme, işçi ve işveren, mess$, işçi-işveren, işçi sendika, işveren sendika, işçi temsil, işçi işveren, sendikalaş, sosyal taraf, lokavt, işçi hakları, iş barışı, türk-iş, çalışan temsil, toplu pazarlık, iş konseyi, iş uyuşmazlı, yüksek hakem, işyeri temsilci, hak-iş, sosyal diyalog, kolektif pazarlık
+
+[F08] İş Sağlığı & Güvenliği
+stres, tehlike, iş güvenliği, tükenmişlik, iş sağlığı, ruh sağlığı, iş kaza, sağlıklı yaşam, çalışan destek program, psikolojik güvenlik, ergonomi, wellbeing, esenlik, işçi sağlığı, çalışan sağlığı, mobbing, sağlık ve güvenlik, risk analiz, meslek hastalı, cinsel taciz, zorbalık, işyeri hekim, mental sağlık, isg$, yıldırma, çalışan esenliği, risk değerlendirme, iş yaşam denge, güvenlik kültür, psikolojik taciz, burnout, 6331, psikolojik sağlık, psikolojik şiddet, işyeri sağlı
+
+[F09] İş Hukuku & Mevzuat
+çalışma saat, kanun, çalışma süre, mevzuat, sosyal güvenlik, fazla mesai, yönetmelik, iş kanun, iş sözleşme, iş güvence, yasal düzenleme, iş hukuk, mahkeme, fazla çalışma, feshi, ihbar, yargıtay, fesih, kişisel veri, yıllık izin, geçerli neden, esnek çalışma düzenle, kıdem tazminat, sosyal sigorta, iş akdi, 1475, belirli süreli, 4857, deneme süresi, sgk$, uluslararası çalışma, işsizlik sigorta, işe iade, resmi gazete, haklı neden, eşit davranma, 5510, hafta tatili, sgk', kişisel verilerin korunma, iş mahkeme, genel tatil, kvkk, istihdam teşvik, 6698, sgk teşvik
+
+[F10] İK Bilgi Sistemleri & Analitik
+dijital, yazılım, analitik, raporlama, yapay zekâ, yapay zeka, portal, bilgi sistem, özlük, bilişim, bulut, büyük veri, metrik, veri tabanı, veri analiz, ik analiti, veriye dayalı, makine öğren, ik teknoloji, mobil uygulama, sap$, veritabanı, veri odaklı, robotik, self-servis, chatbot, ik analitik, ik yazılım, insan kaynakları bilgi sistem, self servis, big data, chatgpt, ik bilgi sistem, üretken yapay, dijital ik, insan kaynakları yazılım, insan kaynakları analiti, dashboard, veri madenciliği, insan kaynakları analitiği, cloud, yönetim bilgi sistem, hr analytics, e-ik, elektronik insan kaynakları, gösterge panel, people analytics, saas, ikbs, e-hr, hrms, hris
+
+[F11] İç İletişim & Çalışan Katılımı
+çalışan bağlılığı, çalışan memnuniyet, şikayet, aidiyet, iç iletişim, intranet, iletişim kanal, içi iletişim, bülten, şikâyet, memnuniyet anket, açık kapı, çalışan katılım, çalışan anket, öneri sistem, şirket içi iletişim, kurum içi iletişim, geri bildirim kültür, işe bağlılık, katılımcı yönetim, engagement, bağlılık anket, örgüt iklimi, nabız anket, yönetime katılım, örgütsel iletişim, örgütsel bağlılık, çalışan sesi, iklim anket, town hall, tutum anket, employee voice
+
+[F12] İşten Ayrılma & Elde Tutma
+elde tut, elde tutma, işten çıkar, işten ayrıl, devir oranı, emeklilik, işten çıkarma, işten ayrılma, işgücü devir, istifa, işten ayrılan, iş gücü devir, çıkış mülakat, işine son, turnover, tutundur, devir hızı, sessiz istifa, büyük istifa, outplacement, yeniden yerleştirme, kalıcılık, yetenek kaybı, işten çıkış, çıkış görüşme, kariyer geçiş, personel devir, ayrılma niyeti, ayrılma niyet, işten atma, çalışan kaybı, retention, great resignation, işe son ver, quiet quitting, işgören devir, emekliliğe hazırlık
+
+[F13] İK Stratejisi, Yönetişim & Profesyonellik
+ik profesyon, ik yönetici, ik departman, insan kaynakları departman, ik uygulama, ik süreç, insan kaynakları profesyon, ik direktör, insan sermaye, dış kaynak, insan kaynakları direktör, ik fonksiyon, ik liderl, iş ortağı, outsourc, ik stratej, ik müdür, insan kaynakları fonksiyon, yatırım getiri, insan kaynakları stratej, ik uzman, ik hizmet, stratejik ortak, stratejik ik, iş ortaklığı, ik danışman, stratejik insan kaynak, ik operasyon, ik stratejisi, chro, ik dönüşüm, ik iş ortak, ortak hizmet, ik bütçe, business partner, ik maliyet, ik metrik, insan kaynakları denetim, shared service, hrbp
+
+[F14] Çalışan Deneyimi & İşveren Markası
+çalışan deneyim, işveren marka, aday deneyim, yetenek çek, evp$, kurumsal marka, çalışan yolculuğu, employer brand, çalışan değer önerisi, deneyim yönetim, employee experience
+
+[F15] Örgütsel Gelişim, Değişim & Kültür
+kurum kültür, şirket kültür, ekip çalışma, takım çalışma, çevik, değişim yönetim, organizasyonel gelişim, liderlik program, kültür değişim, değişim süreç, liderlik modeli, takım oluştur, değişime direnç, birleşme ve satın alma, organizasyonel dönüşüm, kültür dönüşüm, agile, kurumsal dönüşüm, yönetici koçluk
+
+[F16] Çeşitlilik, Kapsayıcılık & Eşitlik
+çeşitlilik, kapsayıcı, kapsayıcılık, kadın çalışan, ayrımcılık, kadın yönetici, çeşitlilik ve kapsayıcılık, fırsat eşitliği, cinsiyet eşitliği, farklı kuşak, eşit fırsat, toplumsal cinsiyet, kadın lider, kuşaklar arası, çok kültürlü, diversity, eşit ücret, cam tavan, engelli çalış, lgbt, yaş ayrımcılığ, çok kuşaklı, engelli istihdam, dei$, ücret eşitliği, inclusion
