@@ -1,0 +1,116 @@
+KONULAR / YAKLAŞIMLAR SÖZLÜĞÜ - DEĞİŞİKLİK VE KANIT RAPORU
+(sayılar: toplam geçiş / geçtiği kitap sayısı (8 kitaptan))
+
+[T01] Personel Yönetimi
+  EKLENEN: personel politika (21/7); personel fonksiyon (8/4); insan ilişkileri (29/6); bilimsel yönetim (21/7); taylor (72/7); hawthorne (6/3)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): personel servis; personel şef; personel birim
+  TEMEL TERİMLER (ilk 10): disiplin (330); personel yönetim (232); taylor (72); sicil (34); insan ilişkileri (29); özlük (27); idari işler (23); personel bölüm (22); personel politika (21); bilimsel yönetim (21)
+
+[T02] Toplam Kalite, Verimlilik & Yalın
+  EKLENEN: kalite kontrol (16/5); kıyaslama (36/7); benchmarking (5/3); tam zamanında (5/4); deming (3/3); iş süreç (31/8); sıfır hata (1/1)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): iso 9000; iso 9001; iso 9002; efqm; mükemmellik model; kalite ödül; lean; six sigma; altı sigma; 6 sigma; reengineering
+  TEMEL TERİMLER (ilk 10): verimlilik (309); toplam kalite (79); kalite yönetim (44); kıyaslama (36); iş süreç (31); yeniden yapılanma (30); yalın (27); sürekli iyileştir (21); kalite kontrol (16); prodüktivite (10)
+
+[T03] Stratejik İKY & İş Ortaklığı
+  EKLENEN: insan kaynakları fonksiyon (69/7); insan kaynakları departman (89/8); stratejik yönetim (107/8); rekabet üstünlüğ (47/5); kaynak tabanlı (13/3); kaynak temelli (9/3); dikey uyum (18/2); yatay uyum (13/2); ik fonksiyon (4/2)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): iş ortaklı; hrbp; ik'nın rol; stratejiyle uyum; c-level; ik dönüşüm
+  TEMEL TERİMLER (ilk 10): stratejik insan kaynak (228); dış kaynak (120); stratejik yönetim (107); rekabet avantaj (93); insan kaynakları departman (89); insan kaynakları strateji (85); katma değer (70); insan kaynakları fonksiyon (69); rekabet üstünlüğ (47); ulrich (24)
+
+[T04] Yetkinlik Yaklaşımı
+  EKLENEN: yetkinlik model (17/3); yetkinlik temelli (13/3); yetkinlik analiz (4/2); bilgi beceri (3/2)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): myk$
+  TEMEL TERİMLER (ilk 10): yetkinlik (717); yeterlilik (85); competenc (32); yetkinlik model (17); yetkinlik temelli (13); mesleki yeterlilik (5); yetkinlik analiz (4); bilgi beceri (3); myk$ (0)
+
+[T05] İnsan Sermayesi & Bilgi Yönetimi
+  EKLENEN: bilgi ekonomi (13/3); sosyal sermaye (20/3); bilgi paylaş (14/7); bilgi temelli (7/2)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): bilgi çalışan; iso 30414
+  TEMEL TERİMLER (ilk 10): insan sermaye (191); bilgi işçi (131); beşeri sermaye (93); bilgi çağı (51); entelektüel sermaye (41); bilgi toplum (38); öğrenen örgüt (27); human capital (22); bilgi yönetim (22); sosyal sermaye (20)
+
+[T06] Liderlik & Koçluk
+  EKLENEN: etkileşimci (11/1); ilham (16/5)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): yöneticilik becer; servant leader
+  TEMEL TERİMLER (ilk 10): lider (858); koçluk (71); mentorluk (35); empati (21); koç$ (17); ilham (16); coaching (13); karizmatik (13); dönüşümcü (12); etkileşimci (11)
+
+[T07] Örgüt Kültürü & Değişim
+  EKLENEN: örgütsel kültür (10/4); örgütsel değişim (8/4); örgütsel gelişim (10/4); örgüt geliştirme (12/4); örgütsel iklim (12/4); değişime karşı (8/4); lewin (7/5); misyon (85/8); vizyon (174/8)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): kültürel dönüşüm; kültür değişim; dönüşüm süreç
+  TEMEL TERİMLER (ilk 10): vizyon (174); örgüt kültür (114); misyon (85); değişim yönetim (31); kurum kültür (20); şirket kültür (17); örgüt geliştirme (12); örgütsel iklim (12); organizasyon kültür (11); örgütsel kültür (10)
+
+[T08] Çalışan Bağlılığı, Motivasyon & Deneyim
+  EKLENEN: doyum (47/7); güdü (95/7); güdüleme (16/6); maslow (12/4); herzberg (11/3); örgütsel vatandaşlık (18/3); psikolojik sözleşme (12/6); yabancılaşma (11/5)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): çalışan deneyim; employee experience; great place
+  TEMEL TERİMLER (ilk 10): motivasyon (379); bağlılık (238); iş tatmin (135); memnuniyet (96); güdü (95); moral$ (65); doyum (47); örgütsel vatandaşlık (18); aidiyet (17); güdüleme (16)
+
+[T09] İşveren Markası & Yetenek Savaşı
+  EKLENEN: kurumsal itibar (1/1); kurumsal imaj (1/1); çekicilik (6/3)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): employer brand; yetenek kıtlı; yetenek çekme; tercih edilen işveren; gözde işveren
+  TEMEL TERİMLER (ilk 10): çekicilik (6); yetenek açığı (4); işveren marka (3); war for talent (2); yetenek savaş (1); beyin göçü (1); yetenekleri çek (1); en iyi işveren (1); çekici işveren (1); kurumsal itibar (1)
+
+[T10] Dijitalleşme, Teknoloji & Yapay Zekâ
+  EKLENEN: bilgisayar (222/8); bilgi teknoloji (87/8); teknolojik gelişme (44/7); mobil (49/6); yapay zekâ (4/1); sanal gerçeklik (4/2); oyunlaştır (2/1); gamification (0/0); dijitalleş (0/0); sosyal ağ (4/3); robotik (1/1)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): ai$; makine öğren; chatgpt; üretken yapay; endüstri 4.0; sanayi 4.0; metaverse; blockchain; blok zincir; mobil uygulama; gamification; dijitalleş
+  TEMEL TERİMLER (ilk 10): teknoloji (785); bilgisayar (222); internet (164); sanal (115); bilgi teknoloji (87); dijital (84); çevrimiçi (66); sosyal medya (63); mobil (49); teknolojik gelişme (44)
+
+[T11] Esnek, Uzaktan & Hibrit Çalışma
+  EKLENEN: geçici iş (86/6); iş paylaş (9/4); çağrı üzerine (18/4); kısa çalışma (7/2); telecommut (4/2); evde çalış (5/4)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): home-office; tele çalış; remote; freelance; ofise dönüş
+  TEMEL TERİMLER (ilk 10): esnek çalış (88); geçici iş (86); kısmi süreli (36); evden çalış (24); çağrı üzerine (18); uzaktan çalış (16); yarı zamanlı (16); part-time (14); iş paylaş (9); esnek istihdam (7)
+
+[T12] Esenlik & İş-Yaşam Dengesi
+  EKLENEN: özel yaşam (16/2); yaşam dengesi (7/5); yaşam kalite (16/6); iş aile (31/5)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): esenlik; wellbeing; well-being; well being; wellness; iş yaşam denge; iş-özel yaşam; iş ve özel yaşam; özel yaşam denge; work-life; psikolojik sağlık; mental sağlık; mindfulness; psikolojik dayanıklılık
+  TEMEL TERİMLER (ilk 10): iş aile (31); tükenmişlik (28); iyi olma (20); özel yaşam (16); yaşam kalite (16); work life (9); burnout (7); yaşam dengesi (7); iş-yaşam denge (4); zihinsel sağlık (4)
+
+[T13] Çeşitlilik, Kapsayıcılık & Eşitlik
+  EKLENEN: cinsiyet (148/7); azınlık (26/5); çok kültürlü (9/5); eşit işe eşit (17/6)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): inclusion
+  TEMEL TERİMLER (ilk 10): cinsiyet (148); kadınların (111); cam tavan (93); eşitlik (86); ayrımcılık (77); eşit ücret (38); kadın yönetici (36); engelli (33); çeşitlilik (31); kadın çalışan (27)
+
+[T14] Kuşaklar & Yeni Nesil
+  EKLENEN: yeni nesil (2/2); milenyum (18/3); sessiz kuşak (3/2); baby boom (7/4); boomer (9/4)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): gen z$; gen y$; yeni nesil çalışan
+  TEMEL TERİMLER (ilk 10): kuşak (112); kuşağ (93); y kuşağ (42); generation (26); milenyum (18); bebek patlaması (14); x kuşağ (10); boomer (9); baby boom (7); baby boomer (6)
+
+[T15] Sürdürülebilirlik, KSS & Etik
+  EKLENEN: yönetişim (3/3); paydaş (49/7); etik davran (13/3)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): kss$; csr$; esg$; kurumsal yönetişim; kurumsal vatandaş
+  TEMEL TERİMLER (ilk 10): etik$ (133); sürdürülebilir (79); gönüllü (68); paydaş (49); sosyal sorumluluk (35); insan hakları (29); etik davran (13); etiğ (10); iş etiği (4); şeffaflık (4)
+
+[T16] Kriz, Belirsizlik & Pandemi
+  EKLENEN: ekonomik kriz (14/6); finansal kriz (6/2); durgunluk (21/6); afet (12/5); toparlan (4/2)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): vuca; bani$; resilience
+  TEMEL TERİMLER (ilk 10): kriz (78); belirsizlik (68); salgın (22); durgunluk (21); ekonomik kriz (14); afet (12); covid (9); deprem (9); pandemi (8); finansal kriz (6)
+
+[T17] Çeviklik & Yeni Organizasyon Modelleri
+  EKLENEN: sınırsız örgüt (10/3); esnek örgüt (2/2); adhokrasi (1/1); matris (42/6); öz yönetim (6/2); sanal örgüt (12/2); ağ yapı (1/1)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): agile; scrum; holakrasi; holacracy; self-manag; düz organizasyon; matris organizasyon; squad; ağ organizasyon; network organizasyon; proje bazlı organizasyon
+  TEMEL TERİMLER (ilk 10): matris (42); kendi kendini yönet (14); sanal örgüt (12); sınırsız örgüt (10); çevik (8); öz yönetim (6); sanal organizasyon (3); esnek örgüt (2); yatay organizasyon (1); tribe (1)
+
+[T18] Küreselleşme & Uluslararası İK
+  EKLENEN: ev sahibi ülke (167/4); ana ülke (197/5); üçüncü ülke (42/4); kültür şoku (8/3); kültürel uyum (9/3); hofstede (12/4); çok uluslu işletme (47/5); uluslararası görev (19/5); yurt dışı (35/6); yurtdışı (142/8); repatriat (2/1)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): -
+  TEMEL TERİMLER (ilk 10): küresel (998); global (799); çokuluslu (296); ana ülke (197); ev sahibi ülke (167); yurtdışı (142); expat (108); uluslararası insan (84); çok uluslu (68); çok uluslu işletme (47)
+
+[T19] İnovasyon, Yaratıcılık & Girişimcilik
+  EKLENEN: yenilikçi (55/7); ar-ge (21/5); beyin fırtına (11/2); yaratıcı düşün (8/3); inovatif (2/1)
+  ÇIKARILAN: -
+  KİTAPLARDA GEÇMEYEN (korundu): iç girişim; intrapreneur; design thinking; tasarım odaklı düşün; fikir yönetim
+  TEMEL TERİMLER (ilk 10): yaratıcı (234); yenilik (205); yaratıcılık (89); girişimci (62); yenilikçi (55); inovasyon (36); ar-ge (21); beyin fırtına (11); yaratıcı düşün (8); inovatif (2)

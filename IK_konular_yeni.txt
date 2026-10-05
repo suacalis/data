@@ -1,0 +1,60 @@
+# KONULAR / YAKLAŞIMLAR SÖZLÜĞÜ (yeniden düzenlenmiş)
+# Kaynak: 8 İKY ders kitabı (txt) üzerinde terim sıklığı doğrulaması. Her konuda terimler kitaplardaki sıklığa göre (çoktan aza) dizilidir;
+# kitaplarda hiç geçmeyen (güncel/İngilizce/kısaltma) terimler satırın sonundadır. '$' = kelime sonu eşleşmesi; diğerleri kelime başı (önek) eşleşmesidir.
+
+[T01] Personel Yönetimi
+disiplin, personel yönetim, taylor, sicil, insan ilişkileri, özlük, idari işler, personel bölüm, personel politika, bilimsel yönetim, personel fonksiyon, hawthorne, personel işleri, personel işler, personel müdür, personel departman, personel daire, puantaj, personel servis, personel şef, personel birim
+
+[T02] Toplam Kalite, Verimlilik & Yalın
+verimlilik, toplam kalite, kalite yönetim, kıyaslama, iş süreç, yeniden yapılanma, yalın, sürekli iyileştir, kalite kontrol, prodüktivite, kalite güvence, kaizen, tky$, kalite çember, benchmarking, tam zamanında, süreç iyileştir, deming, süreç yönetim, sıfır hata, iso 9000, iso 9001, iso 9002, efqm, mükemmellik model, kalite ödül, lean, six sigma, altı sigma, 6 sigma, reengineering
+
+[T03] Stratejik İKY & İş Ortaklığı
+stratejik insan kaynak, dış kaynak, stratejik yönetim, rekabet avantaj, insan kaynakları departman, insan kaynakları strateji, katma değer, insan kaynakları fonksiyon, rekabet üstünlüğ, ulrich, ik stratej, outsourc, dikey uyum, kaynak tabanlı, yatay uyum, stratejik ortak, iş ortağı, kaynak temelli, stratejik ik, ik fonksiyon, chro, business partner, insan kaynaklarının rol, iş ortaklı, hrbp, ik'nın rol, stratejiyle uyum, c-level, ik dönüşüm
+
+[T04] Yetkinlik Yaklaşımı
+yetkinlik, yeterlilik, competenc, yetkinlik model, yetkinlik temelli, mesleki yeterlilik, yetkinlik analiz, bilgi beceri, myk$
+
+[T05] İnsan Sermayesi & Bilgi Yönetimi
+insan sermaye, bilgi işçi, beşeri sermaye, bilgi çağı, entelektüel sermaye, bilgi toplum, öğrenen örgüt, human capital, bilgi yönetim, sosyal sermaye, bilgi paylaş, bilgi ekonomi, örgütsel öğrenme, knowledge management, knowledge worker, öğrenen organizasyon, bilgi temelli, bilgi çalışan, iso 30414
+
+[T06] Liderlik & Koçluk
+lider, koçluk, mentorluk, empati, koç$, ilham, coaching, karizmatik, dönüşümcü, etkileşimci, vizyoner, hizmetkâr lider, yöneticilik becer, servant leader
+
+[T07] Örgüt Kültürü & Değişim
+vizyon, örgüt kültür, misyon, değişim yönetim, kurum kültür, şirket kültür, örgüt geliştirme, örgütsel iklim, organizasyon kültür, örgütsel kültür, örgütsel gelişim, misyon ve vizyon, örgütsel değişim, değişime karşı, kurumsal kültür, lewin, değişimi yönet, şirket değer, organizasyonel kültür, değişime direnç, vizyon ve misyon, kurumsal değer, değerlerimiz, değişim süreç, kültürel dönüşüm, kültür değişim, dönüşüm süreç
+
+[T08] Çalışan Bağlılığı, Motivasyon & Deneyim
+motivasyon, bağlılık, iş tatmin, memnuniyet, güdü, moral$, doyum, örgütsel vatandaşlık, aidiyet, güdüleme, mutluluk, maslow, psikolojik sözleşme, herzberg, yabancılaşma, adanmışlık, engagement, mutlu çalışan, çalışan sadakat, çalışan deneyim, employee experience, great place
+
+[T09] İşveren Markası & Yetenek Savaşı
+çekicilik, yetenek açığı, işveren marka, war for talent, yetenek savaş, beyin göçü, yetenekleri çek, en iyi işveren, çekici işveren, kurumsal itibar, kurumsal imaj, employer brand, yetenek kıtlı, yetenek çekme, tercih edilen işveren, gözde işveren
+
+[T10] Dijitalleşme, Teknoloji & Yapay Zekâ
+teknoloji, bilgisayar, internet, sanal, bilgi teknoloji, dijital, çevrimiçi, sosyal medya, mobil, teknolojik gelişme, online, otomasyon, robot, yapay zekâ, sanal gerçeklik, sosyal ağ, yapay zeka, oyunlaştır, algoritma, robotik, ai$, makine öğren, chatgpt, üretken yapay, endüstri 4.0, sanayi 4.0, metaverse, blockchain, blok zincir, mobil uygulama, gamification, dijitalleş
+
+[T11] Esnek, Uzaktan & Hibrit Çalışma
+esnek çalış, geçici iş, kısmi süreli, evden çalış, çağrı üzerine, uzaktan çalış, yarı zamanlı, part-time, iş paylaş, esnek istihdam, kısa çalışma, evde çalış, esnek saat, telecommut, esnek mesai, part time, home office, gig$, hibrit, hybrid, telework, gig ekonomi, serbest çalış, home-office, tele çalış, remote, freelance, ofise dönüş
+
+[T12] Esenlik & İş-Yaşam Dengesi
+iş aile, tükenmişlik, iyi olma, özel yaşam, yaşam kalite, work life, burnout, yaşam dengesi, iş-yaşam denge, zihinsel sağlık, iyi oluş, ruh sağlığı, sağlıklı yaşam, esenlik, wellbeing, well-being, well being, wellness, iş yaşam denge, iş-özel yaşam, iş ve özel yaşam, özel yaşam denge, work-life, psikolojik sağlık, mental sağlık, mindfulness, psikolojik dayanıklılık
+
+[T13] Çeşitlilik, Kapsayıcılık & Eşitlik
+cinsiyet, kadınların, cam tavan, eşitlik, ayrımcılık, eşit ücret, kadın yönetici, engelli, çeşitlilik, kadın çalışan, azınlık, fırsat eşitliğ, eşit işe eşit, çok kültürlü, diversity, kapsayıcı, cinsiyet eşitliğ, toplumsal cinsiyet, kadın istihdam, kadın lider, dei$, inclusion
+
+[T14] Kuşaklar & Yeni Nesil
+kuşak, kuşağ, y kuşağ, generation, milenyum, bebek patlaması, x kuşağ, boomer, baby boom, baby boomer, sessiz kuşak, yeni nesil, jenerasyon, millennial, z kuşağ, gen z$, gen y$, yeni nesil çalışan
+
+[T15] Sürdürülebilirlik, KSS & Etik
+etik$, sürdürülebilir, gönüllü, paydaş, sosyal sorumluluk, insan hakları, etik davran, etiğ, iş etiği, şeffaflık, karbon, hesap verebilir, yönetişim, iklim değişik, kss$, csr$, esg$, kurumsal yönetişim, kurumsal vatandaş
+
+[T16] Kriz, Belirsizlik & Pandemi
+kriz, belirsizlik, salgın, durgunluk, ekonomik kriz, afet, covid, deprem, pandemi, finansal kriz, toparlan, ekonomik daralma, dayanıklılık, iş sürekliliğ, korona, resesyon, vuca, bani$, resilience
+
+[T17] Çeviklik & Yeni Organizasyon Modelleri
+matris, kendi kendini yönet, sanal örgüt, sınırsız örgüt, çevik, öz yönetim, sanal organizasyon, esnek örgüt, yatay organizasyon, tribe, adhokrasi, ağ yapı, agile, scrum, holakrasi, holacracy, self-manag, düz organizasyon, matris organizasyon, squad, ağ organizasyon, network organizasyon, proje bazlı organizasyon
+
+[T18] Küreselleşme & Uluslararası İK
+küresel, global, çokuluslu, ana ülke, ev sahibi ülke, yurtdışı, expat, uluslararası insan, çok uluslu, çok uluslu işletme, üçüncü ülke, uluslararası ik, yurt dışı, yabancı yönetici, uluslararası görev, kültürlerarası, kültürler arası, hofstede, kültürel uyum, kültür şoku, yurtdışı görevlendir, yabancı sermaye, yurt dışı görevlendir, uluslararası şirket, repatriat
+
+[T19] İnovasyon, Yaratıcılık & Girişimcilik
+yaratıcı, yenilik, yaratıcılık, girişimci, yenilikçi, inovasyon, ar-ge, beyin fırtına, yaratıcı düşün, inovatif, iç girişim, intrapreneur, design thinking, tasarım odaklı düşün, fikir yönetim
