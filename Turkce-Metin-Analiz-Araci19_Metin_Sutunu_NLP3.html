@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Türkçe Akademik NLP Studio — LDA • BERTopic • HDBSCAN • BERT • NER</title>
+<style>
+:root{--bg:#f3f6fa;--card:#fff;--ink:#172033;--muted:#64748b;--line:#d9e2ec;--a:#245b8a;--b:#0f766e;--danger:#b42318;--soft:#edf4f9;--shadow:0 8px 26px rgba(15,23,42,.08)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:linear-gradient(135deg,#133754,#2f6b9d);color:#fff;padding:26px 4vw}h1{margin:0;font-size:25px}header p{margin:4px 0 0;opacity:.88}
+.wrap{max-width:1600px;margin:auto;padding:20px 3vw}.toolbar,.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.toolbar{padding:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:15px}
+button,.btn{font:inherit;border:1px solid #cbd5e1;background:#fff;border-radius:9px;padding:9px 12px;font-weight:700;cursor:pointer;color:var(--ink)}.primary{background:var(--a);border-color:var(--a);color:#fff}.green{background:var(--b);border-color:var(--b);color:#fff}
+.status{padding:7px 10px;background:var(--soft);border-radius:999px;color:var(--a);font-weight:700}.file{display:none}
+.layout{display:grid;grid-template-columns:340px 1fr;gap:15px}.stack{display:grid;gap:15px}.card{padding:16px}
+h2{font-size:16px;margin:0 0 12px}h3{font-size:14px;margin:17px 0 8px}label{display:block;font-weight:700;margin:8px 0 5px}
+input,select,textarea{font:inherit}input[type=text],input[type=number],select{width:100%;padding:8px;border:1px solid var(--line);border-radius:8px}textarea{width:100%;min-height:330px;border:1px solid var(--line);border-radius:10px;padding:11px;resize:vertical}
+.help{font-size:12px;color:var(--muted)}.checks{display:grid;gap:7px}.checks label{font-weight:500;margin:0;display:flex;gap:8px}
+.stats{display:grid;grid-template-columns:repeat(8,1fr);gap:8px}.stat{background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:10px}.stat b{font-size:19px;display:block}.stat span{font-size:11px;color:var(--muted)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:9px;margin-bottom:13px}.tab{background:#f1f5f9;border:0}.tab.active{background:var(--a);color:#fff}.panel{display:none}.panel.active{display:block}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}.metricgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.metric{border:1px solid var(--line);border-radius:9px;padding:11px;background:#fbfdff}
+.tablewrap{max-height:470px;overflow:auto;border:1px solid var(--line);border-radius:9px}table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid var(--line);text-align:left}th{position:sticky;top:0;background:#f8fafc;z-index:2}
+pre.log{white-space:pre-wrap;max-height:260px;overflow:auto;background:#0f172a;color:#dbeafe;border-radius:9px;padding:12px;font-size:12px}.note{padding:10px;border-left:4px solid var(--a);background:#f1f7fb;border-radius:6px}.warn{border-left-color:#b45309;background:#fff8eb}
+.barbox{height:330px;border:1px solid var(--line);border-radius:10px}.cloud{min-height:330px;border:1px solid var(--line);border-radius:10px;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:8px;padding:20px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:25px}
+@media(max-width:1150px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(4,1fr)}}@media(max-width:650px){.cols,.metricgrid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header><h1>Türkçe Akademik NLP Studio</h1><p>Gerçek LDA • BERTopic yaklaşımı • HDBSCAN yoğunluk kümelemesi • Transformer/BERT • NER • model tabanlı duygu analizi</p></header>
+<div class="wrap">
+<div class="toolbar">
+<label class="btn primary" style="margin:0">📂 Metin Yükle<input id="file" class="file" type="file" accept=".txt,.csv,.tsv,.md,.html,.zip"></label>
+<button id="sample">Örnek Korpus</button><button id="runAll" class="green">🚀 Tüm NLP Analizlerini Çalıştır</button><button id="clear">Temizle</button>
+<button id="jsonBtn">JSON</button><button id="csvBtn">CSV</button><span id="status" class="status">Hazır</span>
+</div>
+
+<div class="layout">
+<aside class="stack">
+<section class="card"><h2>Korpus / CSV</h2>
+<textarea id="text" placeholder="Belgeleri buraya yapıştırın.
+
+Birden fazla belge için:
+---BELGE---
+
+ayırıcısını kullanın."></textarea>
+<div id="chars" class="help">0 karakter</div>
+<div id="csvBox" style="display:block;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
+  <label>Analiz edilecek metin sütunu</label>
+  <select id="columnSelect"></select>
+  <label style="margin-top:10px">Belge oluşturma biçimi</label>
+  <div style="display:grid;gap:7px;margin:6px 0 10px">
+    <label style="font-weight:500;display:flex;gap:8px;align-items:center">
+      <input type="radio" name="rowModeRadio" value="rows" checked> <b>Her satır = ayrı belge</b>
+    </label>
+    <label style="font-weight:500;display:flex;gap:8px;align-items:center">
+      <input type="radio" name="rowModeRadio" value="all"> Seçili sütunun tamamı = tek korpus
+    </label>
+  </div>
+  <input id="rowMode" type="hidden" value="rows">
+  <div id="colInfo" class="help" style="margin-top:6px"></div>
+  <label style="margin-top:10px">Analize alınacak en fazla belge</label>
+  <input id="maxDocs" type="number" min="1" value="300">
+  <p class="help">Boş bırakılırsa tüm satırlar alınır. Büyük dosyalarda (ör. 3.649 satır) LDA ve embedding çok yavaşlayabileceği için örneklem önerilir.</p>
+  <label style="font-weight:500;display:flex;gap:8px;align-items:center"><input type="checkbox" id="sampleRandom"> Satırları rastgele örnekle (kapalıysa ilk N satır)</label>
+  <p id="csvInfo" class="help">Önce CSV dosyanızı yükleyin. <b>Metin</b>, <b>Dosyaİçeriği</b>, <b>_orig_text</b> veya <b>Özet</b> adlı metin sütunu otomatik seçilir; listeden istediğiniz sütunu seçebilirsiniz.</p>
+  <button id="loadColumn" class="primary" style="width:100%;margin-top:5px">Seçili Sütunu Analize Aktar</button>
+</div></section>
+
+<section class="card"><h2>LDA Ayarları</h2>
+<label>Konu sayısı (K)</label><input id="ldaK" type="number" min="2" max="15" value="5">
+<label>Gibbs iterasyonu</label><input id="ldaIter" type="number" min="100" max="3000" value="700">
+<label>Dirichlet α</label><input id="ldaAlpha" type="number" min=".01" step=".01" value=".10">
+<label>Dirichlet β</label><input id="ldaBeta" type="number" min=".001" step=".001" value=".01">
+</section>
+
+<section class="card"><h2>HDBSCAN Ayarları</h2>
+<label>Minimum cluster size</label><input id="minCluster" type="number" min="2" max="50" value="3">
+<label>Minimum samples</label><input id="minSamples" type="number" min="1" max="30" value="2">
+<label>Mesafe eşiği</label><input id="eps" type="number" min=".01" max="2" step=".01" value=".45">
+<p class="help">Yoğunluk temelli kümeleme için gömme vektörleri kullanılır.</p>
+</section>
+
+<section class="card"><h2>Transformer Modelleri</h2>
+<label>Embedding modeli</label><input id="embedModel" type="text" value="Xenova/paraphrase-multilingual-MiniLM-L12-v2">
+<label>NER modeli</label><input id="nerModel" type="text" value="Xenova/bert-base-multilingual-cased-ner-hrl">
+<label>Duygu modeli</label><input id="sentModel" type="text" value="Xenova/bert-base-multilingual-uncased-sentiment">
+<label>Çalıştırma</label><select id="device"><option value="wasm">CPU / WASM</option><option value="webgpu">WebGPU (destekleniyorsa)</option></select>
+<p class="help">Transformer modelleri ilk çalıştırmada Hugging Face üzerinden indirilir ve tarayıcı önbelleğine alınabilir.</p>
+</section>
+
+<section class="card"><h2>Ön İşleme</h2>
+<label>Minimum kelime uzunluğu</label><input id="minLen" type="number" min="1" value="2">
+<label>Durak kelime</label><select id="stop"><option value="yes">Türkçe durak kelimeleri çıkar</option><option value="no">Çıkarma</option></select>
+<label>Özel durak kelimeler</label><input id="extra" type="text" placeholder="kelime, kelime">
+</section>
+</aside>
+
+<main class="stack">
+<section class="card"><div id="stats" class="stats"></div></section>
+<section class="card">
+<div class="tabs">
+<button class="tab active" data-p="overview">Genel</button>
+<button class="tab" data-p="lda">LDA</button>
+<button class="tab" data-p="bertTopic">BERTopic</button>
+<button class="tab" data-p="hdbscan">HDBSCAN</button>
+<button class="tab" data-p="bert">Türkçe BERT</button>
+<button class="tab" data-p="ner">NER</button>
+<button class="tab" data-p="sent">Sentiment</button>
+<button class="tab" data-p="freq">Frekans</button>
+<button class="tab" data-p="report">Rapor</button>
+</div>
+
+<div id="overview" class="panel active"><div class="cols"><div><h2>Korpus Özeti</h2><div id="overviewBox"></div></div><div><h2>Kelime Dağılımı</h2><div id="bar" class="barbox"></div></div></div></div>
+
+<div id="lda" class="panel"><h2>Gerçek LDA — Gibbs Sampling</h2><div class="note">LDA, belge-konu ve konu-kelime dağılımlarını Gibbs örneklemesi ile tahmin eder. Sonuçlar tarayıcı içinde hesaplanır.</div><div id="ldaMetrics" class="metricgrid" style="margin-top:12px"></div><div id="ldaTable" style="margin-top:12px"></div></div>
+
+<div id="bertTopic" class="panel"><h2>BERTopic — Embedding + HDBSCAN + c-TF-IDF</h2><div class="note">Bu modül BERTopic'in temel işlem zincirini uygular: belge embedding → yoğunluk kümelemesi → cluster c-TF-IDF temsilleri.</div><div id="btMetrics" class="metricgrid" style="margin-top:12px"></div><div id="btTable" style="margin-top:12px"></div></div>
+
+<div id="hdbscan" class="panel"><h2>HDBSCAN / Yoğunluk Kümelemesi</h2><div id="hdMetrics" class="metricgrid"></div><div id="hdTable" style="margin-top:12px"></div></div>
+
+<div id="bert" class="panel"><h2>Transformer / BERT Embedding</h2><div id="bertMetrics" class="metricgrid"></div><div id="bertTable" style="margin-top:12px"></div><pre id="aiLog" class="log" style="margin-top:12px">Model henüz çalıştırılmadı.</pre></div>
+
+<div id="ner" class="panel"><h2>Named Entity Recognition (NER)</h2><div class="help">Kişi, kurum, konum vb. varlıkları model tabanlı token-classification ile çıkarır.</div><div id="nerTable" style="margin-top:12px"></div></div>
+
+<div id="sent" class="panel"><h2>Model Tabanlı Duygu Analizi</h2><div id="sentMetrics" class="metricgrid"></div><div id="sentTable" style="margin-top:12px"></div></div>
+
+<div id="freq" class="panel"><h2>Kelime Sıklığı</h2><div id="freqTable"></div></div>
+
+<div id="report" class="panel"><h2>Metodoloji ve Rapor</h2><div id="reportBox"></div></div>
+</section>
+</main>
+</div></div>
+<footer>Türkçe Akademik NLP Studio • Yerel metin işleme + isteğe bağlı tarayıcı içi Transformer inference</footer>
+
+<script type="module">
+let pipeline=null, env=null, HF_READY=false;
+async function loadHF(){
+  if(HF_READY) return;
+  log("Transformers.js yükleniyor…");
+  const mod=await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1");
+  pipeline=mod.pipeline; env=mod.env;
+  env.allowLocalModels=false; env.useBrowserCache=true;
+  HF_READY=true;
+}
+
+const STOP=new Set(("acaba ama ancak artık asla aslında az bazı bazıları bazen ben benim beri bile bir birçok biz bizim bu böyle bu yüzden da daha de değil diğer diye dolayısıyla en fakat gibi göre hangi hem henüz her hiç için ile ise işte kadar kendi kez ki kim mi mı mu mü nasıl ne neden nerede niçin o olan olarak ondan sonra onun veya ve ya ya da yani yine yok çünkü çok").split(/\s+/));
+const $=id=>document.getElementById(id), esc=x=>String(x).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+let DATA={raw:"",docs:[],tokens:[],freq:[],lda:null,embeddings:null,hdb:null,bertTopic:null,ner:null,sent:null,csvRows:[],csvHeaders:[],sourceColumn:"Metin",presetDocs:null,colStats:{}};
+
+function log(s){$("aiLog").textContent+=("\n"+s);$("aiLog").scrollTop=$("aiLog").scrollHeight}
+function table(rows,heads){if(!rows?.length)return'<div class="help">Sonuç yok.</div>';return'<div class="tablewrap"><table><thead><tr>'+heads.map(h=>"<th>"+esc(h)+"</th>").join("")+"</tr></thead><tbody>"+rows.map(r=>"<tr>"+r.map(x=>"<td>"+esc(x)+"</td>").join("")+"</tr>").join("")+"</tbody></table></div>"}
+function tokenize(s){
+ let x=s.normalize("NFC").toLocaleLowerCase("tr-TR").replace(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~“”‘’…;:]+/g," ").replace(/\d+/g," ");
+ let a=x.split(/\s+/).filter(Boolean).map(w=>w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu,"")).filter(Boolean);
+ let ex=new Set($("extra").value.toLocaleLowerCase("tr-TR").split(",").map(x=>x.trim()).filter(Boolean));
+ if($("stop").value==="yes")a=a.filter(w=>!STOP.has(w)&&!ex.has(w));
+ return a.filter(w=>[...w].length>=+$("minLen").value);
+}
+function count(a){let m=new Map;for(let x of a)m.set(x,(m.get(x)||0)+1);return[...m].sort((a,b)=>b[1]-a[1])}
+function cosine(a,b){let d=0,aa=0,bb=0;for(let i=0;i<a.length;i++){d+=a[i]*b[i];aa+=a[i]*a[i];bb+=b[i]*b[i]}return d/(Math.sqrt(aa)*Math.sqrt(bb)+1e-12)}
+function dot(a,b){let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s}
+function normalize(a){let n=Math.sqrt(dot(a,a))||1;return a.map(x=>x/n)}
+function splitSentences(text){return text.split(/(?<=[.!?])\s+/).map(x=>x.trim()).filter(x=>x.length>15)}
+function parseCSV(text){
+  const firstLine=(text.split(/\r?\n/).find(x=>x.trim()!=="")||"");
+  const candidates=[",",";","\t"];
+  const delimiter=candidates.map(d=>({d,n:(firstLine.split(d).length-1)})).sort((a,b)=>b.n-a.n)[0].d;
+  const rows=[]; let row=[], cell="", quoted=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i], next=text[i+1];
+    if(ch==='"'){
+      if(quoted && next==='"'){cell+='"';i++} else quoted=!quoted;
+    } else if(ch===delimiter && !quoted){
+      row.push(cell); cell="";
+    } else if((ch==='\n'||ch==='\r') && !quoted){
+      if(ch==='\r' && next==='\n') i++;
+      row.push(cell); cell="";
+      if(row.some(v=>v.trim()!=="")) rows.push(row);
+      row=[];
+    } else cell+=ch;
+  }
+  if(cell!==""||row.length){row.push(cell);if(row.some(v=>v.trim()!==""))rows.push(row)}
+  if(!rows.length)return {headers:[],data:[],delimiter};
+  const headers=rows[0].map(x=>x.replace(/^\uFEFF/,"").trim());
+  const data=rows.slice(1).map(r=>{const o={};headers.forEach((h,i)=>o[h]=(r[i]??"").trim());return o});
+  return {headers,data,delimiter};
+}
+function setupCSV(text){
+  const parsed=parseCSV(text);
+  DATA.csvHeaders=parsed.headers; DATA.csvRows=parsed.data; DATA.csvDelimiter=parsed.delimiter;
+  if(!parsed.headers.length)return false;
+  // Sütun başına ortalama uzunluk ve sayısal olmayan oran: metin sütunlarını ayırt etmek için
+  const sample=parsed.data.slice(0,300);
+  DATA.colStats={};
+  parsed.headers.forEach(h=>{
+    const v=sample.map(r=>r[h]||"").filter(Boolean);
+    const avg=v.length?v.reduce((t,x)=>t+x.length,0)/v.length:0;
+    const numeric=v.length?v.filter(x=>/^-?[\d.,\s]+$/.test(x)).length/v.length:1;
+    DATA.colStats[h]={avg,numeric};
+  });
+  $("columnSelect").innerHTML=parsed.headers.map(h=>'<option value="'+esc(h)+'">'+esc(h)+' — ort. '+Math.round(DATA.colStats[h].avg).toLocaleString("tr-TR")+' krk'+(DATA.colStats[h].numeric>.9?' (sayısal)':'')+'</option>').join("");
+  const norm=h=>h.trim().toLocaleLowerCase("tr-TR");
+  const isText=h=>DATA.colStats[h].avg>=100&&DATA.colStats[h].numeric<.5;
+  const preferred=parsed.headers.find(h=>norm(h)==="metin") ||
+                  parsed.headers.find(h=>/^metin$|^text$|^içerik$|^icerik$/i.test(norm(h))) ||
+                  parsed.headers.find(h=>norm(h)==="dosyaiçeriği"||norm(h)==="dosyaİçeriği".toLocaleLowerCase("tr-TR")) ||
+                  parsed.headers.find(h=>/dosya\s*içeriği|metin|_orig_text/i.test(h)&&isText(h)) ||
+                  parsed.headers.find(h=>/özet/i.test(h)&&isText(h)) ||
+                  parsed.headers.filter(isText).sort((x,y)=>DATA.colStats[y].avg-DATA.colStats[x].avg)[0];
+  if(preferred){$("columnSelect").value=preferred;DATA.sourceColumn=preferred}
+  else DATA.sourceColumn=parsed.headers[0];
+  showColInfo();
+  $("csvInfo").textContent="CSV: "+DATA.csvRows.length.toLocaleString("tr-TR")+" satır • "+parsed.headers.length+" sütun • ayraç: "+(parsed.delimiter===";"?"noktalı virgül":parsed.delimiter==="\t"?"sekme":"virgül");
+  return true;
+}
+function showColInfo(){
+  const col=$("columnSelect").value,st=DATA.colStats?.[col];
+  const ex=(DATA.csvRows.find(r=>(r[col]||"").trim())||{})[col]||"";
+  $("colInfo").innerHTML=st?('Seçili sütun: <b>'+esc(col)+'</b> • ortalama '+Math.round(st.avg).toLocaleString("tr-TR")+' karakter'+(st.numeric>.9?' • <span style="color:var(--danger)">sayısal görünüyor, metin sütunu olmayabilir</span>':'')+'<br><i>'+esc(ex.slice(0,140))+(ex.length>140?'…':'')+'</i>'):"";
+}
+function loadSelectedColumn(){
+  if(!DATA.csvRows.length)return;
+  const col=$("columnSelect").value;
+  DATA.sourceColumn=col;
+  let vals=DATA.csvRows.map(r=>r[col]||"").map(x=>x.trim()).filter(Boolean);
+  const total=vals.length, lim=parseInt($("maxDocs").value,10);
+  if($("rowMode").value==="rows"&&lim>0&&vals.length>lim){
+    if($("sampleRandom").checked){
+      for(let i=vals.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[vals[i],vals[j]]=[vals[j],vals[i]]}
+    }
+    vals=vals.slice(0,lim);
+  }
+  if($("rowMode").value==="rows"){
+    DATA.presetDocs=vals;
+    $("text").value=vals.length>20
+      ? vals.slice(0,20).map(x=>x.slice(0,600)).join("\n\n---BELGE---\n\n")+"\n\n[… önizleme: "+vals.length.toLocaleString("tr-TR")+" belgeden ilk 20'si ve her belgenin ilk 600 karakteri gösteriliyor; analiz tüm "+vals.length.toLocaleString("tr-TR")+" belge üzerinden yapılır …]"
+      : vals.join("\n\n---BELGE---\n\n");
+  }else{
+    DATA.presetDocs=[vals.join("\n")];
+    $("text").value="[Seçili sütunun tamamı tek korpus olarak analize alındı: "+vals.length.toLocaleString("tr-TR")+" satır]";
+  }
+  prepare();
+  $("status").textContent=col+" sütunu analize aktarıldı ("+vals.length.toLocaleString("tr-TR")+(vals.length<total?" / "+total.toLocaleString("tr-TR"):"")+" kayıt)";
+}
+function prepare(){
+ if(DATA.presetDocs){DATA.docs=DATA.presetDocs;DATA.raw=DATA.docs.join("\n\n---BELGE---\n\n")}
+ else{DATA.raw=$("text").value; DATA.docs=DATA.raw.split(/\n\s*---BELGE---\s*\n/).filter(x=>x.trim())}
+ DATA.tokens=tokenize(DATA.raw); DATA.freq=count(DATA.tokens);
+ $("chars").textContent=DATA.raw.length.toLocaleString("tr-TR")+" karakter"+(DATA.presetDocs?" (analiz edilen toplam)":"");
+ $("stats").innerHTML=[["Belge",DATA.docs.length],["Kelime",DATA.tokens.length],["Benzersiz",DATA.freq.length],["Cümle",splitSentences(DATA.raw).length],["Karakter",DATA.raw.length],["Toplam model",3],["LDA K",+$("ldaK").value],["Durum","Hazır"]].map(x=>'<div class="stat"><b>'+esc(x[1])+'</b><span>'+esc(x[0])+'</span></div>').join("");
+ $("freqTable").innerHTML=table(DATA.freq.slice(0,100),["Kelime","Frekans"]);
+ drawBar(DATA.freq.slice(0,20)); $("overviewBox").innerHTML='<div class="metricgrid">'+[['Belge sayısı',DATA.docs.length],['Kelime sayısı',DATA.tokens.length],['Benzersiz kelime',DATA.freq.length],['Ortalama belge uzunluğu',(DATA.tokens.length/Math.max(1,DATA.docs.length)).toFixed(1)]].map(x=>'<div class="metric"><b>'+x[1]+'</b><br><span class="help">'+x[0]+'</span></div>').join("")+'</div>';
+}
+function drawBar(data){let el=$("bar"),W=el.clientWidth||700,H=330,p=42,max=data[0]?.[1]||1,bw=(W-p-15)/Math.max(1,data.length)-3,s='<svg width="100%" height="100%" viewBox="0 0 '+W+' '+H+'">';data.forEach(([w,n],i)=>{let x=p+i*(bw+3),h=(H-60)*n/max,y=H-30-h;s+='<rect x="'+x+'" y="'+y+'" width="'+bw+'" height="'+h+'" rx="3" fill="#315f8c"/><text x="'+(x+bw/2)+'" y="'+(H-10)+'" text-anchor="middle" font-size="9" transform="rotate(-35 '+(x+bw/2)+' '+(H-10)+')">'+esc(w.slice(0,12))+'</text>'});el.innerHTML=s+"</svg>"}
+
+function lda(){
+ const docs=DATA.docs.map(tokenize), K=+$("ldaK").value, it=+$("ldaIter").value, alpha=+$("ldaAlpha").value, beta=+$("ldaBeta").value;
+ const vocab=[...new Set(docs.flat())], V=vocab.length, vi=new Map(vocab.map((w,i)=>[w,i]));
+ const z=[], nd=docs.map(()=>Array(K).fill(0)), nw=Array.from({length:K},()=>Array(V).fill(0)), nk=Array(K).fill(0);
+ for(let d=0;d<docs.length;d++){z[d]=[];for(let i=0;i<docs[d].length;i++){let k=Math.floor(Math.random()*K);z[d][i]=k;nd[d][k]++;nw[k][vi.get(docs[d][i])]++;nk[k]++}}
+ for(let iter=0;iter<it;iter++){
+  for(let d=0;d<docs.length;d++)for(let i=0;i<docs[d].length;i++){
+   let v=vi.get(docs[d][i]),old=z[d][i];nd[d][old]--;nw[old][v]--;nk[old]--;
+   let p=[],sum=0;for(let k=0;k<K;k++){let q=(nd[d][k]+alpha)*(nw[k][v]+beta)/(nk[k]+V*beta);p[k]=q;sum+=q}
+   let r=Math.random()*sum,kk=K-1;for(let k=0;k<K;k++){r-=p[k];if(r<=0){kk=k;break}}
+   z[d][i]=kk;nd[d][kk]++;nw[kk][v]++;nk[kk]++;
+  }
+ }
+ let topics=[];for(let k=0;k<K;k++){let ws=[];for(let v=0;v<V;v++)ws.push([vocab[v],(nw[k][v]+beta)/(nk[k]+V*beta)]);ws.sort((a,b)=>b[1]-a[1]);topics.push(ws.slice(0,12))}
+ let docTopic=nd.map(row=>{let s=row.reduce((a,b)=>a+b,0)||1;return row.map(x=>x/s)});
+ DATA.lda={K,iterations:it,topics,docTopic};
+ $("ldaMetrics").innerHTML=[["K",K],["Gibbs iterasyonu",it],["Vokabüler",V],["Belge",docs.length]].map(x=>'<div class="metric"><b>'+x[1]+'</b><br><span class="help">'+x[0]+'</span></div>').join("");
+ $("ldaTable").innerHTML=topics.map((t,k)=>'<h3>Konu '+(k+1)+'</h3>'+table(t.map(x=>[x[0],x[1].toFixed(4)]),["Kelime","φ(kelime|konu)"])).join("");
+}
+
+async function transformerEmbedding(){
+ if(!DATA.docs.length) throw new Error("Analiz edilecek belge bulunamadı. Önce metin sütununu seçip analize aktarın.");
+ await loadHF();
+ const model=$("embedModel").value.trim(), device=$("device").value;
+ $("status").textContent="Embedding modeli yükleniyor…";log("Embedding: "+model);
+ let extractor;
+ try {
+   extractor=await pipeline("feature-extraction",model,{device});
+ } catch(firstErr) {
+   if(device==="webgpu") {
+     log("WebGPU yüklenemedi; WASM/CPU ile tekrar deneniyor…");
+     extractor=await pipeline("feature-extraction",model,{device:"wasm"});
+   } else throw firstErr;
+ }
+ const texts=DATA.docs.map(x=>x.replace(/\s+/g," ").slice(0,5000));
+ const vectors=[];
+ for(let i=0;i<texts.length;i++){
+   log("Embedding "+(i+1)+"/"+texts.length);
+   const out=await extractor(texts[i],{pooling:"mean",normalize:true});
+   // Transformers.js sürümleri Tensor/TypedArray döndürebilir.
+   // Tensor'ın data alanı yoksa tolist() / nested output üzerinden güvenli biçimde aç.
+   let vec=null;
+   if(out && out.data && typeof out.data.length==="number") vec=Array.from(out.data);
+   else if(out && typeof out.tolist==="function") {
+     const x=out.tolist();
+     vec=Array.isArray(x?.[0]) ? x.flat(Infinity) : x;
+   } else if(Array.isArray(out)) {
+     const x=out.flat(Infinity);
+     vec=x;
+   }
+   if(!vec || !vec.length) throw new Error("Embedding modeli geçerli bir vektör döndürmedi. Model veya Transformers.js sürümü uyumsuz olabilir.");
+   vectors.push(vec.map(Number));
+ }
+ DATA.embeddings=vectors;
+ $("bertMetrics").innerHTML=[["Model",model],["Belge embedding",vectors.length],["Vektör boyutu",vectors[0]?.length||0],["Cihaz",device]].map(x=>'<div class="metric"><b style="font-size:13px">'+esc(x[1])+'</b><br><span class="help">'+esc(x[0])+'</span></div>').join("");
+ $("bertTable").innerHTML=table(vectors.slice(0,10).map((v,i)=>[i+1,v.length,v.slice(0,8).map(x=>x.toFixed(3)).join(", ")]),["Belge","Boyut","İlk 8 bileşen"]);
+ return vectors;
+}
+
+function hdbscanLike(X){
+ const n=X.length;if(n<2)return[];
+ const minS=Math.max(1,+$("minSamples").value), minC=Math.max(2,+$("minCluster").value), eps=+$("eps").value;
+ const dist=Array.from({length:n},()=>Array(n).fill(0));
+ for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){let d=1-cosine(X[i],X[j]);dist[i][j]=dist[j][i]=d}
+ const core=[];for(let i=0;i<n;i++){let ds=dist[i].slice().sort((a,b)=>a-b);core[i]=ds[Math.min(minS,n-1)]}
+ const adj=Array.from({length:n},()=>[]);
+ for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){let mr=Math.max(core[i],core[j],dist[i][j]);if(mr<=eps){adj[i].push(j);adj[j].push(i)}}
+ let seen=Array(n).fill(false),labels=Array(n).fill(-1),cid=0;
+ for(let s=0;s<n;s++)if(!seen[s]){
+   let q=[s],comp=[];seen[s]=true;
+   while(q.length){let u=q.shift();comp.push(u);for(let v of adj[u])if(!seen[v]){seen[v]=true;q.push(v)}}
+   if(comp.length>=minC){for(let u of comp)labels[u]=cid;cid++}
+ }
+ return {labels,dist,core,clusters:cid};
+}
+
+async function runHDB(){
+ if(!DATA.embeddings)await transformerEmbedding();
+ DATA.hdb=hdbscanLike(DATA.embeddings);
+ let groups=Array.from({length:DATA.hdb.clusters},()=>[]),noise=0;
+ DATA.hdb.labels.forEach((c,i)=>{if(c<0)noise++;else groups[c].push(i)});
+ $("hdMetrics").innerHTML=[["Küme",DATA.hdb.clusters],["Gürültü",noise],["Belge",DATA.docs.length],["Min cluster",+$("minCluster").value]].map(x=>'<div class="metric"><b>'+x[1]+'</b><br><span class="help">'+x[0]+'</span></div>').join("");
+ $("hdTable").innerHTML=groups.map((g,c)=>'<h3>Küme '+c+'</h3>'+table(g.map(i=>[i+1,DATA.docs[i].slice(0,180).replace(/\s+/g," ")]),["Belge","Önizleme"])).join("")+(noise?'<h3>Gürültü / Outlier</h3>'+table(DATA.hdb.labels.map((x,i)=>x<0?[i+1,DATA.docs[i].slice(0,180).replace(/\s+/g," ")]:null).filter(Boolean),["Belge","Önizleme"]):"");
+}
+
+function ctfidfForClusters(labels){
+ let groups=Array.from({length:Math.max(0,...labels)+1},()=>[]);
+ labels.forEach((c,i)=>{if(c>=0)groups[c].push(i)});
+ let allDocs=DATA.docs.map(tokenize), terms=[...new Set(DATA.tokens)], df=new Map;
+ allDocs.forEach(a=>new Set(a).forEach(w=>df.set(w,(df.get(w)||0)+1)));
+ let rows=[];
+ groups.forEach((ids,c)=>{
+   let toks=ids.flatMap(i=>allDocs[i]), freq=count(toks), N=toks.length||1;
+   let scored=freq.map(([w,n])=>[w,(n/N)*Math.log((DATA.docs.length+1)/(df.get(w)||1))]);
+   scored.sort((a,b)=>b[1]-a[1]);rows.push([c,scored.slice(0,10)])
+ });
+ return rows;
+}
+async function bertTopic(){
+ if(!DATA.embeddings)await transformerEmbedding();
+ if(!DATA.hdb)DATA.hdb=hdbscanLike(DATA.embeddings);
+ let ct=ctfidfForClusters(DATA.hdb.labels),valid=ct.filter(x=>x[1].length);
+ DATA.bertTopic={clusters:ct};
+ $("btMetrics").innerHTML=[["Küme",valid.length],["Embedding boyutu",DATA.embeddings[0]?.length||0],["c-TF-IDF",valid.length],["Noise",DATA.hdb.labels.filter(x=>x<0).length]].map(x=>'<div class="metric"><b>'+x[1]+'</b><br><span class="help">'+x[0]+'</span></div>').join("");
+ $("btTable").innerHTML=valid.map(x=>'<h3>Topic / Cluster '+x[0]+'</h3>'+table(x[1].map(y=>[y[0],y[1].toFixed(5)]),["Terim","c-TF-IDF"])).join("");
+}
+
+async function sentiment(){
+ let model=$("sentModel").value.trim(),device=$("device").value;$("status").textContent="Sentiment modeli yükleniyor…";log("Sentiment: "+model);
+ const pipe=await pipeline("sentiment-analysis",model,{device});
+ let sentences=splitSentences(DATA.raw).slice(0,200),res=[];
+ for(let i=0;i<sentences.length;i++){let r=await pipe(sentences[i].slice(0,800));res.push([sentences[i],r[0]?.label||"",r[0]?.score||0])}
+ DATA.sent=res;
+ let groups=count(res.map(x=>x[1])),avg=res.reduce((s,x)=>s+x[2],0)/Math.max(1,res.length);
+ $("sentMetrics").innerHTML=[["Model",model],["Cümle",res.length],["En sık sınıf",groups[0]?.[0]||"—"],["Ortalama güven",avg.toFixed(3)]].map(x=>'<div class="metric"><b style="font-size:13px">'+esc(x[1])+'</b><br><span class="help">'+esc(x[0])+'</span></div>').join("");
+ $("sentTable").innerHTML=table(res.slice(0,200).map(x=>[x[1],x[2].toFixed(4),x[0].slice(0,180)]),["Etiket","Güven","Cümle"]);
+}
+
+async function ner(){
+ let model=$("nerModel").value.trim(),device=$("device").value;$("status").textContent="NER modeli yükleniyor…";log("NER: "+model);
+ const pipe=await pipeline("token-classification",model,{device,aggregation_strategy:"simple"});
+ let sentences=splitSentences(DATA.raw).slice(0,100),rows=[];
+ for(let s of sentences){let r=await pipe(s.slice(0,1200));for(let e of r)rows.push([e.entity_group||e.entity||"",e.word||"",Number(e.score||0).toFixed(4),s.slice(0,160)])}
+ DATA.ner=rows;
+ $("nerTable").innerHTML=table(rows,["Varlık tipi","Varlık","Güven","Cümle"]);
+}
+
+async function runAll(){
+ if(!DATA.raw)prepare();
+ if(!DATA.raw){ $("status").textContent="Analiz için metin/belge yok"; return; }
+ const btn=$("runAll"); btn.disabled=true; btn.textContent="⏳ Analiz çalışıyor…";
+ try{
+  $("status").textContent="LDA çalışıyor…";lda();
+  await transformerEmbedding();
+  $("status").textContent="HDBSCAN çalışıyor…";await runHDB();
+  $("status").textContent="BERTopic çalışıyor…";await bertTopic();
+  $("status").textContent="Sentiment çalışıyor…";await sentiment();
+  $("status").textContent="NER çalışıyor…";await ner();
+  $("status").textContent="Tamamlandı";
+  $("reportBox").innerHTML='<div class="note"><b>Analiz kaynağı:</b> <code>'+esc(DATA.sourceColumn||"Metin")+'</code><br><b>Gerçekleştirilen analizler:</b> LDA Gibbs sampling, Transformer embedding, yoğunluk tabanlı HDBSCAN yaklaşımı, embedding + HDBSCAN + c-TF-IDF ile BERTopic işlem zinciri, token-classification NER ve model tabanlı sentiment.</div><h3>Metodolojik uyarı</h3><p>BERTopic burada temel algoritmik zinciri tarayıcı içinde uygular; resmi BERTopic Python paketinin tüm gelişmiş seçenekleri (UMAP, hierarchical reduction, representation models vb.) bu tek HTML dosyasına birebir gömülmemiştir. HDBSCAN bölümü yoğunluk/çekirdek mesafesi ve bileşen tabanlı tarayıcı uygulamasıdır; üretim düzeyi resmi hdbscan paketinin condensed-tree/stability optimizasyonlarının tamamını iddia etmez.</p><h3>Model kaynağı</h3><p>Transformer modelleri Hugging Face Transformers.js ile tarayıcıda yüklenir. İlk çalıştırmada model indirme süresi ve RAM ihtiyacı yüksek olabilir.</p>';
+  }catch(e){
+   $("status").textContent="Hata";
+   log("HATA: "+(e?.message||String(e)));
+   if(e?.stack) log(e.stack);
+   console.error(e);
+   btn.disabled=false; btn.textContent="🚀 Tüm NLP Analizlerini Çalıştır";
+ }
+}
+
+$("runAll").addEventListener("click",runAll);$("sample").onclick=()=>{DATA.presetDocs=null;$("text").value=`İnsan kaynakları analitiği, çalışan deneyimi ve örgütsel performans arasındaki ilişkileri incelemek için giderek daha fazla kullanılmaktadır. Akademik araştırmalarda veri kalitesi, ölçüm güvenilirliği ve uygun model seçimi önemli konular olarak öne çıkmaktadır. Yapay zekâ ve makine öğrenmesi insan kaynakları kararlarını destekleyebilir; ancak etik, gizlilik ve açıklanabilirlik sorunları dikkatle yönetilmelidir.
+
+---BELGE---
+
+Çalışan bağlılığı, örgütsel performans ve çalışan deneyimi arasındaki ilişki insan kaynakları araştırmalarının önemli alanlarından biridir. Anketler, performans kayıtları ve çalışan geri bildirimleri birlikte değerlendirildiğinde daha kapsamlı analizler yapılabilir. Veri eksikliği ve örneklem yanlılığı ise sonuçların güvenilirliğini azaltabilir.
+
+---BELGE---
+
+İK analitiği uygulamalarında tahmin modelleri, yetenek yönetimi ve çalışan devir oranı önemli araştırma konularıdır. Etkili analitik sistemler güçlü veri yönetimi, uzmanlık, şeffaflık ve sürekli iyileştirme gerektirir.`;prepare()};
+$("clear").onclick=()=>{location.reload()};
+$("text").oninput=()=>{DATA.presetDocs=null;$("chars").textContent=$("text").value.length.toLocaleString("tr-TR")+" karakter"};
+$("file").onchange=async e=>{
+  let f=e.target.files[0]; if(!f)return;
+  let t;
+  if(/\.zip$/i.test(f.name)){
+    $("status").textContent="ZIP açılıyor…";
+    const JSZip=(await import("https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm")).default;
+    const zip=await JSZip.loadAsync(f);
+    const entry=Object.values(zip.files).find(z=>!z.dir&&/\.(csv|tsv|txt)$/i.test(z.name));
+    if(!entry){$("status").textContent="ZIP içinde CSV/TSV/TXT bulunamadı";return}
+    t=await entry.async("string"); f={name:entry.name};
+    $("status").textContent=entry.name+" okundu";
+  } else t=await f.text();
+  DATA.presetDocs=null;
+  if(/\.(csv|tsv)$/i.test(f.name)){
+    // CSV/TSV: normalize tabs to commas only when there is no comma delimiter.
+  if(setupCSV(t)){ loadSelectedColumn(); return; }
+  }
+  if(/\.html?$/i.test(f.name)){let d=new DOMParser().parseFromString(t,"text/html");t=d.body.innerText}
+  $("text").value=t; prepare();
+};
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");$(b.dataset.p).classList.add("active");if(b.dataset.p==="overview")setTimeout(()=>drawBar(DATA.freq?.slice(0,20)||[]),30)});
+document.querySelectorAll('input[name="rowModeRadio"]').forEach(r=>r.onchange=()=>{$("rowMode").value=r.value;$("maxDocs").disabled=r.value!=="rows"});
+$("loadColumn").onclick=loadSelectedColumn;
+$("columnSelect").onchange=()=>{DATA.sourceColumn=$("columnSelect").value;showColInfo()};
+$("jsonBtn").onclick=()=>{let o={timestamp:new Date().toISOString(),source:{column:DATA.sourceColumn,csvRows:DATA.csvRows.length},stats:{documents:DATA.docs.length,tokens:DATA.tokens.length,unique:DATA.freq.length},frequency:DATA.freq,lda:DATA.lda,bertopic:DATA.bertTopic,hdbscan:DATA.hdb,ner:DATA.ner,sentiment:DATA.sent};let u=URL.createObjectURL(new Blob([JSON.stringify(o,null,2)],{type:"application/json"})),a=document.createElement("a");a.href=u;a.download="turkce_nlp_studio_raporu.json";a.click()};
+$("csvBtn").onclick=()=>{let c="Kelime;Frekans\n"+(DATA.freq||[]).map(x=>x[0]+";"+x[1]).join("\n"),u=URL.createObjectURL(new Blob(["\ufeff"+c],{type:"text/csv"})),a=document.createElement("a");a.href=u;a.download="turkce_kelime_frekans.csv";a.click()};
+prepare();
+</script>
+</body></html>
