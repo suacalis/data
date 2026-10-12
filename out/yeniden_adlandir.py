@@ -5,10 +5,13 @@ from datetime import datetime
 # --uygula verilmezse yalnızca ne yapılacağı gösterilir (deneme çalıştırması).
 
 TUR = r"(?:Doktora|Yuksek_Lisans|Tipta_Uzmanlik|Sanatta_Yeterlik|Dis_Hekimligi_Uzmanlik|Uzmanlik)"
+# Konu ile danışmanı ayıran sınır: "__" ya da hemen ardından bir unvan gelen "_"
+AYRAC = (r"(?:__|_(?=(?:PROF_DR|DOC_DR|DR_OGR_UYESI|DR_OGRETIM_UYESI|OGR_GOR_DR|ARS_GOR_DR)_)"
+         r"|(?<=Dal)_(?=DR_))")
 DESEN = re.compile(
     rf"^(?P<no>\d+)_(?P<yazar>.+?)_(?P<yil>(?:19|20)\d\d)_(?P<uni>.+?)_(?P<tur>{TUR})_"
-    r"(?P<dil>[^_]+)_(?P<konu>.+?)__(?P<danisman>.+)\.pdf$", re.IGNORECASE)
-UNVAN = re.compile(r"^(?P<unvan>PROF_DR|DOC_DR|DR_OGR_UYESI|DR_OGRETIM_UYESI|PROF|DOC|DR)_(?P<ad>.+)$",
+    r"(?P<dil>[^_]+)_(?P<konu>.+?)" + AYRAC + r"(?P<danisman>.+)\.pdf$", re.IGNORECASE)
+UNVAN = re.compile(r"^(?P<unvan>PROF_DR|DOC_DR|DR_OGR_UYESI|DR_OGRETIM_UYESI|OGR_GOR_DR|ARS_GOR_DR|PROF|DOC|DR)_(?P<ad>.+)$",
                    re.IGNORECASE)
 
 YENI = re.compile(rf"^\d+_[^_]+_(?:19|20)\d\d_[^_]+_{TUR.replace('_', ' ')}_[^_]+_[^_]+_[^_]+_[^_]+\.pdf$", re.IGNORECASE)
