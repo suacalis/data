@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO 30435 İşgücü Veri Kalitesi Rehberi ve Metrikleri — Sınıflandırma ve Hesaplayıcı</title>
+<style>
+  :root{
+    --ink:#101418;
+    --ink-soft:#59636f;
+    --ink-faint:#8b95a1;
+    --line:#dde3ea;
+    --line-soft:#eef1f5;
+    --bg:#ffffff;
+    --canvas:#f6f8fa;
+    --accent:#0b5c8a;
+    --accent-soft:#e7f0f6;
+    --panel:#0e1520;
+    --panel-2:#16202e;
+    --panel-line:#28394f;
+    --out-ink:#8a3b12;  --out-bg:#fbeee6;
+    --eff-ink:#14615c;  --eff-bg:#e6f2f1;
+    --efc-ink:#33478c;  --efc-bg:#eaedf8;
+    --rea-ink:#7a5c00;  --rea-bg:#f8f1d9;
+    --cos-ink:#8c2f4b;  --cos-bg:#f9e8ee;
+    --ok:#1d6f42; --warn:#8a6100; --bad:#992121;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--canvas);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.62;
+  }
+  .sheet{max-width:1000px;margin:0 auto;background:var(--bg);padding:56px 60px 80px;
+    box-shadow:0 0 0 1px var(--line);}
+  @media(max-width:760px){ .sheet{padding:28px 20px 56px} }
+
+  h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:25px;margin:52px 0 4px;padding-bottom:8px;
+     border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  h3{font-size:17px;margin:32px 0 6px;letter-spacing:.01em}
+  h4{font-size:15px;margin:22px 0 4px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:12px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  small{color:var(--ink-soft)}
+  .lede{font-size:17px;color:var(--ink-soft)}
+
+  .srcbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 0;margin:0 0 26px;font-size:13.5px;color:var(--ink-soft)}
+  .srcbar b{color:var(--ink);font-weight:600}
+
+  .toc{background:var(--canvas);border:1px solid var(--line);padding:16px 20px;margin:26px 0 0;
+    font-size:14px;columns:2;column-gap:34px}
+  @media(max-width:640px){.toc{columns:1}}
+  .toc a{display:block;padding:3px 0;text-decoration:none;color:var(--ink)}
+  .toc a:hover{color:var(--accent);text-decoration:underline}
+  .toc b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 4px}
+
+  .keypoints li{margin:10px 0}
+  .keypoints b{font-weight:650}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink-soft);padding-bottom:6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:var(--canvas);font-weight:650;font-size:13px}
+  tbody tr:nth-child(even){background:#fcfdfe}
+  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;width:66px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink)}
+  .dot.o{background:var(--out-ink)} .dot.s{background:var(--eff-ink)} .dot.p{background:var(--efc-ink)}
+  .dot.r{background:var(--rea-ink)} .dot.c{background:var(--cos-ink)}
+
+  .tag{display:inline-block;font-size:11px;line-height:1.5;padding:1px 7px;border-radius:3px;
+    letter-spacing:.03em;white-space:nowrap;font-weight:600}
+  .tag.o{color:var(--out-ink);background:var(--out-bg)}
+  .tag.s{color:var(--eff-ink);background:var(--eff-bg)}
+  .tag.p{color:var(--efc-ink);background:var(--efc-bg)}
+  .tag.r{color:var(--rea-ink);background:var(--rea-bg)}
+  .tag.c{color:var(--cos-ink);background:var(--cos-bg)}
+  .tag.iso{color:#4a4a4a;background:#eeeeee}
+  .tag.lvl{color:#5a3a86;background:#f0eaf8}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--line-soft);padding:1px 5px;border-radius:3px}
+  pre{background:var(--panel);color:#e7eef6;border-radius:6px;padding:18px 20px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:14px 0}
+  pre b{color:#f0b866;font-weight:400}      /* anahtar kelime */
+  pre i{color:#7f8ea1;font-style:normal}    /* yorum */
+  pre u{color:#9fd28a;text-decoration:none} /* dize/sayı */
+  pre .fn{color:#79c0e8}
+  .filename{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin:14px 0 -8px}
+
+  .formula{font-family:var(--serif);font-size:16.5px;background:var(--canvas);
+    border-left:3px solid var(--accent);padding:12px 16px;margin:12px 0;overflow-x:auto}
+  .formula em{font-style:italic}
+
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 14px;color:var(--ink-soft);font-size:14px;margin:14px 0}
+
+  /* --- panel --- */
+  .panel{background:var(--panel);color:#dbe5f0;border-radius:8px;padding:22px 24px;margin:20px 0}
+  .panel h3{color:#fff;margin:0 0 4px;font-size:16px}
+  .panel .hint{color:#8fa2b8;font-size:13px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#8fa2b8;margin-bottom:5px}
+  .field label .req{color:#e08a5a}
+  select,input[type=number],input[type=text]{
+    width:100%;background:var(--panel-2);border:1px solid var(--panel-line);color:#eef4fb;
+    border-radius:5px;padding:9px 10px;font-family:var(--sans);font-size:14px}
+  input[type=number]{font-family:var(--mono)}
+  select:focus,input:focus{outline:2px solid #4a8fc0;outline-offset:1px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13.5px;color:#b9c7d6}
+  .checks label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .panel-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:5px;cursor:pointer;
+    border:1px solid transparent;padding:9px 18px}
+  .btn-run{background:#1c74ab;color:#fff}
+  .btn-run:hover{background:#2385c2}
+  .btn-ghost{background:transparent;color:#9fb3c9;border-color:var(--panel-line)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9fb3c9;
+    border:1px solid var(--panel-line);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7c8ea3}
+  .chip.busy::before{background:#e0a13c}
+  .chip.on::before{background:#4ec07a}
+  .chip.off::before{background:#c05a5a}
+
+  .console{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+  .console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+    background:var(--canvas);border-bottom:1px solid var(--line);padding:8px 12px;font-size:12.5px;color:var(--ink-soft)}
+  .console textarea{width:100%;border:0;display:block;background:var(--panel);color:#e7eef6;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:16px 20px;resize:vertical;min-height:190px}
+  .console textarea:focus{outline:2px solid #4a8fc0;outline-offset:-2px}
+  .console pre{margin:0;border-radius:0;background:#0a1017;border-top:1px solid var(--panel-line);min-height:64px}
+  .btn-sm{padding:6px 14px;font-size:13px}
+  details.src pre{max-height:420px;overflow:auto}
+  .btn-ghost:hover{color:#fff;border-color:#47607d}
+
+  .result{border:1px solid var(--line);border-top:3px solid var(--accent);padding:18px 20px;margin:18px 0}
+  .result .big{font-family:var(--serif);font-size:32px;line-height:1.1}
+  .result .big span{font-size:16px;color:var(--ink-soft);font-family:var(--sans)}
+  .result dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:14px 0 0;font-size:14px}
+  .result dt{color:var(--ink-soft)}
+  .result dd{margin:0;font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px;padding:10px 12px;font-size:14px;border-radius:4px;background:var(--canvas)}
+  .verdict.ok{color:var(--ok);background:#eef6f1}
+  .verdict.warn{color:var(--warn);background:#fbf5e7}
+  .verdict.bad{color:var(--bad);background:#faeeee}
+
+  /* --- matris --- */
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;
+    background:var(--canvas);border:1px solid var(--line);padding:14px 16px;margin:16px 0}
+  .filters label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .filters select,.filters input{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .matrix{font-size:13.5px}
+  .matrix th.rot{width:72px;text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom}
+  .matrix td.name{font-weight:500}
+  .matrix td.name em{display:block;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .matrix tr.group td{background:#f2f5f8;font-weight:650;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+  .count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+
+  /* --- pozisyon tablosu --- */
+  .postbl{font-size:13.5px}
+  .postbl input[type=text],.postbl input[type=date],.postbl input[type=number]{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .postbl input[type=text]{font-family:var(--sans)}
+  .postbl input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .postbl td.chk{text-align:center}
+  .postbl input[type=number]{text-align:right}
+  .postbl td:first-child{min-width:150px}
+  .postbl th.num,.postbl td.num{width:auto}
+  @media(max-width:760px){table{display:block;overflow-x:auto}}
+  .postbl td.calc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap}
+  .postbl tfoot td{background:var(--canvas);font-weight:650}
+  .tblbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+  .tblbar button{border-color:var(--line);color:var(--ink-soft);background:#fff}
+  .tblbar button:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tblbar .inline{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft)}
+  .tblbar .inline input{width:78px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .card{border:1px solid var(--line);border-top:3px solid var(--eff-ink);padding:12px 14px}
+  .card b{display:block;font-family:var(--serif);font-size:24px;line-height:1.2}
+  .card span{font-size:12px;color:var(--ink-soft)}
+  .card.alt{border-top-color:var(--efc-ink)}
+  .card.warn{border-top-color:var(--out-ink)}
+
+  details{border-bottom:1px solid var(--line);padding:12px 0}
+  summary{cursor:pointer;font-weight:600;font-size:15px}
+  summary::marker{color:var(--accent)}
+  details p{margin:10px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  @media (prefers-reduced-motion:no-preference){
+    .result{transition:border-color .2s}
+  }
+  @media print{
+    body{background:#fff} .sheet{box-shadow:none;max-width:none;padding:0}
+    .panel{background:#fff;color:#000;border:1px solid #000}
+    pre{background:#f4f4f4;color:#000}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>ISO 30435 İşgücü Veri Kalitesi Rehberi ve Metrikleri</h1>
+<div class="srcbar">
+  <span><b>Kaynak:</b> BS ISO 30435:2023 — <i>Human resource management — Workforce data quality</i></span>
+  <span><b>Kapsam:</b> 5 kullanıcı · 5 metrik ailesi · 54 metrik ve etken</span>
+  <span><b>Hesaplama:</b> gömülü Python modülü (Pyodide/WebAssembly)</span>
+  <span><b>Sürüm:</b> Ekim 2026</span>
+</div>
+
+<h2 id="genel">Genel Bakış</h2>
+<p>ISO 30435:2023, <b>işgücü verisinin kalitesini</b> yönetmek için bir rehberdir. İşgücü veri kalitesini şu süreçler olarak
+tanımlar: işgücü verisinin belirlenmesi, veri yakalama, veri bakımı ve veri gözden geçirme. Amaç, analizi ve kanıta dayalı
+karar vermeyi destekleyen kaliteli işgücü verisi üzerine kurulu bir kurumsal iyileştirme tabanı sağlamaktır. Standart, veri
+kalitesinin beş unsurunu ele alır: <b>doğruluk, güncellik, tamlık, tutarlılık ve uygunluk</b>. İşgücü yaşam döngüsünü bir
+çerçeve olarak kullanır, tarihsel veri temizliği için ölçüt verir ve veri kalitesinin en az yıllık gözden geçirilmesini ister.
+Tablo 4, veri grupları için örnek gözden geçirme sıklığı, örnek hacmi ve doğruluk düzeyi sunar. Metrik tanımlamaz; bu sayfa
+standardın sürecini filtrelenebilir bir matrise, Tablo 4'ü bir denetim tablosuna, beş unsuru da formül + canlı hesaplayıcı +
+Python koduna dönüştürür. BS ISO 30435:2023, ISO 30435'in İngiltere uyarlamasıdır; BSI tarafından 31 Temmuz 2023'te yayımlanmıştır.
+İlişkili belgeler: terimler için ISO 30400, insan sermayesi raporlaması için ISO 30414, genel veri kalitesi için ISO 8000 serisi.</p>
+
+<h3>Önemli Noktalar</h3>
+<ul class="keypoints">
+  <li><b>Odak verinin kendisidir.</b> Kişisel verinin gizliliği ve güvenliği, verinin analizi ve raporlama yapısı, kalite dışında
+  herhangi bir metriğin tanımı ve teknoloji kullanımı kapsam dışıdır. Bilgi sistemleri, veri tabanları ve elektronik tablolar
+  yakalama ve yönetimi iyileştirebilir, ama standardın konusu veridir. Her tür ve büyüklükte kurum için geçerlidir.</li>
+  <li><b>Önce hangi verinin önemli olduğu belirlenir.</b> Kurumun amacı ve stratejik hedefleri için önemli olan veri belirlenir;
+  hangi verinin yakalanacağına karar verirken ilgili ulusal ve uluslararası İK standartlarına başvurulur.</li>
+  <li><b>Beş unsur birlikte düşünülür.</b> Doğruluk, güncellik, tamlık, tutarlılık ve uygunluk; birine odaklanıp diğerlerini
+  göz ardı etmek kaliteyi güvence altına almaz.</li>
+  <li><b>Sahiplik atanır.</b> Verinin sahipliği, paydaş gruplarından kişiler belirlenip sorumluluklar atanarak kurulur; takım lideri,
+  yönetici ve üst yöneticiler doğrudan raporları için veri yakalama ve bakımı yürütebilir. Veri kalitesi, bireysel performans
+  yönetimi görüşmelerine bir ölçüm olarak eklenebilir.</li>
+  <li><b>Veri yaşam döngüsünün her adımında yakalanır.</b> Çalışan kuruma katılırken, kurum içinde geçiş yaparken ya da ayrılırken ilgili
+  veri belgelenmiş prosedürlere göre yakalanır ve/veya güncellenir; her çalışan için eksiksiz bir veri seti belirlenir.</li>
+  <li><b>Tarihsel veri odaklı temizlenir.</b> Kötü kaliteli işgücü raporlamasının sık nedeni tarihsel veridir. Temizlik en az güncel
+  işgücüne ve güncel kritik pozisyonlar ya da yetkinliklere ilişkin tarihsel veriye odaklanır; yuvarlanan üç ila beş yıllık bir
+  geçmiş tutulur.</li>
+  <li><b>Gözden geçirme en az yıllıktır.</b> Veri kalitesi eşik değerin altına düştüğünde veri temizleme yapılır ve karşılık eylemi
+  sorumlu kişiye ya da ekibe belgelenir. Zorunlu belge, yetki ve vize gibi veriler için güvence daha sıkıdır; bazı durumlarda
+  veri kalitesi mutlak olmalıdır.</li>
+</ul>
+
+<div class="toc">
+  <b>İçindekiler</b>
+  <a href="#genel">Genel bakış ve önemli noktalar</a>
+  <a href="#nezaman">Ne zaman kullanılır</a>
+  <a href="#cerceve">Çerçeve: beş unsur ve yaşam döngüsü</a>
+  <a href="#yontemler">Yakalama, temizlik ve gözden geçirme</a>
+  <a href="#adimlar">Uygulama adımları</a>
+  <a href="#kavramlar">Temel kavramlar</a>
+  <a href="#matris">Metrik matrisi</a>
+  <a href="#tablo">Veri kalitesi denetim tablosu</a>
+  <a href="#formuller">Formüller ve tanımlar</a>
+  <a href="#hesaplayici">Hesaplayıcı</a>
+  <a href="#python">Python kod örnekleri</a>
+  <a href="#yorum">Sonuçların yorumlanması</a>
+  <a href="#sinirlamalar">Sınırlamalar</a>
+  <a href="#raporlama">Metriklerin raporlanması</a>
+  <a href="#ilgili">İlgili standartlar</a>
+  <a href="#sss">Sıkça sorulan sorular</a>
+</div>
+
+<h2 id="nezaman">Ne Zaman Kullanılır</h2>
+<ul>
+  <li><b>İşgücü analizi ve raporlaması güvenilmez göründüğünde:</b> kötü kaliteli tarihsel veri, sık görülen bir nedendir; temizlik ve bakım planı kurulur.</li>
+  <li><b>Kanıta dayalı karar için veri tabanı kurulurken:</b> doğru, zamanında ve eksiksiz veri, kaynakların daha verimli kullanımını,
+  yeteneğin ve öngörülen arz açıklarının daha etkili belirlenmesini sağlar.</li>
+  <li><b>İşlevler, büyüklükler, bölümlendirme, sektörler ve bölgeler arasında karşılaştırma yapılırken:</b> karşılaştırmalı verinin geçerliliği
+  ve tutarlılığı için veri kalitesi ön koşuldur.</li>
+  <li><b>İK sistemi ya da veri sözlüğü kurulurken:</b> hangi verinin hangi yaşam döngüsü faaliyetine ait olduğu belirlenir.</li>
+  <li><b>İç ya da dış denetime hazırlanırken:</b> gözden geçirme raporları ve yönetim güvencesi denetçilerin incelemesine açık olmalıdır.</li>
+  <li><b>Çalışma biçimleri değiştiğinde:</b> hibrit ve evden çalışma konumlarının kaydı acil durum iletişim bilgisi için önemli olabilir (Ek A).</li>
+  <li><b>Başka İK standartlarını uygularken:</b> bu standart, diğer insan kaynakları standartlarının veri kalitesi gereksinimlerinin temelini oluşturur.</li>
+</ul>
+<div class="note">Bu belge bir <b>rehber</b> ve çalışma aracıdır. Standart yalnızca ne yapılacağını anlatır ve örnek düzeyler verir;
+kabul edilen hata oranını, örnek hacmini ve metrik tanımlarını kurum kendisi belirler ve yazılı hâle getirir.</div>
+
+<h2 id="cerceve">Çerçeve: Beş Unsur ve Yaşam Döngüsü</h2>
+
+<h3>Veri kalitesinin beş unsuru (madde 4)</h3>
+<table>
+  <thead><tr><th style="width:130px">Unsur</th><th>Madde</th><th>Standart ne der</th><th>Örnek sorun</th></tr></thead>
+  <tbody>
+    <tr><td><b>Doğruluk</b></td><td>4.2</td>
+      <td>Gereken doğruluk düzeyi önce verinin niteliğine bakılarak belirlenir ve ilgili sektör kılavuzlarıyla hizalanır. Mevcut doğruluk,
+      gelecekte hedeflenen doğruluğun temelini oluşturmalıdır.</td>
+      <td>Maaş ya da fazla mesai verisindeki hata</td></tr>
+    <tr><td><b>Güncellik</b></td><td>4.3</td>
+      <td>Verinin yakalanma zamanı ve karar verme ile raporlamaya hazır olma süresi dikkate alınır.</td>
+      <td>Ayrılış nedeni ayrılış anında değil birkaç ay sonra kaydedilince farklı olabilir; bağlılık verisi vardiya başında bir gruptan, vardiya sonunda
+      başka bir gruptan toplanırsa eğilimler toplama zamanından etkilenir.</td></tr>
+    <tr><td><b>Tamlık</b></td><td>4.4</td>
+      <td>Formlar kısmen doldurulduğunda ya da veri kısmen toplandığında sorun olur. Eksiksiz veri toplama zorunlu olmalı; bilgi sağlayan kişilerin
+      verdiği bilgiyi kontrol etme, kaydetme ve doğrulama sorumluluğu hafife alınmamalıdır.</td>
+      <td>Nitelikler düzenli görülüp doğrulanmamış; referanslar aranmamış; performans bilgisi kaydedilmemiş</td></tr>
+    <tr><td><b>Tutarlılık</b></td><td>4.5</td>
+      <td>Karşılaştırmalı analiz için gereklidir; izlenen bir sorunun (örneğin devir artışı) yönünü gösterir. Toplama zamanı (örneğin aylık ya da iki
+      aylık), hesaplamalardaki formüller ile veri noktaları ve biçimleri değişmemelidir.</td>
+      <td>Tarih, unvan, departman adı ve çalışan numarası biçimlerinin dönemden döneme ya da sistemden sisteme değişmesi</td></tr>
+    <tr><td><b>Uygunluk</b></td><td>4.6</td>
+      <td>Toplanan her veri değerli değildir; ölçülen birçok veri ilginçtir ama ilgili değildir. Veri noktaları ve ölçümler, girdi–süreç–çıktı–sonuç
+      performans denetim çerçevesiyle gruplanarak anlaşılır.</td>
+      <td>İşe alımda: girdi: alınan özgeçmişler; süreç: mülakatlar; çıktı: çalışan ya da yüklenicinin işe alınması; sonuç: işe alımın etkisi (satış
+      rakamları, müşteri hizmeti puanları)</td></tr>
+  </tbody>
+</table>
+<p>Uygunluk gruplaması bir faaliyet içinde (örneğin işe alım ve yetenek yönetimi girdileri), faaliyetler arasında ya da tüm işgücü yaşam
+döngüsünde yapılabilir. Çeşitli metrik ve değerlendirmeler için ilgili veri bu gruplamayla belirlenir.</p>
+
+<h3>İşgücü yaşam döngüsü çerçevesi (madde 5)</h3>
+<p>Çerçeve, kurumun işgücünün yönetimiyle ilgili gördüğü ve yürüttüğü tüm faaliyetlerin tablosudur. Bir sektöre özgü olabilir ya da her kurum
+için ayrı geliştirilebilir. Yüksek düzeyde planla–uygula–kontrol et–önlem al (PDCA) çerçevesini izler. Çerçeveyi genişletmek, hangi verinin
+yakalanması gerektiğini belirlemeyi güçlendirir: bir faaliyetin yüksek düzeyden alt işlevlerine inildikçe hangi anahtar ölçü ve veri noktasının
+işgücü yönetimini etkilediği daha ayrıntılı anlaşılır. Örneğin devir; gönüllü, istemsiz ve/veya kritik pozisyon devri olarak bölünebilir.</p>
+<table>
+  <thead><tr><th style="width:90px">Faz</th><th style="width:150px">Aşama</th><th>Örnek faaliyetler (Tablo 1)</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="2"><b>Planla</b></td><td>Gereksinimleri tanımla</td>
+      <td>Kurumsal hedefler; değerler; hedeflere ulaşmak için gereken işi tanımlamak; örgüt tasarımı; gereken işlev ve rolleri tanımlamak; kapasiteyi
+      geliştirme, satın alma ya da dış kaynaktan sağlama gereksinimini belirlemek.</td></tr>
+    <tr><td>Stratejileştir ve planla</td>
+      <td>İşgücü planlaması; çeşitlilik ve kapsayıcılık; sürdürülebilir istihdam edilebilirlik; işgücü tasarımı.</td></tr>
+    <tr><td rowspan="3"><b>Uygula</b></td><td>Pekiştir veya edin</td><td>İşe alım.</td></tr>
+    <tr><td>Geliştir</td>
+      <td>Kapasite çerçevesi; pozisyon tanımları; kritik rol yönetimi; zorunlu eğitim; öğrenme ve gelişim; performans yönetimi; halefiyet planlaması.</td></tr>
+    <tr><td>Yönet</td>
+      <td>Ödül ve takdir; bordro; yasal gereklilikler; iş sağlığı ve güvenliği; disiplin yönetimi; çalışan ilişkileri; politika ve prosedürler;
+      işgücü tahsisi; geçiş; bilgi yönetimi.</td></tr>
+    <tr><td rowspan="2"><b>Kontrol et</b></td><td>Analiz et</td><td>İşgücü faaliyet analitiği; kök neden analitiği.</td></tr>
+    <tr><td>Raporla</td><td>Yasal raporlama; idari raporlama; işgücü raporlaması.</td></tr>
+    <tr><td rowspan="2"><b>Önlem al</b></td><td>Değerlendir</td><td>Veri sözlüğü; işgücü veri kalitesi.</td></tr>
+    <tr><td>Tekrarla</td><td>Önceliklendir.</td></tr>
+  </tbody>
+</table>
+<p>Tablo 2, "uygula" fonksiyonunun daha ayrıntılı bir dökümünü örnekler:</p>
+<table>
+  <thead><tr><th>Pekiştir veya edin</th><th>Geliştir</th><th>Yönet</th></tr></thead>
+  <tbody>
+    <tr><td>İşveren tercihi konumlandırması; mezunlar (alumni); çekme; işe alım; değerlendirme; mülakat; referans kontrolü; güvenlik soruşturması
+      ya da psikolojik test; teklif mektubu; uyum; sözleşme hazırlama ve yönetimi; tedarikçi yönetimi.</td>
+      <td>Yenilik; örgüt geliştirme; kapasite çerçevesi; pozisyon tanımları; kritik rol yönetimi; zorunlu eğitim; performans yönetimi; öğrenme ve gelişim;
+      halefiyet planlaması; bağlılık; elde tutma; iş danışmanlığı ya da ortaklığı.</td>
+      <td>Ödül ve takdir; bordro; yasal gereklilikler; sağlık ve güvenlik; disiplin; çalışan ilişkileri; endüstri ilişkileri; politika ve prosedürler; işgücü
+      tahsisi; vardiya çizelgeleme; geçiş; gönüllü, istemsiz ve kritik pozisyon devri; işten ayrılmada destek (outplacement); emekliliğe geçiş;
+      emeklilik; bilgi yönetimi; yönetişim; koşullu işgücü yönetimi.</td></tr>
+  </tbody>
+</table>
+<p>Çerçevenin içeriği sektöre göre değişir; kurumun büyüklüğü hangi hizmetlerin yürütüldüğünü ve hangi verinin yakalanması gerektiğini etkiler. Örneğin bazı
+kurumlar mezun yönetimi yapmaz ya da tedarikçi yönetimine ihtiyaç duymaz; bazıları işe alımı hacim nedeniyle birkaç alt kümeye böler. Her kurum neyin
+ilgili olduğuna kendisi karar verir, ama sektörler ve büyüklükler arasındaki benzerlikler genellikle farklardan fazladır.</p>
+
+<h3>Genel işgücü veri çerçevesi (madde 5.4, Tablo 3)</h3>
+<p>İlgili İK bilgisi bir veri kalitesi güvence rejiminin parçası olmak zorundadır; toplanacak bilgiyi her kurum belirler. Şu sorumluluklar
+atanmalıdır: zaman çerçevelerini belirlemek, örneklenecek veri hacmi ve doğruluk gereksinimleri. Anahtar işgücü verisi kullanıcı tarafından
+tanımlanır. Güncel ulusal ve uluslararası İK standartları (işe alım, öğrenme ve gelişim, işgücü planlaması gibi) en uygun ölçüleri ve yakalanacak
+veri noktalarını gösterir. Tablo 3, işgücü yaşam döngüsü boyunca yakalanacak anahtar veri noktalarının örneğidir.</p>
+<table>
+  <thead><tr><th style="width:290px">Anahtar veri noktası</th><th>Örnekler</th></tr></thead>
+  <tbody>
+    <tr><td><b>Kişisel bilgi</b></td><td>Ad, tercih edilen ad, adres, doğum tarihi, nitelikler, belge yenileme tarihleri ve diğer zorunlu bilgi (vergi numarası, banka bilgisi).
+      İsteğe bağlı: çalışma tercihleri (vardiya, yarı/tam zamanlı), tercih edilen iş konumu, diğer beceri ve nitelikler.</td></tr>
+    <tr><td><b>Pozisyon bilgisi (kritik pozisyon tanımı dahil)</b></td><td>Pozisyon unvanı, bağlı olduğu kişi, kritik pozisyon e/h, zorunlu gereksinimler (nitelik, belge, sertifika).</td></tr>
+    <tr><td><b>Organizasyon şeması</b></td><td>Kurumun raporlama hatlarının ve pozisyon unvanlarının tam şeması.</td></tr>
+    <tr><td><b>Öğrenme ve gelişim kayıtları</b></td><td>Katılınan kurslar, gelişim faaliyetleri, sertifika yenilemeleri, zorunlu eğitim tamamlama. İsteğe bağlı: eğitim saatleri, gelişim planı.</td></tr>
+    <tr><td><b>İşgücü işe alımı</b></td><td>İşe alım maliyetleri, boş pozisyonları doldurma süresi, boş pozisyon sayısı, işe alım kalitesi, işe alımın etkisi.</td></tr>
+    <tr><td><b>Uyum (onboarding)</b></td><td>Tam verimliliğe ulaşma süresi.</td></tr>
+    <tr><td><b>İK veri sözlüğü</b></td><td>—</td></tr>
+    <tr><td><b>İK veri analitiği (özellikle FTE ve kadro)</b></td><td>FTE, kadro, toplam çalışan, tam zamanlı, yarı zamanlı, gündelik emek, yükleniciler, devir.</td></tr>
+    <tr><td><b>İK ana veri seti (kullanıcı tanımlı)</b></td><td>—</td></tr>
+    <tr><td><b>İK maaş verisi</b></td><td>Tüm bordro verisi.</td></tr>
+    <tr><td><b>İşgücü performans derecelendirmeleri</b></td><td>—</td></tr>
+    <tr><td><b>İşgücü vize bilgisi (çalışma hakkı)</b></td><td>—</td></tr>
+    <tr><td><b>İşgücü fazla mesai durumu — muaf</b></td><td>—</td></tr>
+    <tr><td><b>İşgücü prim ödemeleri</b></td><td>—</td></tr>
+    <tr><td><b>Zorunlu yetki belgeleri</b></td><td>Lisans yenilemeleri, yeniden sertifikalandırma, sigorta gereklilikleri, meslek icra belgesi.</td></tr>
+    <tr><td><b>Anket verisi</b></td><td>Çalışan bağlılığı, kültür anketleri.</td></tr>
+    <tr><td><b>İş sağlığı ve güvenliği verisi</b></td><td>Kazalar, ramak kalalar.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="yontemler">Yakalama, Temizlik ve Gözden Geçirme</h2>
+
+<h3>Veri yakalama ve bakım gereksinimleri (madde 6.1–6.2)</h3>
+<ul>
+  <li><b>Sahiplik.</b> İşgücü verisinin sahipliği, kilit paydaş gruplarından kişiler belirlenip sorumluluklar atanarak kurulur. Veri yakalama ve
+  bakım sorumluluğu, kurumun hiyerarşik yapısıyla hizalanabilir: takım liderleri, yöneticiler ve üst yöneticiler çalışan ve yükleniciler dahil doğrudan
+  raporlarının verisini yakalayıp bakımını yapabilir.</li>
+  <li><b>Belgeleme.</b> Kurumun özel işgücü veri gereksinimleri belirlenir; yakalama ve bakım sorumluluğu belirlenip belgelenir. Belgelemede şunlar bulunur:
+  ilk giriş prosedürleri, sürekli güncelleme ve işgücü verisinin bakımı. Yakalama ve bakım belgelerini ve prosedürlerini gözden geçirme ve/veya güncelleme
+  için bir takvim ve prosedür geliştirilir; gözden geçirme ve güncelleme sorumluluğu ilgili paydaşa atanır. İlgili paydaşlar sorumlulukları ve prosedürleri
+  konusunda yetkin olmalıdır.</li>
+  <li><b>Şablon.</b> Madde 4'teki tanımlı işgücü veri gereksinimlerine dayanan kapsamlı bir şablon geliştirilir. Küçük kurumlar elektronik tablo, büyük kurumlar
+  uygun yerlerde daha karmaşık teknoloji tabanlı çözümler kullanabilir.</li>
+  <li><b>Yaşam döngüsü boyunca.</b> İşgücü üyeleri kuruma katıldığında, kurum içinde geçiş yaptığında ya da ayrıldığında, ilgili veri belgelenmiş prosedürlere göre
+  sürecin her adımında yakalanır ve/veya güncellenir; her çalışan için tam veri seti belirlenir. Performans değerlendirme süreçleri ya da benzeri birebir
+  görüşme stratejileri, çalışanla bireysel veri geçerliliği üzerine konuşmayı başlatan bir araç olabilir.</li>
+</ul>
+
+<h3>Tarihsel veri temizliği ve derleme (madde 6.3)</h3>
+<ul>
+  <li><b>Değeri.</b> Doğru tarihsel veri şu nedenlerle değerlidir: tarihsel raporlama, eğilim analizi, kök neden analizi, mezun yönetimi (eski çalışan ya da yüklenici),
+  pazarlama ve "işveren markası" konumlandırması, proaktif işgücü yönetimi, çatışma çözümünde destek, işgücü ile müzakere. Tarihsel veriye bağımlılık ve değeri büyük
+  ölçüde sektöre ve kuruma özgüdür; en çok değer sunan veri belirlenip saklanmalıdır. Örneğin bir kurum, işgücü çok değiştiği ve geçişken olduğu için altı aydan eski
+  işgücü verisini değersiz sayabilir; bir başkası bir işgücü grubundaki beş yıllık tarihsel veriyi hâlâ yararlı bulabilir.</li>
+  <li><b>Zaman çerçevesi.</b> Tarihsel işgücü veri yönetimi kurulduğunda yuvarlanan üç ila beş yıllık bir geçmiş tutulur. İlk tarihsel temizlik tamamlanınca 6.2'de belirtilen
+  veri bakım prosedürleri işgücü verisinin sürekli kalitesini güvence altına almalıdır. Kritik pozisyon ya da kapasitelerdeki değişimler gibi belirli bilgiler için sürekli
+  ek temizlik gereksinimleri olabilir; sorumluluk ilgili paydaşa atanır, süreç ve prosedürler geliştirilir, paydaşlar bilgilendirilip eğitilir.</li>
+  <li><b>Etkili teknikler.</b> Yinelenenleri kaldırmak, ilgisiz veriyi kaldırmak, büyük/küçük harf kullanımını standartlaştırmak, veri türlerini dönüştürmek, biçimlendirmeyi temizlemek,
+  hataları düzeltmek, eksik değerleri ele almak.</li>
+  <li><b>Maliyet ve kapsam.</b> İlk temizlik maliyeti işgücü verisinin karmaşıklığına göre değişir. En uygun yaklaşım şu ölçütlere göre belirlenir: verinin güncel işgücüyle ilgisi, güncel
+  kritik pozisyonlarla ilgisi, işgücü veri kalitesinin mevcut durumu, tarihsel işgücü verisini temizlemenin kolaylığı ve tahmini maliyeti ile beklenen faydalar. Asgari olarak temizlik güncel
+  işgücüne ve güncel kritik pozisyon ve/veya kritik beceri ve kapasitelere ilişkin tarihsel veriye odaklanmalıdır.</li>
+  <li><b>Proje ekibi.</b> Tarihsel veri temizliğine karar verildiğinde, ilgili paydaşları içeren özel bir proje ekibi kurulur. Örnek üyeler: insan kaynakları, bordro, çalışan temsilcileri,
+  bilgi teknolojileri, raporlama ve üst yönetim. Uygun olduğunda iç ve/veya dış denetçiler de dahil edilebilir. İlk tarihsel temizliğin süresi için kurum bir proje planı geliştirir.</li>
+</ul>
+
+<h3>Veri bütünlüğü gözden geçirme süreci (madde 7)</h3>
+<ul>
+  <li><b>Üç parça.</b> Veri kalitesi süreç gözden geçirme raporu, yönetim güvencesi ve zaman çerçevelerinin belirlenmesi.</li>
+  <li><b>Rapor (7.2).</b> İşgücü veri kalitesi gözden geçirme sürecinin değerlendirmesi ve raporu en az yıllık ya da kullanıcının tanımladığı sıklıkta yapılır.</li>
+  <li><b>Yönetim güvencesi (7.3).</b> Rutin raporlama mekanizmaları ve karşılık eylem sonuçlarının kanıtı ile sağlanır. Veri kalitesinin ölçümü ve analizi, sürekli iyileştirme ve net hesap
+  verebilirlik, yönetim güvencesinin gereklilikleridir. Bu süreç gözden geçirme ve yönetim raporları, denetim incelemesi, testi ve doğrulaması için erişilebilir olmalı; denetim çalışması
+  strateji ve risk konularının incelenmesiyle belirlenmelidir. Kritik stratejiler ve daha büyük riskler daha fazla denetim dikkati çekmelidir.</li>
+  <li><b>Zaman çerçeveleri (7.4).</b> Gözden geçirme en az yıllık, veri kalitesi için daha fazla güvence gerekiyorsa daha sık yapılır. Zorunlu belgeler, yetki belgeleri ve vizeler gibi
+  veriler için veri güvencesi gereksinimi daha sıkıdır; bazı durumlarda veri kalitesi mutlak olmalıdır (örneğin bir hekimin yeterlilik belgeleri, uzun yol kamyon sürücülüğü belgesi ya da
+  çocuklarla çalışma kontrolleri).</li>
+  <li><b>Tolerans.</b> Veri kalitesi kullanıcı tanımlı tolerans düzeylerinin altına düştüğünde bir veri temizleme operasyonu yapılır ve karşılık eylemi, işgücü veri kalitesinden
+  sorumlu kişiye ya da ekibe belgelenir. İşgücü veri kalitesi gözden geçirme süreci, seçilen her anahtar veri noktası için kabul edilen asgari hata oranını ve örneklenecek asgari veri
+  hacmini vurgulayacak biçimde geliştirilir.</li>
+  <li><b>Paydaşlar.</b> Tüm paydaşlar süreç ve kendilerinden beklenen girdi konusunda bilgilendirilir; işgücü veri kalitesi gözden geçirme süreci yönetim sorumluluğunun bir diğer çekirdek
+  bileşeni olmalıdır.</li>
+</ul>
+
+<h3>Tablo 4: gözden geçirme zaman çerçevesi, örnek hacmi ve düzey</h3>
+<p>Aşağıdaki değerler standardın <b>örneğidir</b>; zorunlu eşik değildir. "Asgari" ifadesi, gerektiğinde daha sık gözden geçirme yapılabileceği anlamına gelir.</p>
+<table>
+  <thead><tr><th>Anahtar veri noktası</th><th>Gözden geçirme sıklığı (asgari)</th><th>Örneklenecek hacim</th><th class="num" style="width:110px">Doğruluk veya tamlık</th></tr></thead>
+  <tbody id="t4Body"></tbody>
+</table>
+
+<h3>Kötü veri kalitesinin etkileri (Ek A)</h3>
+<ul>
+  <li><b>İş üzerindeki etkiler (A.1).</b> Standart, <i>Measuring the Business Value of Data Quality</i> çalışmasına atıfla şunları aktarır: kötü veri kalitesi, iş girişimlerinin hedeflenen faydayı sağlayamamasının
+  %40'ının birincil nedenidir; veri kalitesi genel emek verimliliğini %20'ye varan oranda etkiler. Bunlar standardın aktardığı dış kaynak bulgularıdır, kuruma özgü ölçüm değildir.</li>
+  <li><b>Verinin örgütlenmesi (A.2).</b> İşgücü verisi çoğunlukla kötü örgütlenmiştir; sahiplik ve sorumluluk ayrı iş işlevleri ya da kurum birimlerine bölünmüştür. İK bazı kalıcı işgücü verisinden sorumlu olabilir,
+  finans departmanı başka verilerden. Örneğin yöneticiler gündelik ya da yarı zamanlı çalışanları ve yüklenicileri yönetebilir; dış hizmet sağlayıcılar gibi dış kaynaklı hizmetler finans ya da satın alma sorumluluğunda
+  olabilir; gönüllüler ve diğer çalışanlar güvenlik ya da resepsiyon tarafından izlenebilir.</li>
+  <li><b>Değişen çalışma biçimleri ve konumları (A.3).</b> İş faaliyetinin konumu, kurum konumunda çalışmayı, uzaktan çalışmayı ya da yerel, ulusal veya küresel ölçekte uzak konumdan teslimi kapsayacak biçimde evrildi;
+  bazı kişiler işverenlerini hiç yüz yüze görmeyebilir. Hibrit çalışma düzenlerinin ve evden çalışma konumlarının kaydı acil durum iletişim bilgisi için önemli olabilir.</li>
+  <li><b>Ekonomi, verimlilik, etkililik ve işgücü üretkenliği (A.4–A.5).</b> Kaliteli işgücü verisinin toplanması ve kullanımı, bu iyileştirmelerin sağlandığı temeldir. Doğru ve zamanında veri; kaynakların daha verimli
+  kullanımını, yetenek ve öngörülen arz açıklarının daha etkili belirlenmesini destekler, bilinçli karar vermeyi mümkün kılar, riski azaltır, iş, sektör ve bölge düzeyinde sürdürülebilir iş ve işgücü geliştirme stratejilerini mümkün kılar.
+  Standardın uygulanmasıyla ilişkili maliyetler olabilir ama zamanında, doğru veri ve raporlamanın faydaları bunları büyük ölçüde aşar; geliştirilmiş planlama ve izleme, tepkisel modda çalışmanın zaman ve maliyetini azaltır.</li>
+  <li><b>Çalışan faydaları (A.6).</b> İşgücünün kapasitesi ve kabiliyeti hakkında doğru bilgi, daha zamanında ve bilinçli kararlar verilmesine yardım eder; bu da çok daha istikrarlı bir işgücüne yol açar.</li>
+  <li><b>Sosyal faydalar (A.7).</b> İstikrarlı işin olumlu sosyal etkisinin geniş kapsamlı faydaları vardır: daha iyi bağlılık, artan verimlilik ve iyi oluş duygusu. Doğru işgücü verisi çeşitli bir işgücünün gelişimine yardım eder; liderliğin
+  emek piyasasının yeterince kullanılmayan kesimlerini kapsayan strateji ve programları güvenle geliştirmesine, gereken işgücünü sağlamak için etkili stratejiler planlamasına, yaşlanan işgücünü yönetmesine ve çeşitlilik gelişimini artırmasına olanak tanır.</li>
+</ul>
+
+<h2 id="adimlar">Uygulama Adımları</h2>
+<ol>
+  <li><b>İlgili veriyi belirleyin.</b> Kurumun amacı ve stratejik hedefleri için önemli olan veriyi, ulusal ve uluslararası İK standartlarına bakarak seçin; girdi–süreç–çıktı–sonuç çerçevesiyle gruplayın.</li>
+  <li><b>Yaşam döngüsü çerçevesini belgeleyin.</b> Kurumun yürüttüğü faaliyetleri planla–uygula–kontrol et–önlem al çerçevesinde yazın ve gerektiğinde alt işlevlere genişletin.</li>
+  <li><b>Anahtar işgücü verisini kullanıcı tanımlı olarak seçin.</b> Tablo 3'teki gibi veri gruplarını kurumunuza uyarlayın.</li>
+  <li><b>Sahipliği atayın.</b> Paydaş gruplarından sorumlular belirleyin; veri kalitesini bireysel performans görüşmelerine ekleyin.</li>
+  <li><b>Yakalama ve bakım prosedürlerini belgeleyin.</b> İlk giriş, sürekli güncelleme ve bakım; gözden geçirme takvimi; paydaş eğitimi.</li>
+  <li><b>Veri gruplarına göre tolerans belirleyin.</b> Her anahtar veri noktası için gözden geçirme sıklığı, örnek hacmi ve kabul edilen asgari hata oranı (Tablo 4 bir örnektir).</li>
+  <li><b>Tarihsel temizlik kapsamına karar verin.</b> En azından güncel işgücü ve kritik pozisyonlar; proje ekibi ve proje planı kurun; yuvarlanan üç ila beş yıl tutun.</li>
+  <li><b>Örnekleyin ve gözden geçirin.</b> Veri kalitesini ölçün; doğruluk ve tamlık düzeyini karşılayıp karşılamadığına bakın.</li>
+  <li><b>Eşiğin altında temizlik ve eylem kaydı.</b> Düzeyin altına düşen veri için temizleme yapın, karşılık eylemini sorumluya belgeleyin.</li>
+  <li><b>Yıllık değerlendirme raporu ve yönetim güvencesi.</b> Raporları denetime açık tutun; kritik strateji ve büyük riskleri öne alın.</li>
+</ol>
+
+<h2 id="kavramlar">Temel Kavramlar</h2>
+<p>Standart, 3. maddesinde terim tanımlamaz ("No terms and definitions are listed"). Aşağıdaki kavramlar, metinde geçen ve kullanımı için gerekli temel
+kavramların kısa özetleridir. Açıklamalar özgün olarak yazılmıştır; bağlayıcı olan standardın kendi metnidir.</p>
+<table>
+  <thead><tr><th style="width:70px">Madde</th><th style="width:230px">Terim</th><th>Açıklama</th></tr></thead>
+  <tbody>
+    <tr><td><b>1</b></td><td>İşgücü veri kalitesi <small>(workforce data quality)</small></td>
+      <td>İşgücü verisinin belirlenmesi, yakalanması, bakımı ve gözden geçirilmesi süreçleri. Odak, verinin kalitesinin kendisidir.</td></tr>
+    <tr><td><b>4.2</b></td><td>Doğruluk <small>(accuracy)</small></td>
+      <td>Verinin gerçeği ne ölçüde yansıttığı; gereken düzey verinin niteliğine ve sektör kılavuzlarına göre belirlenir.</td></tr>
+    <tr><td><b>4.3</b></td><td>Güncellik <small>(timeliness)</small></td>
+      <td>Verinin yakalanma zamanı ve karar vermede ve raporlamada hazır olma süresi.</td></tr>
+    <tr><td><b>4.4</b></td><td>Tamlık <small>(completeness)</small></td>
+      <td>Gereken verinin eksiksiz toplanmış olması; kısmen doldurulmuş formlar tamlık sorunudur.</td></tr>
+    <tr><td><b>4.5</b></td><td>Tutarlılık <small>(consistency)</small></td>
+      <td>Toplama zamanının, hesap formüllerinin ve veri noktaları ile biçimlerinin değişmemesi.</td></tr>
+    <tr><td><b>4.6</b></td><td>Uygunluk <small>(relevance)</small></td>
+      <td>Verinin kurumun amacı ve stratejik hedefleri açısından değer taşıması; girdi–süreç–çıktı–sonuç çerçevesiyle gruplanır.</td></tr>
+    <tr><td><b>5.1</b></td><td>İşgücü yaşam döngüsü çerçevesi <small>(workforce life cycle framework)</small></td>
+      <td>Kurumun işgücü yönetimiyle ilgili tüm faaliyetlerinin tablosu; planla–uygula–kontrol et–önlem al çerçevesini izler.</td></tr>
+    <tr><td><b>5.4</b></td><td>Anahtar işgücü verisi <small>(key workforce data)</small></td>
+      <td>Kullanıcı tarafından tanımlanan, yaşam döngüsü boyunca yakalanacak veri noktaları (Tablo 3).</td></tr>
+    <tr><td><b>5.4</b></td><td>Veri kalitesi güvence rejimi <small>(assurance regime)</small></td>
+      <td>İlgili İK bilgisinin kalitesini güvence altına alan düzen; zaman çerçeveleri, örneklenecek hacim ve doğruluk gereksinimleri atanır.</td></tr>
+    <tr><td><b>Tablo 3</b></td><td>İK veri sözlüğü, ana veri seti</td>
+      <td>Veri sözlüğü verinin tanımlarını; ana veri seti (kullanıcı tanımlı) kurumun temel kayıtlarını kapsar.</td></tr>
+    <tr><td><b>Tablo 3</b></td><td>FTE <small>(full-time equivalent)</small></td>
+      <td>Tam zaman eşdeğeri; kadro ve işgücü analitiğinin ölçü birimi.</td></tr>
+    <tr><td><b>6.3</b></td><td>Tarihsel veri temizliği <small>(historic data cleansing)</small></td>
+      <td>Eski kayıtlardaki yinelenen, ilgisiz, hatalı ya da eksik verinin düzeltilmesi; asgari olarak güncel işgücü ve kritik pozisyon/becerilere odaklanır.</td></tr>
+    <tr><td><b>7.3</b></td><td>Yönetim güvencesi <small>(management assurance)</small></td>
+      <td>Rutin raporlama ve eyleme dönüşen sonuç kanıtlarıyla sağlanan, denetime açık güvence.</td></tr>
+    <tr><td><b>7.4</b></td><td>Kabul edilen asgari hata oranı ve örnek hacmi</td>
+      <td>Her anahtar veri noktası için tanımlanan tolerans ve örneklenecek asgari veri miktarı.</td></tr>
+    <tr><td><b>7.4</b></td><td>Karşılık eylem <small>(action-in-response)</small></td>
+      <td>Veri kalitesi tolerans düzeyinin altına düştüğünde yapılan temizleme ve sorumluya belgelenen eylem.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="matris">Metrik Matrisi</h2>
+<p>Aşağıdaki tablo, standardın işaret ettiği veri kalitesi unsurlarını, veri gruplarını ve süreç unsurlarını kullanıcı × süreç aşaması × raporlama
+sınıflandırmasıyla sunar. Kullanıcı ve raporlama sütunları bu sayfanın yazarlık sınıflandırmasıdır; standardın kendisi bunu yapmaz. Filtreleri
+değiştirdiğinizde tablo anında daralır.</p>
+
+<div class="filters">
+  <div><label for="fUser">Kullanıcı</label>
+    <select id="fUser">
+      <option value="">Tümü</option>
+      <option value="hr">İK / veri sorumluları</option>
+      <option value="exec">Üst yönetim</option>
+      <option value="line">Hat yöneticileri ve takım liderleri</option>
+      <option value="it">Bordro, BT ve raporlama</option>
+      <option value="aud">Denetçiler ve çalışan temsilcileri</option>
+    </select></div>
+  <div><label for="fStage">Süreç aşaması</label>
+    <select id="fStage">
+      <option value="">Tümü</option>
+      <option value="tanim">Tanım ve çerçeve (madde 4–5)</option>
+      <option value="yakala">Yakalama ve bakım (madde 6.1–6.2)</option>
+      <option value="tarih">Tarihsel veri temizliği (madde 6.3)</option>
+      <option value="gozden">Gözden geçirme (madde 7)</option>
+      <option value="etki">Etkiler ve faydalar (Ek A)</option>
+    </select></div>
+  <div><label for="fType">Metrik ailesi</label>
+    <select id="fType">
+      <option value="">Tümü</option>
+      <option value="p">Doğruluk</option>
+      <option value="s">Güncellik</option>
+      <option value="c">Tamlık</option>
+      <option value="r">Tutarlılık</option>
+      <option value="o">Uygunluk ve süreç</option>
+    </select></div>
+  <div><label for="fRep">Raporlama</label>
+    <select id="fRep">
+      <option value="">Tümü</option>
+      <option value="ic">İç raporlama</option>
+      <option value="dis">Dış raporlama</option>
+    </select></div>
+  <div><label for="fQ">Metrik adında ara</label>
+    <input type="text" id="fQ" placeholder="ör. maaş"></div>
+</div>
+
+<div class="count" id="mCount"></div>
+<table class="matrix">
+  <thead><tr>
+    <th>Metrik</th>
+    <th class="rot">İK / veri sorumlusu</th>
+    <th class="rot">Üst yönetim</th>
+    <th class="rot">Hat yönetimi</th>
+    <th class="rot">Bordro / BT</th>
+    <th class="rot">Denetçi / temsilci</th>
+  </tr></thead>
+  <tbody id="mBody"></tbody>
+</table>
+<div class="legend">
+  <span><span class="dot p"></span> doğruluk</span>
+  <span><span class="dot s"></span> güncellik</span>
+  <span><span class="dot c"></span> tamlık</span>
+  <span><span class="dot r"></span> tutarlılık</span>
+  <span><span class="dot o"></span> uygunluk ve süreç</span>
+  <span><span class="tag iso">Tablo 4</span> standardın gözden geçirme tablosunda (Tablo 4) yer alır</span>
+  <span><span class="tag lvl">hesaplayıcı</span> bu sayfada hesaplanabilen metrik</span>
+  <span>Hesaplayıcıya bağlı metrikler <b>koyu</b> işaretlenmiştir.</span>
+</div>
+
+<h2 id="tablo">Veri Kalitesi Denetim Tablosu</h2>
+<p>Tablo 4'teki 17 veri grubunu, her biri için standardın örnek gerekli düzeyiyle ön doldurulmuş olarak sunar. Her grup için toplam kaydı, gözden geçirdiğiniz örneği ve
+örnekte bulduğunuz hatalı kaydı girin; doğruluk, gerekli düzeyle karşılaştırılır ve örnek hacminin Tablo 4'teki asgari yüzdeye ulaşıp ulaşmadığı denetlenir. Gerekli düzey sütununu
+kurumunuzun kendi toleransıyla değiştirebilirsiniz.</p>
+
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnek">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizle">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsv">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktar">Hesaplayıcıya aktar</button>
+</div>
+
+<table class="postbl">
+  <thead><tr>
+    <th>Veri grubu</th>
+    <th class="num">Toplam kayıt</th><th class="num">Örneklenen</th>
+    <th class="num">Hatalı</th><th class="num">Gerekli düzey (%)</th>
+    <th class="calc" style="width:110px">Doğruluk (%)</th>
+  </tr></thead>
+  <tbody id="pBody"></tbody>
+  <tfoot><tr>
+    <td>Toplam</td>
+    <td class="calc" id="tKayit">—</td>
+    <td class="calc" id="tOrnek">—</td>
+    <td class="calc" id="tHatali">—</td>
+    <td class="calc">—</td>
+    <td class="calc" id="tDogruluk">—</td>
+  </tr></tfoot>
+</table>
+
+<div class="cards" id="pCards"></div>
+<div class="note" id="pNot"></div>
+
+<h2 id="formuller">Formüller ve Tanımlar</h2>
+<p>Standart formül vermez; beş unsuru ve Tablo 4'ü sunar. Aşağıdakiler, bu unsurların yaygın uygulama tanımlarıdır (bir bölümü doğrudan Tablo 4'ün dilinden,
+kalanı türetilmiştir). Kurumunuzun yazılı tanımı bunlardan farklıysa onu kullanın.</p>
+<table>
+  <thead><tr><th>Metrik</th><th>Formül</th><th>Not</th></tr></thead>
+  <tbody id="fBody"></tbody>
+</table>
+
+<h2 id="hesaplayici">Hesaplayıcı</h2>
+<p>Metriği seçin, alanları doldurun; sonuç, formülün yerine konmuş hâli ve yorum aşağıda görünür.
+Kurulum gerekmez, veriler tarayıcıdan çıkmaz.</p>
+
+<div class="panel">
+  <h3>İşgücü Veri Kalitesi Hesaplayıcısı</h3>
+  <p class="hint">Alanlar seçtiğiniz metriğe göre değişir. Oranlar yüzde, süreler gün, tutarlar TL olarak raporlanır.</p>
+  <div class="grid">
+    <div class="field" style="grid-column:1/-1">
+      <label for="cMetric">Metrik <span class="req">*</span></label>
+      <select id="cMetric"></select>
+    </div>
+  </div>
+  <div class="grid" id="cFields" style="margin-top:14px"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="oAll"> Tümünü seç</label>
+    <label><input type="checkbox" id="oFormula" checked> Formülün açık hâli</label>
+    <label><input type="checkbox" id="oInterp" checked> Yorum ve eşik</label>
+    <label><input type="checkbox" id="oPy"> Python karşılığı</label>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-run" id="btnRun">Hesapla</button>
+    <button class="btn-ghost" id="btnExample">Örnek veriyi yükle</button>
+    <button class="btn-ghost" id="btnPy">Python motorunu yükle</button>
+    <span class="chip" id="engStatus">Motor: tarayıcı (JavaScript)</span>
+  </div>
+  <p class="hint" style="margin:14px 0 0">Python motoru seçildiğinde hesaplama, bu sayfaya gömülü
+  <code style="background:#1c2836;color:#cfe0f0">iso30435_metrikler.py</code> modülünün
+  <code style="background:#1c2836;color:#cfe0f0">hesapla()</code> fonksiyonu tarafından, tarayıcı içinde
+  çalışan gerçek bir CPython yorumlayıcısında (Pyodide/WebAssembly) yapılır. İlk yüklemede yaklaşık
+  10–12 MB indirilir; sonrası önbellekten gelir. Çevrimdışıysanız sayfa JavaScript yedeğiyle
+  aynı sonuçları vermeye devam eder.</p>
+</div>
+
+<div id="cResult"></div>
+
+<h2 id="python">Python Kod Örnekleri</h2>
+<p>Bu sayfadaki hesaplamalar JavaScript'te taklit edilmez: modülün tamamı sayfaya gömülüdür ve
+Pyodide (WebAssembly üzerinde CPython) ile tarayıcı içinde çalıştırılır. Hesaplayıcıda Python motorunu
+seçtiğinizde her sonuç <code>hesapla()</code> fonksiyonundan gelir. Aynı dosya
+(<code>iso30435_metrikler.py</code>) komut satırında da bağımsız çalışır; doğrudan çalıştırıldığında
+örnek değerlerle doğrulama çıktısı üretir.</p>
+
+<div class="filename">iso30435_metrikler.py (özet)</div>
+<pre><i># --- Doğruluk ve örnekleme ---</i>
+
+<b>def</b> <span class="fn">dogruluk_orani</span>(ornek, hatali):
+    <i>"""(1 - hatalı / örnek) × 100; gerekli düzeyle karşılaştırılır (madde 7.4)."""</i>
+    <b>return</b> <u>100</u> * (<u>1</u> - hatali / ornek)
+
+<b>def</b> <span class="fn">esik_karsilandi</span>(deger, esik):
+    <b>return</b> deger >= esik
+
+<b>def</b> <span class="fn">gereken_ornek</span>(kayit, ornek_pct):
+    <i>"""Tablo 4: örnek hacmi veri grubuna göre yüzde olarak verilir."""</i>
+    <b>return</b> math.ceil(kayit * ornek_pct / <u>100</u>)
+
+<b>def</b> <span class="fn">hatasiz_ust_sinir</span>(ornek):
+    <i>"""Hatasız örnekte %95 güvenle üst sınır: yaklaşık 3 / n."""</i>
+    <b>return</b> <u>300</u> / ornek
+
+<i># --- Diğer unsurlar ---</i>
+
+<b>def</b> <span class="fn">tamlik_orani</span>(dolu, beklenen):
+    <b>return</b> <u>100</u> * dolu / beklenen
+
+<b>def</b> <span class="fn">zamaninda_orani</span>(zamaninda, olay):
+    <b>return</b> <u>100</u> * zamaninda / olay
+
+<b>def</b> <span class="fn">tutarlilik_orani</span>(karsilastirilan, tutarsiz):
+    <b>return</b> <u>100</u> * (<u>1</u> - tutarsiz / karsilastirilan)
+
+<b>def</b> <span class="fn">uygunluk_orani</span>(ilgili, toplanan):
+    <b>return</b> <u>100</u> * ilgili / toplanan
+
+<b>def</b> <span class="fn">belge_teyit_orani</span>(teyitli, toplam):
+    <i>"""Tablo 4: zorunlu belge ve vizede tüm bitiş tarihlerinin teyidi, %100."""</i>
+    <b>return</b> <u>100</u> * teyitli / toplam
+
+<b>def</b> <span class="fn">zayif_halka</span>(degerler):
+    <i>"""Beş boyuttan en düşüğü; bileşik skor standartta yoktur, türetilmiştir."""</i>
+    <b>return</b> min(<b>zip</b>(degerler, BOYUTLAR))
+</pre>
+
+<h3>Çalıştırılabilir konsol</h3>
+<p>Aşağıdaki kod, sayfaya gömülü modüle karşı çalışır. <b>Kodu çalıştır</b> düğmesi Python motorunu
+(yüklü değilse) indirir, modülü içe aktarır ve çıktıyı altta gösterir. Kodu serbestçe değiştirebilir,
+kendi verinizi yazabilirsiniz; her şey tarayıcıda kalır.</p>
+
+<div class="console">
+  <div class="console-bar">
+    <span>iso30435_metrikler modülüne karşı çalışır · Python 3 (Pyodide)</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button class="btn-run btn-sm" id="btnRunPy">Kodu çalıştır</button>
+      <button class="btn-ghost btn-sm" id="btnDemo" style="border-color:var(--line);color:var(--ink-soft)">Tam demoyu yükle</button>
+      <button class="btn-ghost btn-sm" id="btnReset" style="border-color:var(--line);color:var(--ink-soft)">Sıfırla</button>
+    </span>
+  </div>
+  <textarea id="pyCode" spellcheck="false"></textarea>
+  <pre id="pyOut">Çıktı burada görünecek. İlk çalıştırmada Python motoru indirilir (10–12 MB).</pre>
+</div>
+
+<details class="src"><summary>Gömülü modülün tam kaynağı (iso30435_metrikler.py)</summary>
+  <pre id="srcView">yükleniyor…</pre>
+</details>
+
+<h2 id="yorum">Sonuçların Yorumlanması</h2>
+<ul>
+  <li><b>Genel doğruluk yüksek ama bazı gruplar eşiğin altındaysa</b> ortalama yanıltır. Gerekli düzey her veri grubu için ayrı belirlenir (maaş ve vize verisinde yüksek, anket verisinde daha
+  düşük); gruplar tek tek değerlendirilir ve eşiğin altına düşen grupta temizleme ve karşılık eylemi belgelenir (madde 7.4).</li>
+  <li><b>Örnekte hiç hata bulunmaması "veri kusursuz" demek değildir.</b> Küçük örnekte hatasız sonuç, gerçek hata oranının hâlâ birkaç yüzdeye çıkabileceğini gösterir; örnek hacmini Tablo 4'teki
+  asgari yüzdenin altına düşürmeyin ve yüksek gerekli düzeyli gruplarda (%99–100) örneği büyütün.</li>
+  <li><b>Doğruluk iyi ama tamlık düşükse</b> eldeki kayıtlar doğru, fakat kayıtların bir kısmı eksik demektir: nitelikler görülüp doğrulanmamış, referanslar aranmamış ya da performans bilgisi kaydedilmemiş
+  olabilir. Tamlık zorunlu hâle getirilmeli ve bilgiyi veren kişilerin doğrulama sorumluluğu netleştirilmelidir (madde 4.4).</li>
+  <li><b>Güncellik düşükse eğilimler toplama zamanından etkilenir.</b> Ayrılış nedeni olayın kendisinde değil aylar sonra kaydedilirse farklı olabilir; bağlılık verisi vardiya başı ve sonunda farklı gruplardan toplanırsa
+  karşılaştırma bozulur. Olaya yakın yakalamayı prosedürün parçası yapın (madde 4.3, 6.2).</li>
+  <li><b>Tutarlılık düşükse dönem karşılaştırması güvenilmezdir.</b> Tarih, unvan, departman adı ve çalışan numarası biçimleri ile formüller sabit tutulmalıdır; aksi hâlde devirdeki "artış" veri değişikliğinin sonucu olabilir (madde 4.5).</li>
+  <li><b>Uygunluk düşükse veri toplama maliyeti sağlanan değerin üzerindedir.</b> Amaca hizmet etmeyen veri noktalarını azaltmak, yakalama ve bakım yükünü hafifletir; ama kaldırmadan önce hangi metrik ve karara hizmet ettiğini
+  girdi–süreç–çıktı–sonuç çerçevesinde sınayın.</li>
+  <li><b>Zorunlu belge ve vizelerde "yaklaşık doğru" kabul edilmez.</b> Bitiş tarihi teyit edilmemiş ya da süresi dolmuş tek bir kayıt bile eşiği karşılamaz; yaklaşan bitişleri uyarı süresi içinde yakalayın.</li>
+  <li><b>Tarihsel temizlikte önce güncel işgücü ve kritik pozisyonlar gelir.</b> İş yükü hesabı bir büyüklük mertebesi verir; kapsam, tahmini maliyet ve beklenen faydaya göre daraltılır (madde 6.3.3).</li>
+  <li><b>Boyut skor kartında en zayıf halkayı okuyun.</b> Ortalama zayıf boyutu gizler; standart beş unsurun birlikte düşünülmesini ister.</li>
+</ul>
+
+<h2 id="sinirlamalar">Sınırlamalar</h2>
+<ul>
+  <li><b>Standart formül ve zorunlu eşik vermez.</b> Tablo 4 yalnızca <i>örnek</i> sıklık, örnek hacmi ve düzey içerir; kabul edilen asgari hata oranını ve hacmi kurum belirler. Hesaplayıcıdaki "yorum ve eşik" bantları
+  standarttan değil, başlangıç varsayımlarından gelir.</li>
+  <li>Doğruluk, tamlık, güncellik, tutarlılık ve uygunluk için bu sayfadaki formüller yaygın uygulama tanımlarıdır; "hata", "tutarsız" ve "ilgili" kavramlarının kurum içi tanımını yazılı tutun. Standart bu kavramları ölçüm
+  formülüne bağlamaz.</li>
+  <li>Boyut skor kartındaki "en zayıf halka" ve ortalama bileşik göstergeler standartta yoktur; yalnızca özet amacıyla türetilmiştir. Bu bileşikleri dış raporlamada kullanmayın, boyutları ayrı raporlayın.</li>
+  <li>"Hatasız örnekte hata oranı üst sınırı" (3/n) kaba bir istatistiksel yaklaşımdır; küçük örneklerde ve gerçek hata oranı yüksekse güvenilirliği düşer. Standart bu hesabı vermez.</li>
+  <li>Örnek hacmi hesabı, Tablo 4'ün yüzde ifadesinden türetilir; "asgari" olması gerektiğinde daha büyük örnek alınabileceği anlamındadır. Aralık verilen satırlarda (örneğin %1–5) alt sınır kullanılır; ilk sonuçlar kötüyse örneği büyütün.</li>
+  <li>Temizlik iş yükü ve maliyeti büyüklük mertebesidir: dakika başına kayıt ve saat ücreti kurum varsayımıdır. Standart maliyetin işgücü verisinin karmaşıklığına göre değiştiğini söyler.</li>
+  <li>Ek A'daki %40 ve %20 rakamları standardın aktardığı dış kaynak bulgularıdır (Gartner çalışması); kurumunuzun kendi verisiyle doğrulanmamıştır.</li>
+  <li>Standart gizlilik ve güvenliği, verinin analizini ve raporlama yapısını kapsam dışı bırakır. Çalışan verisi toplarken ilgili veri koruma mevzuatına ayrıca uyulmalıdır.</li>
+  <li>Küçük veri gruplarında (örneğin 3 kayıtlık örnek) oranlar oynaktır: tek bir hata yüzde otuz üç puan değiştirir. Az sayıda kayıtta mutlak sayıları da verin.</li>
+  <li>Bu sayfadaki örnek veriler uydurmadır; gerçek bir kuruma ait değildir.</li>
+</ul>
+
+<h2 id="raporlama">Metriklerin Raporlanması</h2>
+<table>
+  <thead><tr><th>Alıcı</th><th>Ne görmek ister</th><th>Rapor biçimi</th></tr></thead>
+  <tbody>
+    <tr><td>İK / veri sorumluları</td>
+      <td>Veri grubu bazında doğruluk, tamlık, güncellik, tutarlılık; eşiğin altına düşen gruplar; temizleme ve karşılık eylem kayıtları</td>
+      <td>Analitik rapor, her gözden geçirmede (asgari yıllık)</td></tr>
+    <tr><td>Üst yönetim</td>
+      <td>Anahtar veri gruplarında tolerans karşılama durumu, en zayıf unsur, kritik riskler, iyileştirme ilerlemesi</td>
+      <td>Skor kartı, yıllık veya daha sık</td></tr>
+    <tr><td>Hat yöneticileri ve takım liderleri</td>
+      <td>Kendi doğrudan raporlarının verisinin kalitesi; eksik, güncel olmayan ve hatalı kayıtlar</td>
+      <td>Birim listesi, aylık</td></tr>
+    <tr><td>Bordro, BT ve raporlama</td>
+      <td>Maaş, prim, fazla mesai verisi; sistem veri biçimleri ve tutarlılık; tarihsel temizlik ilerlemesi</td>
+      <td>Teknik rapor, çeyreklik</td></tr>
+    <tr><td>Denetçiler ve çalışan temsilcileri</td>
+      <td>Süreç gözden geçirme raporları, yönetim güvencesi kanıtı, eylem kayıtları; tarihsel temizlik proje ekibindeki temsil</td>
+      <td>Denetim dosyası, yıllık</td></tr>
+  </tbody>
+</table>
+<p><b>Her raporda bulunması gerekenler:</b> veri grubu ve kapsam, örnek hacmi ve yöntemi, kabul edilen asgari hata oranı (tolerans), ölçüm dönemi, hata tanımı ve karşılaştırma tabanı. Raporlar denetim incelemesine, testine ve
+doğrulamasına açık olmalıdır (madde 7.3). Dış paydaşlara yapılan raporlamada, ISO 30414'te önerilen metriklerin hesaplandığı verinin kalite düzeyi ve tanımları dipnotla belirtilmelidir.</p>
+
+<h2 id="ilgili">İlgili Standartlar</h2>
+<ul>
+  <li><b>ISO 30400</b> — insan kaynakları yönetimi terimler sözlüğü.</li>
+  <li><b>ISO 30414</b> — iç ve dış insan sermayesi raporlaması; Şekil 2, iç ve/veya dış raporlama için önerilen çeşitli metrikleri öne çıkarır ve yakalanacak veriyi belirlerken başvurulur.</li>
+  <li><b>ISO 8000 serisi (ISO 8000-1 ve ISO 8000-2)</b> — genel veri kalitesi hakkında daha fazla bilgi.</li>
+  <li><b>ISO 10303-31</b> — endüstriyel otomasyon sistemleri ve entegrasyon: ürün verisi gösterimi ve değişimi; uygunluk sınama yöntemi ve çerçevesi: genel kavramlar.</li>
+  <li><b>ISO 45001</b> — iş sağlığı ve güvenliği yönetim sistemleri; iş sağlığı ve güvenliği verisinin yakalanmasıyla ilişkilidir.</li>
+  <li><b>ISO 30409</b> — işgücü planlaması; planlama, kaliteli işgücü verisine dayanır. <b>ISO 30405</b> (işe alım) ve <b>ISO 30422</b> (öğrenme ve gelişim) gibi standartlar, yakalanacak en uygun ölçüleri ve veri noktalarını gösterir.</li>
+</ul>
+
+<h2 id="sss">Sıkça Sorulan Sorular</h2>
+<details><summary>Veri kalitesi ile veri güvenliği ve gizliliği aynı şey mi?</summary>
+<p>Hayır. Standart, kişisel verinin gizliliği ve güvenliğini, verinin analizini ve raporlama yapısını, kalite dışındaki metrik tanımlarını ve teknoloji kullanımını kapsam dışı bırakır; odak verinin kendi kalitesidir.
+Veri güvenliği ve gizliliği de genel veri yönetimi için kritiktir, ancak bu belgede ele alınmaz. Çalışan verisi toplanırken ilgili mevzuata ve gizlilik ilkelerine ayrıca uyulmalıdır.</p></details>
+
+<details><summary>Tablo 4'teki doğruluk düzeylerini zorunlu eşik olarak kullanabilir miyim?</summary>
+<p>Tablo 4 bir <i>örnektir</i>. Standart, her anahtar veri noktası için kabul edilen asgari hata oranının ve örneklenecek asgari veri hacminin kullanıcı tarafından belirlenmesini ister. Tablo 4'ü başlangıç noktası alıp kendi
+risk düzeyinize ve veri grubunun niteliğine göre değiştirin. Bazı veriler için (zorunlu yetki belgeleri, vize, bazı doğrulamalar) kalitenin mutlak olması beklenir.</p></details>
+
+<details><summary>Ne kadar sıklıkla gözden geçirmeliyim?</summary>
+<p>Standart, işgücü verisinin gözden geçirilmesini en az yıllık ve daha fazla güvence gerekiyorsa daha sık yapmayı ister. Tablo 4 örnek olarak çoğu veri grubu için yılda en az bir kez, bordro, organizasyon şeması ve İK analitiği gibi grupları
+yılda iki ila dört kez önerir; vize gibi veriler için bitişten önce (örneğin iki ay) gözden geçirme önerir. Toplama zamanı da tutarlı olmalıdır (örneğin aylık ya da iki aylık) ve değiştirilmemelidir.</p></details>
+
+<details><summary>Tarihsel veriyi ne kadar geriye temizlemeliyim?</summary>
+<p>Standart, yuvarlanan üç ila beş yıllık bir geçmiş tutulmasını önerir; ama değer sektöre ve kuruma özgüdür (bir kurum altı aydan eski veriyi değersiz bulabilir, bir diğeri beş yıllık veriyi yararlı). Asgari olarak temizlik güncel işgücüne ve güncel kritik
+pozisyon ya da kritik beceri ve kapasitelere ilişkin tarihsel veriye odaklanmalıdır. Kapsama karar verirken maliyet ve beklenen faydayı karşılaştırın.</p></details>
+
+<details><summary>Küçük bir kurum bu standardı nasıl uygular?</summary>
+<p>Standart her tür ve büyüklükte kuruma uygulanabilir. Küçük kurumlar işgücü verisi şablonu için elektronik tablo kullanabilir; sahiplik ve sorumluluk tek kişide toplanabilir. Önemli olan hangi verinin önemli olduğunu belirlemek, giriş ve
+güncelleme prosedürünü yazmak, anahtar veri noktaları için basit bir örnekleme ve tolerans belirlemek ve en az yılda bir gözden geçirmektir.</p></details>
+
+<details><summary>Veri kalitesini çalışanların kendisi nasıl destekler?</summary>
+<p>Standart, bilgi sağlayan kişilerin verdiği bilgiyi kontrol etme, kaydetme ve doğrulama sorumluluğunun veri kalitesi için kritik olduğunu söyler. Performans değerlendirme süreçleri veya benzeri birebir görüşme stratejileri, çalışanla bireysel veri
+geçerliliği üzerine konuşmayı başlatan araç olabilir. Veri kalitesi, bireysel performans yönetimi görüşmelerinin bir bileşeni olarak ölçülebilir.</p></details>
+
+<details><summary>Beş unsurdan hangisi en önemlidir?</summary>
+<p>Standart bir sıralama yapmaz; beş unsur birlikte ele alınır. Veri grubunun niteliği hangisinin ağır basacağını belirler: maaş ve yetki belgelerinde doğruluk, ayrılış nedeni ve bağlılık verisinde güncellik, performans ve nitelik verisinde tamlık, devir gibi karşılaştırmalı analizlerde tutarlılık,
+her veri noktasında ise uygunluk. Bu yüzden boyut skor kartında ortalama yerine en zayıf unsura bakılması önerilir.</p></details>
+
+<details><summary>Veri kalitesi sürecini kim denetler?</summary>
+<p>Standart, süreç gözden geçirme ve yönetim raporlarının denetim incelemesi, testi ve doğrulaması için erişilebilir olmasını ister; böylece denetçiler işgücü veri kalitesi gözden geçirme sürecinin amacına uygun çalıştığına dair güvence verebilir.
+Denetim çalışması strateji ve risk konularının incelenmesiyle belirlenir; kritik stratejiler ve daha büyük riskler daha fazla denetim dikkati çeker. Tarihsel temizlik proje ekibine uygun olduğunda iç ve/veya dış denetçiler de katılabilir.</p></details>
+
+<footer>
+  ISO 30435:2023 çerçevesinden üretilmiş çalışma aracı. Terim adları, süreç yapısı ve veri sınıflandırması standarda dayanır;
+  açıklamalar, formüller, örnek değerler ve kod özgün olarak yazılmıştır. Standardın kendisi telif korumalıdır ve bu sayfa onun
+  yerine geçmez.
+</footer>
+
+</div>
+<script type="text/x-python" id="pysrc">
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+iso30435_metrikler.py
+=====================
+ISO 30435:2023 (Human resource management — Workforce data quality)
+rehberindeki işgücü veri kalitesi ölçümlerinin Python karşılığı.
+
+Standart bir metrik şartnamesi değil, süreç rehberidir: işgücü verisinin
+belirlenmesi, yakalanması, bakımı ve gözden geçirilmesi için politika, süreç
+ve uygulamaları anlatır. Veri kalitesini beş unsurla tanımlar: doğruluk,
+güncellik, tamlık, tutarlılık ve uygunluk. Tablo 4, veri grupları için
+örnek gözden geçirme sıklığı, örnek hacmi ve doğruluk/tamlık düzeyi verir.
+Formül vermez. Bu modüldeki formüller, bu beş unsurun yaygın uygulama
+tanımlarıdır ve kurumunuzun kendi tanımıyla uyarlanmalıdır. Modül dört
+bölümden oluşur:
+
+    1) Doğruluk ve örnekleme — doğruluk oranı, gereken örnek, hatasız örnek sınırı
+    2) Tamlık, güncellik, tutarlılık, uygunluk
+    3) Belge teyidi, tarihsel temizlik iş yükü, boyut skor kartı
+    4) Yardımcı yapılar — denetim tablosu (Tablo 4), denetim kontrol listesi, dağıtıcı
+
+Kullanım:
+    from iso30435_metrikler import dogruluk_orani, gereken_ornek
+    dogruluk_orani(200, 6)     ->  97.0
+    gereken_ornek(1200, 5)     ->  60
+
+Doğrudan çalıştırıldığında (python3 iso30435_metrikler.py) tüm fonksiyonlar
+örnek verilerle çalıştırılır ve sonuçlar tablo hâlinde yazdırılır.
+
+Not: Terimler ve süreç yapısı ISO 30435:2023'e dayanır. Kod, açıklamalar ve
+örnek değerler özgün olarak yazılmıştır; standardın kendisi telif korumalıdır.
+"""
+
+from __future__ import annotations
+
+import math
+from dataclasses import dataclass, field
+
+__all__ = [
+    "GecersizGirdi",
+    # doğruluk ve örnekleme
+    "hata_orani", "dogruluk_orani", "esik_karsilandi", "gereken_ornek",
+    "hatasiz_ust_sinir",
+    # diğer boyutlar
+    "tamlik_orani", "zamaninda_orani", "ortalama_gecikme", "tutarlilik_orani",
+    "uygunluk_orani", "belge_teyit_orani", "temizlik_is_yuku", "zayif_halka",
+    # yardımcı
+    "TABLO4", "VeriGrubu", "DenetimTablosu", "ornek_tablo", "veri_denetimi",
+    "hesapla", "METRIK_LISTESI",
+]
+
+
+class GecersizGirdi(ValueError):
+    """Girdiler tutarsız: payda sıfır, parça bütünden büyük vb."""
+
+
+def _bol(pay: float, payda: float, ad: str = "payda") -> float:
+    if payda <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return pay / payda
+
+
+def _oran(parca: float, butun: float, ad: str = "parça") -> float:
+    """Yüzde olarak parça / bütün; parça bütünden büyük olamaz."""
+    if butun <= 0:
+        raise GecersizGirdi("bütün sıfırdan büyük olmalı")
+    if parca < 0 or parca > butun:
+        raise GecersizGirdi(f"{ad} 0 ile bütün arasında olmalı")
+    return 100 * parca / butun
+
+
+def _yuzde(x: float, ad: str) -> float:
+    if x < 0 or x > 100:
+        raise GecersizGirdi(f"{ad} 0 ile 100 arasında olmalı")
+    return x
+
+
+# ---------------------------------------------------------------------------
+# 1) Doğruluk ve örnekleme (madde 4.2, 7.4, Tablo 4)
+# ---------------------------------------------------------------------------
+
+def hata_orani(ornek: float, hatali: float) -> float:
+    """Örneklenen kayıtlardaki hata oranı (%) = hatalı / örnek × 100."""
+    return _oran(hatali, ornek, "hatalı")
+
+
+def dogruluk_orani(ornek: float, hatali: float) -> float:
+    """Doğruluk (%) = (1 − hatalı / örnek) × 100.
+
+    Standart, doğruluk düzeyinin verinin niteliğine ve ilgili sektör
+    kılavuzlarına göre belirlenmesini ister (madde 4.2). Hata, kurumun
+    yazılı kuralına göre sayılır: yanlış değer, eskimiş değer, kanıtsız değer.
+    """
+    return 100 - hata_orani(ornek, hatali)
+
+
+def esik_karsilandi(deger: float, esik: float) -> bool:
+    """Ölçülen düzey, kullanıcı tanımlı toleransı karşılıyor mu (madde 7.4)."""
+    return deger >= _yuzde(esik, "eşik")
+
+
+def gereken_ornek(kayit: float, ornek_pct: float) -> int:
+    """Bir veri grubundan gözden geçirilecek asgari kayıt = ⌈kayıt × pct / 100⌉.
+
+    Tablo 4, örneklenecek hacmi veri grubuna göre yüzde olarak verir
+    (örneğin %1–%5, %2, %5).
+    """
+    if kayit <= 0 or not (0 < ornek_pct <= 100):
+        raise GecersizGirdi("kayıt sıfırdan büyük, örnek yüzdesi 0 ile 100 arasında olmalı")
+    return math.ceil(kayit * ornek_pct / 100)
+
+
+def hatasiz_ust_sinir(ornek: float) -> float:
+    """Örnekte hiç hata bulunmadığında, %95 güvenle gerçek hata oranının üst sınırı (%).
+
+    "Üçlü kural" yaklaşımıdır: yaklaşık 3 / n. Küçük örneklerde (yaklaşık
+    30'un altı) kaba bir tahmindir; standart bu hesabı vermez.
+    """
+    if ornek <= 0:
+        raise GecersizGirdi("örnek sıfırdan büyük olmalı")
+    return 300 / ornek
+
+
+# ---------------------------------------------------------------------------
+# 2) Tamlık, güncellik, tutarlılık, uygunluk (madde 4.3–4.6)
+# ---------------------------------------------------------------------------
+
+def tamlik_orani(dolu: float, beklenen: float) -> float:
+    """Tamlık (%) = dolu zorunlu alan / beklenen zorunlu alan × 100."""
+    return _oran(dolu, beklenen, "dolu alan")
+
+
+def zamaninda_orani(zamaninda: float, olay: float) -> float:
+    """Güncellik (%): hedef süre içinde kaydedilen olayların oranı."""
+    return _oran(zamaninda, olay, "zamanında kayıt")
+
+
+def ortalama_gecikme(toplam_gun: float, olay: float) -> float:
+    """Olay ile kayıt arasındaki ortalama gecikme (gün)."""
+    if toplam_gun < 0:
+        raise GecersizGirdi("toplam gecikme negatif olamaz")
+    return _bol(toplam_gun, olay, "olay sayısı")
+
+
+def tutarlilik_orani(karsilastirilan: float, tutarsiz: float) -> float:
+    """Tutarlılık (%) = (1 − tutarsız / karşılaştırılan) × 100.
+
+    Aynı bilginin iki sistemde, iki dönemde ya da iki biçimde (tarih, unvan,
+    departman adı, çalışan numarası) çelişip çelişmediğine bakılır.
+    """
+    return 100 - _oran(tutarsiz, karsilastirilan, "tutarsız")
+
+
+def uygunluk_orani(ilgili: float, toplanan: float) -> float:
+    """Uygunluk (%): toplanan veri noktalarından amaca hizmet edenlerin oranı."""
+    return _oran(ilgili, toplanan, "ilgili veri noktası")
+
+
+# ---------------------------------------------------------------------------
+# 3) Belge teyidi, temizlik iş yükü, skor kartı
+# ---------------------------------------------------------------------------
+
+def belge_teyit_orani(teyitli: float, toplam: float) -> float:
+    """Zorunlu belge, yetki ve vize kayıtlarında bitiş tarihi teyitli olanların oranı (%).
+
+    Tablo 4 bu veri grupları için tüm bitiş tarihlerinin teyidini ve %100
+    düzeyini örnek verir.
+    """
+    return _oran(teyitli, toplam, "teyitli")
+
+
+def temizlik_is_yuku(kayit: float, hata_pct: float, dk_kayit: float, saat_ucret: float) -> dict:
+    """Tarihsel veri temizliğinin kaba iş yükü ve maliyeti.
+
+    Standart maliyetin işgücü verisinin karmaşıklığına göre değiştiğini
+    söyler (madde 6.3.3); bu hesap yalnızca büyüklük mertebesi vermek için
+    türetilmiştir.
+    """
+    if kayit <= 0 or dk_kayit < 0 or saat_ucret < 0:
+        raise GecersizGirdi("temizlik girdileri geçersiz")
+    hatali = kayit * _yuzde(hata_pct, "hata yüzdesi") / 100
+    saat = hatali * dk_kayit / 60
+    return {"hatali": hatali, "saat": saat, "maliyet": saat * saat_ucret}
+
+
+BOYUTLAR = ("Doğruluk", "Güncellik", "Tamlık", "Tutarlılık", "Uygunluk")
+
+
+def zayif_halka(degerler: list) -> tuple:
+    """Beş boyuttan en düşüğü (ad, değer). Bileşik skor standartta yoktur; türetilmiştir."""
+    if len(degerler) != 5:
+        raise GecersizGirdi("beş boyut değeri gerekir")
+    for d in degerler:
+        _yuzde(d, "boyut değeri")
+    i = min(range(5), key=lambda k: degerler[k])
+    return BOYUTLAR[i], degerler[i]
+
+
+# ---------------------------------------------------------------------------
+# 4) Yardımcı yapılar: Tablo 4 denetim tablosu
+# ---------------------------------------------------------------------------
+
+# (veri grubu, önerilen asgari gözden geçirme sıklığı, örnek hacmi, asgari örnek %, gerekli düzey %)
+TABLO4 = [
+    ("Kişisel bilgi",                          "Yılda en az bir",       "%1–5 (ilk sonuçlara göre)", 1, 96),
+    ("Pozisyon bilgisi (kritik pozisyon dahil)", "Yılda en az bir",     "%1–5",                      1, 95),
+    ("Organizasyon şeması",                    "Yılda iki ila dört",    "%5",                        5, 95),
+    ("Öğrenme ve gelişim kayıtları",           "Yılda en az bir",       "%3–5",                      3, 95),
+    ("Personel işe alım",                      "Yılda en az bir",       "%3–5",                      3, 95),
+    ("Uyum (onboarding)",                      "Yılda iki ila dört",    "%2",                        2, 98),
+    ("İK veri sözlüğü",                        "Yılda en az bir",       "%3–5",                      3, 95),
+    ("İK analitiği (özellikle FTE, kadro)",    "Yılda iki ila dört",    "%5",                        5, 98),
+    ("İK ana veri seti (kullanıcı tanımlı)",   "Yılda en az bir",       "%3–5",                      3, 95),
+    ("İK maaş verisi",                         "Yılda iki ila dört",    "%3",                        3, 99),
+    ("İşgücü performans derecelendirmeleri",   "Yılda en az bir",       "%2",                        2, 99),
+    ("Vize bilgisi (çalışma hakkı)",           "Bitişten önce (örn. 2 ay)", "Tüm bitiş tarihlerinin teyidi", 100, 100),
+    ("Fazla mesai durumu — muaf",              "Yılda en az bir",       "%2",                        2, 100),
+    ("Prim ödemeleri",                         "Yılda en az bir",       "%2",                        2, 100),
+    ("Zorunlu yetki belgeleri",                "Yılda en az bir",       "%2",                        2, 100),
+    ("Anket verisi",                           "Yılda en az bir",       "%2",                        2, 95),
+    ("İş sağlığı ve güvenliği verisi",         "Yılda en az bir",       "%5",                        5, 100),
+]
+
+
+@dataclass
+class VeriGrubu:
+    """Tek bir veri grubunun gözden geçirme kaydı."""
+    ad: str
+    kayit: float = 0      # gruptaki toplam kayıt
+    ornek: float = 0      # gözden geçirilen kayıt
+    hatali: float = 0     # hatalı bulunan kayıt
+    gerekli: float = 95   # gerekli doğruluk/tamlık düzeyi (%)
+    min_pct: float = 1    # Tablo 4'teki asgari örnek yüzdesi
+
+    @property
+    def dogruluk(self):
+        return round(dogruluk_orani(self.ornek, self.hatali), 1) if self.ornek > 0 else None
+
+    @property
+    def karsilandi(self):
+        return None if self.dogruluk is None else self.dogruluk >= self.gerekli
+
+    @property
+    def yeterli_ornek(self):
+        return self.kayit <= 0 or self.ornek >= gereken_ornek(self.kayit, self.min_pct)
+
+
+@dataclass
+class DenetimTablosu:
+    """Dönemin veri gruplarına göre gözden geçirme sonuçları."""
+    gruplar: list = field(default_factory=list)
+
+    def ekle(self, ad, kayit, ornek, hatali, gerekli=95, min_pct=1):
+        self.gruplar.append(VeriGrubu(ad, kayit, ornek, hatali, gerekli, min_pct))
+        return self
+
+    def ozet(self) -> dict:
+        olculen = [g for g in self.gruplar if g.ornek > 0]
+        ornek = sum(g.ornek for g in olculen)
+        hatali = sum(g.hatali for g in olculen)
+        basarisiz = [g.ad for g in olculen if not g.karsilandi]
+        en_dusuk = min(olculen, key=lambda g: g.dogruluk)
+        return {
+            "grup_sayisi": len(olculen),
+            "toplam_ornek": ornek,
+            "toplam_hatali": hatali,
+            "genel_dogruluk": round(dogruluk_orani(ornek, hatali), 1),
+            "esigi_karsilamayan": len(basarisiz),
+            "karsilamayanlar": basarisiz,
+            "yetersiz_ornek": [g.ad for g in olculen if not g.yeterli_ornek],
+            "en_dusuk": (en_dusuk.ad, en_dusuk.dogruluk),
+        }
+
+
+def ornek_tablo() -> DenetimTablosu:
+    """On yedi veri grubu için örnek gözden geçirme (uydurma veri)."""
+    kayit_ornek_hata = [
+        (1200, 36, 1), (1200, 36, 2), (300, 15, 0), (4200, 168, 6), (260, 10, 1),
+        (96, 3, 0), (180, 6, 0), (480, 24, 1), (1200, 40, 1), (1200, 36, 0),
+        (1100, 22, 0), (48, 48, 0), (1200, 24, 1), (800, 16, 0), (150, 3, 0),
+        (900, 18, 1), (320, 16, 0),
+    ]
+    t = DenetimTablosu()
+    for (ad, _s, _o, min_pct, gerekli), (k, o, h) in zip(TABLO4, kayit_ornek_hata):
+        t.ekle(ad, k, o, h, gerekli, min_pct)
+    return t
+
+
+def veri_denetimi(sahiplik_atandi: bool = False,
+                  prosedurler_belgeli: bool = False,
+                  yasam_dongusu_cercevesi: bool = False,
+                  tolerans_tanimli: bool = False,
+                  gozden_gecirme_takvimi: bool = False,
+                  yillik_rapor: bool = False,
+                  yonetim_guvencesi: bool = False,
+                  tarihsel_temizlik_plani: bool = False) -> list:
+    """Bir işgücü veri kalitesi sisteminin, standardın "shall" ifadelerine göre eksiklerini sıralar.
+
+    Maddeler ISO 30435'in 5.4, 6, 7 maddelerinden türetilmiştir; bir uygunluk
+    sınaması değil, hazırlık kontrol listesidir.
+    """
+    kontroller = [
+        (sahiplik_atandi, "İşgücü verisinin sahipliği, paydaş gruplarından kişiler atanarak belirlenmemiş (6.1)."),
+        (prosedurler_belgeli, "İlk giriş, sürekli güncelleme ve veri bakımı için belgelenmiş prosedür yok (6.1)."),
+        (yasam_dongusu_cercevesi, "İşgücü yaşam döngüsü çerçevesi, kurumun faaliyetlerini belgelemek için kullanılmamış (5.3)."),
+        (tolerans_tanimli, "Her anahtar veri noktası için kabul edilen asgari hata oranı ve örnek hacmi tanımlı değil (7.4)."),
+        (gozden_gecirme_takvimi, "Gözden geçirme ve güncelleme takvimi ile prosedürü geliştirilmemiş (6.1, 7.4)."),
+        (yillik_rapor, "Veri kalitesi gözden geçirme sürecinin en az yıllık değerlendirmesi ve raporu yok (7.2)."),
+        (yonetim_guvencesi, "Yönetim güvencesi (rutin raporlama, eyleme dönüşen sonuç kanıtı, hesap verebilirlik) kurulmamış (7.3)."),
+        (tarihsel_temizlik_plani, "Tarihsel veri temizliği için proje ekibi ve proje planı yok (6.3.4)."),
+    ]
+    return [metin for tamam, metin in kontroller if not tamam]
+
+
+# ---------------------------------------------------------------------------
+# 5) Dağıtıcı: hesaplayıcı arayüzünün kullandığı tek giriş noktası
+# ---------------------------------------------------------------------------
+
+METRIK_LISTESI = [
+    "dogruluk", "ornek", "tamlik", "guncellik", "tutarlilik",
+    "uygunluk", "belge_teyit", "temizlik", "skor_karti",
+]
+
+
+def _g(x) -> str:
+    """Sayıyı, bilimsel gösterim kullanmadan en kısa biçimde yazar."""
+    return f"{x:.12g}"
+
+
+def hesapla(metrik: str, **g) -> dict:
+    """Metrik kimliği ve girdilerle hesabı yapar; sözlük döndürür.
+
+    Dönen anahtarlar: deger, ifade (formülün yerine konmuş hâli), ondalik,
+    birim, ayrinti (etiket–değer çiftleri), varsa durum ("ok" ya da "bad").
+    """
+    if metrik == "dogruluk":
+        d = dogruluk_orani(g["ornek"], g["hatali"])
+        ok = esik_karsilandi(d, g["esik"])
+        return {"deger": d, "ondalik": 1, "birim": "% doğruluk",
+                "ifade": f"(1 − {_g(g['hatali'])} ÷ {_g(g['ornek'])}) × 100",
+                "durum": "ok" if ok else "bad",
+                "ayrinti": [["Hata oranı (%)", round(hata_orani(g["ornek"], g["hatali"]), 1)],
+                            ["Gerekli düzeyden fark (puan)", round(d - g["esik"], 1)],
+                            ["Gerekli düzey karşılandı mı", "Evet" if ok else "Hayır"]]}
+
+    if metrik == "ornek":
+        n = gereken_ornek(g["kayit"], g["ornek_pct"])
+        return {"deger": n, "ondalik": 0, "birim": "kayıt (asgari örnek)",
+                "ifade": f"⌈{_g(g['kayit'])} × {_g(g['ornek_pct'])} ÷ 100⌉",
+                "ayrinti": [["Örneklenmeyen kayıt", g["kayit"] - n],
+                            ["Fiili örnek payı (%)", round(100 * n / g["kayit"], 1)],
+                            ["Hatasız örnekte %95 güvenle hata üst sınırı (%)", round(hatasiz_ust_sinir(n), 1)]]}
+
+    if metrik == "tamlik":
+        d = tamlik_orani(g["dolu"], g["beklenen"])
+        ok = esik_karsilandi(d, g["esik"])
+        return {"deger": d, "ondalik": 1, "birim": "% tamlık",
+                "ifade": f"({_g(g['dolu'])} ÷ {_g(g['beklenen'])}) × 100",
+                "durum": "ok" if ok else "bad",
+                "ayrinti": [["Eksik alan", g["beklenen"] - g["dolu"]],
+                            ["Eksik payı (%)", round(100 - d, 1)],
+                            ["Gerekli düzey karşılandı mı", "Evet" if ok else "Hayır"]]}
+
+    if metrik == "guncellik":
+        d = zamaninda_orani(g["zamaninda"], g["olay"])
+        gecikme = ortalama_gecikme(g["toplam_gecikme_gun"], g["olay"])
+        return {"deger": d, "ondalik": 1, "birim": "% zamanında kayıt",
+                "ifade": f"({_g(g['zamaninda'])} ÷ {_g(g['olay'])}) × 100",
+                "ayrinti": [["Geç kaydedilen olay", g["olay"] - g["zamaninda"]],
+                            ["Ortalama gecikme (gün)", round(gecikme, 1)],
+                            ["Ortalama gecikme (hafta)", round(gecikme / 7, 1)]]}
+
+    if metrik == "tutarlilik":
+        d = tutarlilik_orani(g["karsilastirilan"], g["tutarsiz"])
+        return {"deger": d, "ondalik": 1, "birim": "% tutarlı",
+                "ifade": f"(1 − {_g(g['tutarsiz'])} ÷ {_g(g['karsilastirilan'])}) × 100",
+                "ayrinti": [["Tutarlı kayıt", g["karsilastirilan"] - g["tutarsiz"]],
+                            ["Tutarsız kayıt", g["tutarsiz"]],
+                            ["Bin kayıtta tutarsızlık", round(1000 * g["tutarsiz"] / g["karsilastirilan"])]]}
+
+    if metrik == "uygunluk":
+        d = uygunluk_orani(g["ilgili"], g["toplanan"])
+        return {"deger": d, "ondalik": 1, "birim": "% amaca hizmet eden",
+                "ifade": f"({_g(g['ilgili'])} ÷ {_g(g['toplanan'])}) × 100",
+                "ayrinti": [["Amaçla ilişkisiz veri noktası", g["toplanan"] - g["ilgili"]],
+                            ["İlişkisizin payı (%)", round(100 - d, 1)]]}
+
+    if metrik == "belge_teyit":
+        d = belge_teyit_orani(g["teyitli"], g["toplam"])
+        if g["yakin"] < 0 or g["dolmus"] < 0 or g["yakin"] + g["dolmus"] > g["toplam"]:
+            raise GecersizGirdi("yaklaşan ve dolmuş belgeler toplamdan büyük olamaz")
+        ok = d >= 100 and g["dolmus"] == 0
+        return {"deger": d, "ondalik": 1, "birim": "% bitiş tarihi teyitli",
+                "ifade": f"({_g(g['teyitli'])} ÷ {_g(g['toplam'])}) × 100",
+                "durum": "ok" if ok else "bad",
+                "ayrinti": [["Bitiş tarihi teyit edilmemiş", g["toplam"] - g["teyitli"]],
+                            ["Süresi yaklaşan (uyarı süresi içinde)", g["yakin"]],
+                            ["Süresi dolmuş", g["dolmus"]]]}
+
+    if metrik == "temizlik":
+        r = temizlik_is_yuku(g["kayit"], g["hata_pct"], g["dk_kayit"], g["saat_ucret"])
+        return {"deger": r["maliyet"], "ondalik": 0, "birim": "TL",
+                "ifade": f"{_g(g['kayit'])} × {_g(g['hata_pct'])} ÷ 100 × {_g(g['dk_kayit'])} ÷ 60 × {_g(g['saat_ucret'])}",
+                "ayrinti": [["Düzeltilecek kayıt", r["hatali"]],
+                            ["Gereken iş saati", r["saat"]],
+                            ["Gereken iş günü (8 saat)", round(r["saat"] / 8, 1)]]}
+
+    if metrik == "skor_karti":
+        degerler = [g["dogruluk"], g["guncellik"], g["tamlik"], g["tutarlilik"], g["uygunluk"]]
+        ad, d = zayif_halka(degerler)
+        return {"deger": d, "ondalik": 1, "birim": "% (en zayıf boyut)",
+                "ifade": "min(" + ", ".join(_g(x) for x in degerler) + ")",
+                "ayrinti": [["En zayıf boyut", ad],
+                            ["Boyutların ortalaması (%)", round(sum(degerler) / 5, 1)],
+                            ["En güçlü ile en zayıf arasındaki fark (puan)", round(max(degerler) - d, 1)]]}
+
+    raise ValueError(f"Bilinmeyen metrik: {metrik}")
+
+
+# ---------------------------------------------------------------------------
+# 6) Doğrulama çıktısı
+# ---------------------------------------------------------------------------
+
+def _demo() -> None:
+    cizgi = "-" * 64
+    print("ISO 30435 — doğrulama çıktısı")
+    print(cizgi)
+
+    t = ornek_tablo()
+    print("Veri gruplarına göre gözden geçirme (Tablo 4 düzeyleri; uydurma veri)")
+    print(f"{'Veri grubu':<42}{'Örnek':>6}{'Hata':>5}{'Doğr.%':>8}{'Gerekli':>8}")
+    for g in t.gruplar:
+        isaret = "✓" if g.karsilandi else "✗"
+        print(f"{g.ad:<42}{g.ornek:>6}{g.hatali:>5}{g.dogruluk:>8.1f}{g.gerekli:>8} {isaret}")
+    print(cizgi)
+    for anahtar, deger in t.ozet().items():
+        print(f"{anahtar:<20}: {deger}")
+    print(cizgi)
+
+    print(f"Gereken örnek (1200, %5) : {gereken_ornek(1200, 5)} kayıt"
+          f" (hatasız sınır {hatasiz_ust_sinir(60):.1f} %)")
+    print(f"Tamlık                   : {tamlik_orani(5712, 6000):.1f} %")
+    print(f"Güncellik                : {zamaninda_orani(410, 500):.1f} %,"
+          f" ort. gecikme {ortalama_gecikme(3250, 500):.1f} gün")
+    print(f"Tutarlılık               : {tutarlilik_orani(300, 21):.1f} %")
+    print(f"Uygunluk                 : {uygunluk_orani(98, 140):.1f} %")
+    print(f"Belge teyidi             : {belge_teyit_orani(76, 80):.1f} %")
+    t_yuk = temizlik_is_yuku(12000, 8, 6, 350)
+    tl = f"{t_yuk['maliyet']:,.0f}".replace(",", ".")
+    print(f"Temizlik iş yükü         : {t_yuk['saat']:.0f} saat, {tl} TL")
+    print(f"Zayıf halka              : {zayif_halka([97, 82, 95, 93, 70])}")
+    print(cizgi)
+
+    print("Dağıtıcı örneği:")
+    print(hesapla("dogruluk", ornek=200, hatali=6, esik=95))
+    print(cizgi)
+
+    print("Sistem denetimi (hiçbir ön koşulu sağlamayan bir kurum için):")
+    for u in veri_denetimi():
+        print(" !", u)
+
+
+if __name__ == "__main__":
+    _demo()
+</script>
+<script>
+/* =========================================================
+   1) METRİK VERİ TABANI
+   u: kullanıcılar (hr İK/veri sorumluları / exec üst yönetim / line hat yöneticileri ve takım liderleri /
+      it bordro, BT ve raporlama / aud denetçiler ve çalışan temsilcileri)
+   st: süreç aşaması (tanim madde 4–5, yakala 6.1–6.2, tarih 6.3, gozden madde 7, etki Ek A)
+   r: raporlama (ic, dis)
+   t: aile (p doğruluk / s güncellik / c tamlık / r tutarlılık / o uygunluk ve süreç)
+   calc: bu sayfadaki hesaplayıcı kimliği
+   t4: standardın Tablo 4 (gözden geçirme zaman çerçevesi ve örnek hacmi) listesinde yer alır
+   k: ek etiket (ctx bağlam etkeni, onk ön koşul, tur türetilmiş)
+   ========================================================= */
+var METRICS = [
+ {g:"Doğruluk", t:"p", items:[
+  {n:"Doğruluk oranı (örnekte hatasız kayıt)", st:"gozden", r:["ic","dis"], calc:"dogruluk", d:"Örneklenen kayıtlarda hatasız olanların oranı; kullanıcı tanımlı gerekli düzeyle karşılaştırılır (4.2, 7.4)", u:["hr","exec","line","it","aud"]},
+  {n:"Kişisel bilgi doğruluğu", st:"gozden", r:["ic"], t4:1, d:"Ad, adres, doğum tarihi, nitelikler, belge yenileme tarihleri, vergi numarası, banka bilgisi; Tablo 4: %96–100", u:["hr","line","it"]},
+  {n:"Pozisyon bilgisi ve kritik pozisyon işareti doğruluğu", st:"gozden", r:["ic"], t4:1, d:"Pozisyon unvanı, bağlı olduğu kişi, kritik pozisyon e/h, zorunlu gereksinimler; Tablo 4: %95", u:["hr","exec","line"]},
+  {n:"Organizasyon şeması doğruluğu", st:"gozden", r:["ic"], t4:1, d:"Raporlama hatlarının ve pozisyon unvanlarının tam şeması; Tablo 4: %95", u:["hr","exec","line"]},
+  {n:"Maaş verisi doğruluğu", st:"gozden", r:["ic","dis"], t4:1, d:"Tüm bordro verisi; Tablo 4: %99–100; yılda iki ila dört gözden geçirme", u:["hr","exec","it","aud"]},
+  {n:"Performans derecelendirmeleri doğruluğu", st:"gozden", r:["ic"], t4:1, d:"Tablo 4: %99", u:["hr","line"]},
+  {n:"Fazla mesai durumu (muaf) ve prim ödemeleri", st:"gozden", r:["ic"], t4:1, d:"Tablo 4: %100", u:["hr","it","aud"]},
+  {n:"İK analitiği (FTE ve kadro) doğruluğu", st:"gozden", r:["ic","dis"], t4:1, d:"FTE, kadro, toplam çalışan, yarı zamanlı, gündelik, yüklenici, devir; Tablo 4: %98", u:["hr","exec","it","aud"]},
+  {n:"İş sağlığı ve güvenliği verisi doğruluğu", st:"gozden", r:["ic","dis"], t4:1, d:"Kazalar ve ramak kalalar; Tablo 4: %100", u:["hr","exec","line","aud"]},
+  {n:"Doğruluk hedefinin sektör kılavuzlarıyla hizalanması", st:"tanim", r:["ic"], k:"onk", d:"Gereken doğruluk önce verinin niteliğine göre belirlenir; mevcut doğruluk gelecek hedefin temelidir (4.2)", u:["hr","exec","aud"]},
+  {n:"Gözden geçirilecek asgari örnek hacmi", st:"gozden", r:["ic"], t4:1, calc:"ornek", d:"Tablo 4'teki yüzdeye göre veri grubundan örneklenecek kayıt sayısı", u:["hr","it","aud"]}
+ ]},
+ {g:"Güncellik", t:"s", items:[
+  {n:"Olay ile kayıt arasındaki gecikme", st:"yakala", r:["ic"], calc:"guncellik", d:"Hedef süre içinde kaydedilen olayların oranı ve ortalama gecikme (4.3, 6.2)", u:["hr","line","it"]},
+  {n:"Yakalama zamanlaması (ayrılış nedeni, vardiya başı ve sonu)", st:"yakala", r:["ic"], d:"Ayrılış nedeni olay anında ve birkaç ay sonra farklı olabilir; toplama zamanı eğilimleri etkiler (4.3)", u:["hr","line"]},
+  {n:"Vize ve zorunlu yetki bitişlerinin önceden gözden geçirilmesi", st:"gozden", r:["ic"], t4:1, d:"Bitişten önce gözden geçirme (örn. 2 ay) ve tüm bitiş tarihlerinin teyidi (7.4, Tablo 4)", u:["hr","line","aud"]},
+  {n:"Gözden geçirme sıklığı", st:"gozden", r:["ic"], t4:1, d:"Asgari yılda bir; bordro, şema ve analitikte yılda iki ila dört; daha fazla güvence gerekiyorsa daha sık (7.4)", u:["hr","exec","aud"]},
+  {n:"Tarihsel veri penceresi", st:"tarih", r:["ic"], k:"onk", d:"Yuvarlanan üç ila beş yıllık geçmiş; değer sektöre ve kuruma özgü (6.3.2)", u:["hr","exec","it"]},
+  {n:"Eğilim analizi için dönem sürekliliği", st:"tarih", r:["ic","dis"], d:"Tarihsel raporlama ve eğilim analizi doğru tarihsel veriye dayanır (6.3.1)", u:["hr","exec","it"]}
+ ]},
+ {g:"Tamlık", t:"c", items:[
+  {n:"Zorunlu alan tamlığı", st:"gozden", r:["ic","dis"], calc:"tamlik", d:"Dolu zorunlu alanların beklenen alanlara oranı (4.4)", u:["hr","exec","line","it","aud"]},
+  {n:"Nitelik görülmesi ve doğrulanması", st:"yakala", r:["ic"], d:"Niteliklerin düzenli görülüp doğrulanmaması tamlık sorunudur (4.4 a)", u:["hr","line","aud"]},
+  {n:"Referansların aranması", st:"yakala", r:["ic"], d:"Aranmamış referanslar eksik veridir (4.4 b)", u:["hr","line"]},
+  {n:"Performans bilgisinin kaydedilmesi", st:"yakala", r:["ic"], d:"Kaydedilmemiş performans bilgisi kurum ve birey için risk yaratır (4.4 c)", u:["hr","line"]},
+  {n:"Zorunlu belge, yetki ve vize kayıtları", st:"gozden", r:["ic"], t4:1, calc:"belge_teyit", d:"Lisans yenilemeleri, yeniden sertifikalandırma, sigorta, meslek icra belgesi; Tablo 4: %100", u:["hr","line","aud"]},
+  {n:"Her çalışan için tam veri seti", st:"yakala", r:["ic"], k:"onk", d:"Katılma, geçiş ve ayrılma adımlarında belgelenmiş prosedürlere göre yakalanır (6.2)", u:["hr","line","it"]},
+  {n:"Öğrenme ve gelişim kayıtları tamlığı", st:"gozden", r:["ic"], t4:1, d:"Katılınan kurslar, sertifika yenilemeleri, zorunlu eğitim tamamlama; Tablo 4: %95", u:["hr","line"]},
+  {n:"İşe alım ve uyum verisi tamlığı", st:"gozden", r:["ic"], t4:1, d:"İşe alım maliyeti, doldurma süresi, kalite, etki; uyum: tam verimliliğe ulaşma süresi; Tablo 4: %95 ve %98", u:["hr","line"]}
+ ]},
+ {g:"Tutarlılık", t:"r", items:[
+  {n:"Sistemler ve dönemler arası tutarlılık", st:"gozden", r:["ic"], calc:"tutarlilik", d:"Aynı bilginin farklı sistem, dönem ya da biçimde çelişmemesi (4.5)", u:["hr","exec","it","aud"]},
+  {n:"Toplama zamanının sabitliği", st:"yakala", r:["ic"], d:"Aylık ya da iki aylık toplama değişmemeli (4.5 a)", u:["hr","it"]},
+  {n:"Hesaplama formüllerinin sabitliği", st:"yakala", r:["ic","dis"], d:"Hesaplamalarda kullanılan formüller değişmemeli (4.5 b)", u:["hr","exec","it","aud"]},
+  {n:"Veri noktası ve biçimlerinin sabitliği", st:"yakala", r:["ic"], d:"Tarih, unvan, departman adı ve çalışan numarası biçimleri değişmemeli (4.5 c)", u:["hr","it"]},
+  {n:"İK veri sözlüğü", st:"tanim", r:["ic"], t4:1, k:"onk", d:"Tablo 4: yılda en az bir gözden geçirme, %3–5 örnek, %95", u:["hr","it"]},
+  {n:"İK ana veri seti (kullanıcı tanımlı)", st:"tanim", r:["ic"], t4:1, k:"onk", d:"Tablo 4: yılda en az bir gözden geçirme, %3–5 örnek, %95", u:["hr","it"]},
+  {n:"Yinelenen, standart dışı biçimli ve eksik değerlerin temizliği", st:"tarih", r:["ic"], d:"Yinelenenleri kaldırma, büyük/küçük harf standardı, veri türü dönüşümü, biçim temizliği, hata düzeltme (6.3.2)", u:["hr","it"]}
+ ]},
+ {g:"Uygunluk, süreç ve yönetim", t:"o", items:[
+  {n:"İlgili veri payı (uygunluk)", st:"tanim", r:["ic"], calc:"uygunluk", d:"Toplanan veri noktalarından amaca hizmet edenlerin oranı (4.6)", u:["hr","exec","it"]},
+  {n:"Girdi–süreç–çıktı–sonuç gruplaması", st:"tanim", r:["ic"], k:"onk", d:"Metrikleri performans denetim çerçevesiyle gruplayarak ilgili veriyi belirler (4.6)", u:["hr","exec","it"]},
+  {n:"İşgücü yaşam döngüsü çerçevesi (planla–uygula–kontrol et–önlem al)", st:"tanim", r:["ic"], k:"onk", d:"Kurumun yürüttüğü tüm işgücü faaliyetlerinin tablosu (5.1, Tablo 1)", u:["hr","exec"]},
+  {n:"Çerçevenin alt işlevlere genişletilmesi", st:"tanim", r:["ic"], d:"Örneğin devir: gönüllü, istemsiz ve kritik pozisyon (5.2, Tablo 2)", u:["hr","it"]},
+  {n:"Genel işgücü veri çerçevesi (Tablo 3)", st:"tanim", r:["ic"], k:"onk", d:"Yaşam döngüsü boyunca yakalanacak anahtar veri noktaları; kurum belirler (5.4)", u:["hr","exec","it"]},
+  {n:"Veri kalitesi güvence rejimi", st:"tanim", r:["ic"], k:"onk", d:"Zaman çerçeveleri, örneklenecek hacim ve doğruluk gereksinimleri atanır (5.4)", u:["hr","exec","aud"]},
+  {n:"Veri sahipliği ve sorumlulukların atanması", st:"yakala", r:["ic"], k:"onk", d:"Paydaş gruplarından kişiler belirlenir; takım lideri, yönetici ve üst yönetici doğrudan raporları için sorumlu olabilir (6.1)", u:["hr","exec","line"]},
+  {n:"Veri kalitesinin performans yönetimine eklenmesi", st:"yakala", r:["ic"], k:"onk", d:"Veri kalitesi ölçümü bireysel performans yönetimi görüşmelerinin bileşeni olabilir (6.1)", u:["hr","line"]},
+  {n:"Giriş, güncelleme ve bakım prosedürlerinin belgelenmesi", st:"yakala", r:["ic"], k:"onk", d:"İlk giriş, sürekli güncelleme ve bakım; gözden geçirme takvimi (6.1)", u:["hr","it","aud"]},
+  {n:"Veri şablonu (elektronik tablodan teknoloji tabanlı çözüme)", st:"yakala", r:["ic"], k:"ctx", d:"Küçük kurumlar elektronik tablo, büyükler karmaşık çözüm kullanabilir (6.2)", u:["hr","it"]},
+  {n:"Tarihsel veri temizliği iş yükü ve maliyeti", st:"tarih", r:["ic"], k:"tur", calc:"temizlik", d:"Maliyet, işgücü verisinin karmaşıklığına göre değişir; kapsam fayda ve maliyete göre belirlenir (6.3.3)", u:["hr","exec","it"]},
+  {n:"Tarihsel temizlik kapsamı: güncel işgücü ve kritik pozisyonlar", st:"tarih", r:["ic"], k:"onk", d:"Asgari odak: güncel işgücü ve kritik pozisyon, beceri ve kapasitelere ilişkin tarihsel veri (6.3.3)", u:["hr","exec","line"]},
+  {n:"Tarihsel temizlik proje ekibi ve planı", st:"tarih", r:["ic"], k:"onk", d:"İK, bordro, çalışan temsilcileri, BT, raporlama, üst yönetim; gerekirse denetçiler (6.3.4)", u:["hr","exec","it","aud"]},
+  {n:"Veri kalitesi gözden geçirme raporu", st:"gozden", r:["ic"], d:"Gözden geçirme sürecinin değerlendirmesi ve raporu en az yıllık (7.2)", u:["hr","exec","aud"]},
+  {n:"Yönetim güvencesi", st:"gozden", r:["ic"], k:"onk", d:"Rutin raporlama, eylem sonuç kanıtı, ölçüm ve analiz, sürekli iyileştirme, hesap verebilirlik (7.3)", u:["hr","exec","aud"]},
+  {n:"Denetim önceliği: kritik strateji ve büyük riskler", st:"gozden", r:["ic"], d:"Denetim çalışması strateji ve risk incelemesiyle belirlenir (7.3)", u:["exec","aud"]},
+  {n:"Tolerans altında temizleme ve karşılık eylem kaydı", st:"gozden", r:["ic"], k:"onk", d:"Veri kalitesi tolerans altına düşünce temizleme yapılır ve eylem sorumluya belgelenir (7.4)", u:["hr","line","it","aud"]},
+  {n:"Boyut skor kartı (en zayıf unsur)", st:"gozden", r:["ic"], k:"tur", calc:"skor_karti", d:"Beş unsurun en düşüğü; bileşik skor standartta yoktur, türetilmiştir", u:["hr","exec"]},
+  {n:"Kötü veri kalitesinin iş üzerindeki etkisi", st:"etki", r:["ic","dis"], k:"ctx", d:"Standardın aktardığı bulgular: girişimlerin %40'ında hedeflenen faydanın alınamaması, emek verimliliğinde %20'ye varan etki (A.1)", u:["exec","hr"]},
+  {n:"Dağınık veri sahipliği (İK, finans, satın alma, güvenlik)", st:"etki", r:["ic"], k:"ctx", d:"İşgücü verisi çoğunlukla kötü örgütlenmiştir ve birimlere bölünmüştür (A.2)", u:["hr","exec","line","it"]},
+  {n:"Hibrit ve uzaktan çalışma konumlarının kaydı", st:"etki", r:["ic"], k:"ctx", d:"Acil durum iletişim bilgisi için önemli olabilir (A.3)", u:["hr","line","it"]},
+  {n:"Ekonomik, çalışan ve sosyal faydalar", st:"etki", r:["ic","dis"], k:"ctx", d:"Doğru ve zamanında veri; verimli kaynak kullanımı, istikrarlı işgücü, çeşitlilik gelişimi (A.4–A.7)", u:["exec","hr","aud"]}
+ ]}
+];
+
+var USERS = ["hr","exec","line","it","aud"];
+var AILE_AD = {p:"doğruluk", s:"güncellik", c:"tamlık", r:"tutarlılık", o:"uygunluk ve süreç"};
+var EK_AD = {ctx:"bağlam etkeni", onk:"ön koşul", tur:"türetilmiş"};
+
+/* --- matris çizimi --- */
+function renderMatrix(){
+  var fu = document.getElementById("fUser").value;
+  var fs = document.getElementById("fStage").value;
+  var ft = document.getElementById("fType").value;
+  var fr = document.getElementById("fRep").value;
+  var fq = document.getElementById("fQ").value.toLocaleLowerCase("tr");
+  var body = document.getElementById("mBody");
+  var html = "", shown = 0;
+
+  METRICS.forEach(function(grp){
+    if(ft && grp.t !== ft) return;
+    var rows = "";
+    grp.items.forEach(function(m){
+      if(fu && m.u.indexOf(fu) === -1) return;
+      if(fs && m.st !== fs) return;
+      if(fr && m.r.indexOf(fr) === -1) return;
+      if(fq && m.n.toLocaleLowerCase("tr").indexOf(fq) === -1) return;
+      shown++;
+      var cells = USERS.map(function(u){
+        if(m.u.indexOf(u) === -1) return '<td class="num"></td>';
+        var mark = '<span class="dot ' + grp.t + '"></span>';
+        return '<td class="num" title="' + m.n + '">' + (m.calc ? '<b>' + mark + '</b>' : mark) + '</td>';
+      }).join("");
+      var tags = '<span class="tag ' + grp.t + '">' + AILE_AD[grp.t] + '</span>' +
+                 (m.k ? ' <span class="tag lvl">' + EK_AD[m.k] + '</span>' : "") +
+                 (m.t4 ? ' <span class="tag iso">Tablo 4</span>' : "") +
+                 (m.calc ? ' <span class="tag lvl">hesaplayıcı</span>' : "") +
+                 (m.r.indexOf("dis") !== -1 ? ' <span class="tag iso">dış rapor</span>' : "");
+      rows += '<tr><td class="name">' + (m.calc ? '<b>' + m.n + '</b>' : m.n) + ' ' + tags +
+              '<em>' + m.d + '</em></td>' + cells + '</tr>';
+    });
+    if(rows){
+      html += '<tr class="group"><td colspan="6">' + grp.g + '</td></tr>' + rows;
+    }
+  });
+
+  body.innerHTML = html || '<tr><td colspan="6">Bu filtre birleşimiyle eşleşen metrik yok.</td></tr>';
+  document.getElementById("mCount").textContent = shown + " metrik ve etken gösteriliyor.";
+}
+["fUser","fStage","fType","fRep","fQ"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", renderMatrix);
+});
+renderMatrix();
+
+/* =========================================================
+   2) TABLO 4 VE DENETİM TABLOSU
+   ========================================================= */
+/* veri grubu, gözden geçirme sıklığı, örnek hacmi, asgari örnek %, gerekli düzey %, gerekli düzey gösterimi */
+var TABLO4 = [
+  ["Kişisel bilgi",                           "Yılda en az bir",           "%1–5 (ilk sonuçlara göre)",     1, 96, "%96–100"],
+  ["Pozisyon bilgisi (kritik pozisyon dahil)", "Yılda en az bir",          "%1–5",                          1, 95, "%95"],
+  ["Organizasyon şeması",                     "Yılda iki ila dört",        "%5",                            5, 95, "%95"],
+  ["Öğrenme ve gelişim kayıtları",            "Yılda en az bir",           "%3–5",                          3, 95, "%95"],
+  ["Personel işe alım",                       "Yılda en az bir",           "%3–5",                          3, 95, "%95"],
+  ["Uyum (onboarding)",                       "Yılda iki ila dört",        "%2",                            2, 98, "%98"],
+  ["İK veri sözlüğü",                         "Yılda en az bir",           "%3–5",                          3, 95, "%95"],
+  ["İK analitiği (özellikle FTE, kadro)",     "Yılda iki ila dört",        "%5",                            5, 98, "%98"],
+  ["İK ana veri seti (kullanıcı tanımlı)",    "Yılda en az bir",           "%3–5",                          3, 95, "%95"],
+  ["İK maaş verisi",                          "Yılda iki ila dört",        "%3",                            3, 99, "%99–100"],
+  ["İşgücü performans derecelendirmeleri",    "Yılda en az bir",           "%2",                            2, 99, "%99"],
+  ["Vize bilgisi (çalışma hakkı)",            "Bitişten önce (örn. 2 ay)", "Tüm bitiş tarihlerinin teyidi", 100, 100, "%100"],
+  ["Fazla mesai durumu — muaf",               "Yılda en az bir",           "%2",                            2, 100, "%100"],
+  ["Prim ödemeleri",                          "Yılda en az bir",           "%2",                            2, 100, "%100"],
+  ["Zorunlu yetki belgeleri",                 "Yılda en az bir",           "%2",                            2, 100, "%100"],
+  ["Anket verisi",                            "Yılda en az bir",           "%2",                            2, 95, "%95"],
+  ["İş sağlığı ve güvenliği verisi",          "Yılda en az bir",           "%5",                            5, 100, "%100"]
+];
+/* toplam kayıt, örneklenen, hatalı (uydurma örnek veri) */
+var ORNEK_VERI = [
+  [1200,36,1],[1200,36,2],[300,15,0],[4200,168,6],[260,10,1],[96,3,0],[180,6,0],[480,24,1],
+  [1200,40,1],[1200,36,0],[1100,22,0],[48,48,0],[1200,24,1],[800,16,0],[150,3,0],[900,18,1],[320,16,0]
+];
+var SATIR = TABLO4.length;
+
+/* Tablo 4'ü sayfada göster */
+(function(){
+  document.getElementById("t4Body").innerHTML = TABLO4.map(function(r){
+    return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td><td class="num">' + r[5] + '</td></tr>';
+  }).join("");
+})();
+
+function buildTbl(){
+  var html = "";
+  for(var i=0;i<SATIR;i++){
+    html += '<tr>' +
+      '<td>' + TABLO4[i][0] + '<br><small>' + TABLO4[i][1] + ' · örnek: ' + TABLO4[i][2] + '</small></td>' +
+      '<td><input type="number" min="0" step="1" id="p_kayit_' + i + '"></td>' +
+      '<td><input type="number" min="0" step="1" id="p_ornek_' + i + '"></td>' +
+      '<td><input type="number" min="0" step="1" id="p_hata_' + i + '"></td>' +
+      '<td><input type="number" min="0" max="100" step="any" id="p_gerekli_' + i + '" value="' + TABLO4[i][4] + '"></td>' +
+      '<td class="calc" id="p_dogr_' + i + '">—</td></tr>';
+  }
+  document.getElementById("pBody").innerHTML = html;
+  document.getElementById("pBody").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", computeTbl);
+  });
+}
+
+function pNum(k, i){
+  var v = parseFloat(document.getElementById("p_" + k + "_" + i).value);
+  return isNaN(v) || v < 0 ? 0 : v;
+}
+
+var TBL = {n:0, kayit:0, ornek:0, hatali:0, esik:95, ok:false};
+
+function computeTbl(){
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var f0 = function(x){ return x.toLocaleString("tr-TR", {maximumFractionDigits:0}); };
+
+  var n = 0, kayit = 0, ornek = 0, hatali = 0, esikAgirlik = 0;
+  var basarisiz = [], yetersiz = [], hataliSatir = [], enDusuk = null;
+
+  for(var i=0;i<SATIR;i++){
+    var ad = TABLO4[i][0];
+    var k = pNum("kayit", i), o = pNum("ornek", i), h = pNum("hata", i), g = pNum("gerekli", i);
+    var hucre = document.getElementById("p_dogr_" + i);
+    if(!(o > 0)){ hucre.textContent = "—"; continue; }
+    if(h > o){ hucre.textContent = "Hatalı > örnek"; hataliSatir.push(ad); continue; }
+    n++; kayit += k; ornek += o; hatali += h; esikAgirlik += g * o;
+    var d = 100 * (1 - h / o);
+    var ok = d >= g;
+    hucre.textContent = f1(d) + (ok ? " ✓" : " ✗");
+    hucre.style.color = ok ? "var(--ok)" : "var(--bad)";
+    if(!ok) basarisiz.push(ad);
+    if(enDusuk === null || d < enDusuk.d) enDusuk = {ad:ad, d:d};
+    if(k > 0 && o < Math.ceil(k * TABLO4[i][3] / 100)) yetersiz.push(ad);
+  }
+
+  document.getElementById("tKayit").textContent = n ? f0(kayit) : "—";
+  document.getElementById("tOrnek").textContent = n ? f0(ornek) : "—";
+  document.getElementById("tHatali").textContent = n ? f0(hatali) : "—";
+  document.getElementById("tDogruluk").textContent = n ? f1(100 * (1 - hatali / ornek)) : "—";
+
+  var kart = document.getElementById("pCards");
+  var ok = n > 0;
+  TBL = {n:n, kayit:kayit, ornek:ornek, hatali:hatali, esik: ok ? Math.round(esikAgirlik / ornek * 10) / 10 : 95, ok:ok};
+  if(!ok){
+    kart.innerHTML = "";
+    document.getElementById("pNot").textContent =
+      "Tabloya örneklenen kayıt ve hatalı kayıt sayılarını girin ya da örnek veriyi yükleyin.";
+    return;
+  }
+
+  var genel = 100 * (1 - hatali / ornek);
+  var kartlar = '';
+  kartlar += '<div class="card"><b>' + f1(genel) + ' %</b><span>Genel doğruluk (örnek ağırlıklı)</span></div>';
+  kartlar += '<div class="card"><b>' + n + '</b><span>Gözden geçirilen veri grubu</span></div>';
+  kartlar += '<div class="card warn"><b>' + basarisiz.length + '</b><span>Gerekli düzeyi karşılamayan grup</span></div>';
+  kartlar += '<div class="card warn"><b>' + yetersiz.length + '</b><span>Örnek hacmi yetersiz grup</span></div>';
+  kartlar += '<div class="card alt"><b>' + (enDusuk ? f1(enDusuk.d) + ' %' : "—") + '</b><span>En düşük: ' + (enDusuk ? enDusuk.ad : "—") + '</span></div>';
+  kartlar += '<div class="card alt"><b>' + f0(hatali) + '</b><span>Toplam hatalı kayıt (örnekte)</span></div>';
+  kart.innerHTML = kartlar;
+
+  var not = "Örnek = " + f0(ornek) + ", hatalı = " + f0(hatali) + " → genel doğruluk = " + f1(genel) + " %. ";
+  if(genel >= 95 && basarisiz.length){
+    not += "Genel doğruluk yüksek görünse de " + basarisiz.length + " grup kendi gerekli düzeyinin altında: " + basarisiz.join("; ") +
+           ". Bu gruplarda temizleme yapılmalı ve karşılık eylemi sorumluya belgelenmelidir. ";
+  } else if(basarisiz.length){
+    not += "Gerekli düzeyin altındaki gruplar: " + basarisiz.join("; ") + ". ";
+  }
+  if(yetersiz.length) not += "Örnek hacmi Tablo 4'teki asgari yüzdenin altında: " + yetersiz.join("; ") + ". ";
+  if(hataliSatir.length) not += "Kontrol edin: hatalı kayıt, örneklenenden büyük olamaz (" + hataliSatir.join("; ") + ").";
+  document.getElementById("pNot").textContent = not;
+}
+
+function loadTblExample(){
+  for(var i=0;i<SATIR;i++){
+    var s = ORNEK_VERI[i];
+    document.getElementById("p_kayit_" + i).value = s[0];
+    document.getElementById("p_ornek_" + i).value = s[1];
+    document.getElementById("p_hata_" + i).value = s[2];
+    document.getElementById("p_gerekli_" + i).value = TABLO4[i][4];
+  }
+  computeTbl();
+}
+
+document.getElementById("btnOrnek").addEventListener("click", loadTblExample);
+document.getElementById("btnTemizle").addEventListener("click", function(){
+  for(var i=0;i<SATIR;i++){
+    ["kayit","ornek","hata"].forEach(function(k){ document.getElementById("p_" + k + "_" + i).value = ""; });
+    document.getElementById("p_gerekli_" + i).value = TABLO4[i][4];
+  }
+  computeTbl();
+});
+document.getElementById("btnCsv").addEventListener("click", function(){
+  var satir = ["Veri grubu;Toplam kayit;Orneklenen;Hatali;Gerekli duzey %;Dogruluk %"];
+  for(var i=0;i<SATIR;i++){
+    var k = pNum("kayit", i), o = pNum("ornek", i), h = pNum("hata", i), g = pNum("gerekli", i);
+    if(!(o > 0)) continue;
+    satir.push([TABLO4[i][0], k, o, h, g, (100 * (1 - h / o)).toFixed(1)].join(";"));
+  }
+  if(TBL.ok){
+    satir.push(["Toplam", TBL.kayit, TBL.ornek, TBL.hatali, "", (100 * (1 - TBL.hatali / TBL.ornek)).toFixed(1)].join(";"));
+  }
+  var blob = new Blob(["\ufeff" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "iso30435_veri_kalitesi.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* =========================================================
+   3) FORMÜL TABLOSU + HESAPLAYICI
+   Alan adları gömülü Python modülünün hesapla() imzasıyla birebir aynıdır.
+   ========================================================= */
+function gerek(kosul, mesaj){ if(!kosul) throw new Error("GecersizGirdi: " + mesaj); }
+function oranOk(parca, butun, ad){
+  gerek(butun > 0, "bütün sıfırdan büyük olmalı");
+  gerek(parca >= 0 && parca <= butun, ad + " 0 ile bütün arasında olmalı");
+  return 100 * parca / butun;
+}
+function bolOk(pay, payda, ad){ gerek(payda > 0, ad + " sıfırdan büyük olmalı"); return pay / payda; }
+function yuzdeOk(x, ad){ gerek(x >= 0 && x <= 100, ad + " 0 ile 100 arasında olmalı"); return x; }
+function r1(x){ return +x.toFixed(1); }
+var BOYUTLAR = ["Doğruluk","Güncellik","Tamlık","Tutarlılık","Uygunluk"];
+
+var CALC = [
+ {id:"dogruluk", name:"Doğruluk oranı (örnekte hatasız kayıt)", grp:"Doğruluk",
+  formula:"Doğruluk = (1 &minus; Hatalı kayıt &divide; Örneklenen kayıt) &times; 100",
+  note:"Standart, doğruluk düzeyinin verinin niteliğine ve ilgili sektör kılavuzlarına göre belirlenmesini ister (madde 4.2); Tablo 4 örnek düzeyler verir. Hatanın ne sayıldığı (yanlış, eskimiş, kanıtsız değer) kurum içinde yazılı olmalıdır.",
+  fields:[{k:"ornek",l:"Örneklenen kayıt",v:200},{k:"hatali",l:"Hatalı bulunan kayıt",v:6},
+          {k:"esik",l:"Gerekli doğruluk düzeyi (%)",v:95,step:0.1}],
+  unit:"% doğruluk",
+  py:"dogruluk_orani(ornek=200, hatali=6)",
+  durumMetin:{ok:"Doğruluk, kullanıcı tanımlı gerekli düzeyi karşılıyor; bir sonraki gözden geçirmede aynı örnekleme yöntemini koruyun.",
+              bad:"Doğruluk, kullanıcı tanımlı toleransın altında: standart veri temizleme yapılmasını ve karşılık eylemin, sorumlu kişiye ya da ekibe belgelenmesini ister (madde 7.4)."},
+  calc:function(v){ var h = oranOk(v.hatali, v.ornek, "hatalı"); var d = 100 - h;
+    yuzdeOk(v.esik, "eşik");
+    var ok = d >= v.esik;
+    return {value:d, dec:1, expl:"(1 − " + v.hatali + " ÷ " + v.ornek + ") × 100", durum: ok ? "ok" : "bad",
+      detail:[["Hata oranı (%)", r1(h)],
+              ["Gerekli düzeyden fark (puan)", r1(d-v.esik)],
+              ["Gerekli düzey karşılandı mı", ok ? "Evet" : "Hayır"]]}; }},
+
+ {id:"ornek", name:"Gözden geçirilecek asgari örnek hacmi", grp:"Doğruluk",
+  formula:"Örnek = &lceil; Toplam kayıt &times; Örnek yüzdesi &divide; 100 &rceil;",
+  note:"Tablo 4, örneklenecek hacmi veri grubuna göre yüzde olarak verir (örneğin %1–5, %2, %5). Aralıklarda alt sınırı kullanın; ilk sonuçlar kötüyse örneği büyütün. Hatasız örnek üst sınırı (3/n) türetilmiştir, kaba bir yaklaşımdır ve küçük örneklerde güvenilirliği düşer.",
+  fields:[{k:"kayit",l:"Gruptaki toplam kayıt",v:1200},{k:"ornek_pct",l:"Örnek yüzdesi (%)",v:5,step:0.1}],
+  unit:"kayıt (asgari örnek)", noHeur:true,
+  py:"gereken_ornek(kayit=1200, ornek_pct=5)",
+  calc:function(v){ gerek(v.kayit > 0 && v.ornek_pct > 0 && v.ornek_pct <= 100, "kayıt sıfırdan büyük, örnek yüzdesi 0 ile 100 arasında olmalı");
+    var n = Math.ceil(v.kayit*v.ornek_pct/100);
+    return {value:n, dec:0, expl:"⌈" + v.kayit + " × " + v.ornek_pct + " ÷ 100⌉",
+      detail:[["Örneklenmeyen kayıt", v.kayit-n],
+              ["Fiili örnek payı (%)", r1(100*n/v.kayit)],
+              ["Hatasız örnekte %95 güvenle hata üst sınırı (%)", r1(300/n)]]}; },
+  bands:[[0,"ok","Örnek hacmi bir alt sınırdır: gerekli düzey yüksekse (%99–100) ya da ilk sonuçlar kötüyse daha büyük örnek alın."]]},
+
+ {id:"tamlik", name:"Zorunlu alan tamlığı", grp:"Tamlık",
+  formula:"Tamlık = (Dolu zorunlu alan &divide; Beklenen zorunlu alan) &times; 100",
+  note:"Standart, formların kısmen doldurulmasını ya da verinin kısmen toplanmasını tamlık sorunu sayar (madde 4.4). Beklenen alan sayısı, kayıt sayısı ile her kayıttaki zorunlu alan sayısının çarpımıdır.",
+  fields:[{k:"dolu",l:"Dolu zorunlu alan",v:5712},{k:"beklenen",l:"Beklenen zorunlu alan",v:6000},
+          {k:"esik",l:"Gerekli tamlık düzeyi (%)",v:95,step:0.1}],
+  unit:"% tamlık",
+  py:"tamlik_orani(dolu=5712, beklenen=6000)",
+  durumMetin:{ok:"Tamlık, kullanıcı tanımlı gerekli düzeyi karşılıyor.",
+              bad:"Tamlık gerekli düzeyin altında: eksik alanları tamamlayın ve eksiksiz veri toplamayı zorunlu hâle getirin; bilgi sağlayan kişilerin doğrulama sorumluluğunu netleştirin (madde 4.4)."},
+  calc:function(v){ var d = oranOk(v.dolu, v.beklenen, "dolu alan"); yuzdeOk(v.esik, "eşik");
+    var ok = d >= v.esik;
+    return {value:d, dec:1, expl:"(" + v.dolu + " ÷ " + v.beklenen + ") × 100", durum: ok ? "ok" : "bad",
+      detail:[["Eksik alan", v.beklenen-v.dolu],
+              ["Eksik payı (%)", r1(100-d)],
+              ["Gerekli düzey karşılandı mı", ok ? "Evet" : "Hayır"]]}; }},
+
+ {id:"guncellik", name:"Olay ile kayıt arasındaki gecikme (güncellik)", grp:"Güncellik",
+  formula:"Güncellik = (Hedef süre içinde kaydedilen olay &divide; Toplam olay) &times; 100",
+  note:"Standart, verinin yakalanma zamanını ve karar verme ile raporlamada hazır olma süresini dikkate almayı ister (madde 4.3). Hedef süre (örneğin ayrılıştan sonra beş iş günü) kurumca belirlenir; ortalama gecikme türetilmiştir.",
+  fields:[{k:"olay",l:"Toplam olay (katılım, geçiş, ayrılış vb.)",v:500},{k:"zamaninda",l:"Hedef süre içinde kaydedilen olay",v:410},
+          {k:"toplam_gecikme_gun",l:"Toplam gecikme günü (tüm olaylar)",v:3250}],
+  unit:"% zamanında kayıt",
+  py:"zamaninda_orani(zamaninda=410, olay=500)",
+  calc:function(v){ var d = oranOk(v.zamaninda, v.olay, "zamanında kayıt");
+    gerek(v.toplam_gecikme_gun >= 0, "toplam gecikme negatif olamaz");
+    var gec = v.toplam_gecikme_gun / v.olay;
+    return {value:d, dec:1, expl:"(" + v.zamaninda + " ÷ " + v.olay + ") × 100",
+      detail:[["Geç kaydedilen olay", v.olay-v.zamaninda],
+              ["Ortalama gecikme (gün)", r1(gec)],
+              ["Ortalama gecikme (hafta)", r1(gec/7)]]}; },
+  bands:[[90,"ok","Olayların çoğu hedef süre içinde kaydediliyor; yine de ayrılış nedeni ve bağlılık verisi gibi zamana duyarlı alanları ayrı izleyin."],
+         [70,"warn","Önemli bir bölüm geç kaydediliyor; eğilimler toplama zamanından etkilenebilir. Olaya yakın yakalamayı prosedürün parçası yapın."],
+         [0,"bad","Kayıtların çoğu geç: karar ve raporlama güncel olmayan veriye dayanıyor olabilir."]]},
+
+ {id:"tutarlilik", name:"Sistemler ve dönemler arası tutarlılık", grp:"Tutarlılık",
+  formula:"Tutarlılık = (1 &minus; Tutarsız kayıt &divide; Karşılaştırılan kayıt) &times; 100",
+  note:"Standart, karşılaştırmalı analiz için toplama zamanının, formüllerin ve veri noktaları ile biçimlerinin (tarih, unvan, departman adı, çalışan numarası) değişmemesini ister (madde 4.5). Tutarsızlık tanımı kurumca yazılır.",
+  fields:[{k:"karsilastirilan",l:"Karşılaştırılan kayıt",v:300},{k:"tutarsiz",l:"Tutarsız bulunan kayıt",v:21}],
+  unit:"% tutarlı",
+  py:"tutarlilik_orani(karsilastirilan=300, tutarsiz=21)",
+  calc:function(v){ var t = oranOk(v.tutarsiz, v.karsilastirilan, "tutarsız"); var d = 100 - t;
+    return {value:d, dec:1, expl:"(1 − " + v.tutarsiz + " ÷ " + v.karsilastirilan + ") × 100",
+      detail:[["Tutarlı kayıt", v.karsilastirilan-v.tutarsiz],
+              ["Tutarsız kayıt", v.tutarsiz],
+              ["Bin kayıtta tutarsızlık", Math.round(1000*v.tutarsiz/v.karsilastirilan)]]}; },
+  bands:[[98,"ok","Kayıtlar büyük ölçüde tutarlı; dönemler arası karşılaştırma güvenilir."],
+         [90,"warn","Kayda değer tutarsızlık var; biçim ve formül değişikliklerini tarayın."],
+         [0,"bad","Tutarsızlık yüksek: dönem karşılaştırmaları (örneğin devirdeki \"artış\") veri değişikliğinden kaynaklanıyor olabilir."]]},
+
+ {id:"uygunluk", name:"İlgili veri payı (uygunluk)", grp:"Uygunluk",
+  formula:"Uygunluk = (Amaca hizmet eden veri noktası &divide; Toplanan veri noktası) &times; 100",
+  note:"Standart, toplanan her verinin değerli olmadığını söyler; veri noktaları girdi–süreç–çıktı–sonuç çerçevesiyle gruplanarak anlaşılır (madde 4.6). \"İlgili\", bir metrik ya da karara bağlanabilen demektir; kurumca yazılı tanımlanmalıdır.",
+  fields:[{k:"toplanan",l:"Toplanan veri noktası (alan)",v:140},{k:"ilgili",l:"Bir metrik ya da karara bağlı olan",v:98}],
+  unit:"% amaca hizmet eden",
+  py:"uygunluk_orani(ilgili=98, toplanan=140)",
+  calc:function(v){ var d = oranOk(v.ilgili, v.toplanan, "ilgili veri noktası");
+    return {value:d, dec:1, expl:"(" + v.ilgili + " ÷ " + v.toplanan + ") × 100",
+      detail:[["Amaçla ilişkisiz veri noktası", v.toplanan-v.ilgili],
+              ["İlişkisizin payı (%)", r1(100-d)]]}; },
+  bands:[[80,"ok","Toplanan veri büyük ölçüde amaca hizmet ediyor."],
+         [50,"warn","Toplanan verinin önemli bölümü hiçbir metrik ya da karara bağlı değil; yakalama ve bakım yükünü gözden geçirin."],
+         [0,"bad","Verinin çoğu amaçla ilişkisiz: ilginç ama ilgili olmayan ölçümler toplanıyor olabilir."]]},
+
+ {id:"belge_teyit", name:"Zorunlu belge, yetki ve vize kayıtlarının teyidi", grp:"Tamlık",
+  formula:"Teyit oranı = (Bitiş tarihi teyitli kayıt &divide; Toplam belge kaydı) &times; 100",
+  note:"Tablo 4, vize ve zorunlu yetki belgeleri için tüm bitiş tarihlerinin teyidini ve %100 düzeyini örnek verir; standart, bu veriler için güvencenin daha sıkı, bazı durumlarda mutlak olması gerektiğini söyler (madde 7.4). Bu yüzden süresi dolmuş tek kayıt bile eşiği karşılamaz.",
+  fields:[{k:"toplam",l:"Toplam belge, yetki ve vize kaydı",v:80},{k:"teyitli",l:"Bitiş tarihi teyit edilmiş",v:76},
+          {k:"yakin",l:"Uyarı süresi içinde bitecek",v:7},{k:"dolmus",l:"Süresi dolmuş",v:1}],
+  unit:"% bitiş tarihi teyitli",
+  py:"belge_teyit_orani(teyitli=76, toplam=80)",
+  durumMetin:{ok:"Tüm bitiş tarihleri teyitli ve süresi dolmuş kayıt yok.",
+              bad:"Mutlak kalite beklenen veride eksik: bitiş tarihi teyit edilmemiş ya da süresi dolmuş kayıt var. Önce süresi dolmuşları, sonra yaklaşanları kapatın ve karşılık eylemi belgeleyin."},
+  calc:function(v){ var d = oranOk(v.teyitli, v.toplam, "teyitli");
+    gerek(v.yakin >= 0 && v.dolmus >= 0 && v.yakin+v.dolmus <= v.toplam, "yaklaşan ve dolmuş belgeler toplamdan büyük olamaz");
+    var ok = d >= 100 && v.dolmus === 0;
+    return {value:d, dec:1, expl:"(" + v.teyitli + " ÷ " + v.toplam + ") × 100", durum: ok ? "ok" : "bad",
+      detail:[["Bitiş tarihi teyit edilmemiş", v.toplam-v.teyitli],
+              ["Süresi yaklaşan (uyarı süresi içinde)", v.yakin],
+              ["Süresi dolmuş", v.dolmus]]}; }},
+
+ {id:"temizlik", name:"Tarihsel veri temizliği iş yükü ve maliyeti", grp:"Tarihsel veri", noHeur:true,
+  formula:"Maliyet = Kayıt &times; Hata % &divide; 100 &times; Dakika/kayıt &divide; 60 &times; Saat ücreti",
+  note:"Standart, ilk temizlik maliyetinin işgücü verisinin karmaşıklığına göre değiştiğini ve kapsamın tahmini maliyet ile beklenen faydaya göre belirlenmesi gerektiğini söyler (madde 6.3.3). Bu hesap yalnızca bir büyüklük mertebesi verir; dakika ve ücret kurum varsayımıdır.",
+  fields:[{k:"kayit",l:"Temizlenecek toplam kayıt",v:12000},{k:"hata_pct",l:"Tahmini hatalı kayıt oranı (%)",v:8,step:0.1},
+          {k:"dk_kayit",l:"Kayıt başına düzeltme süresi (dk)",v:6,step:0.5},{k:"saat_ucret",l:"Saatlik iş gücü maliyeti (TL)",v:350}],
+  unit:"TL",
+  py:"temizlik_is_yuku(kayit=12000, hata_pct=8, dk_kayit=6, saat_ucret=350)",
+  calc:function(v){ gerek(v.kayit > 0 && v.dk_kayit >= 0 && v.saat_ucret >= 0, "temizlik girdileri geçersiz");
+    yuzdeOk(v.hata_pct, "hata yüzdesi");
+    var hatali = v.kayit*v.hata_pct/100, saat = hatali*v.dk_kayit/60, mal = saat*v.saat_ucret;
+    return {value:mal, dec:0, expl:v.kayit + " × " + v.hata_pct + " ÷ 100 × " + v.dk_kayit + " ÷ 60 × " + v.saat_ucret,
+      detail:[["Düzeltilecek kayıt", hatali],
+              ["Gereken iş saati", saat],
+              ["Gereken iş günü (8 saat)", r1(saat/8)]]}; },
+  bands:[[0,"ok","Tutarı kapsamla birlikte değerlendirin: asgari olarak güncel işgücüne ve güncel kritik pozisyon, beceri ve kapasitelere ilişkin tarihsel veriye odaklanın (madde 6.3.3)."]]},
+
+ {id:"skor_karti", name:"Boyut skor kartı (en zayıf unsur)", grp:"Özet",
+  formula:"Zayıf halka = min(Doğruluk, Güncellik, Tamlık, Tutarlılık, Uygunluk)",
+  note:"Bileşik skor standartta yoktur; yalnızca özet amacıyla türetilmiştir. Standart beş unsurun birlikte ele alınmasını ister; ortalama zayıf boyutu gizler, bu yüzden en düşük unsura bakılır. Dış raporlamada boyutları ayrı verin.",
+  fields:[{k:"dogruluk",l:"Doğruluk (%)",v:97,step:0.1},{k:"guncellik",l:"Güncellik (%)",v:82,step:0.1},
+          {k:"tamlik",l:"Tamlık (%)",v:95,step:0.1},{k:"tutarlilik",l:"Tutarlılık (%)",v:93,step:0.1},
+          {k:"uygunluk",l:"Uygunluk (%)",v:70,step:0.1}],
+  unit:"% (en zayıf boyut)",
+  py:"zayif_halka([97, 82, 95, 93, 70])",
+  calc:function(v){ var d = [v.dogruluk, v.guncellik, v.tamlik, v.tutarlilik, v.uygunluk];
+    d.forEach(function(x){ yuzdeOk(x, "boyut değeri"); });
+    var i = 0; for(var k=1;k<5;k++){ if(d[k] < d[i]) i = k; }
+    var top = d.reduce(function(a,b){ return a+b; }, 0);
+    return {value:d[i], dec:1, expl:"min(" + d.join(", ") + ")",
+      detail:[["En zayıf boyut", BOYUTLAR[i]],
+              ["Boyutların ortalaması (%)", r1(top/5)],
+              ["En güçlü ile en zayıf arasındaki fark (puan)", r1(Math.max.apply(null, d) - d[i])]]}; },
+  bands:[[90,"ok","Tüm boyutlar yüksek; yine de gruplara göre kırılıma bakın."],
+         [75,"warn","En az bir unsur zayıf; iyileştirme çalışmasını o unsura yöneltin."],
+         [0,"bad","En zayıf unsur düşük: veri kalitesi tek bir boyutta kritik düzeyin altında."]]}
+];
+
+/* --- formül tablosu --- */
+(function(){
+  var rows = CALC.map(function(c){
+    return '<tr><td><b>' + c.name + '</b></td><td><span style="font-family:var(--serif)">' +
+           c.formula + '</span></td><td>' + c.note + '</td></tr>';
+  }).join("");
+  document.getElementById("fBody").innerHTML = rows;
+})();
+
+/* --- hesaplayıcı --- */
+var sel = document.getElementById("cMetric");
+CALC.forEach(function(c, i){
+  var o = document.createElement("option");
+  o.value = i; o.textContent = c.grp + " — " + c.name;
+  sel.appendChild(o);
+});
+
+function buildFields(){
+  var c = CALC[+sel.value];
+  document.getElementById("cFields").innerHTML = c.fields.map(function(f){
+    return '<div class="field"><label for="in_' + f.k + '">' + f.l + '</label>' +
+      '<input type="number" id="in_' + f.k + '" value="" step="' + (f.step || "any") + '" placeholder="' + f.v + '"></div>';
+  }).join("");
+  document.getElementById("cFields").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", run);
+  });
+}
+
+function readVals(){
+  var c = CALC[+sel.value], v = {}, missing = false;
+  c.fields.forEach(function(f){
+    var el = document.getElementById("in_" + f.k);
+    var raw = el && el.value !== "" ? parseFloat(el.value) : NaN;
+    if(isNaN(raw)){ missing = true; v[f.k] = f.v; } else { v[f.k] = raw; }
+  });
+  return {v:v, missing:missing};
+}
+
+function fmt(x, dec){
+  if(!isFinite(x)) return "—";
+  return x.toLocaleString("tr-TR", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+
+/* Hesaplama motoru: Python hazırsa gömülü modül, değilse JS yedeği */
+function compute(c, v){
+  if(PY.ready){
+    try{
+      PY.pyodide.globals.set("_metrik", c.id);
+      PY.pyodide.globals.set("_girdi", JSON.stringify(v));
+      var raw = PY.pyodide.runPython(
+        "import json\n" +
+        "json.dumps(hesapla(_metrik, **json.loads(_girdi)))");
+      var r = JSON.parse(raw);
+      return {value:r.deger, expl:r.ifade, dec:r.ondalik, detail:r.ayrinti,
+              unit:r.birim, durum:r.durum, engine:"python"};
+    }catch(err){
+      var msg = String(err);
+      /* Kullanıcı girdisi kaynaklı hata: motor sorunu değil, yedeğe geçme */
+      if(msg.indexOf("GecersizGirdi") !== -1 || msg.indexOf("ZeroDivisionError") !== -1) throw err;
+      setEngine("off", "Motor: JS yedeği — Python hatası");
+    }
+  }
+  var out = c.calc(v);
+  out.engine = "js";
+  return out;
+}
+
+function run(){
+  var c = CALC[+sel.value];
+  var r = readVals();
+  var out;
+  try { out = compute(c, r.v); } catch(e){ out = null; }
+  var box = document.getElementById("cResult");
+  if(!out || !isFinite(out.value)){
+    box.innerHTML = '<div class="result"><b>Hesaplanamadı.</b> Payda sıfır olamaz, parça bütünden büyük olamaz ve değerler geçerli aralıkta olmalı; alanları kontrol edin.</div>';
+    return;
+  }
+  var dec = (out.dec === undefined) ? 1 : out.dec;
+  var unit = out.unit || c.unit;
+  var html = '<div class="result">';
+  html += '<div class="big">' + fmt(out.value, dec) + ' <span>' + unit + '</span></div>';
+  html += '<div style="font-size:13px;color:var(--ink-soft);margin-top:6px">' + c.name +
+          ' · ' + (out.engine === "python" ? 'Python (Pyodide) ile hesaplandı' : 'JavaScript ile hesaplandı') +
+          (r.missing ? ' · <i>boş alanlar için örnek değer kullanıldı</i>' : '') + '</div>';
+
+  if(document.getElementById("oFormula").checked){
+    html += '<div class="formula">' + c.formula + '<br><span style="color:var(--ink-soft);font-size:15px">= ' +
+            out.expl + ' = <b>' + fmt(out.value, dec) + '</b> ' + unit + '</span></div>';
+  }
+  if(out.detail && out.detail.length){
+    html += '<dl>' + out.detail.map(function(d){
+      var val = (typeof d[1] === "number") ? d[1].toLocaleString("tr-TR") : d[1];
+      return '<dt>' + d[0] + '</dt><dd>' + val + '</dd>';
+    }).join("") + '</dl>';
+  }
+  if(document.getElementById("oInterp").checked){
+    if(c.durumMetin && out.durum){
+      html += '<div class="verdict ' + out.durum + '">' + c.durumMetin[out.durum] + '</div>';
+    } else if(c.bands){
+      var band = c.bands[c.bands.length-1];
+      for(var i=0;i<c.bands.length;i++){ if(out.value >= c.bands[i][0]){ band = c.bands[i]; break; } }
+      html += '<div class="verdict ' + band[1] + '">' + band[2] + '</div>';
+      if(c.bands.length > 1 && !c.noHeur){
+        html += '<div class="note" style="margin-top:12px">Yorum eşikleri standarttan değil, başlangıç varsayımlarından gelir; kendi hedeflerinizle değiştirin.</div>';
+      }
+    }
+    html += '<div class="note" style="margin-top:12px">' + c.note + '</div>';
+  }
+  if(document.getElementById("oPy").checked){
+    var args = c.fields.map(function(f){ return f.k + "=" + r.v[f.k]; }).join(", ");
+    var call = 'hesapla("' + c.id + '", ' + args + ')';
+    html += '<pre style="margin-top:16px"><i>&gt;&gt;&gt; from iso30435_metrikler import hesapla</i>\n' +
+            '&gt;&gt;&gt; ' + call + '["deger"]\n' + out.value + '\n\n' +
+            '<i># eşdeğer doğrudan çağrı</i>\n&gt;&gt;&gt; ' + c.py + '</pre>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+sel.addEventListener("change", function(){ buildFields(); run(); });
+document.getElementById("btnRun").addEventListener("click", run);
+document.getElementById("btnExample").addEventListener("click", function(){
+  var c = CALC[+sel.value];
+  c.fields.forEach(function(f){ document.getElementById("in_" + f.k).value = f.v; });
+  run();
+});
+["oFormula","oInterp","oPy"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", function(){
+    var all = document.getElementById("oFormula").checked &&
+              document.getElementById("oInterp").checked &&
+              document.getElementById("oPy").checked;
+    document.getElementById("oAll").checked = all;
+    run();
+  });
+});
+document.getElementById("oAll").addEventListener("change", function(){
+  var s = this.checked;
+  ["oFormula","oInterp","oPy"].forEach(function(id){ document.getElementById(id).checked = s; });
+  run();
+});
+
+/* --- tablodan hesaplayıcıya aktarma --- */
+document.getElementById("btnAktar").addEventListener("click", function(){
+  if(!TBL.ok){ loadTblExample(); }
+  var idx = CALC.map(function(c){ return c.id; }).indexOf("dogruluk");
+  sel.value = idx; buildFields();
+  document.getElementById("in_ornek").value = TBL.ornek;
+  document.getElementById("in_hatali").value = TBL.hatali;
+  document.getElementById("in_esik").value = TBL.esik;
+  run();
+  document.getElementById("hesaplayici").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* =========================================================
+   4) PYTHON MOTORU (Pyodide / WebAssembly)
+   Gömülü iso30435_metrikler.py modülü tarayıcı içinde
+   gerçek CPython ile çalıştırılır. Erişim yoksa JS yedeği
+   devrede kalır ve sonuçlar değişmez.
+   ========================================================= */
+var PY = {ready:false, busy:false, pyodide:null};
+
+var PYODIDE_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+  "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"
+];
+
+function setEngine(state, text){
+  var chip = document.getElementById("engStatus");
+  chip.className = "chip" + (state ? " " + state : "");
+  chip.textContent = text;
+}
+
+function loadScript(src){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function(){ resolve(src); };
+    s.onerror = function(){ reject(new Error(src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function pySource(){
+  return document.getElementById("pysrc").textContent;
+}
+
+async function initPython(){
+  if(PY.ready) return true;
+  if(PY.busy) return false;
+  PY.busy = true;
+  document.getElementById("btnPy").disabled = true;
+  setEngine("busy", "Motor: Pyodide indiriliyor…");
+  try{
+    if(typeof loadPyodide === "undefined"){
+      try { await loadScript(PYODIDE_URLS[0]); }
+      catch(e){ await loadScript(PYODIDE_URLS[1]); }
+    }
+    setEngine("busy", "Motor: Python başlatılıyor…");
+    PY.pyodide = await loadPyodide();
+
+    /* Modülü sanal dosya sistemine yazmadan, gerçek bir modül nesnesi olarak kur:
+       böylece __name__ != "__main__" olur ve _demo() kendiliğinden çalışmaz.
+       Kayıt exec'ten ÖNCE yapılır; @dataclass işlenirken modülü sys.modules'te arar. */
+    PY.pyodide.globals.set("_kaynak", pySource());
+    PY.pyodide.runPython(
+      "import sys, types\n" +
+      "_m = types.ModuleType('iso30435_metrikler')\n" +
+      "_m.__file__ = 'iso30435_metrikler.py'\n" +
+      "sys.modules['iso30435_metrikler'] = _m\n" +
+      "exec(compile(_kaynak, 'iso30435_metrikler.py', 'exec'), _m.__dict__)\n" +
+      "from iso30435_metrikler import *\n" +
+      "import iso30435_metrikler as m\n"
+    );
+    var sur = PY.pyodide.runPython(
+      "import sys\n'.'.join(str(x) for x in sys.version_info[:3])");
+    PY.ready = true;
+    setEngine("on", "Motor: Python " + sur + " (Pyodide)");
+    run();
+    return true;
+  }catch(e){
+    setEngine("off", "Motor: tarayıcı (JS) — Pyodide yüklenemedi");
+    document.getElementById("pyOut").textContent =
+      "Python motoru yüklenemedi. Bu genellikle çevrimdışı olmaktan ya da ağ kısıtından kaynaklanır.\n" +
+      "Sayfa çalışmaya devam eder; hesaplamalar JavaScript yedeğiyle aynı sonuçları verir.\n\n" + e;
+    return false;
+  }finally{
+    PY.busy = false;
+    document.getElementById("btnPy").disabled = false;
+  }
+}
+
+document.getElementById("btnPy").addEventListener("click", initPython);
+
+/* --- konsol --- */
+var VARSAYILAN_KOD =
+  'from iso30435_metrikler import *\n' +
+  'import iso30435_metrikler as m\n\n' +
+  '# Doğruluk ve örnekleme\n' +
+  'print("Doğruluk          :", round(dogruluk_orani(200, 6), 1), "%")\n' +
+  'print("Gereken örnek     :", gereken_ornek(1200, 5), "kayıt")\n' +
+  'print("Hatasız üst sınır :", round(hatasiz_ust_sinir(60), 1), "%")\n\n' +
+  '# Diğer unsurlar\n' +
+  'print("Tamlık            :", round(tamlik_orani(5712, 6000), 1), "%")\n' +
+  'print("Güncellik         :", round(zamaninda_orani(410, 500), 1), "%")\n' +
+  'print("Tutarlılık        :", round(tutarlilik_orani(300, 21), 1), "%")\n' +
+  'print("Uygunluk          :", round(uygunluk_orani(98, 140), 1), "%")\n' +
+  'print("Zayıf halka       :", zayif_halka([97, 82, 95, 93, 70]))\n\n' +
+  '# Tablo 4: veri gruplarına göre gözden geçirme\n' +
+  't = ornek_tablo()\n' +
+  'for anahtar, deger in t.ozet().items():\n' +
+  '    print(f"{anahtar:<20}: {deger}")\n\n' +
+  '# Dağıtıcı, hesaplayıcının kullandığı arayüzdür:\n' +
+  'print(hesapla("dogruluk", ornek=200, hatali=6, esik=95))\n\n' +
+  '# Sistem denetimi: hangi ön koşullar eksik?\n' +
+  'for uyari in veri_denetimi(sahiplik_atandi=True, prosedurler_belgeli=True):\n' +
+  '    print("!", uyari)\n';
+
+document.getElementById("pyCode").value = VARSAYILAN_KOD;
+
+async function runConsole(){
+  var out = document.getElementById("pyOut");
+  if(!PY.ready){
+    out.textContent = "Python motoru hazırlanıyor, ilk çalıştırma biraz sürebilir…";
+    var ok = await initPython();
+    if(!ok) return;
+  }
+  out.textContent = "çalışıyor…";
+  try{
+    PY.pyodide.globals.set("_kod", document.getElementById("pyCode").value);
+    var cikti = PY.pyodide.runPython(
+      "import io, contextlib, traceback\n" +
+      "_tampon = io.StringIO()\n" +
+      "with contextlib.redirect_stdout(_tampon), contextlib.redirect_stderr(_tampon):\n" +
+      "    try:\n" +
+      "        exec(_kod, globals())\n" +
+      "    except Exception:\n" +
+      "        traceback.print_exc()\n" +
+      "_tampon.getvalue()"
+    );
+    out.textContent = cikti && cikti.trim() ? cikti : "(çıktı yok)";
+  }catch(e){
+    out.textContent = "Hata: " + e;
+  }
+}
+
+document.getElementById("btnRunPy").addEventListener("click", runConsole);
+document.getElementById("btnReset").addEventListener("click", function(){
+  document.getElementById("pyCode").value = VARSAYILAN_KOD;
+  document.getElementById("pyOut").textContent = "Kod sıfırlandı.";
+});
+document.getElementById("btnDemo").addEventListener("click", function(){
+  document.getElementById("pyCode").value =
+    "import iso30435_metrikler as m\n\n" +
+    "# Modülün kendi doğrulama çıktısı (komut satırındaki\n" +
+    "# python3 iso30435_metrikler.py ile aynı sonucu verir)\n" +
+    "m._demo()\n";
+  runConsole();
+});
+
+/* modül kaynağını sayfada okunur kıl */
+document.getElementById("srcView").textContent = pySource().trim();
+
+buildTbl();
+loadTblExample();
+buildFields();
+run();
+</script>
+</body>
+</html>
