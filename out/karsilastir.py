@@ -1,4 +1,4 @@
-import csv, os, re, sys
+import csv, os, re, shutil, sys
 
 # Kullanım: python3 karsilastir.py [csv_yolu] [pdf_klasoru]
 # Argüman verilmezse yollar sorulur (dosyayı Terminal'e sürükleyip bırakabilirsiniz).
@@ -51,3 +51,21 @@ with open("eksik_tezler.csv", "w", encoding="utf-8-sig", newline="") as f:
 with open("eksik_tez_no.txt", "w") as f:
     f.write("\n".join(sorted(yok)))
 print("Yazıldı: eksik_tezler.csv, eksik_tez_no.txt")
+
+# --- Eşleşen (var) PDF'leri başka klasöre taşı / kopyala ---
+dosyalar = [ad for no in sorted(var) for ad in pdf_no[no]]
+print(f"\nEşleşen PDF dosyası sayısı: {len(dosyalar)}")
+hedef = temiz(input("Eşleşenlerin gideceği klasör (boş bırakırsanız işlem yapılmaz): "))
+if hedef:
+    mod = input("[T]aşı mı [K]opyala mı? (t/k, varsayılan k): ").strip().lower() or "k"
+    os.makedirs(hedef, exist_ok=True)
+    islem = shutil.move if mod == "t" else shutil.copy2
+    atlanan = 0
+    for ad in dosyalar:
+        hedef_yol = os.path.join(hedef, ad)
+        if os.path.exists(hedef_yol):
+            atlanan += 1
+            continue
+        islem(os.path.join(PDF_KLASOR, ad), hedef_yol)
+    print(f"{len(dosyalar) - atlanan} dosya {'taşındı' if mod == 't' else 'kopyalandı'}, "
+          f"{atlanan} dosya hedefte zaten olduğu için atlandı. Hedef: {hedef}")
