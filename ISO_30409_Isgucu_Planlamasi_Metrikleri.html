@@ -1,0 +1,2238 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO 30409 İşgücü Planlaması Rehberi ve Metrikleri — Sınıflandırma ve Hesaplayıcı</title>
+<style>
+  :root{
+    --ink:#101418;
+    --ink-soft:#59636f;
+    --ink-faint:#8b95a1;
+    --line:#dde3ea;
+    --line-soft:#eef1f5;
+    --bg:#ffffff;
+    --canvas:#f6f8fa;
+    --accent:#0b5c8a;
+    --accent-soft:#e7f0f6;
+    --panel:#0e1520;
+    --panel-2:#16202e;
+    --panel-line:#28394f;
+    --out-ink:#8a3b12;  --out-bg:#fbeee6;
+    --eff-ink:#14615c;  --eff-bg:#e6f2f1;
+    --efc-ink:#33478c;  --efc-bg:#eaedf8;
+    --rea-ink:#7a5c00;  --rea-bg:#f8f1d9;
+    --cos-ink:#8c2f4b;  --cos-bg:#f9e8ee;
+    --ok:#1d6f42; --warn:#8a6100; --bad:#992121;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--canvas);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.62;
+  }
+  .sheet{max-width:1000px;margin:0 auto;background:var(--bg);padding:56px 60px 80px;
+    box-shadow:0 0 0 1px var(--line);}
+  @media(max-width:760px){ .sheet{padding:28px 20px 56px} }
+
+  h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:25px;margin:52px 0 4px;padding-bottom:8px;
+     border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  h3{font-size:17px;margin:32px 0 6px;letter-spacing:.01em}
+  h4{font-size:15px;margin:22px 0 4px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:12px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  small{color:var(--ink-soft)}
+  .lede{font-size:17px;color:var(--ink-soft)}
+
+  .srcbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 0;margin:0 0 26px;font-size:13.5px;color:var(--ink-soft)}
+  .srcbar b{color:var(--ink);font-weight:600}
+
+  .toc{background:var(--canvas);border:1px solid var(--line);padding:16px 20px;margin:26px 0 0;
+    font-size:14px;columns:2;column-gap:34px}
+  @media(max-width:640px){.toc{columns:1}}
+  .toc a{display:block;padding:3px 0;text-decoration:none;color:var(--ink)}
+  .toc a:hover{color:var(--accent);text-decoration:underline}
+  .toc b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 4px}
+
+  .keypoints li{margin:10px 0}
+  .keypoints b{font-weight:650}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink-soft);padding-bottom:6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:var(--canvas);font-weight:650;font-size:13px}
+  tbody tr:nth-child(even){background:#fcfdfe}
+  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;width:66px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink)}
+  .dot.o{background:var(--out-ink)} .dot.s{background:var(--eff-ink)} .dot.p{background:var(--efc-ink)}
+  .dot.r{background:var(--rea-ink)} .dot.c{background:var(--cos-ink)}
+
+  .tag{display:inline-block;font-size:11px;line-height:1.5;padding:1px 7px;border-radius:3px;
+    letter-spacing:.03em;white-space:nowrap;font-weight:600}
+  .tag.o{color:var(--out-ink);background:var(--out-bg)}
+  .tag.s{color:var(--eff-ink);background:var(--eff-bg)}
+  .tag.p{color:var(--efc-ink);background:var(--efc-bg)}
+  .tag.r{color:var(--rea-ink);background:var(--rea-bg)}
+  .tag.c{color:var(--cos-ink);background:var(--cos-bg)}
+  .tag.iso{color:#4a4a4a;background:#eeeeee}
+  .tag.lvl{color:#5a3a86;background:#f0eaf8}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--line-soft);padding:1px 5px;border-radius:3px}
+  pre{background:var(--panel);color:#e7eef6;border-radius:6px;padding:18px 20px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:14px 0}
+  pre b{color:#f0b866;font-weight:400}      /* anahtar kelime */
+  pre i{color:#7f8ea1;font-style:normal}    /* yorum */
+  pre u{color:#9fd28a;text-decoration:none} /* dize/sayı */
+  pre .fn{color:#79c0e8}
+  .filename{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin:14px 0 -8px}
+
+  .formula{font-family:var(--serif);font-size:16.5px;background:var(--canvas);
+    border-left:3px solid var(--accent);padding:12px 16px;margin:12px 0;overflow-x:auto}
+  .formula em{font-style:italic}
+
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 14px;color:var(--ink-soft);font-size:14px;margin:14px 0}
+
+  /* --- panel --- */
+  .panel{background:var(--panel);color:#dbe5f0;border-radius:8px;padding:22px 24px;margin:20px 0}
+  .panel h3{color:#fff;margin:0 0 4px;font-size:16px}
+  .panel .hint{color:#8fa2b8;font-size:13px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#8fa2b8;margin-bottom:5px}
+  .field label .req{color:#e08a5a}
+  select,input[type=number],input[type=text]{
+    width:100%;background:var(--panel-2);border:1px solid var(--panel-line);color:#eef4fb;
+    border-radius:5px;padding:9px 10px;font-family:var(--sans);font-size:14px}
+  input[type=number]{font-family:var(--mono)}
+  select:focus,input:focus{outline:2px solid #4a8fc0;outline-offset:1px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13.5px;color:#b9c7d6}
+  .checks label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .panel-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:5px;cursor:pointer;
+    border:1px solid transparent;padding:9px 18px}
+  .btn-run{background:#1c74ab;color:#fff}
+  .btn-run:hover{background:#2385c2}
+  .btn-ghost{background:transparent;color:#9fb3c9;border-color:var(--panel-line)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9fb3c9;
+    border:1px solid var(--panel-line);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7c8ea3}
+  .chip.busy::before{background:#e0a13c}
+  .chip.on::before{background:#4ec07a}
+  .chip.off::before{background:#c05a5a}
+
+  .console{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+  .console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+    background:var(--canvas);border-bottom:1px solid var(--line);padding:8px 12px;font-size:12.5px;color:var(--ink-soft)}
+  .console textarea{width:100%;border:0;display:block;background:var(--panel);color:#e7eef6;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:16px 20px;resize:vertical;min-height:190px}
+  .console textarea:focus{outline:2px solid #4a8fc0;outline-offset:-2px}
+  .console pre{margin:0;border-radius:0;background:#0a1017;border-top:1px solid var(--panel-line);min-height:64px}
+  .btn-sm{padding:6px 14px;font-size:13px}
+  details.src pre{max-height:420px;overflow:auto}
+  .btn-ghost:hover{color:#fff;border-color:#47607d}
+
+  .result{border:1px solid var(--line);border-top:3px solid var(--accent);padding:18px 20px;margin:18px 0}
+  .result .big{font-family:var(--serif);font-size:32px;line-height:1.1}
+  .result .big span{font-size:16px;color:var(--ink-soft);font-family:var(--sans)}
+  .result dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:14px 0 0;font-size:14px}
+  .result dt{color:var(--ink-soft)}
+  .result dd{margin:0;font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px;padding:10px 12px;font-size:14px;border-radius:4px;background:var(--canvas)}
+  .verdict.ok{color:var(--ok);background:#eef6f1}
+  .verdict.warn{color:var(--warn);background:#fbf5e7}
+  .verdict.bad{color:var(--bad);background:#faeeee}
+
+  /* --- matris --- */
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;
+    background:var(--canvas);border:1px solid var(--line);padding:14px 16px;margin:16px 0}
+  .filters label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .filters select,.filters input{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .matrix{font-size:13.5px}
+  .matrix th.rot{width:72px;text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom}
+  .matrix td.name{font-weight:500}
+  .matrix td.name em{display:block;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .matrix tr.group td{background:#f2f5f8;font-weight:650;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+  .count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+
+  /* --- pozisyon tablosu --- */
+  .postbl{font-size:13.5px}
+  .postbl input[type=text],.postbl input[type=date],.postbl input[type=number]{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .postbl input[type=text]{font-family:var(--sans)}
+  .postbl input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .postbl td.chk{text-align:center}
+  .postbl input[type=number]{text-align:right}
+  .postbl td:first-child{min-width:150px}
+  .postbl th.num,.postbl td.num{width:auto}
+  @media(max-width:760px){table{display:block;overflow-x:auto}}
+  .postbl td.calc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap}
+  .postbl tfoot td{background:var(--canvas);font-weight:650}
+  .tblbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+  .tblbar button{border-color:var(--line);color:var(--ink-soft);background:#fff}
+  .tblbar button:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tblbar .inline{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft)}
+  .tblbar .inline input{width:78px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .card{border:1px solid var(--line);border-top:3px solid var(--eff-ink);padding:12px 14px}
+  .card b{display:block;font-family:var(--serif);font-size:24px;line-height:1.2}
+  .card span{font-size:12px;color:var(--ink-soft)}
+  .card.alt{border-top-color:var(--efc-ink)}
+  .card.warn{border-top-color:var(--out-ink)}
+
+  details{border-bottom:1px solid var(--line);padding:12px 0}
+  summary{cursor:pointer;font-weight:600;font-size:15px}
+  summary::marker{color:var(--accent)}
+  details p{margin:10px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  @media (prefers-reduced-motion:no-preference){
+    .result{transition:border-color .2s}
+  }
+  @media print{
+    body{background:#fff} .sheet{box-shadow:none;max-width:none;padding:0}
+    .panel{background:#fff;color:#000;border:1px solid #000}
+    pre{background:#f4f4f4;color:#000}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>ISO 30409 İşgücü Planlaması Rehberi ve Metrikleri</h1>
+<div class="srcbar">
+  <span><b>Kaynak:</b> BS ISO 30409:2016 — <i>Human resource management — Workforce planning</i></span>
+  <span><b>Kapsam:</b> 5 kullanıcı · 5 metrik ailesi · 51 metrik ve etken</span>
+  <span><b>Hesaplama:</b> gömülü Python modülü (Pyodide/WebAssembly)</span>
+  <span><b>Sürüm:</b> Ekim 2026</span>
+</div>
+
+<h2 id="genel">Genel Bakış</h2>
+<p>ISO 30409:2016, her büyüklük, sanayi ve sektördeki kurum için ölçeklenebilir bir <b>işgücü planlaması</b>
+rehberi ve çerçevesidir. İşgücü planlamasını, kurumun insan ihtiyaçlarının sistematik biçimde belirlenmesi,
+çözümlenmesi ve planlanması olarak tanımlar; işgücünün mevcut, geçiş dönemi ve gelecekteki <b>talebini ve
+arzını</b> ortaya çıkarır. Dört fazdan oluşan bir süreç sunar: <b>başlangıç, veri analizi, risk yönetimi ve
+uygulama</b>. Metrik şartnamesi değildir; formül ve eşik vermez, fakat hangi verinin toplanacağını (Tablo 4) ve
+her adımda hangi çekirdek soruların sorulacağını sayar. Bu sayfa, standardın sürecini filtrelenebilir bir
+matrise; veri başlıklarını da formül + canlı hesaplayıcı + Python koduna dönüştürür. BS ISO 30409:2016, ISO
+30409'un İngiltere uyarlamasıdır ve 30 Eylül 2016'da yayımlanmıştır. İlişkili belgeler: terimler için ISO 30400,
+işe alım için ISO 30405, insan yönetişimi için ISO 30408, risk yönetimi için ISO 31000.</p>
+
+<h3>Önemli Noktalar</h3>
+<ul class="keypoints">
+  <li><b>İki ayrı ama ilişkili görev vardır.</b> Stratejik işgücü planlaması kurum stratejisine hizalı, tanımlı bir
+  dönemi kapsar; operasyonel işgücü planlaması ise aynı dönemde işgücü planlama stratejisine ilişkin veriyi toplamaya,
+  çözümlemeye ve raporlamaya odaklanır. Kısa vadeli kadrolama ve vardiya çizelgeleme kapsam dışı bırakılabilir.</li>
+  <li><b>Planlama üst yönetimin sorumluluğudur.</b> Aktif ve sürekli bir süreçtir; kurum stratejisi ve yönetişimiyle
+  tutarlı olmalı, gözden geçirme mekanizması, risk yönetimi ve mevzuat uyumunu içermelidir.</li>
+  <li><b>Bölümlendirme temel unsurdur.</b> İşgücü, role dayalı (iş türü, değer) ve çalışana dayalı (demografi vb.)
+  yaklaşımlarla bölümlendirilir; planlama en kritik iş gruplarına odaklanır. Toplu rakam, tüm iş ailelerinin
+  benzer davrandığını varsayar ve farkları gizler.</li>
+  <li><b>Talep ve arz birlikte okunur.</b> Talep onaylı ve (mümkünse) onaysız olarak, genellikle tam zaman eşdeğeri
+  (FTE) ile ifade edilir. Arz çalışanları, yüklenicileri ve dış kaynaklı işlevleri kapsar. Açığın hesabı
+  iş ailesi ve yetkinlik bazında da yapılır.</li>
+  <li><b>Veri basit, kanıta dayalı ve gizliliğe saygılı olmalıdır.</b> Yalnızca plan için gereken veri toplanır;
+  veri en az son 12 ayı, tercihen son üç yılı kapsar. Eksik veri için vekil değişken ya da varsayım kullanılırsa
+  belgelenir. İşgücü hakkında hiçbir şey varsayılmaz.</li>
+  <li><b>Gelecek en az üç senaryoyla sunulur:</b> değişim yok, büyüme ve düşüş; duyarlılık ve stres testleriyle
+  açık hesapları desteklenir.</li>
+  <li><b>Büyük kurumlarda tam uygulama bir ila iki yıl sürer;</b> ilerlemenin çoğu ilk altı ayda olur. Başlangıçta
+  özel ve öncelikli bir görev olarak yürütülür, oturunca olağan iş planlamasına gömülür.</li>
+</ul>
+
+<div class="toc">
+  <b>İçindekiler</b>
+  <a href="#genel">Genel bakış ve önemli noktalar</a>
+  <a href="#nezaman">Ne zaman kullanılır</a>
+  <a href="#cerceve">Çerçeve: dört fazlı süreç</a>
+  <a href="#yontemler">Bölümlendirme, veri ve risk</a>
+  <a href="#adimlar">Uygulama adımları</a>
+  <a href="#kavramlar">Temel kavramlar</a>
+  <a href="#matris">Metrik matrisi</a>
+  <a href="#tablo">Talep–arz tablosu</a>
+  <a href="#formuller">Formüller ve tanımlar</a>
+  <a href="#hesaplayici">Hesaplayıcı</a>
+  <a href="#python">Python kod örnekleri</a>
+  <a href="#yorum">Sonuçların yorumlanması</a>
+  <a href="#sinirlamalar">Sınırlamalar</a>
+  <a href="#raporlama">Metriklerin raporlanması</a>
+  <a href="#ilgili">İlgili standartlar</a>
+  <a href="#sss">Sıkça sorulan sorular</a>
+</div>
+
+<h2 id="nezaman">Ne Zaman Kullanılır</h2>
+<p>Standart, işgücü planlamasının değerini farklı paydaşlar için ayrı ayrı sıralar.</p>
+<ul>
+  <li><b>Kurumlarda:</b> mevcut personeli ve beceri setlerini elde tutmak, yüksek performanslı çalışan çekmek;
+  ekonomik döngü, dengesiz ya da döngüsel pazar talebi ve atıl emek piyasası karşısında beceri açığından veya fazla
+  arzdan kaçınmak; yeni iş modellerini ve teknolojiyi benimsemek; en uygun beceri karmasını korumak ve işgücü
+  riskini izlemek; İK işlevini planlamak; bölgesel, sektörel ve küresel düzeyde işgücü rekabetini sürdürmek.</li>
+  <li><b>Büyüme, yeniden yapılanma, birleşme ve devralma, elden çıkarma ve kapanma gibi değişimleri yönetirken.</b></li>
+  <li><b>Sektör temsilcisi gruplarında:</b> gereken becerileri belirlemek, hükümet ve eğitim sektörüne yeterli sayıda
+  kişi yetiştirmeleri için çağrı yapmak, sektörün itibarını korumak, beceriyi sektörde ve bölgede tutarak iş
+  değiştiren çalışanlara esneklik sağlamak.</li>
+  <li><b>Bölgelerde:</b> yerel iş fırsatları ile sakinlerin becerilerini eşleştirmek, yeni sektör ve işverenleri
+  çekmek, demografik değişimin etkisini yönetmek.</li>
+  <li><b>Kamu sektöründe:</b> emek piyasasını düzenlemeye, eşitsizlikleri gidermeye ve ekonominin şoklara karşı
+  dayanıklılığını artırmaya katkı vermek.</li>
+  <li><b>Çalışanlar için:</b> kurumun mevcut ve gelecekteki yetenek ihtiyaçlarını bilmek.</li>
+  <li><b>Yönetişimde:</b> işgücü planlaması, direktörlerin yönetişim, finans, operasyon, risk ve uyum
+  sorumluluklarının ayrılmaz parçasıdır.</li>
+</ul>
+<div class="note">Bu belge bir <b>rehber</b> ve çalışma aracıdır. Standart yalnızca ne yapılacağını anlatır; metriklerin
+tanımını ve eşiklerini kurum kendisi belirler ve yazılı hâle getirir.</div>
+
+<h2 id="cerceve">Çerçeve: Dört Fazlı Süreç</h2>
+
+<h3>Standardın kontrol listesi (Tablo 1)</h3>
+<p>Aşağıdaki tablo, orta ve büyük kurumlar için önerilen sıra ve adımları özetler. Küçük kurumlar için Ek A'da beş
+adımlı bir örnek vardır (aşağıda).</p>
+<table>
+  <thead><tr><th style="width:140px">Faz</th><th>Madde</th><th>Adım</th><th>Yapılacak iş</th></tr></thead>
+  <tbody>
+    <tr><td rowspan="7"><b>1. Başlangıç</b></td><td>6.3.2</td><td>a) Ekip ve gerekçe</td>
+      <td>Doğru liderliği ve işgücü planlama liderini/ekibini belirleyin; harcamayı gerekçelendirin, iş gerekçesini yazın.</td></tr>
+    <tr><td>6.3.3</td><td>b) Strateji ile hizalama</td>
+      <td>Kurumsal ve iş stratejilerinin işgücü sonuçlarını belirleyin.</td></tr>
+    <tr><td>6.3.4</td><td>c) İletişim planı</td>
+      <td>Liderleri, işgücünü ve diğer paydaşları işgücü planlamasının amaçlarına dahil eden bir iletişim planı geliştirin.</td></tr>
+    <tr><td>6.3.5</td><td>d) Bölümlendirme</td>
+      <td>Stratejik planlama bağlamında iş segmentlerini belirleyin (role dayalı, çalışana dayalı, yatay ve/veya dikey).
+      Bölümlenmiş işgücü için mevcut talep/arz, İK ve finans verisini gözden geçirin.</td></tr>
+    <tr><td>6.3.24</td><td>e) Çevre / emek piyasası taraması</td>
+      <td>Bölümlenmiş işgücüne ilişkin daha kapsamlı bilgi gerekiyorsa yapın.</td></tr>
+    <tr><td>6.3.26</td><td>f) Bilgi boşlukları</td>
+      <td>Mevcut talep ve arz verisini ve ilişkili nicel ve nitel boşlukları raporlayacak bir yöntem ya da sistem kurun.</td></tr>
+    <tr><td>6.3.27</td><td>g) Geleceğe odaklı senaryolar</td>
+      <td>Kurumun bütünü ve bölümlenmiş işgücü için senaryoları belirleyin: değişim yok, büyüme, düşüş, diğer (iş, grup, konum, tedarik zinciri).</td></tr>
+    <tr><td rowspan="2"><b>2. Veri analizi</b></td><td>6.4.1</td><td>a) Talep–arz açığı hesabı</td>
+      <td>Finanse edilen pozisyon ve boşlukları, hareketliliği (çıkış eksi giriş), senaryoları dahil edin; talebi iç ve
+      ulusal/uluslararası/sektörel ölçütlerle kıyaslayın; yeniden görevlendirme, yeniden eğitim, dış kaynak ve işe alımı
+      değerlendirin; açığı sayısallaştırın.</td></tr>
+    <tr><td>6.4.2</td><td>b) Arz riskinin tanımı</td>
+      <td>Kurumsal risk değerlendirme usullerini uygulayın, riskleri önceliklendirin ve raporlayın.</td></tr>
+    <tr><td><b>3. Risk yönetimi</b></td><td>7.1–7.3</td><td>a) Strateji ve eylem planı</td>
+      <td>Bölümlenmiş ve bütün işgücü için azaltma stratejileri belirleyin; planlama ve geçiş yönetimi mekanizması kurun;
+      mali, insan ve sistem kaynaklarını sağlayın; önerilen stratejileri raporlayın.</td></tr>
+    <tr><td rowspan="2"><b>4. Uygulama</b></td><td>8.1</td><td>a) İzleme ve ölçme</td>
+      <td>İşgücü planlama sonuçlarını izleme ve ölçme mekanizması kurun.</td></tr>
+    <tr><td>8.2</td><td>b) Olağan iş planına gömme</td>
+      <td>Stratejik işgücü planlamasını olağan iş planlama sürecine entegre edin.</td></tr>
+  </tbody>
+</table>
+
+<h3>Başlangıç: ekip, gerekçe ve iletişim (madde 6.3)</h3>
+<ul>
+  <li>Bir işgücü planlama lideri ve destek ekibi belirlenir; büyük kurum paydaş temsilcilerini dahil etmeyi hedefler.
+  KOBİ'ler için başlangıç noktası farklı olabilir: ekip kurmak, iş gerekçesi yazmak ya da işgücünü bölümlendirmek
+  mümkün olmayabilir; doğrudan iş stratejisi ve belirlenmiş senaryolar karşısında mevcut ve gelecekteki arzın
+  çözümlenmesine geçilebilir.</li>
+  <li>Gerekçe şu yollarla sunulabilir: işgücü planının yokluğunun risklerini belirlemek; emek piyasası taraması ve
+  maliyet-fayda analiziyle yazılı gerekçe; yöneticilere yetkinlik geliştirme oturumu; işgücü analitiği ile strateji
+  arasındaki bağı göstermek; giderilecek veri boşluklarını anlatmak. En iyisi stratejik ve geleceğe odaklı sunmaktır.</li>
+  <li>Kurum stratejisi (genellikle üç ila beş yıl) mevcut ve gelecek analizin temelidir. İşgücü sonuçları yalnızca
+  kadro büyüklüğüne bağlanmaz; meslek grupları (iş aileleri) ve yetkinlikler ile bunların zaman içindeki değişimi
+  de belirtilir. Planlama öncelikleri stratejik ya da yüksek değerli işe en çok katkı yapan iş gruplarına odaklanır.</li>
+  <li>İletişim planı; iş gücüne ve paydaşlara planlamanın niyet ve amaçlarını anlatır, kimin neyi yürüttüğünü ve
+  beklenen çıktıları (değerlendirme, anket, kıyaslama, ilerleme raporu) kapsayabilir.</li>
+</ul>
+
+<h3>Dış ve iç etkenler (madde 4.8)</h3>
+<p>İşgücü planlaması, kurumun gelecekteki etkisini önceden görmesi için iş zekâsı üretir. Etkiler karmaşık olabilir:
+<b>dış etkenler</b> (yerel, bölgesel, ulusal ve uluslararası ekonomik, siyasi, sosyal ve demografik emek piyasası
+ortamı; sektör ve hükümet düzenlemeleri; uyum; mevzuat; teknoloji) ve <b>iç etkenler</b> (değişen piyasa koşulları,
+yerel ve küresel ekonomik döngü, işyeri politika ve uygulamaları, işgücü hareketliliği, birleşmeler, büyüme,
+küçülme, kapanışlar, yeni kuruluşlar, maliyet azaltma, rekabet, verimlilik, yeni ürün ve hizmetler, yeteneği elde
+tutma, iş dayanıklılığı, yetkinlik geliştirme). Hepsi iş riskini belirlemek için değişim yönetimi gerektirir.</p>
+
+<h3>Başlangıç sonrası: işgücü profili ve anket (madde 6.3.25)</h3>
+<p>Bölümlenmiş işgücü hakkındaki nitel ve nicel bilgi boşlukları ilk adımlar bittikçe görünür. Bunları kapatmak için
+tüm kurum ya da belirli bir bölüm için işgücü anketi yapılabilir. Profil soruları genellikle şunları içerir: sanayi,
+sektör, bölüm, çalışan özellikleri (yaş, cinsiyet, kültür, dil), sektörde ve kurumda kalma süresi, yapılan iş türü,
+kurumda çalışma nedenleri, kalma ya da ayrılma güdüleyicileri, çalışma hayatı niyetleri, kariyer gelişimi ve eğitim
+beklentileri.</p>
+
+<h3>Uygulama: izleme ve ölçme (madde 8)</h3>
+<p>İşgücü planlaması dünya genelinde yeni bir disiplindir ve vaka çalışmalarına erişim sınırlıdır; bu yüzden
+işgücü planlamasının verimlilik üzerindeki etkisinin ölçülmesi ve çözümlenmesi önemlidir. Tablo 5 ikisini hizalar:</p>
+<table>
+  <thead><tr><th>İşgücü planlaması</th><th>Verimlilik</th></tr></thead>
+  <tbody>
+    <tr><td>Yönetişim ve liderlik</td><td>Yönetişim ve liderlik</td></tr>
+    <tr><td>İşgücü planlama yetkinlikleri, beceri, bilgi ve kaynak</td><td>Kapasite ve kapasite geliştirme</td></tr>
+    <tr><td>İş stratejisiyle hizalama</td><td>Emek, sermaye, kaynak, yatırım</td></tr>
+    <tr><td>Geleceğe odaklı</td><td>Modelleme</td></tr>
+    <tr><td>İşgücü bölümlendirme</td><td>Yatırım ve bilgi</td></tr>
+    <tr><td>Kanıta dayalı</td><td>Girdi/çıktı oranları</td></tr>
+    <tr><td>Risk değerlendirme</td><td>Çıktıların ölçülmesi</td></tr>
+    <tr><td>Risk azaltma</td><td>Anahtar performans göstergeleri</td></tr>
+    <tr><td>Gömme</td><td>İlerleme</td></tr>
+  </tbody>
+</table>
+<p>Yerel iş düzeyinde ölçüm basit olabilir; aşağıdaki yedi soru yeterli bir başlangıçtır:</p>
+<ol>
+  <li>İşgücü planlaması, kurumun gereken işgücü için rekabet kapasitesine katkı yaptı mı?</li>
+  <li>Kritik işgücü elde tutuldu mu?</li>
+  <li>İşgücü planlama politika ve uygulamaları sonucunda devir iyi yönde değişti mi?</li>
+  <li>İşgücü planlaması olağan iş planlama süreçlerine gömüldü mü?</li>
+  <li>Belirlenen arz açıklarını gidermek için gereken işgücü çekildi mi?</li>
+  <li>Üst yönetim ve liderler işgücü planlama yöntemlerinde ve raporlamasında yetkin mi?</li>
+  <li>Kurumda işgücü planlama yetkinliklerini geliştirmek için gereken bilgi, araç ve sistemler var mı?</li>
+</ol>
+
+<h3>Küçük kurum için örnek (Ek A)</h3>
+<p>Ek A, kurum stratejisini (üç ila beş yıl) planlamanın temeli olarak alan beş adımlı basit bir örnek verir.
+Örnek, yazılım ürünü sağlayan küçük bir şirketin çözüm sağlayıcısına dönüşmesidir.</p>
+<table>
+  <thead><tr><th>Adım</th><th>Soru</th><th>Araç ve sorumluluk</th></tr></thead>
+  <tbody>
+    <tr><td><b>1</b></td><td>Stratejik iş planından türeyen kurum, bölüm ve departman düzeyindeki ana konular nelerdir?</td>
+      <td>Her yönetici kendi sorumluluk alanı için konuları tanımlar.</td></tr>
+    <tr><td><b>2</b></td><td>Stratejik planı gerçekleştirmek için hangi deneyim, beceri ve yetkinlikler, kaç kişi için gerekli? Hangileri eskimiş?</td>
+      <td>Yönetim nitelik ve niceliği tanımlar; departman başkanı İK desteğiyle sorumludur.</td></tr>
+    <tr><td><b>3</b></td><td>Kurumda hangi deneyim, beceri ve yetkinlikler, hangi işler mevcut?</td>
+      <td>Şirketteki işlerin mevcut durum analizi; departman başkanı personel birimi desteğiyle.</td></tr>
+    <tr><td><b>4</b></td><td>İhtiyaçlar ile mevcut örgüt arasındaki açık nedir?</td>
+      <td>Hangi iş tanımları değişmiyor, hangileri yeni tanımlanmalı; İK, operasyon birimleri desteğiyle.</td></tr>
+    <tr><td><b>5</b></td><td>Uygulama yolu nedir: işe alım planı, kişisel gelişim planı, yeniden yapılanma planı?</td>
+      <td>Hangi çalışanlar geliştirilebilir, hangi işler için işe alım yapılmalı, eskiyen işlerin çalışanlarına ne olmalı; İK sorumludur.</td></tr>
+  </tbody>
+</table>
+<p>Bu uygulama planı, gelecek yıl için işgücü planlama sürecinin ve insan kaynakları konularıyla ilgili her kararın
+temelidir.</p>
+
+<h2 id="yontemler">Bölümlendirme, Veri ve Risk</h2>
+
+<h3>Bölümlendirme yaklaşımları (Tablo 2)</h3>
+<p>İki temel yaklaşım vardır: <b>role dayalı</b> (işler, değere ya da yapılan iş türüne göre bölümlenir) ve
+<b>çalışana dayalı</b> (demografik, gözlenebilir ya da çıkarsanan özellikler). Kurumun karmaşıklık ve olgunluk
+düzeyine göre her biri geçerli olabilir. Olgunluk sırasına göre dört yaklaşım:</p>
+<table>
+  <thead><tr><th style="width:150px">Yaklaşım</th><th style="width:90px">Olgunluk</th><th>Açıklama</th></tr></thead>
+  <tbody>
+    <tr><td><b>Örgüt yapısı</b></td><td>Düşük</td>
+      <td>Organizasyon şemasıyla bölümlendirmenin sınırı vardır: pozisyonları (rolleri) bağlı olduğu hatlara ve
+      örgütsel işlevlere göre gruplar, beceri, kapasite ya da coğrafyaya göre değil.</td></tr>
+    <tr><td><b>Coğrafi</b></td><td>Düşük</td>
+      <td>Konuma göre bölümlendirme, çalışanların coğrafi dağılımını ve konuma göre işgücü erişilebilirliğini
+      anlamaya izin verir. Yerel emek piyasası koşullarını yansıtmak için diğer türlerle birleştirilmesi en iyisidir.</td></tr>
+    <tr><td><b>İş ailesi</b></td><td>Orta</td>
+      <td>İşgücünü ilişkili yetkinliklere dayalı benzer mesleki gruplara bölmeyi sağlar. Ulusal istatistik
+      kurumlarının meslek sınıflandırmasına benzer; dış emek piyasası verisiyle bütünleşme dış arzı belirleme imkânı sunar.</td></tr>
+    <tr><td><b>Sistematik bölümlendirme</b></td><td>Yüksek</td>
+      <td>İş aileleri, işlevleri ve rolleri gruplamak yararlıdır; ancak kurum bu iş grupları içinde gereken beceri ve
+      yetkinlikleri belirleyebildiğinde işgücü planlaması en etkilidir. Hangi becerilerin geliştirilmesi gerektiği ve temin
+      süresi (lead time) görünür olur.</td></tr>
+    <tr><td><b>İş kritikliği</b></td><td>Yüksek</td>
+      <td>Rolü kattığı değere göre sınıflandırmak kaynakların verimli dağıtımını sağlar. Kritikliği değerlendirme
+      boyutları: finansal performansa etki, temel hizmetlerin sunumu, yeni ürün ve hizmet geliştirme, kurumun
+      yönetimi, stratejik projelerin tamamlanması.</td></tr>
+  </tbody>
+</table>
+
+<h3>İş ve yetkinlik bölümlendirme hiyerarşisi (Tablo 3)</h3>
+<table>
+  <thead><tr><th>Segment</th><th>Tanım</th><th>Örnek</th></tr></thead>
+  <tbody>
+    <tr><td><b>İş ailesi</b></td><td>En üst düzeyde benzer işlerin grubu; genellikle birkaç iş fonksiyonundan oluşur.</td>
+      <td>İdari işler, tesisler ve mülk</td></tr>
+    <tr><td><b>İş fonksiyonu</b></td><td>Bir iş ailesi içinde benzer beceri, kapasite ve bilgi isteyen işlerin alt grubu.</td>
+      <td>Yönetici asistanları, sekreterler ve resepsiyonistler</td></tr>
+    <tr><td><b>İş rolü</b></td><td>Bir iş fonksiyonu içinde, gereken beceri, kapasite ve bilginin daha da inceltilip gruplanmasını sağlayan alt grup.</td>
+      <td>Kişisel/yönetici asistanı</td></tr>
+    <tr><td><b>Yetkinlikler</b></td><td>Her iş rolü için gereken bilgi, beceri, deneyim, kapasite ve tutumlar.</td>
+      <td>Bazı beceriler iş rolleri arasında paylaşılır ve planlamaya yardım eder.</td></tr>
+  </tbody>
+</table>
+<p>İş profili (job profiling), kurumda gereken beceri ve kapasiteleri belirler; bir pozisyon ya da rol türünün
+sorumluluk ve görevleri ile bunları yapmak için gereken kritik beceri ve kapasiteler listesidir. Yararları: gereken
+becerileri belirleyip gruplamak, gelişim ihtiyaçlarını görmek, farklı rollerin doldurulma sürelerini (lead time)
+görünür kılmak, olası arz havuzlarıyla bağ kurmak.</p>
+
+<h3>Bölümlendirme ilkeleri (madde 6.3.9)</h3>
+<ul>
+  <li>Model kurumun tüm bölümlerinde tutarlı olmalıdır.</li>
+  <li>Kurumun tüm işgücü unsurlarını kapsamalıdır: tüm çalışanlar (tam zamanlı, yarı zamanlı, gündelik), yükleniciler
+  ve koşullu işgücü.</li>
+  <li>Öngörülen ve öngörülmeyen bilgi değişimlerini, yetkinliğin korunması için dikkate almalıdır.</li>
+  <li>İş ailesi ve meslek sayısı işin doğasına göre belirlenmeli ve ana işlevleri ayırmalı; ideal olarak asgaride tutulmalıdır.</li>
+  <li>Mesleklerin büyüklüğüne göre dikey (aynı mesleğin farklı kıdem düzeylerini tek grupta birleştirme) veya yatay
+  (aynı düzeydeki benzer meslekleri birleştirme) entegrasyon gerekebilir; karar kurumun istihdam biçimi ve kariyer
+  yoluyla tutarlı olmalıdır.</li>
+  <li>Sınıflandırma sistemi hem talebe (pozisyonlar) hem arza (kişiler) tutarlı uygulanmalıdır.</li>
+</ul>
+<p><b>Çalışan bölümlendirme</b> (madde 6.3.10): kişinin demografisi, konumu, tutumu, görüşü ve davranışına
+dayanır ve arz öngörüsünün temelidir. Gönüllü ayrılma oranı ya da terfiye hazır olma olasılığı gibi girdilerin
+değişimini daha iyi tahmin etmeye yarar; örneğin kıdemi düşük çalışan sayısının azalması çoğunlukla gönüllü
+ayrılışları düşürür.</p>
+
+<h3>Veri: ne toplanır, nasıl sunulur (madde 6.3.11, 6.3.21–6.3.23)</h3>
+<ul>
+  <li><b>Basit tutun.</b> Hangi soruların yanıtlanacağını bilin, yalnızca plan için gereken veriyi toplayın ve çalışan
+  verisi toplarken gizlilik ilkelerine saygı gösterin. Analitik yetenek, strateji ile işgücü verisi arasındaki bağı
+  göstermek için gereklidir.</li>
+  <li><b>Nicel veri:</b> finanse edilmiş pozisyonlar, finanse edilmiş boş kadrolar, boş kadro bekleme süresi, işgücünün
+  kurum içi yer değiştirmesi (görevlendirme, transfer), tür ve nedene göre çıkışlar ve girişler, hareketlilik (eğilim
+  ve net), çeşitlilik özellikleri (yaş, cinsiyet, kültürel, dilsel, fiziksel ve zihinsel farklılık), nitelik, beceri ve
+  yetkinlikler, deneyim.</li>
+  <li><b>Nitel veri:</b> çalışma hayatı aşaması (yeni giriş, erken, orta, kariyer sonu), bağlılık güdüleyicileri,
+  bağlılığı azaltan güdüleyiciler, kariyer arzuları, öğrenme ve gelişim niyetleri, çalışan ve paydaşların yönetim ve iş
+  politikalarına görüşü.</li>
+  <li><b>Veri dönemi:</b> asgari önceki 12 ay, tercihen üç yıl. Sık toplanır (büyük kurumlarda genellikle aylık) ve
+  her ay aynı protokolle çıkarılır. Veri eksikse vekil değişken ya da varsayım kullanılabilir; ikisi de belgelenir.</li>
+  <li><b>Analitik olgunluk:</b> tanımlayıcı (ne oldu, ne oluyor), öngörücü (ne olabilir), yönlendirici (ne olmalı).
+  Kurum şu mevcut ve hedef düzeyini sorgular: şu an hangi düzeyde, hangi düzeyde olması gerekiyor, hangi düzeyde olmak
+  istiyor, bunun için ne yapılmalı.</li>
+  <li><b>Eğilim bilgisi</b> zaman serisi tekniğiyle talep, arz, işe alım performansı ve devir davranışı için sunulabilir;
+  KOBİ'ler için tanımlı bir zaman çerçevesine karşı raporlamak daha kolay olabilir (örneğin yüksek nitelikli uzman
+  çalışanların %46'sının emekli olacağı yıl).</li>
+</ul>
+
+<h3>Tablo 4: asgari işgücü planlama verisi</h3>
+<table>
+  <thead><tr><th style="width:110px">Taraf</th><th>İş ailesi ve toplu düzeyde toplanacak veri</th></tr></thead>
+  <tbody>
+    <tr><td><b>Talep</b></td><td>Toplu ve iş ailesi bazında pozisyon sayısı; iş ailesi, sınıflandırma düzeyi, istihdam türü
+      (çalışan, yüklenici), konum ve beceri/yetkinlik gibi temel tanımlayıcılar. Onaylı ve mümkünse onaysız talep ve
+      bunun zaman içindeki değişimi.</td></tr>
+    <tr><td><b>Arz</b></td><td><b>Demografi:</b> yaş, cinsiyet, çeşitlilik bilgisi, kurumdaki çalışma hayatı aşaması.
+      <b>Deneyim:</b> mevcut rolde, kurumda, bu iş ailesinde ve aynı sektörde geçen süre.
+      <b>Diğer:</b> tür ve nedene göre gönüllü/istemsiz devir (emeklilik, izin, görevlendirme, transfer, program kapanışı,
+      kariyer ilerlemesi); işe alım verisi (kalıcı, geçici ve iç hareketler); nitelik ve üyelikler (isteğe bağlı);
+      kurum anketlerinden nitel bilgi; beceri/yetkinlikler; nicel anketler (iş yapabilirlik, istihdam edilebilirlik, yenilikçi
+      davranış, vardiya sonrası toparlanma, tükenmişlik, presenteeism, işle ilgili uyku kalitesi, psikolojik sıkıntı).</td></tr>
+    <tr><td><b>Talep ve arz birlikte</b></td><td>Onaylı/onaysız talep; tanımlayıcı istatistikler; istihdam türü profili; yaş
+      ve cinsiyet profili; çeşitlilik profili; kıdem profili; deneyim profili; işe alım verisi (asgari son 12 ay, tercihen
+      üç yıl); devir bilgisi; geçmiş ve mevcut boş kadro seviyeleri ve talep/arz açığı (toplu, iş grubu, yetkinlik).</td></tr>
+  </tbody>
+</table>
+<div class="note">Tablodaki vurgu: iş yapabilirlik, istihdam edilebilirlik ya da yenilikçi davranış düşük; tükenmişlik,
+presenteeism, uyku kalitesi sorunu ya da psikolojik sıkıntı yüksekse İK'nın planlamaya başlaması gerekir.</div>
+
+<h3>Çekirdek sorular</h3>
+<ul>
+  <li><b>Mevcut talep (6.3.16):</b> kurum hangi çıktıları, hizmetleri ve sonuçları sunmak zorunda; bunlar zamanında ve
+  bütçe içinde sunuluyor mu; değilse neden (hangi yetkinlikler eksik, finanse edilen FTE yeterli mi); mevcut işler
+  yakın gelecekte beceri, bilgi ya da teknoloji açısından önemli ölçüde değişecek mi; ek işgücünün gerekçesi nedir.
+  Ek talep için: bütçe kısıtları; iş süreçleri/BT sistemleri değişirse azalır mı; çalışma yapısı değişirse azalır mı;
+  kurum içinden yeniden eğitim ile karşılanabilir mi; sonlandırılması gereken ve yeni kurulacak işlevler var mı; işler
+  doğru tasarlandı mı; kurum sıfırdan kurulsa kaç kişi, hangi rol, düzey, konum ve kapasiteyle olurdu.</li>
+  <li><b>Mevcut arz (6.3.20):</b> işgücünün cinsiyet, yaş, çeşitlilik, sınıflandırma, konum, deneyim, yetkinlik ve kıdem
+  bileşimi; ayrılış örüntüleri (emeklilik, istifa, ölüm); deneyim, yeni giriş ve devir bileşimi; yönetici/çalışan oranı;
+  koşullu işgücüne bağımlılık (danışman, yüklenici, geçici; toplam işgücündeki oranı; hangi iş onlarca yapılıyor);
+  yaş ve çalışma hayatı aşaması profili; kıdem örüntüsü; sektör profiliyle kıyas; risk ve güçlü alanlar; dağılımın
+  fazla/eksik arzdan daha önemli olup olmadığı; teklif verme ile fiili başlama arasındaki fark.</li>
+  <li><b>Eğilim (6.3.23):</b> beklenen emeklilik, devir, görevlendirme; yeni iş önerilerinin ve sona erecek politika
+  ve sözleşmelerin etkisi; mevcut oranlarla işgücünün öngörü döneminde artıp artmayacağı, ne kadar ve hangi iş
+  ailesinde; çıkış beklentisi.</li>
+  <li><b>Çevre/emek piyasası taraması (6.3.24):</b> becerilerin mevcut bulunabilirliği ve temin kaynağı; ilan başına
+  kaliteli başvuru oranı; edinilmesi zor beceriler; ortalama işe alım süresi ve iş ailelerine göre değişimi; adayların
+  işverene göre pazarlık gücü; kilit becerilere talep ve arz; bölümlendirme yöntemi bağlamında emek piyasası riskleri;
+  dış kıyaslama verisi (ücret, beceri bulunabilirliği) ve dış çevre (enflasyon, rekabet, işsizlik) eğilimleri.</li>
+  <li><b>Senaryo (6.3.27):</b> stratejik yön; gelecekte yapılacak işe etkisi; bütçeye girecek ve duracak faaliyetler;
+  etkilenecek çıktılar; işgücü için sonuçlar (kapasite, kabiliyet, konum, işlevsel hizalama); önem kazanacak yeni beceri
+  ve roller; artık gerekmeyecek işlevler; işin yapılış biçiminin ve teknolojinin etkisi.</li>
+  <li><b>Açık hesabı (6.4.1):</b> finanse edilmiş/edilmemiş mevcut işgücü; geçmiş ve öngörülen hareketlilik (çıkış ve
+  giriş) türlere göre; öngörülen kazanç/kayıp; gelecekteki (sayısallaştırılmış) talepler; belirlenen senaryolara karşı
+  mevcut arz ve bu arzın risk değerlendirmesi.</li>
+</ul>
+<p>Duyarlılık testi, stres testi ve senaryolar, mevcut ve gelecekteki işgücü gereksinimleri için talep ve arz açığı
+hesaplarını mümkün kılar; işgücü ihtiyacı düzeyi, riski ve ilişkili azaltma stratejilerini belirlemeye yardım eder.
+Hesap, karmaşık planlama sistemleriyle olabileceği gibi basit elektronik tablo yöntemiyle de yapılabilir.</p>
+
+<h3>Arz riski (madde 6.4.2)</h3>
+<ul>
+  <li>Risk, kurumun performansı üzerinde olumsuz etki doğurabilecek zararlı bir olay ihtimalidir. İyi risk yönetiminin
+  amacı en uygun, dengeli ve sürdürülebilir kurumsal performansı sağlamaktır. Risk yönetimi kurumun stratejisiyle
+  hizalı ve performans yönetimini destekler; basit ve esnek olmalı, en büyük risklere odaklanmalıdır.</li>
+  <li><b>Dış riskler:</b> siyasi, ekonomik, teknolojik, sosyolojik, demografik değişimler; pazar, müşteri, rakip, ürün,
+  tedarikçi değişimleri; mevzuat değişikliği; iklim olayları, salgınlar, savaşlar.</li>
+  <li><b>İç riskler:</b> kurumun stratejisi (tanımsız eksenler, açıklanmamış ya da yetersiz strateji); süreçler (stratejiyle
+  uyumsuz, verimsiz); kaynaklar (emeklilik, yer değiştirme, yeniden görevlendirme, dış kaynak kullanımı; teknolojik,
+  maddi, mali kaynaklar); maddi olmayan unsurlar (örgüt yapısı, yönetim araçları ve yönetici yetkinlikleri); yönetim
+  bilgisi (yanlış ya da ilgisiz veri).</li>
+  <li>Kurum risk maruziyetini ve kabul etmeye razı olduğu risk düzeyini (risk iştahı) bilmelidir. Yönetim kurulları genellikle
+  risk iştahını belirler; işgücü planlama arz açığı öngörüleri iş riski iştahıyla hizalı raporlanır. İki yaygın çerçeve
+  vardır: (a) operasyonel veya finansal çerçeve: önemsiz – hafif – orta – büyük – felaket; (b) daha basit
+  yüksek – orta – düşük değerlendirmesi ve nadir – düşük ihtimal – orta – muhtemel – neredeyse kesin olasılık derecesi.</li>
+  <li>Kanıta dayalı raporlama örneği: <i>talep öngörüsü</i> (X bölümünü iki yılda %2,5 büyütmek; stratejik plandaki
+  büyüme öngörüleriyle kanıtlı), <i>arz risk değerlendirmesi</i> (büyük; emek piyasası taramasıyla kanıtlı), <i>olasılık
+  derecesi</i> (neredeyse kesin; işgücü profili ve arz açığı hesaplarıyla kanıtlı). ISO 31000 riskin görünürlüğünü
+  artırmak ve karar vermeye yardımcı olmak için bir mekanizma sunar.</li>
+</ul>
+
+<h3>Risk yönetimi stratejileri ve eylem planı (madde 7)</h3>
+<p>Stratejiler kanıta dayalı işgücü planlamasına dayanır ve şu başlıklarla gruplanır: kurumsal değişim; insan yönetişimi;
+halefiyet planlaması; mevcut işgücünü geliştirme; iş yeniden tasarımı; mevcut işgücünü elde tutma; mevcut işgücünü
+terfi ettirme; yeni işgücü çekme ve işe alma; gereken ve/veya hedeflenen becerileri görevlendirme veya ödünç alma;
+maliyet etkinse dış kaynak kullanma; artık gerekmeyen işgücünü çıkarma ya da yeniden görevlendirme. Stratejiler
+kurum geneline ya da kritik iş gruplarına ve işgücü bölümlerine yönelik olabilir.</p>
+<p>Doğal riskler arasında kaynak, araç ve ekipman eksikliği; işgücü planlama liderliği ve yönetişim yeteneği eksikliği;
+planlamanın faydasına dair farkındalık eksikliği; muhalefet, çatışma ve direnç; dış çevre değişimleri; veri ve/veya sistem
+kalitesi; veri analitiği yeteneği sayılır. Azaltma stratejileri mali ve personel kaynağı gerektirir.</p>
+<p>Eylem planı, diğer iş planlarıyla tutarlı bir biçimde sunulur ve şunları belirtir: <b>konu, ilişkili görev,
+sorumlu kişi(ler), zaman çerçevesi ve anahtar performans göstergeleri, yatırım.</b> İşgücü planlaması her zaman canlı,
+aktif ve sürekli bir unsur olarak ele alınmalı, işgücü geliştirme stratejileri iş gücüne (örneğin intranet üzerinden)
+görünür kılınmalı ve stratejik işgücü planlamasından sorumlular tarafından düzenli ölçülüp izlenmelidir.</p>
+
+<h2 id="adimlar">Uygulama Adımları</h2>
+<ol>
+  <li><b>Lideri ve ekibi belirleyin, gerekçeyi yazın.</b> KOBİ iseniz doğrudan strateji ve senaryo çözümlemesine geçin.</li>
+  <li><b>Stratejinin işgücü sonuçlarını belgeleyin.</b> Yalnızca kadro büyüklüğünü değil, iş ailelerini ve yetkinlikleri de.</li>
+  <li><b>İletişim planı kurun.</b> Liderleri, işgücünü ve paydaşları baştan bilgilendirin.</li>
+  <li><b>İşgücünü bölümlendirin.</b> İş ailesi, iş fonksiyonu, rol ve yetkinlik hiyerarşisi; kritik iş gruplarını belirleyin;
+  talep ve arza aynı sınıflandırmayı uygulayın.</li>
+  <li><b>Mevcut talep ve arzı çıkarın.</b> Onaylı ve onaysız talep; çalışan, yüklenici ve dış kaynaklı arz; FTE bazında,
+  asgari 12 ay, tercihen üç yıl.</li>
+  <li><b>Gerekirse emek piyasasını tarayın ve işgücü anketi yapın.</b> Bilgi boşluklarını raporlayın.</li>
+  <li><b>Üç senaryo kurun.</b> Değişim yok, büyüme, düşüş; gerekirse kurumun kendi senaryosu.</li>
+  <li><b>Açıkları hesaplayın ve riski tanımlayın.</b> Net ve iş ailesi bazında; olasılık ve etki ölçekleriyle.</li>
+  <li><b>Stratejileri ve eylem planını yazın.</b> Konu, görev, sorumlu, zaman, gösterge, yatırım.</li>
+  <li><b>İzleyin ve olağan iş planlamasına gömün.</b> Sonuçları ölçün, planı iş stratejisi döngüsüyle birlikte gözden geçirin.</li>
+</ol>
+
+<h2 id="kavramlar">Temel Kavramlar</h2>
+<p>Standardın 3. maddesindeki terimler ile metinde tanımlanan diğer temel kavramların kısa özetleri aşağıdadır.
+Tanımlar özgün biçimde Türkçeleştirilmiştir; bağlayıcı olan standardın kendi metnidir.</p>
+<table>
+  <thead><tr><th style="width:70px">Madde</th><th style="width:230px">Terim</th><th>Tanım</th></tr></thead>
+  <tbody>
+    <tr><td><b>3.1</b></td><td>İşgücü <small>(workforce)</small></td>
+      <td>İş veya kurumsal sonuçlara katkıda bulunmak için hizmet veya emek sağlayan insanlar.</td></tr>
+    <tr><td><b>3.2</b></td><td>Planlama <small>(planning)</small></td>
+      <td>İstenen sonuca ulaşmak için gereken faaliyetleri düşünme ve düzenleme süreci.</td></tr>
+    <tr><td><b>3.3</b></td><td>İşgücü planlaması <small>(workforce planning)</small></td>
+      <td>Kurumun insan ihtiyaçlarının sistematik olarak belirlenmesi, çözümlenmesi ve planlanması. Dış ve iç çevrenin işe mevcut
+      ve gelecekteki etkisini bildiren iş zekâsı üretir ve işin yapısal ve kültürel değişime karşı dayanıklı olmasını sağlar.</td></tr>
+    <tr><td><b>3.4</b></td><td>Stratejik işgücü planlaması <small>(strategic workforce planning)</small></td>
+      <td>Genellikle tanımlı bir dönemi kapsayan ve kurum stratejisine hizalanan işgücü planlaması. Kapsam; işgücü değerlendirmeleri,
+      kıyaslama, İK politika çerçeveleri ve ilişkili süreçleri içerebilir.</td></tr>
+    <tr><td><b>3.5</b></td><td>Operasyonel işgücü planlaması <small>(operational workforce planning)</small></td>
+      <td>Tanımlı bir dönemi, kurumun planlama döngüsüne hizalı kapsayan; işgücü planlama stratejisine ilişkin veriyi toplamaya,
+      çözümlemeye ve raporlamaya odaklanan planlama. Daha kısa vadeli kadrolama ya da çizelgeleme faaliyetleri dışarıda bırakılabilir.</td></tr>
+    <tr><td><b>6.3.5</b></td><td>Bölümlendirme <small>(segmentation)</small></td>
+      <td>Bir kurum içindeki aileleri, işlevleri, rolleri ve yetkinlikleri sınıflandırma; planlamayı kurumun performansı için temel
+      sayılan en kritik iş/iş gruplarına odaklama.</td></tr>
+    <tr><td><b>6.3.8</b></td><td>İş profili <small>(job profile)</small></td>
+      <td>Bir pozisyon ya da rolde yapılan sorumluluk ve görevlerin ve bunları yerine getirmek için gereken kritik beceri ve
+      kapasitelerin kapsamlı listesi.</td></tr>
+    <tr><td><b>6.3.12</b></td><td>Tam zaman eşdeğeri <small>(FTE)</small></td>
+      <td>Talep ve arzın normalde ifade edildiği ölçü birimi (ya da benzeri ölçüler).</td></tr>
+    <tr><td><b>6.3.13</b></td><td>Toplu talep ve arz <small>(aggregate)</small></td>
+      <td>Kurumun toplam büyüklüğüne ilişkin talep ve arz. Farklı iş ailelerini ve rolleri ayırt edemez; hepsinin elde tutma,
+      öğrenme ve işe alımda benzer davrandığını varsayar.</td></tr>
+    <tr><td><b>6.3.15</b></td><td>Yetkinliğe göre talep <small>(demand by competency)</small></td>
+      <td>İş ailelerini gereken yetkinliklere göre tanımlayıp talebi buna göre okuma; konumlandırma zaman çerçevesini
+      (işgücü gereksinimi, işe alım ve eğitim takvimi) içerir.</td></tr>
+    <tr><td><b>6.3.16</b></td><td>Onaysız talep <small>(unapproved demand)</small></td>
+      <td>Kurum için henüz onaylanmamış ancak mevcut planlama döneminde onaylanması muhtemel görülen ek işgücü.</td></tr>
+    <tr><td><b>6.3.17</b></td><td>Arz bileşenleri <small>(current supply)</small></td>
+      <td><b>Çalışanlar:</b> tam zamanlı, yarı zamanlı ve gündelik (geçici). <b>Yükleniciler:</b> kurumla doğrudan değil üçüncü taraf
+      aracılığıyla düzenli çalışan bireyler. <b>Dış kaynaklı işlevler:</b> tanımlı performans düzeyi sözleşmesi altında üçüncü
+      tarafça yürütülen hizmet işlevleri.</td></tr>
+    <tr><td><b>6.3.6</b></td><td>Rol bazlı / çalışan bazlı bölümlendirme</td>
+      <td>Rol bazlı: işler değere veya yapılan iş türüne göre bölümlenir. Çalışan bazlı: demografik, gözlenebilir ya da
+      çıkarsanan özelliklere göre.</td></tr>
+    <tr><td><b>6.3.9</b></td><td>Dikey / yatay entegrasyon</td>
+      <td>Dikey: aynı mesleğin farklı kıdem düzeylerini tek grupta birleştirmek. Yatay: aynı düzeydeki benzer meslekleri tek grupta birleştirmek.</td></tr>
+    <tr><td><b>6.3.22</b></td><td>Analitik olgunluk</td>
+      <td>Tanımlayıcı (ne oldu, ne oluyor), öngörücü (ne olabilir), yönlendirici (ne olmalı).</td></tr>
+    <tr><td><b>6.3.27</b></td><td>İş senaryosu <small>(business scenario)</small></td>
+      <td>Kurumun stratejik iş planından doğan ve geleceğin en az üç senaryoyla (büyüme, düşüş, değişim yok) sunulduğu
+      açık ve sayısallaştırılabilir tasarım.</td></tr>
+    <tr><td><b>6.4.2</b></td><td>Risk <small>(risk)</small></td>
+      <td>Kurumun performansı üzerinde olumsuz etki doğurabilecek zararlı bir olayın olma olasılığı.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="matris">Metrik Matrisi</h2>
+<p>Aşağıdaki tablo, standardın işaret ettiği veri başlıklarını, çekirdek soruları ve süreç unsurlarını kullanıcı × süreç aşaması ×
+raporlama sınıflandırmasıyla sunar. Kullanıcı ve raporlama sütunları bu sayfanın yazarlık sınıflandırmasıdır; standardın kendisi
+bunu yapmaz. Filtreleri değiştirdiğinizde tablo anında daralır.</p>
+
+<div class="filters">
+  <div><label for="fUser">Kullanıcı</label>
+    <select id="fUser">
+      <option value="">Tümü</option>
+      <option value="hr">İK / işgücü planlama ekibi</option>
+      <option value="exec">Üst yönetim ve yönetim kurulu</option>
+      <option value="line">Hat yönetimi</option>
+      <option value="fin">Finans ve operasyon</option>
+      <option value="ext">Dış paydaş (sendika, kamu, sektör)</option>
+    </select></div>
+  <div><label for="fStage">Süreç aşaması</label>
+    <select id="fStage">
+      <option value="">Tümü</option>
+      <option value="bag">Değer ve yapı (madde 4–5)</option>
+      <option value="f1">Faz 1: Başlangıç (6.3)</option>
+      <option value="f2">Faz 2: Veri analizi (6.4)</option>
+      <option value="f3">Faz 3: Risk yönetimi (7)</option>
+      <option value="f4">Faz 4: Uygulama (8)</option>
+    </select></div>
+  <div><label for="fType">Metrik ailesi</label>
+    <select id="fType">
+      <option value="">Tümü</option>
+      <option value="p">Talep</option>
+      <option value="c">Arz</option>
+      <option value="s">Hareketlilik ve eğilim</option>
+      <option value="r">Risk ve senaryo</option>
+      <option value="o">Bağlam ve süreç</option>
+    </select></div>
+  <div><label for="fRep">Raporlama</label>
+    <select id="fRep">
+      <option value="">Tümü</option>
+      <option value="ic">İç raporlama</option>
+      <option value="dis">Dış raporlama</option>
+    </select></div>
+  <div><label for="fQ">Metrik adında ara</label>
+    <input type="text" id="fQ" placeholder="ör. devir"></div>
+</div>
+
+<div class="count" id="mCount"></div>
+<table class="matrix">
+  <thead><tr>
+    <th>Metrik</th>
+    <th class="rot">İK / planlama</th>
+    <th class="rot">Üst yönetim</th>
+    <th class="rot">Hat yönetimi</th>
+    <th class="rot">Finans / operasyon</th>
+    <th class="rot">Dış paydaş</th>
+  </tr></thead>
+  <tbody id="mBody"></tbody>
+</table>
+<div class="legend">
+  <span><span class="dot p"></span> talep</span>
+  <span><span class="dot c"></span> arz</span>
+  <span><span class="dot s"></span> hareketlilik ve eğilim</span>
+  <span><span class="dot r"></span> risk ve senaryo</span>
+  <span><span class="dot o"></span> bağlam ve süreç</span>
+  <span><span class="tag iso">Tablo 4</span> standardın asgari işgücü planlama verisi listesinde yer alır</span>
+  <span><span class="tag lvl">hesaplayıcı</span> bu sayfada hesaplanabilen metrik</span>
+  <span>Hesaplayıcıya bağlı metrikler <b>koyu</b> işaretlenmiştir.</span>
+</div>
+
+<h2 id="tablo">Talep–Arz Tablosu</h2>
+<p>Talep ve arz, iş ailesi bazında tam zaman eşdeğeriyle (FTE) tutulur. Aşağıdaki tabloya kendi iş ailelerinizi girin; aile
+bazında açık, toplu açık, brüt eksik/fazla ve senaryo açığı anında güncellenir. Toplu rakam aile bazındaki farkları gizler:
+bir ailedeki fazla, başka bir ailedeki eksiği kapatmaz. "Senaryo" kutusu, talebi belirli bir yüzde değiştirerek duyarlılık
+testi yapar.</p>
+
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnek">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizle">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsv">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktar">Hesaplayıcıya aktar</button>
+  <span class="inline"><label for="senaryoPct">Senaryo: talep değişimi (%)</label>
+    <input type="number" id="senaryoPct" step="any" value="5"></span>
+</div>
+
+<table class="postbl">
+  <thead><tr>
+    <th>İş ailesi</th>
+    <th class="num">Onaylı talep (FTE)</th><th class="num">Onaysız talep (FTE)</th>
+    <th class="num">Arz (FTE)</th><th class="num">Kritik</th>
+    <th class="calc" style="width:100px">Açık (talep − arz)</th>
+  </tr></thead>
+  <tbody id="pBody"></tbody>
+  <tfoot><tr>
+    <td>Toplam</td>
+    <td class="calc" id="tTalep">—</td>
+    <td class="calc" id="tOnaysiz">—</td>
+    <td class="calc" id="tArz">—</td>
+    <td class="calc" id="tKritik">—</td>
+    <td class="calc" id="tAcik">—</td>
+  </tr></tfoot>
+</table>
+
+<div class="cards" id="pCards"></div>
+<div class="note" id="pNot"></div>
+
+<h2 id="formuller">Formüller ve Tanımlar</h2>
+<p>Standart formül vermez; veri başlıklarını ve soruları sıralar. Aşağıdakiler, bu başlıkların yaygın uygulama tanımlarıdır
+(bir bölümü doğrudan standardın andığı ölçülerden, kalanı türetilmiştir). Kurumunuzun yazılı tanımı bunlardan farklıysa onu
+kullanın.</p>
+<table>
+  <thead><tr><th>Metrik</th><th>Formül</th><th>Not</th></tr></thead>
+  <tbody id="fBody"></tbody>
+</table>
+
+<h2 id="hesaplayici">Hesaplayıcı</h2>
+<p>Metriği seçin, alanları doldurun; sonuç, formülün yerine konmuş hâli ve yorum aşağıda görünür.
+Kurulum gerekmez, veriler tarayıcıdan çıkmaz.</p>
+
+<div class="panel">
+  <h3>İşgücü Planlaması Metrik Hesaplayıcısı</h3>
+  <p class="hint">Alanlar seçtiğiniz metriğe göre değişir. Büyüklükler FTE (tam zaman eşdeğeri) veya kişi, oranlar yüzde olarak raporlanır.</p>
+  <div class="grid">
+    <div class="field" style="grid-column:1/-1">
+      <label for="cMetric">Metrik <span class="req">*</span></label>
+      <select id="cMetric"></select>
+    </div>
+  </div>
+  <div class="grid" id="cFields" style="margin-top:14px"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="oAll"> Tümünü seç</label>
+    <label><input type="checkbox" id="oFormula" checked> Formülün açık hâli</label>
+    <label><input type="checkbox" id="oInterp" checked> Yorum ve eşik</label>
+    <label><input type="checkbox" id="oPy"> Python karşılığı</label>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-run" id="btnRun">Hesapla</button>
+    <button class="btn-ghost" id="btnExample">Örnek veriyi yükle</button>
+    <button class="btn-ghost" id="btnPy">Python motorunu yükle</button>
+    <span class="chip" id="engStatus">Motor: tarayıcı (JavaScript)</span>
+  </div>
+  <p class="hint" style="margin:14px 0 0">Python motoru seçildiğinde hesaplama, bu sayfaya gömülü
+  <code style="background:#1c2836;color:#cfe0f0">iso30409_metrikler.py</code> modülünün
+  <code style="background:#1c2836;color:#cfe0f0">hesapla()</code> fonksiyonu tarafından, tarayıcı içinde
+  çalışan gerçek bir CPython yorumlayıcısında (Pyodide/WebAssembly) yapılır. İlk yüklemede yaklaşık
+  10–12 MB indirilir; sonrası önbellekten gelir. Çevrimdışıysanız sayfa JavaScript yedeğiyle
+  aynı sonuçları vermeye devam eder.</p>
+</div>
+
+<div id="cResult"></div>
+
+<h2 id="python">Python Kod Örnekleri</h2>
+<p>Bu sayfadaki hesaplamalar JavaScript'te taklit edilmez: modülün tamamı sayfaya gömülüdür ve
+Pyodide (WebAssembly üzerinde CPython) ile tarayıcı içinde çalıştırılır. Hesaplayıcıda Python motorunu
+seçtiğinizde her sonuç <code>hesapla()</code> fonksiyonundan gelir. Aynı dosya
+(<code>iso30409_metrikler.py</code>) komut satırında da bağımsız çalışır; doğrudan çalıştırıldığında
+örnek değerlerle doğrulama çıktısı üretir.</p>
+
+<div class="filename">iso30409_metrikler.py (özet)</div>
+<pre><i># --- Talep ve arz ---</i>
+
+<b>def</b> <span class="fn">arz_talep_acigi</span>(talep, arz):
+    <i>"""Pozitif: eksik arz; negatif: fazla arz (FTE)."""</i>
+    <b>return</b> talep - arz
+
+<b>def</b> <span class="fn">doluluk_orani</span>(arz, talep):
+    <b>return</b> <u>100</u> * arz / talep
+
+<b>def</b> <span class="fn">bos_kadro_orani</span>(finanse_bos, finanse_pozisyon):
+    <b>return</b> <u>100</u> * finanse_bos / finanse_pozisyon
+
+<i># --- Hareketlilik ---</i>
+
+<b>def</b> <span class="fn">net_hareketlilik</span>(ayrilan, giren):
+    <i>"""Çıkış eksi giriş (Tablo 1)."""</i>
+    <b>return</b> ayrilan - giren
+
+<b>def</b> <span class="fn">devir_orani</span>(ayrilan, donem_basi, giren):
+    sonu = donem_basi + giren - ayrilan
+    <b>return</b> <u>100</u> * ayrilan / ((donem_basi + sonu) / <u>2</u>)
+
+<b>def</b> <span class="fn">emeklilik_maruziyeti</span>(yaklasan, grup):
+    <b>return</b> <u>100</u> * yaklasan / grup
+
+<i># --- Yapı, senaryo ve risk ---</i>
+
+<b>def</b> <span class="fn">kosullu_isgucu_orani</span>(kadrolu, yuklenici, gecici):
+    <b>return</b> <u>100</u> * (yuklenici + gecici) / (kadrolu + yuklenici + gecici)
+
+<b>def</b> <span class="fn">senaryo_talebi</span>(mevcut, yillik_pct, yil):
+    <i>"""Değişim yok, büyüme ve düşüş: en az üç senaryo (madde 6.3.27)."""</i>
+    <b>return</b> mevcut * (<u>1</u> + yillik_pct / <u>100</u>) ** yil
+
+<b>def</b> <span class="fn">risk_puani</span>(olasilik, etki):
+    <i>"""1–5 olasılık × 1–5 etki."""</i>
+    <b>return</b> olasilik * etki
+</pre>
+
+<h3>Çalıştırılabilir konsol</h3>
+<p>Aşağıdaki kod, sayfaya gömülü modüle karşı çalışır. <b>Kodu çalıştır</b> düğmesi Python motorunu
+(yüklü değilse) indirir, modülü içe aktarır ve çıktıyı altta gösterir. Kodu serbestçe değiştirebilir,
+kendi verinizi yazabilirsiniz; her şey tarayıcıda kalır.</p>
+
+<div class="console">
+  <div class="console-bar">
+    <span>iso30409_metrikler modülüne karşı çalışır · Python 3 (Pyodide)</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button class="btn-run btn-sm" id="btnRunPy">Kodu çalıştır</button>
+      <button class="btn-ghost btn-sm" id="btnDemo" style="border-color:var(--line);color:var(--ink-soft)">Tam demoyu yükle</button>
+      <button class="btn-ghost btn-sm" id="btnReset" style="border-color:var(--line);color:var(--ink-soft)">Sıfırla</button>
+    </span>
+  </div>
+  <textarea id="pyCode" spellcheck="false"></textarea>
+  <pre id="pyOut">Çıktı burada görünecek. İlk çalıştırmada Python motoru indirilir (10–12 MB).</pre>
+</div>
+
+<details class="src"><summary>Gömülü modülün tam kaynağı (iso30409_metrikler.py)</summary>
+  <pre id="srcView">yükleniyor…</pre>
+</details>
+
+<h2 id="yorum">Sonuçların Yorumlanması</h2>
+<ul>
+  <li><b>Net açık küçük ama iş ailesi bazında büyük farklar varsa</b> toplu rakam yanıltıyordur: bir ailedeki fazla,
+  başka ailedeki eksiği kapatmaz (madde 6.3.13). Brüt eksik ve brüt fazla satırlarına bakın; yeniden görevlendirme
+  ve yeniden eğitim ancak yetkinlikler uyuşuyorsa çözüm olur.</li>
+  <li><b>Kişi sayısı yeterli ama yetkinlik açığı yüksekse</b> sorun sayıda değil beceridedir (madde 6.3.20): iş ailesi
+  bazında arz sabit kalsa da gereken yetkinlik değişebilir. Yeniden beceri kazandırma ve işe alımı birlikte değerlendirin.</li>
+  <li><b>Çıkışlar girişleri sürekli aşıyorsa</b> kadro küçülüyordur; bunun planlı mı (düşüş senaryosu), plansız mı olduğunu
+  ayırın. Devir oranını gönüllü ve istemsiz olarak bölün; kıdemi düşük çalışanlardaki ayrılış, işe alım kalitesini
+  de sorgulatır.</li>
+  <li><b>Emeklilik maruziyeti yüksek ve halef karşılama düşükse</b> bilgi ve deneyim kaybı riski yakındır. Halefiyet
+  planlaması, mevcut işgücünü geliştirme ve elde tutma, standardın risk stratejileri arasındadır.</li>
+  <li><b>Teklif ile fiili başlama arasında fark varsa</b> işe alım hedefine ulaşmak için yüzde tampon eklenmelidir
+  (madde 6.3.20 n); tamponsuz planlama arz açığını kalıcılaştırır.</li>
+  <li><b>Koşullu işgücü payı yüksekse</b> hangi becerilerin ve işlerin neden onlarca yapıldığını sorgulayın;
+  kurumun asıl yetkinliklerini dışarıda tutmak risk doğurabilir.</li>
+  <li><b>Senaryo aralığı geniş ise</b> plan tek bir tahmine dayanamaz: duyarlılık ve stres testleriyle her senaryo için
+  açığı ayrı hesaplayın ve riski senaryoya göre derecelendirin.</li>
+  <li><b>Risk puanını kurumun risk iştahıyla birlikte okuyun.</b> Aynı puan, iştahı düşük bir kurumda eylem gerektirirken
+  yüksek iştahlı bir kurumda izleme düzeyinde kalabilir.</li>
+  <li><b>İşgücü planlaması bir kerelik rapor değil, süreçtir.</b> Verimlilik ve devir üzerindeki etkisini (Tablo 5) izleyin;
+  amaç planı iş stratejisi döngüsüne gömmektir.</li>
+</ul>
+
+<h2 id="sinirlamalar">Sınırlamalar</h2>
+<ul>
+  <li><b>Standart formül ve eşik vermez.</b> Yalnızca veri başlıklarını, çekirdek soruları ve süreç adımlarını sıralar. Bu
+  sayfadaki formüller yaygın uygulama tanımlarıdır; hesaplayıcının "yorum ve eşik" satırındaki bantlar standarttan değil,
+  başlangıç varsayımlarından gelir. Kendi kurumunuzun risk iştahı ve hedefleriyle değiştirin.</li>
+  <li>Risk puanı için kullanılan 1–5 × 1–5 ölçek, standardın andığı beş dereceli etki ve olasılık çerçevesinin sayısal bir
+  gösterimidir; standart sayısal puan ya da bantlar tanımlamaz.</li>
+  <li>Devir oranı (ortalama kadro paydası), boş kadro (FTE-yıl) ve yetkinlik açığı gibi türetilmiş ölçüler standartta bu
+  biçimde tanımlı değildir; seçilen payda, dönem ve birimi yazılı tutun.</li>
+  <li>FTE, gün ve kişi karıştırılmamalıdır. Talep ve arz aynı birimle (tercihen FTE) ifade edilmelidir; yarı zamanlı ve gündelik
+  çalışanlar kişi sayısıyla değil FTE ile sayılmalıdır.</li>
+  <li>Onaysız talep, onaylı talep gibi sunulmalı ama aynı sayıya karıştırılmamalıdır; hangisinin açığa dahil edildiği
+  raporda belirtilmelidir.</li>
+  <li>Küçük gruplarda oranlar oynaktır: 12 kişilik bir iş ailesinde bir kişi yüzde sekiz puan yaratır. Az sayıda vakada
+  mutlak sayıları da verin.</li>
+  <li>Veri toplarken gizlilik ilkelerine saygı gösterin; yaş, cinsiyet, çeşitlilik ve sağlıkla ilgili anket verisi hassas
+  veridir ve yasal çerçevesine tabidir. Gruplar çok küçükse kişi belirlenebilir.</li>
+  <li>Standart işgücü planlamasını dünya genelinde yeni bir disiplin olarak anar ve vaka çalışmalarına erişimin sınırlı
+  olduğunu belirtir; bu nedenle ölçütler ve kıyaslar kuruma özgü olarak kurulmalıdır.</li>
+  <li>Bu sayfadaki örnek veriler uydurmadır; gerçek bir kuruma ait değildir.</li>
+</ul>
+
+<h2 id="raporlama">Metriklerin Raporlanması</h2>
+<table>
+  <thead><tr><th>Alıcı</th><th>Ne görmek ister</th><th>Rapor biçimi</th></tr></thead>
+  <tbody>
+    <tr><td>İK / işgücü planlama ekibi</td>
+      <td>Tüm veri başlıkları, iş ailesi ve yetkinlik bazında talep–arz, bilgi boşlukları, veri kalitesi</td>
+      <td>Analitik rapor, aylık</td></tr>
+    <tr><td>Üst yönetim ve yönetim kurulu</td>
+      <td>Senaryo bazında açık, arz riski (olasılık ve etki), risk iştahıyla uyum, eylem planı ilerlemesi</td>
+      <td>Skor kartı ve risk matrisi, dönemsel</td></tr>
+    <tr><td>Hat yönetimi</td>
+      <td>Kendi iş ailelerinin açığı, devir, emeklilik maruziyeti, halefiyet durumu, boş kadro süreleri</td>
+      <td>Birim panosu, aylık</td></tr>
+    <tr><td>Finans ve operasyon</td>
+      <td>Finanse edilmiş/edilmemiş pozisyonlar, onaysız talep, azaltma stratejilerinin yatırım gereksinimi</td>
+      <td>Bütçe ekli rapor, çeyreklik</td></tr>
+    <tr><td>Dış paydaş (sendika, kamu, sektör grubu, akademik kurum)</td>
+      <td>Sektör ve bölge düzeyinde beceri ihtiyacı, toplu talep/arz eğilimleri ve yöntem dipnotu</td>
+      <td>Sektör raporu, yıllık</td></tr>
+  </tbody>
+</table>
+<p><b>Her raporda bulunması gerekenler:</b> bölümlendirme yaklaşımı, birim (FTE/kişi), veri dönemi, onaylı ve onaysız talebin ayrımı,
+kullanılan vekil değişken ya da varsayımlar, senaryo tanımları ve karşılaştırma tabanı. Standart, işgücü planlamasının paydaşları
+arasında işverenleri, liderleri, işgücünü, hükümetleri, sendikaları, potansiyel yetenekleri ve akademik kurumları sayar; veri
+paylaşımı kurum içi mutabakatın parçasıdır.</p>
+
+<h2 id="ilgili">İlgili Standartlar</h2>
+<ul>
+  <li><b>ISO 30400</b> — insan kaynakları yönetimi terimler sözlüğü; bu standardın terimleri oradan gelir.</li>
+  <li><b>ISO 30405</b> — işe alım rehberi; planın ortaya koyduğu arz açıklarını kapatmanın yollarından biri.</li>
+  <li><b>ISO 30408</b> — insan yönetişimi rehberi.</li>
+  <li><b>ISO 31000</b> — risk yönetimi: ilkeler ve kılavuz; riskin görünürlüğünü artırmak ve yönetim kararlarına yardımcı olmak için mekanizma sunar.</li>
+  <li><b>ISO/TR 31004</b> — ISO 31000'in uygulanması için rehber.</li>
+  <li><b>ISO Guide 73</b> — risk yönetimi sözlüğü.</li>
+  <li><b>IEC 31010</b> — risk değerlendirme teknikleri.</li>
+  <li><b>ISO 30414</b> — iç ve dış insan sermayesi raporlaması; işgücü planlama verileriyle birlikte okunan ilgili belge.</li>
+</ul>
+
+<h2 id="sss">Sıkça Sorulan Sorular</h2>
+<details><summary>Stratejik ve operasyonel işgücü planlaması arasındaki fark nedir?</summary>
+<p>Standart, işgücü planlamasını iki ayrı ama ilişkili görev olarak tanımlar ve farklı bilgi ve beceri setleri gerektirdiğini
+söyler. Stratejik planlama genellikle tanımlı bir dönemi kapsar ve kurum stratejisine hizalanır. Operasyonel planlama, kurumun
+planlama döngüsüne hizalı bir dönemde işgücü planlama stratejisine ilişkin veriyi toplamaya, çözümlemeye ve raporlamaya
+odaklanır. Daha kısa vadeli kadrolama ve çizelgeleme faaliyetleri kapsam dışında bırakılabilir.</p></details>
+
+<details><summary>Küçük bir kurum bu standardı nasıl uygular?</summary>
+<p>Standart her büyüklükteki kurum için ölçeklenebilirdir. KOBİ'ler için proje ekibi kurmak, iş gerekçesi yazmak ya da
+işgücünü bölümlendirmek mümkün olmayabilir; doğrudan iş stratejisi ve belirlenmiş senaryolar karşısında mevcut ve gelecek arzın
+çözümlenmesine geçilebilir. Ek A'daki beş adım (ana konular, gereken yetkinlikler, mevcut yetkinlikler, açık analizi, uygulama
+yolu) iyi bir başlangıçtır. Kurum edindiği deneyimle süreci daha sofistike, sistematik ve geleceğe odaklı hâle getirir.</p></details>
+
+<details><summary>Talep ve arzı neden iş ailesi bazında hesaplıyorum, toplam yetmez mi?</summary>
+<p>Toplu düzey, iş ailelerinin ve rollerin elde tutma, öğrenme ve işe alımda benzer davrandığını varsayar ve farkları gizler.
+Aile bazında talep ve arz, planlamayı kurumun en önemli ya da en değerli iş ailelerine odaklamaya izin verir; standart bu
+yaklaşımı toplu düzeye tercih eder. Daha ileri bir katman olarak yetkinlik bazında talep ve arz da çıkarılabilir.</p></details>
+
+<details><summary>Onaysız talep nedir, neden raporlanır?</summary>
+<p>Kurum için henüz onaylanmamış ama mevcut planlama döneminde onaylanması muhtemel görülen ek işgücüdür. Standart onaysız
+talebin onaylı talep gibi sunulmasını önerir; böylece gelecekteki işgücü talepleri anlaşılır. Gelecekte onaysız talebin analizde
+daha da önemli hâle geleceği belirtilir. Açığı hesaplarken onaylı ve onaysız ayrı gösterin.</p></details>
+
+<details><summary>Ne kadar geçmiş veri gerekir?</summary>
+<p>Standart sabit bir geçmiş süresi belirlemez; ancak asgari önceki 12 ay, tercihen son üç yıl önerilir. Veri sık toplanmalı
+(büyük kurumlarda normalde aylık) ve aynı protokolle çıkarılmalıdır. Başlangıçta bazı veriler mevcut olmayabilir: eksik veri için
+vekil değişken veya varsayım kullanılabilir, ikisi de belgelenir; zamanla vekil ve varsayımlara bağımlılığı azaltacak daha sağlam
+bir veri seti kurulur.</p></details>
+
+<details><summary>Kaç senaryo kurmalıyım?</summary>
+<p>Standart, geleceği en az üç senaryoya karşı sunmayı önerir: büyüme, düşüş ve değişim yok. Senaryolar net ve sayısallaştırılabilir
+olmalıdır. Kurum ayrıca belirli bir iş, grup, konum ya da tedarik zinciri bölümüne özgü bir senaryo ekleyebilir. Duyarlılık testi,
+stres testi ve senaryolar talep ve arz açığı hesaplarını destekler.</p></details>
+
+<details><summary>Risk ölçeği olarak ne kullanmalıyım?</summary>
+<p>Standart iki yaygın çerçeveyi anar: etki için önemsiz–hafif–orta–büyük–felaket ve olasılık için nadir–düşük ihtimal–orta–muhtemel–neredeyse
+kesin olan operasyonel ya da finansal çerçeve; veya yüksek–orta–düşük şeklinde daha basit bir değerlendirme. Hangisini seçerseniz seçin
+kurumun iş riski iştahıyla hizalı olmalı; işgücü planlama sonuçları hem kurum hem işgücü bölümü düzeyinde risk matrisini doldurmanıza
+yardım eder.</p></details>
+
+<details><summary>İşgücü planlamasının başarısını nasıl ölçerim?</summary>
+<p>Standart, yerel iş düzeyinde basit ölçüm için yedi soru önerir: rekabet kapasitesi, kritik işgücünün elde tutulması, devirdeki iyileşme,
+planlamanın iş sürecine gömülmesi, arz açıklarının giderilmesi, yönetimin yetkinliği ve araç/sistem yeterliliği. Ayrıca işgücü planlaması
+ile verimlilik süreçlerini (Tablo 5) hizalayarak girdi/çıktı oranları, çıktı ölçümleri ve anahtar performans göstergeleri izlenir.</p></details>
+
+<footer>
+  ISO 30409:2016 çerçevesinden üretilmiş çalışma aracı. Terim adları, süreç yapısı ve veri sınıflandırması standarda dayanır;
+  açıklamalar, formüller, örnek değerler ve kod özgün olarak yazılmıştır. Standardın kendisi telif korumalıdır ve bu sayfa onun
+  yerine geçmez.
+</footer>
+
+</div>
+<script type="text/x-python" id="pysrc">
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+iso30409_metrikler.py
+=====================
+ISO 30409:2016 (Human resource management — Workforce planning) rehberindeki
+işgücü planlaması ölçümlerinin Python karşılığı.
+
+Standart bir metrik şartnamesi değil, süreç rehberidir: dört faz tanımlar
+(başlangıç, veri analizi, risk yönetimi, uygulama) ve her fazda hangi
+soruların sorulacağını, hangi verinin toplanacağını (Tablo 4) anlatır.
+Formül ve eşik vermez. Bu modüldeki formüller, standardın andığı veri
+başlıklarının (arz–talep açığı, boş kadro, hareketlilik, devir, emeklilik
+maruziyeti, koşullu işgücü, senaryo, risk) yaygın uygulama tanımlarıdır ve
+kurumunuzun kendi tanımıyla uyarlanmalıdır. Modül dört bölümden oluşur:
+
+    1) Talep ve arz   — arz–talep açığı, doluluk, boş kadro, yetkinlik açığı
+    2) Hareketlilik   — net hareketlilik, devir, emeklilik, teklif–başlama farkı
+    3) Yapı ve risk   — koşullu işgücü, yönetici oranı, senaryo, risk puanı
+    4) Yardımcı yapılar — iş ailesi tablosu, plan denetimi, dağıtıcı
+
+Kullanım:
+    from iso30409_metrikler import arz_talep_acigi, doluluk_orani
+    arz_talep_acigi(480, 445)   ->  35
+    doluluk_orani(445, 480)     ->  92.70833...
+
+Doğrudan çalıştırıldığında (python3 iso30409_metrikler.py) tüm fonksiyonlar
+örnek verilerle çalıştırılır ve sonuçlar tablo hâlinde yazdırılır.
+
+Not: Terimler ve süreç yapısı ISO 30409:2016'ya dayanır. Kod, açıklamalar ve
+örnek değerler özgün olarak yazılmıştır; standardın kendisi telif korumalıdır.
+"""
+
+from __future__ import annotations
+
+import math
+from dataclasses import dataclass, field
+
+__all__ = [
+    "GecersizGirdi",
+    # talep ve arz
+    "arz_talep_acigi", "doluluk_orani", "bos_kadro_orani", "yetkinlik_acigi_orani",
+    # hareketlilik
+    "net_hareketlilik", "devir_orani", "emeklilik_maruziyeti", "halefiyet_karsilama",
+    "teklif_baslama_orani", "gereken_teklif",
+    # yapı ve risk
+    "kosullu_isgucu_orani", "yonetici_basina_calisan", "senaryo_talebi",
+    "risk_puani", "OLASILIK", "ETKI",
+    # yardımcı
+    "Aile", "PlanTablosu", "ornek_tablo", "plan_denetimi",
+    "hesapla", "METRIK_LISTESI",
+]
+
+
+class GecersizGirdi(ValueError):
+    """Girdiler tutarsız: payda sıfır, parça bütünden büyük vb."""
+
+
+def _bol(pay: float, payda: float, ad: str = "payda") -> float:
+    if payda <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return pay / payda
+
+
+def _oran(parca: float, butun: float, ad: str = "parça") -> float:
+    """Yüzde olarak parça / bütün; parça bütünden büyük olamaz."""
+    if butun <= 0:
+        raise GecersizGirdi("bütün sıfırdan büyük olmalı")
+    if parca < 0 or parca > butun:
+        raise GecersizGirdi(f"{ad} 0 ile bütün arasında olmalı")
+    return 100 * parca / butun
+
+
+# ---------------------------------------------------------------------------
+# 1) Talep ve arz
+# ---------------------------------------------------------------------------
+
+def arz_talep_acigi(talep: float, arz: float) -> float:
+    """Arz–talep açığı = talep − arz (tam zaman eşdeğeri, FTE).
+
+    Pozitif değer eksik arzı, negatif değer fazla arzı gösterir. Standart,
+    açığın kurum geneli yanında iş ailesi ve yetkinlik bazında da
+    hesaplanmasını ister; toplu düzey farkları gizler (madde 6.3.13).
+    """
+    if talep <= 0 or arz < 0:
+        raise GecersizGirdi("talep sıfırdan büyük, arz negatif olmamalı")
+    return talep - arz
+
+
+def doluluk_orani(arz: float, talep: float) -> float:
+    """Talebin ne kadarının arzla karşılandığı (%) = arz / talep."""
+    return 100 * _bol(arz, talep, "talep")
+
+
+def bos_kadro_orani(finanse_bos: float, finanse_pozisyon: float) -> float:
+    """Finanse edilmiş pozisyonlar içinde boş kalanların oranı (%)."""
+    return _oran(finanse_bos, finanse_pozisyon, "boş kadro")
+
+
+def yetkinlik_acigi_orani(yetkin: float, grup: float) -> float:
+    """Bir iş ailesinde yeni yetkinliğe hazır olmayanların oranı (%).
+
+    Arz iş ailesi bazında sabit kalsa da yetkinlik bazında değişebilir
+    (madde 6.3.20): kişi sayısı yeterli, gereken yetkinlik eksik olabilir.
+    """
+    return 100 - _oran(yetkin, grup, "yetkin")
+
+
+# ---------------------------------------------------------------------------
+# 2) Hareketlilik ve eğilim
+# ---------------------------------------------------------------------------
+
+def net_hareketlilik(ayrilan: float, giren: float) -> float:
+    """Net hareketlilik = çıkış − giriş (Tablo 1: exits-minus entries)."""
+    if ayrilan < 0 or giren < 0:
+        raise GecersizGirdi("giriş ve çıkış negatif olamaz")
+    return ayrilan - giren
+
+
+def devir_orani(ayrilan: float, donem_basi: float, giren: float) -> float:
+    """Devir oranı (%) = çıkış / ortalama kadro × 100.
+
+    Ortalama kadro, dönem başı ile dönem sonu kadronun ortalamasıdır.
+    Gönüllü ve istemsiz ayrılışlar ayrı raporlanmalıdır (Tablo 4).
+    """
+    sonu = donem_basi + giren - ayrilan
+    if donem_basi <= 0 or sonu < 0 or ayrilan < 0 or giren < 0:
+        raise GecersizGirdi("kadro verileri tutarsız")
+    return 100 * ayrilan / ((donem_basi + sonu) / 2)
+
+
+def emeklilik_maruziyeti(yaklasan: float, grup: float) -> float:
+    """Planlama döneminde emekli olması beklenenlerin gruba oranı (%).
+
+    Standart, "yüksek nitelikli uzmanların %46'sı emekli olacak" türünden
+    bir göstergeyi eğilim raporlaması örneği olarak verir (madde 6.3.23).
+    """
+    return _oran(yaklasan, grup, "yaklaşan ayrılış")
+
+
+def halefiyet_karsilama(hazir: float, yaklasan: float) -> float:
+    """Beklenen ayrılışların kaçı için hazır halef var (%)."""
+    return _oran(hazir, yaklasan, "hazır halef")
+
+
+def teklif_baslama_orani(baslayan: float, teklif: float) -> float:
+    """Verilen tekliflerden fiilen işe başlayanların oranı (%)."""
+    return _oran(baslayan, teklif, "başlayan")
+
+
+def gereken_teklif(gereken: float, baslayan: float, teklif: float) -> int:
+    """Gereken sayıda kişinin başlaması için verilmesi gereken teklif sayısı.
+
+    Standart, teklif ile fiili başlama arasındaki farkın eşdeğer bir yüzde
+    tamponuyla karşılanmasını önerir (madde 6.3.20 n).
+    """
+    oran = teklif_baslama_orani(baslayan, teklif)
+    if oran <= 0 or gereken < 0:
+        raise GecersizGirdi("başlama oranı sıfırdan büyük olmalı")
+    return math.ceil(gereken * teklif / baslayan)
+
+
+# ---------------------------------------------------------------------------
+# 3) Yapı ve risk
+# ---------------------------------------------------------------------------
+
+def kosullu_isgucu_orani(kadrolu: float, yuklenici: float, gecici: float) -> float:
+    """Koşullu (yüklenici, danışman, geçici) işgücünün toplam işgücüne oranı (%)."""
+    if min(kadrolu, yuklenici, gecici) < 0:
+        raise GecersizGirdi("işgücü bileşenleri negatif olamaz")
+    return 100 * _bol(yuklenici + gecici, kadrolu + yuklenici + gecici, "toplam işgücü")
+
+
+def yonetici_basina_calisan(calisan: float, yonetici: float) -> float:
+    """Yönetici başına düşen çalışan sayısı (madde 6.3.20 d)."""
+    return _bol(calisan, yonetici, "yönetici sayısı")
+
+
+def senaryo_talebi(mevcut: float, yillik_pct: float, yil: float) -> float:
+    """Yıllık yüzde değişimle yıl sonu talebi = mevcut × (1 + pct/100)^yıl.
+
+    Standart, geleceği en az üç senaryoyla sunmayı ister: değişim yok,
+    büyüme ve düşüş (madde 6.3.27).
+    """
+    if mevcut <= 0 or yil < 0 or yillik_pct <= -100:
+        raise GecersizGirdi("senaryo girdileri geçersiz")
+    return mevcut * (1 + yillik_pct / 100) ** yil
+
+
+OLASILIK = {1: "Nadir", 2: "Düşük ihtimal", 3: "Orta", 4: "Muhtemel", 5: "Neredeyse kesin"}
+ETKI = {1: "Önemsiz", 2: "Hafif", 3: "Orta", 4: "Büyük", 5: "Felaket"}
+
+
+def risk_puani(olasilik: int, etki: int) -> int:
+    """Risk puanı = olasılık (1–5) × etki (1–5).
+
+    Standart, "önemsiz–hafif–orta–büyük–felaket" etki ve "nadir–düşük
+    ihtimal–orta–muhtemel–neredeyse kesin" olasılık ölçeklerinden ya da
+    daha basit bir yüksek–orta–düşük değerlendirmesinden söz eder (6.4.2.3).
+    """
+    if olasilik != int(olasilik) or etki != int(etki) or \
+       not (1 <= olasilik <= 5 and 1 <= etki <= 5):
+        raise GecersizGirdi("olasılık ve etki 1 ile 5 arasında tam sayı olmalı")
+    return int(olasilik) * int(etki)
+
+
+# ---------------------------------------------------------------------------
+# 4) Yardımcı yapılar
+# ---------------------------------------------------------------------------
+
+@dataclass
+class Aile:
+    """Tek bir iş ailesinin talep ve arz kaydı (FTE)."""
+    ad: str
+    talep: float = 0     # onaylı talep
+    onaysiz: float = 0   # onaysız ama dönem içinde onaylanması beklenen talep
+    arz: float = 0
+    kritik: bool = False
+
+    @property
+    def acik(self) -> float:
+        return self.talep - self.arz
+
+
+@dataclass
+class PlanTablosu:
+    """İş ailesi bazında talep–arz tablosu."""
+    aileler: list = field(default_factory=list)
+
+    def ekle(self, ad, talep, onaysiz, arz, kritik=False):
+        self.aileler.append(Aile(ad, talep, onaysiz, arz, kritik))
+        return self
+
+    def ozet(self, senaryo_pct: float = 0) -> dict:
+        talep = sum(a.talep for a in self.aileler)
+        arz = sum(a.arz for a in self.aileler)
+        onaysiz = sum(a.onaysiz for a in self.aileler)
+        eksik = sum(a.acik for a in self.aileler if a.acik > 0)
+        fazla = -sum(a.acik for a in self.aileler if a.acik < 0)
+        kritik = [a for a in self.aileler if a.kritik]
+        en_buyuk = max(self.aileler, key=lambda a: a.acik)
+        return {
+            "aile_sayisi": len(self.aileler),
+            "talep": talep, "arz": arz, "onaysiz": onaysiz,
+            "net_acik": arz_talep_acigi(talep, arz),
+            "doluluk": round(doluluk_orani(arz, talep), 1),
+            "brut_eksik": eksik, "brut_fazla": fazla,
+            "onaysiz_dahil_acik": talep + onaysiz - arz,
+            "senaryo_acigi": round(talep * (1 + senaryo_pct / 100) - arz, 1),
+            "kritik_acik": sum(a.acik for a in kritik),
+            "en_buyuk_acik": (en_buyuk.ad, en_buyuk.acik),
+        }
+
+
+def ornek_tablo() -> PlanTablosu:
+    """Altı iş ailesi için örnek talep–arz tablosu (uydurma veri)."""
+    t = PlanTablosu()
+    for satir in [
+        ("Yazılım geliştirme",   120, 10, 104, True),
+        ("Satış ve danışmanlık",  90,  6,  92, False),
+        ("Proje yönetimi",        40,  4,  31, True),
+        ("Operasyon ve teslimat", 150, 0, 138, False),
+        ("İdari işler ve tesis",  50,  0,  52, False),
+        ("İK ve finans",          30,  2,  28, False),
+    ]:
+        t.ekle(*satir)
+    return t
+
+
+def plan_denetimi(ekip_ve_gerekce: bool = False,
+                  strateji_hizasi: bool = False,
+                  iletisim_plani: bool = False,
+                  bolumlendirme: bool = False,
+                  veri_bosluklari: bool = False,
+                  uc_senaryo: bool = False,
+                  aciklar_hesaplandi: bool = False,
+                  risk_matrisi: bool = False,
+                  eylem_plani: bool = False,
+                  izleme_mekanizmasi: bool = False) -> list:
+    """Bir işgücü planının, standardın faz kontrol listesine göre eksiklerini sıralar.
+
+    Maddeler ISO 30409 Tablo 1 ve 6–8. maddelerden türetilmiştir; bir uygunluk
+    sınaması değil, hazırlık kontrol listesidir.
+    """
+    kontroller = [
+        (ekip_ve_gerekce, "Faz 1a: İşgücü planlama lideri ve ekibi ile gerekçe (iş gerekçesi) belirlenmemiş."),
+        (strateji_hizasi, "Faz 1b: Stratejik ve iş planlarının işgücü sonuçları belgelenmemiş."),
+        (iletisim_plani, "Faz 1c: Paydaşları dahil edecek iletişim planı yok."),
+        (bolumlendirme, "Faz 1d: İşgücü bölümlendirilmemiş; planlama kritik iş gruplarına odaklanamaz."),
+        (veri_bosluklari, "Faz 1f: Mevcut sistemlerde bulunmayan veri (nicel ve nitel) boşlukları raporlanmamış."),
+        (uc_senaryo, "Faz 1g: Gelecek en az üç senaryoyla (değişim yok, büyüme, düşüş) sunulmamış."),
+        (aciklar_hesaplandi, "Faz 2a: Arz–talep açıkları sayısallaştırılmamış."),
+        (risk_matrisi, "Faz 2b: Arz riski, olasılık ve etki ölçekleriyle değerlendirilmemiş."),
+        (eylem_plani, "Faz 3: Konu, görev, sorumlu, süre, gösterge ve yatırımı içeren eylem planı yok."),
+        (izleme_mekanizmasi, "Faz 4: İşgücü planlama sonuçlarını izleme ve ölçme mekanizması kurulmamış."),
+    ]
+    return [metin for tamam, metin in kontroller if not tamam]
+
+
+# ---------------------------------------------------------------------------
+# 5) Dağıtıcı: hesaplayıcı arayüzünün kullandığı tek giriş noktası
+# ---------------------------------------------------------------------------
+
+METRIK_LISTESI = [
+    "arz_acigi", "bos_kadro", "hareketlilik", "emeklilik", "gecici_oran",
+    "yonetici_orani", "yetkinlik_acigi", "teklif_kabul", "senaryo", "risk",
+]
+
+
+def _g(x) -> str:
+    """Sayıyı, bilimsel gösterim kullanmadan en kısa biçimde yazar."""
+    return f"{x:.12g}"
+
+
+def hesapla(metrik: str, **g) -> dict:
+    """Metrik kimliği ve girdilerle hesabı yapar; sözlük döndürür.
+
+    Dönen anahtarlar: deger, ifade (formülün yerine konmuş hâli), ondalik,
+    birim, ayrinti (etiket–değer çiftleri).
+    """
+    if metrik == "arz_acigi":
+        d = arz_talep_acigi(g["talep_fte"], g["arz_fte"])
+        if g["onaysiz_talep"] < 0:
+            raise GecersizGirdi("onaysız talep negatif olamaz")
+        return {"deger": d, "ondalik": 1, "birim": "FTE (talep − arz)",
+                "ifade": f"{_g(g['talep_fte'])} − {_g(g['arz_fte'])}",
+                "ayrinti": [["Doluluk oranı (%)", round(doluluk_orani(g["arz_fte"], g["talep_fte"]), 1)],
+                            ["Onaysız talep dahil açık (FTE)", g["talep_fte"] + g["onaysiz_talep"] - g["arz_fte"]],
+                            ["Açığın talebe oranı (%)", round(100 * d / g["talep_fte"], 1)]]}
+
+    if metrik == "bos_kadro":
+        d = bos_kadro_orani(g["finanse_bos"], g["finanse_pozisyon"])
+        if g["bekleme_gun"] < 0:
+            raise GecersizGirdi("bekleme günü negatif olamaz")
+        gun = g["finanse_bos"] * g["bekleme_gun"]
+        return {"deger": d, "ondalik": 1, "birim": "% boş kadro",
+                "ifade": f"({_g(g['finanse_bos'])} ÷ {_g(g['finanse_pozisyon'])}) × 100",
+                "ayrinti": [["Dolu finanse pozisyon", g["finanse_pozisyon"] - g["finanse_bos"]],
+                            ["Boş kadroların toplam bekleme günü", gun],
+                            ["Boş kalan işgücü (FTE-yıl)", round(gun / 365, 1)]]}
+
+    if metrik == "hareketlilik":
+        d = net_hareketlilik(g["ayrilan"], g["giren"])
+        devir = devir_orani(g["ayrilan"], g["donem_basi"], g["giren"])
+        sonu = g["donem_basi"] + g["giren"] - g["ayrilan"]
+        return {"deger": d, "ondalik": 0, "birim": "kişi (çıkış − giriş)",
+                "ifade": f"{_g(g['ayrilan'])} − {_g(g['giren'])}",
+                "ayrinti": [["Dönem sonu kadro", sonu],
+                            ["Net hareketlilik oranı (dönem başına göre %)", round(100 * d / g["donem_basi"], 1)],
+                            ["Devir oranı (ortalama kadroya göre %)", round(devir, 1)]]}
+
+    if metrik == "emeklilik":
+        d = emeklilik_maruziyeti(g["yaklasan"], g["grup"])
+        hazir = halefiyet_karsilama(g["hazir_halef"], g["yaklasan"]) if g["yaklasan"] > 0 else 0
+        return {"deger": d, "ondalik": 1, "birim": "% ayrılış maruziyeti",
+                "ifade": f"({_g(g['yaklasan'])} ÷ {_g(g['grup'])}) × 100",
+                "ayrinti": [["Beklenen kayıp sonrası kalan", g["grup"] - g["yaklasan"]],
+                            ["Halefiyet karşılama oranı (%)", round(hazir, 1)],
+                            ["Halefi hazır olmayan", g["yaklasan"] - g["hazir_halef"]]]}
+
+    if metrik == "gecici_oran":
+        d = kosullu_isgucu_orani(g["kadrolu"], g["yuklenici"], g["gecici"])
+        toplam = g["kadrolu"] + g["yuklenici"] + g["gecici"]
+        return {"deger": d, "ondalik": 1, "birim": "% koşullu işgücü",
+                "ifade": f"(({_g(g['yuklenici'])} + {_g(g['gecici'])}) ÷ "
+                         f"({_g(g['kadrolu'])} + {_g(g['yuklenici'])} + {_g(g['gecici'])})) × 100",
+                "ayrinti": [["Toplam işgücü (FTE)", toplam],
+                            ["Yüklenici ve danışman payı (%)", round(100 * g["yuklenici"] / toplam, 1)],
+                            ["Geçici ve gündelik payı (%)", round(100 * g["gecici"] / toplam, 1)]]}
+
+    if metrik == "yonetici_orani":
+        d = yonetici_basina_calisan(g["calisan"], g["yonetici"])
+        if g["calisan"] < 0:
+            raise GecersizGirdi("çalışan sayısı negatif olamaz")
+        return {"deger": d, "ondalik": 1, "birim": "çalışan / yönetici",
+                "ifade": f"{_g(g['calisan'])} ÷ {_g(g['yonetici'])}",
+                "ayrinti": [["Yönetici payı (%)", round(100 * g["yonetici"] / (g["calisan"] + g["yonetici"]), 1)],
+                            ["Toplam kadro", g["calisan"] + g["yonetici"]]]}
+
+    if metrik == "yetkinlik_acigi":
+        d = yetkinlik_acigi_orani(g["yetkin"], g["grup_fte"])
+        if g["egitim_ay"] <= 0:
+            raise GecersizGirdi("eğitim süresi sıfırdan büyük olmalı")
+        gerekli = g["grup_fte"] - g["yetkin"]
+        return {"deger": d, "ondalik": 1, "birim": "% yeni yetkinlik gerektiriyor",
+                "ifade": f"100 − ({_g(g['yetkin'])} ÷ {_g(g['grup_fte'])}) × 100",
+                "ayrinti": [["Yeniden beceri gerektiren kişi", gerekli],
+                            ["Hazır yetkin kişi", g["yetkin"]],
+                            ["Aylık eğitilmesi gereken kişi", round(gerekli / g["egitim_ay"], 1)]]}
+
+    if metrik == "teklif_kabul":
+        d = teklif_baslama_orani(g["baslayan"], g["teklif"])
+        gerek = gereken_teklif(g["gereken"], g["baslayan"], g["teklif"])
+        return {"deger": d, "ondalik": 1, "birim": "% teklif–başlama",
+                "ifade": f"({_g(g['baslayan'])} ÷ {_g(g['teklif'])}) × 100",
+                "ayrinti": [["Başlamayan teklif", g["teklif"] - g["baslayan"]],
+                            ["Gereken başlama için verilmesi gereken teklif", gerek],
+                            ["Teklif tamponu", gerek - g["gereken"]]]}
+
+    if metrik == "senaryo":
+        b = senaryo_talebi(g["mevcut_talep"], g["buyume_pct"], g["yil"])
+        dus = senaryo_talebi(g["mevcut_talep"], -g["dusus_pct"], g["yil"])
+        return {"deger": b, "ondalik": 1, "birim": "FTE (büyüme senaryosu)",
+                "ifade": f"{_g(g['mevcut_talep'])} × (1 + {_g(g['buyume_pct'])} ÷ 100)^{_g(g['yil'])}",
+                "ayrinti": [["Değişim yok senaryosu (FTE)", g["mevcut_talep"]],
+                            ["Düşüş senaryosu (FTE)", round(dus, 1)],
+                            ["Büyüme–düşüş aralığı (FTE)", round(b - dus, 1)]]}
+
+    if metrik == "risk":
+        d = risk_puani(g["olasilik"], g["etki"])
+        if not (1 <= g["istah_esigi"] <= 25):
+            raise GecersizGirdi("risk iştahı eşiği 1 ile 25 arasında olmalı")
+        return {"deger": d, "ondalik": 0, "birim": "puan (1–25)",
+                "ifade": f"{_g(g['olasilik'])} × {_g(g['etki'])}",
+                "ayrinti": [["Olasılık düzeyi", OLASILIK[int(g["olasilik"])]],
+                            ["Etki düzeyi", ETKI[int(g["etki"])]],
+                            ["Risk iştahı eşiği aşıldı mı", "Evet" if d > g["istah_esigi"] else "Hayır"]]}
+
+    raise ValueError(f"Bilinmeyen metrik: {metrik}")
+
+
+# ---------------------------------------------------------------------------
+# 6) Doğrulama çıktısı
+# ---------------------------------------------------------------------------
+
+def _demo() -> None:
+    cizgi = "-" * 64
+    print("ISO 30409 — doğrulama çıktısı")
+    print(cizgi)
+
+    t = ornek_tablo()
+    print("İş ailesi bazında talep ve arz (FTE; uydurma örnek veri)")
+    print(f"{'İş ailesi':<24}{'Talep':>7}{'Onaysız':>9}{'Arz':>6}{'Açık':>7}{'Kritik':>8}")
+    for a in t.aileler:
+        print(f"{a.ad:<24}{a.talep:>7}{a.onaysiz:>9}{a.arz:>6}{a.acik:>7}{'evet' if a.kritik else '—':>8}")
+    print(cizgi)
+    for anahtar, deger in t.ozet(senaryo_pct=5).items():
+        print(f"{anahtar:<20}: {deger}")
+    print(cizgi)
+
+    print(f"Boş kadro oranı          : {bos_kadro_orani(40, 480):.1f} %")
+    print(f"Net hareketlilik         : {net_hareketlilik(62, 48)} kişi,"
+          f" devir {devir_orani(62, 440, 48):.1f} %")
+    print(f"Emeklilik maruziyeti     : {emeklilik_maruziyeti(23, 50):.1f} %")
+    print(f"Koşullu işgücü           : {kosullu_isgucu_orani(432, 60, 36):.1f} %")
+    print(f"Yetkinlik açığı          : {yetkinlik_acigi_orani(4, 40):.1f} %")
+    print(f"Gereken teklif           : {gereken_teklif(40, 51, 60)} (başlama {teklif_baslama_orani(51, 60):.1f} %)")
+    print(f"Büyüme senaryosu         : {senaryo_talebi(480, 3.5, 3):.1f} FTE")
+    print(f"Risk puanı (5 × 4)       : {risk_puani(5, 4)}")
+    print(cizgi)
+
+    print("Dağıtıcı örneği:")
+    print(hesapla("arz_acigi", talep_fte=480, arz_fte=445, onaysiz_talep=22))
+    print(cizgi)
+
+    print("Plan denetimi (hiçbir ön koşulu sağlamayan bir kurum için):")
+    for u in plan_denetimi():
+        print(" !", u)
+
+
+if __name__ == "__main__":
+    _demo()
+</script>
+<script>
+/* =========================================================
+   1) METRİK VERİ TABANI
+   u: kullanıcılar (hr İK/işgücü planlama ekibi / exec üst yönetim ve yönetim kurulu /
+      line hat yönetimi / fin finans ve operasyon / ext dış paydaş)
+   st: süreç aşaması (bag değer ve yapı, f1 başlangıç, f2 veri analizi, f3 risk yönetimi, f4 uygulama)
+   r: raporlama (ic, dis)
+   t: aile (p talep / c arz / s hareketlilik ve eğilim / r risk ve senaryo / o bağlam ve süreç)
+   calc: bu sayfadaki hesaplayıcı kimliği
+   t4: standardın Tablo 4 (asgari işgücü planlama verisi) listesinde yer alır
+   k: ek etiket (ctx bağlam etkeni, onk ön koşul, tur türetilmiş)
+   ========================================================= */
+var METRICS = [
+ {g:"Talep", t:"p", items:[
+  {n:"Toplam onaylı talep (FTE)", st:"f1", r:["ic","dis"], t4:1, d:"Kurumun onaylanmış büyüklüğü; temel ölçü tam zaman eşdeğeridir (madde 6.3.12)", u:["hr","exec","line","fin","ext"]},
+  {n:"İş ailesi veya role göre onaylı talep", st:"f1", r:["ic"], t4:1, d:"Planlamayı en değerli iş ailelerine odaklar; toplu rakama tercih edilir (6.3.14)", u:["hr","exec","line","fin"]},
+  {n:"Yetkinliğe göre talep", st:"f1", r:["ic"], t4:1, d:"İşe alım ve eğitim takvimini de içeren zaman çerçevesiyle (6.3.15)", u:["hr","line"]},
+  {n:"Onaysız talep", st:"f1", r:["ic"], t4:1, d:"Henüz onaylanmamış, dönem içinde onaylanması muhtemel; onaylı talep gibi sunulur (6.3.16)", u:["hr","exec","fin"]},
+  {n:"Finanse edilmiş pozisyon ve boş kadro", st:"f2", r:["ic"], t4:1, calc:"bos_kadro", d:"Finanse edilmiş boş kadronun finanse edilmiş pozisyonlara oranı ve bekleme süresi", u:["hr","exec","line","fin"]},
+  {n:"Boş pozisyon bekleme süresi", st:"f2", r:["ic"], t4:1, d:"Pozisyonların doldurulmasına kadar geçen süre (vacancy wait)", u:["hr","line"]},
+  {n:"Senaryoya göre talep projeksiyonu", st:"f1", r:["ic"], k:"tur", calc:"senaryo", d:"Değişim yok, büyüme ve düşüş senaryolarında talep (madde 6.3.27)", u:["hr","exec","fin"]}
+ ]},
+ {g:"Arz", t:"c", items:[
+  {n:"Toplam arz (FTE)", st:"f1", r:["ic","dis"], t4:1, d:"Çalışanlar, yükleniciler ve dış kaynaklı işlevler; mevcut arz talebe göre kıyaslanır (6.3.17)", u:["hr","exec","line","fin","ext"]},
+  {n:"Çalışan, yüklenici ve dış kaynaklı işlev bileşenleri", st:"f1", r:["ic"], t4:1, d:"Tam, yarı zamanlı ve gündelik çalışan; üçüncü taraf aracılığıyla çalışanlar; performans sözleşmeli işlevler", u:["hr","exec","fin"]},
+  {n:"İş ailesi veya role göre arz", st:"f1", r:["ic"], t4:1, d:"Bölümlendirme biçimi arzın ayrıntı düzeyini belirler (6.3.19)", u:["hr","exec","line"]},
+  {n:"Yetkinliğe göre arz ve yetkinlik açığı", st:"f1", r:["ic"], t4:1, calc:"yetkinlik_acigi", d:"İş ailesinde kişi sayısı sabit kalsa da gereken yetkinlik değişebilir (6.3.20)", u:["hr","exec","line"]},
+  {n:"Arz–talep açığı (net ve iş ailesi bazında)", st:"f2", r:["ic","dis"], t4:1, calc:"arz_acigi", d:"Talep − arz; fazla ve eksik arz; kurum geneli ve iş ailesi bazında (6.4.1)", u:["hr","exec","line","fin","ext"]},
+  {n:"Koşullu işgücüne bağımlılık", st:"f1", r:["ic"], calc:"gecici_oran", d:"Danışman, yüklenici ve geçici çalışanların toplam işgücündeki payı (6.3.20 e)", u:["hr","exec","fin"]},
+  {n:"Yönetici başına çalışan", st:"f1", r:["ic"], calc:"yonetici_orani", d:"Yönetici/çalışan oranı; işgücü ve örgüt hakkında ne söylediği sorulur (6.3.20 d)", u:["hr","exec"]},
+  {n:"Yaş, cinsiyet ve çeşitlilik profili", st:"f1", r:["ic","dis"], t4:1, d:"Demografik bilgi; çeşitlilik özellikleri kurumla ilgili olanlarla genişletilir", u:["hr","exec","ext"]},
+  {n:"Kıdem ve deneyim profili", st:"f1", r:["ic"], t4:1, d:"Mevcut rolde, kurumda, iş ailesinde ve sektörde geçen süre", u:["hr","line"]},
+  {n:"Nitelik, beceri ve yetkinlik envanteri", st:"f1", r:["ic"], t4:1, d:"İş profillerinden gelen gereken beceri ve kapasitelerle karşılaştırılır", u:["hr","line"]}
+ ]},
+ {g:"Hareketlilik ve eğilim", t:"s", items:[
+  {n:"Tür ve nedene göre çıkış ve girişler", st:"f1", r:["ic"], t4:1, d:"Emeklilik, izin, görevlendirme, transfer, program kapanışı, kariyer ilerlemesi (Tablo 4)", u:["hr","exec","line"]},
+  {n:"Net hareketlilik ve devir oranı", st:"f2", r:["ic","dis"], t4:1, calc:"hareketlilik", d:"Çıkış eksi giriş (Tablo 1); gönüllü ve istemsiz devir ayrı raporlanır", u:["hr","exec","line","fin","ext"]},
+  {n:"Emeklilik ve ayrılış maruziyeti", st:"f2", r:["ic"], calc:"emeklilik", d:"Planlama döneminde ayrılması beklenenlerin gruba oranı ve halef hazırlığı (6.3.23)", u:["hr","exec","line"]},
+  {n:"Teklif ile fiili başlama farkı", st:"f2", r:["ic"], calc:"teklif_kabul", d:"Fark için eşdeğer yüzde tamponu eklenir (6.3.20 n)", u:["hr","line"]},
+  {n:"İşe alım verisi", st:"f1", r:["ic"], t4:1, d:"Kalıcı, geçici ve iç hareketler; asgari son 12 ay, tercihen üç yıl", u:["hr","exec","line","fin"]},
+  {n:"İç yer değiştirme", st:"f1", r:["ic"], t4:1, d:"Görevlendirmeler ve kurum içi transferler", u:["hr","line"]},
+  {n:"Talep ve arz eğilimleri (zaman serisi)", st:"f2", r:["ic","dis"], d:"Talep, arz, işe alım performansı ve devir davranışı için eğilim bilgisi (6.3.23)", u:["hr","exec","ext"]},
+  {n:"İşgücü anketi (nitel ve nicel)", st:"f1", r:["ic"], t4:1, d:"İş yapabilirlik, istihdam edilebilirlik, tükenmişlik, presenteeism, uyku kalitesi, psikolojik sıkıntı", u:["hr","exec"]}
+ ]},
+ {g:"Risk ve senaryo", t:"r", items:[
+  {n:"Risk puanı (olasılık × etki)", st:"f2", r:["ic","dis"], calc:"risk", d:"Arz riskinin beş dereceli olasılık ve etki ölçekleriyle derecelendirilmesi (6.4.2.3)", u:["hr","exec","line","fin","ext"]},
+  {n:"Risk iştahıyla uyum", st:"f2", r:["ic"], k:"onk", d:"Yönetim kurulu risk iştahını belirler; arz açığı öngörüleri bununla hizalı raporlanır", u:["exec","fin"]},
+  {n:"Gelecek senaryoları (değişim yok, büyüme, düşüş)", st:"f1", r:["ic"], k:"onk", d:"Geleceğin en az üç senaryoyla, net ve sayısallaştırılabilir biçimde sunulması (6.3.27)", u:["hr","exec","fin"]},
+  {n:"Duyarlılık ve stres testi", st:"f2", r:["ic"], k:"tur", d:"Senaryolarla talep ve arz açığı hesaplarını destekler", u:["hr","exec","fin"]},
+  {n:"Risk azaltma stratejileri", st:"f3", r:["ic"], d:"Halefiyet, geliştirme, elde tutma, terfi, işe alım, görevlendirme, dış kaynak, çıkış ya da yeniden görevlendirme (7.1)", u:["hr","exec","line","fin"]},
+  {n:"Eylem planı: konu, görev, sorumlu, süre, gösterge, yatırım", st:"f3", r:["ic"], d:"Diğer iş planlarıyla tutarlı biçimde sunulur (7.3)", u:["hr","exec","line","fin"]}
+ ]},
+ {g:"Bağlam ve süreç etkenleri", t:"o", items:[
+  {n:"Dış etkenler: emek piyasası, demografi ve mevzuat", st:"bag", r:["ic","dis"], k:"ctx", d:"Yerel, bölgesel, ulusal ve uluslararası ekonomik, siyasi, sosyal ve demografik ortam (4.8)", u:["hr","exec","ext"]},
+  {n:"Dış etkenler: sektör ve hükümet düzenlemeleri, uyum", st:"bag", r:["ic","dis"], k:"ctx", d:"Düzenleyici çerçeve işgücü gereksinimlerini değiştirir", u:["hr","exec","fin","ext"]},
+  {n:"Dış etkenler: teknoloji", st:"bag", r:["ic","dis"], k:"ctx", d:"Çevrim içi alışveriş, otomasyon gibi gelişmeler talep profilini hızla değiştirir (6.3.3)", u:["hr","exec","line","ext"]},
+  {n:"İç etkenler: yeniden yapılanma, birleşme, büyüme, küçülme", st:"bag", r:["ic"], k:"ctx", d:"Kadro büyüklüğünü ve gereken becerileri etkiler (4.8)", u:["hr","exec","fin"]},
+  {n:"İç etkenler: maliyet, verimlilik, yeni ürün ve hizmet", st:"bag", r:["ic"], k:"ctx", d:"Talebin nitelik ve niceliğini belirler", u:["hr","exec","line","fin"]},
+  {n:"Stratejinin işgücü sonuçları", st:"f1", r:["ic"], k:"onk", d:"İş aileleri ve yetkinlikler dahil; strateji genellikle üç ila beş yıllıktır (6.3.3)", u:["hr","exec"]},
+  {n:"Planlama lideri ve ekibi, iş gerekçesi", st:"f1", r:["ic"], k:"onk", d:"KOBİ'ler için gerekli olmayabilir (6.3.2)", u:["hr","exec","fin"]},
+  {n:"İletişim planı", st:"f1", r:["ic"], k:"onk", d:"Liderleri, işgücünü ve paydaşları planlamanın amaçlarına dahil eder (6.3.4)", u:["hr","exec","line"]},
+  {n:"Bölümlendirme modeli", st:"f1", r:["ic"], k:"onk", d:"Organizasyon, coğrafi, iş ailesi, sistematik, iş kritikliği; talep ve arza tutarlı uygulanır (6.3.6–6.3.9)", u:["hr","exec","line"]},
+  {n:"Bilgi boşlukları raporu", st:"f1", r:["ic"], k:"onk", d:"Mevcut sistemlerde olmayan ya da elle işleme gerektiren nicel ve nitel veri (6.3.26)", u:["hr","fin"]},
+  {n:"Veri kalitesi, sistemler ve analitik yetenek", st:"f3", r:["ic"], k:"ctx", d:"Doğal risklerden biri; vekil ve varsayımlar belgelenir (6.3.21, 7.1)", u:["hr","exec","fin"]},
+  {n:"Gizlilik ilkeleri", st:"f1", r:["ic"], k:"onk", d:"Çalışan verisi toplanırken saygı gösterilir ve yalnızca plan için gereken veri toplanır (6.3.11)", u:["hr","exec","fin"]},
+  {n:"Liderlik, yönetişim yeteneği ve direnç", st:"f3", r:["ic"], k:"ctx", d:"İşgücü planlama liderliği eksikliği, muhalefet, çatışma ve direnç doğal risklerdir", u:["hr","exec","line"]},
+  {n:"Kaynak, araç ve ekipman", st:"f3", r:["ic"], k:"ctx", d:"Azaltma stratejileri mali ve personel kaynağı gerektirir (7.2)", u:["hr","exec","fin"]},
+  {n:"İşgücü planlamasının iş planlamasına gömülmesi", st:"f4", r:["ic"], k:"onk", d:"Büyük kurumda tam uygulama bir ila iki yıl; ilerlemenin çoğu ilk altı ayda (8.2)", u:["hr","exec","line","fin"]},
+  {n:"Verimlilik ile hizalı izleme (Tablo 5)", st:"f4", r:["ic"], d:"Girdi/çıktı oranları, çıktı ölçümleri, anahtar performans göstergeleri, ilerleme (8.1)", u:["hr","exec","fin"]},
+  {n:"Kritik işgücünün elde tutulması", st:"f4", r:["ic","dis"], d:"Yerel ölçüm sorusu: kritik işgücü tutuldu mu? (8.1)", u:["hr","exec","line","ext"]},
+  {n:"Planlama sonrası devirdeki değişim", st:"f4", r:["ic","dis"], d:"Yerel ölçüm sorusu: devir iyi yönde değişti mi? (8.1)", u:["hr","exec","line","ext"]},
+  {n:"Arz açıklarını gidermek için gereken işgücünün çekilmesi", st:"f4", r:["ic"], d:"Yerel ölçüm sorusu (8.1)", u:["hr","exec","line"]},
+  {n:"Yönetimin yöntem ve raporlama yetkinliği", st:"f4", r:["ic"], k:"onk", d:"Üst yönetim ve liderlerin işgücü planlama yöntemlerinde yetkin olması (8.1)", u:["hr","exec"]}
+ ]}
+];
+
+var USERS = ["hr","exec","line","fin","ext"];
+var AILE_AD = {p:"talep", c:"arz", s:"hareketlilik ve eğilim", r:"risk ve senaryo", o:"bağlam ve süreç"};
+var EK_AD = {ctx:"bağlam etkeni", onk:"ön koşul", tur:"türetilmiş"};
+
+/* --- matris çizimi --- */
+function renderMatrix(){
+  var fu = document.getElementById("fUser").value;
+  var fs = document.getElementById("fStage").value;
+  var ft = document.getElementById("fType").value;
+  var fr = document.getElementById("fRep").value;
+  var fq = document.getElementById("fQ").value.toLocaleLowerCase("tr");
+  var body = document.getElementById("mBody");
+  var html = "", shown = 0;
+
+  METRICS.forEach(function(grp){
+    if(ft && grp.t !== ft) return;
+    var rows = "";
+    grp.items.forEach(function(m){
+      if(fu && m.u.indexOf(fu) === -1) return;
+      if(fs && m.st !== fs) return;
+      if(fr && m.r.indexOf(fr) === -1) return;
+      if(fq && m.n.toLocaleLowerCase("tr").indexOf(fq) === -1) return;
+      shown++;
+      var cells = USERS.map(function(u){
+        if(m.u.indexOf(u) === -1) return '<td class="num"></td>';
+        var mark = '<span class="dot ' + grp.t + '"></span>';
+        return '<td class="num" title="' + m.n + '">' + (m.calc ? '<b>' + mark + '</b>' : mark) + '</td>';
+      }).join("");
+      var tags = '<span class="tag ' + grp.t + '">' + AILE_AD[grp.t] + '</span>' +
+                 (m.k ? ' <span class="tag lvl">' + EK_AD[m.k] + '</span>' : "") +
+                 (m.t4 ? ' <span class="tag iso">Tablo 4</span>' : "") +
+                 (m.calc ? ' <span class="tag lvl">hesaplayıcı</span>' : "") +
+                 (m.r.indexOf("dis") !== -1 ? ' <span class="tag iso">dış rapor</span>' : "");
+      rows += '<tr><td class="name">' + (m.calc ? '<b>' + m.n + '</b>' : m.n) + ' ' + tags +
+              '<em>' + m.d + '</em></td>' + cells + '</tr>';
+    });
+    if(rows){
+      html += '<tr class="group"><td colspan="6">' + grp.g + '</td></tr>' + rows;
+    }
+  });
+
+  body.innerHTML = html || '<tr><td colspan="6">Bu filtre birleşimiyle eşleşen metrik yok.</td></tr>';
+  document.getElementById("mCount").textContent = shown + " metrik ve etken gösteriliyor.";
+}
+["fUser","fStage","fType","fRep","fQ"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", renderMatrix);
+});
+renderMatrix();
+
+/* =========================================================
+   2) TALEP–ARZ TABLOSU
+   ========================================================= */
+var SATIR = 8;
+/* iş ailesi, onaylı talep, onaysız talep, arz, kritik */
+var ORNEK_TBL = [
+  ["Yazılım geliştirme",   120, 10, 104, true],
+  ["Satış ve danışmanlık",  90,  6,  92, false],
+  ["Proje yönetimi",        40,  4,  31, true],
+  ["Operasyon ve teslimat",150,  0, 138, false],
+  ["İdari işler ve tesis",  50,  0,  52, false],
+  ["İK ve finans",          30,  2,  28, false],
+  ["", 0, 0, 0, false],
+  ["", 0, 0, 0, false]
+];
+
+function buildTbl(){
+  var html = "";
+  for(var i=0;i<SATIR;i++){
+    html += '<tr>' +
+      '<td><input type="text" id="p_ad_' + i + '" placeholder="İş ailesi ' + (i+1) + '"></td>' +
+      '<td><input type="number" min="0" step="any" id="p_talep_' + i + '"></td>' +
+      '<td><input type="number" min="0" step="any" id="p_onay_' + i + '"></td>' +
+      '<td><input type="number" min="0" step="any" id="p_arz_' + i + '"></td>' +
+      '<td class="chk"><input type="checkbox" id="p_kr_' + i + '"></td>' +
+      '<td class="calc" id="p_acik_' + i + '">—</td></tr>';
+  }
+  document.getElementById("pBody").innerHTML = html;
+  document.getElementById("pBody").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", computeTbl);
+    el.addEventListener("change", computeTbl);
+  });
+  document.getElementById("senaryoPct").addEventListener("input", computeTbl);
+}
+
+function pNum(k, i){
+  var v = parseFloat(document.getElementById("p_" + k + "_" + i).value);
+  return isNaN(v) || v < 0 ? 0 : v;
+}
+
+var TBL = {n:0, talep:0, arz:0, onaysiz:0, ok:false};
+
+function computeTbl(){
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var f0 = function(x){ return x.toLocaleString("tr-TR", {maximumFractionDigits:1}); };
+
+  var pct = parseFloat(document.getElementById("senaryoPct").value);
+  if(isNaN(pct) || pct <= -100) pct = 0;
+
+  var n = 0, talep = 0, onay = 0, arz = 0, kritik = 0, kritikAcik = 0, eksik = 0, fazla = 0;
+  var enBuyuk = null, enFazla = null;
+
+  for(var i=0;i<SATIR;i++){
+    var ad = document.getElementById("p_ad_" + i).value.trim() || ("İş ailesi " + (i+1));
+    var t = pNum("talep", i), o = pNum("onay", i), a = pNum("arz", i);
+    var kr = document.getElementById("p_kr_" + i).checked;
+    var hucre = document.getElementById("p_acik_" + i);
+    if(!(t > 0 || o > 0 || a > 0)){ hucre.textContent = "—"; continue; }
+    n++; talep += t; onay += o; arz += a;
+    var acik = t - a;
+    hucre.textContent = (acik > 0 ? "+" : "") + f0(acik);
+    if(acik > 0){ eksik += acik; if(enBuyuk === null || acik > enBuyuk.v) enBuyuk = {ad:ad, v:acik}; }
+    if(acik < 0){ fazla += -acik; if(enFazla === null || -acik > enFazla.v) enFazla = {ad:ad, v:-acik}; }
+    if(kr){ kritik++; kritikAcik += acik; }
+  }
+
+  document.getElementById("tTalep").textContent = n ? f0(talep) : "—";
+  document.getElementById("tOnaysiz").textContent = n ? f0(onay) : "—";
+  document.getElementById("tArz").textContent = n ? f0(arz) : "—";
+  document.getElementById("tKritik").textContent = kritik ? kritik + " kritik" : "—";
+  document.getElementById("tAcik").textContent = n ? (talep - arz > 0 ? "+" : "") + f0(talep - arz) : "—";
+
+  var kart = document.getElementById("pCards");
+  var ok = n > 0 && talep > 0;
+  TBL = {n:n, talep:talep, arz:arz, onaysiz:onay, ok:ok};
+  if(!ok){
+    kart.innerHTML = "";
+    document.getElementById("pNot").textContent =
+      "Tabloya iş ailelerini ve talep/arz değerlerini girin ya da örnek veriyi yükleyin.";
+    return;
+  }
+
+  var net = talep - arz;
+  var senaryoAcik = talep * (1 + pct/100) - arz;
+  var kartlar = '';
+  kartlar += '<div class="card"><b>' + (net > 0 ? "+" : "") + f0(net) + '</b><span>Net açık (FTE, talep − arz)</span></div>';
+  kartlar += '<div class="card"><b>' + f1(100 * arz / talep) + ' %</b><span>Talebin arzla karşılanma oranı</span></div>';
+  kartlar += '<div class="card alt"><b>' + f0(eksik) + '</b><span>Brüt eksik (açığı olan ailelerin toplamı)</span></div>';
+  kartlar += '<div class="card alt"><b>' + f0(fazla) + '</b><span>Brüt fazla (fazla arzı olan ailelerin toplamı)</span></div>';
+  kartlar += '<div class="card warn"><b>' + (senaryoAcik > 0 ? "+" : "") + f0(senaryoAcik) + '</b><span>Senaryo açığı (talep ' + (pct >= 0 ? "+" : "") + f0(pct) + ' %)</span></div>';
+  kartlar += '<div class="card warn"><b>' + (enBuyuk ? '+' + f0(enBuyuk.v) : "—") + '</b><span>En büyük açık: ' + (enBuyuk ? enBuyuk.ad : "—") + '</span></div>';
+  kart.innerHTML = kartlar;
+
+  var not = "Talep = " + f0(talep) + " FTE, arz = " + f0(arz) + " FTE → net açık = " + f0(net) + " FTE. ";
+  if(eksik > 0 && fazla > 0 && eksik > Math.abs(net) * 1.5){
+    not += "Net açık, aile bazındaki brüt eksikten (" + f0(eksik) + " FTE) küçük: fazla arz bazı ailelerde eksiği maskeliyor; " +
+           "bir ailedeki fazla başka ailedeki eksiği ancak yetkinlikler uyuşuyorsa kapatır. ";
+  }
+  if(kritik){ not += "Kritik ailelerin toplam açığı: " + (kritikAcik > 0 ? "+" : "") + f0(kritikAcik) + " FTE. "; }
+  if(onay > 0){ not += "Onaysız talep (" + f0(onay) + " FTE) dahil edilirse net açık " + f0(net + onay) + " FTE olur. "; }
+  document.getElementById("pNot").textContent = not;
+}
+
+function loadTblExample(){
+  for(var i=0;i<SATIR;i++){
+    var s = ORNEK_TBL[i];
+    document.getElementById("p_ad_" + i).value = s[0];
+    document.getElementById("p_talep_" + i).value = s[1] ? s[1] : "";
+    document.getElementById("p_onay_" + i).value = s[2] ? s[2] : "";
+    document.getElementById("p_arz_" + i).value = s[3] ? s[3] : "";
+    document.getElementById("p_kr_" + i).checked = s[4];
+  }
+  document.getElementById("senaryoPct").value = 5;
+  computeTbl();
+}
+
+document.getElementById("btnOrnek").addEventListener("click", loadTblExample);
+document.getElementById("btnTemizle").addEventListener("click", function(){
+  for(var i=0;i<SATIR;i++){
+    ["ad","talep","onay","arz"].forEach(function(k){ document.getElementById("p_" + k + "_" + i).value = ""; });
+    document.getElementById("p_kr_" + i).checked = false;
+  }
+  computeTbl();
+});
+document.getElementById("btnCsv").addEventListener("click", function(){
+  var satir = ["Is ailesi;Onayli talep FTE;Onaysiz talep FTE;Arz FTE;Kritik;Acik FTE"];
+  for(var i=0;i<SATIR;i++){
+    var t = pNum("talep", i), o = pNum("onay", i), a = pNum("arz", i);
+    if(!(t > 0 || o > 0 || a > 0)) continue;
+    var ad = document.getElementById("p_ad_" + i).value.trim() || ("Is ailesi " + (i+1));
+    satir.push([ad, t, o, a, document.getElementById("p_kr_" + i).checked ? "evet" : "hayir", t - a].join(";"));
+  }
+  if(TBL.ok){
+    satir.push(["Toplam", TBL.talep, TBL.onaysiz, TBL.arz, "", TBL.talep - TBL.arz].join(";"));
+    satir.push(["Doluluk %", "", "", "", "", (100 * TBL.arz / TBL.talep).toFixed(1)].join(";"));
+  }
+  var blob = new Blob(["\ufeff" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "iso30409_talep_arz.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* =========================================================
+   3) FORMÜL TABLOSU + HESAPLAYICI
+   Alan adları gömülü Python modülünün hesapla() imzasıyla birebir aynıdır.
+   ========================================================= */
+function gerek(kosul, mesaj){ if(!kosul) throw new Error("GecersizGirdi: " + mesaj); }
+function oranOk(parca, butun, ad){
+  gerek(butun > 0, "bütün sıfırdan büyük olmalı");
+  gerek(parca >= 0 && parca <= butun, ad + " 0 ile bütün arasında olmalı");
+  return 100 * parca / butun;
+}
+function bolOk(pay, payda, ad){ gerek(payda > 0, ad + " sıfırdan büyük olmalı"); return pay / payda; }
+function r1(x){ return +x.toFixed(1); }
+var OLASILIK = {1:"Nadir", 2:"Düşük ihtimal", 3:"Orta", 4:"Muhtemel", 5:"Neredeyse kesin"};
+var ETKI = {1:"Önemsiz", 2:"Hafif", 3:"Orta", 4:"Büyük", 5:"Felaket"};
+
+var CALC = [
+ {id:"arz_acigi", name:"Arz–talep açığı", grp:"Talep ve arz", noHeur:true,
+  formula:"Açık = Talep (FTE) &minus; Arz (FTE)",
+  note:"Pozitif değer eksik arzı, negatif değer fazla arzı gösterir. Toplu rakam iş aileleri arasındaki farkları gizler; açığı iş ailesi ve yetkinlik bazında da hesaplayın (madde 6.3.13, 6.4.1). Onaysız talep ayrı satır olarak gösterilir.",
+  fields:[{k:"talep_fte",l:"Onaylı talep (FTE)",v:480},{k:"arz_fte",l:"Mevcut arz (FTE)",v:445},
+          {k:"onaysiz_talep",l:"Onaysız talep (FTE)",v:22}],
+  unit:"FTE (talep − arz)",
+  py:"arz_talep_acigi(talep=480, arz=445)",
+  calc:function(v){ gerek(v.talep_fte > 0 && v.arz_fte >= 0, "talep sıfırdan büyük, arz negatif olmamalı");
+    gerek(v.onaysiz_talep >= 0, "onaysız talep negatif olamaz");
+    var d = v.talep_fte - v.arz_fte;
+    return {value:d, dec:1, expl:v.talep_fte + " − " + v.arz_fte,
+      detail:[["Doluluk oranı (%)", r1(100*v.arz_fte/v.talep_fte)],
+              ["Onaysız talep dahil açık (FTE)", v.talep_fte+v.onaysiz_talep-v.arz_fte],
+              ["Açığın talebe oranı (%)", r1(100*d/v.talep_fte)]]}; },
+  bands:[[0.5,"bad","Arz talebin altında: eksik arz var. İş ailesi ve yetkinlik bazında hangi alanda olduğuna bakın; işe alım, yeniden eğitim ve yeniden görevlendirmeyi karşılaştırın."],
+         [-0.5,"ok","Arz ile talep toplamda dengede; yine de iş ailesi bazında fazla ve eksikleri kontrol edin."],
+         [-1e9,"warn","Arz talebin üstünde: fazla arz var. Yeniden görevlendirme, işe alımı durdurma ya da dış kaynak sözleşmelerini gözden geçirme seçeneklerini değerlendirin."]]},
+
+ {id:"bos_kadro", name:"Finanse edilmiş boş kadro oranı", grp:"Talep ve arz",
+  formula:"Boş kadro oranı = (Finanse edilmiş boş kadro &divide; Finanse edilmiş pozisyon) &times; 100",
+  note:"Standart, finanse edilmiş pozisyon, finanse edilmiş boş kadro ve boş kalma süresini (vacancy wait) toplanacak veri olarak sayar. FTE-yıl karşılığı, boş kadroların toplam bekleme gününden türetilmiştir.",
+  fields:[{k:"finanse_pozisyon",l:"Finanse edilmiş pozisyon",v:480},{k:"finanse_bos",l:"Finanse edilmiş boş kadro",v:40},
+          {k:"bekleme_gun",l:"Boş kadro ortalama bekleme günü",v:58}],
+  unit:"% boş kadro",
+  py:"bos_kadro_orani(finanse_bos=40, finanse_pozisyon=480)",
+  calc:function(v){ var d = oranOk(v.finanse_bos, v.finanse_pozisyon, "boş kadro");
+    gerek(v.bekleme_gun >= 0, "bekleme günü negatif olamaz");
+    var gun = v.finanse_bos * v.bekleme_gun;
+    return {value:d, dec:1, expl:"(" + v.finanse_bos + " ÷ " + v.finanse_pozisyon + ") × 100",
+      detail:[["Dolu finanse pozisyon", v.finanse_pozisyon-v.finanse_bos],
+              ["Boş kadroların toplam bekleme günü", gun],
+              ["Boş kalan işgücü (FTE-yıl)", r1(gun/365)]]}; },
+  bands:[[10,"bad","Finanse edilmiş kadronun onda biri ya da fazlası boş; işe alım sürecini ve boş kalma nedenlerini inceleyin."],
+         [5,"warn","Boş kadro payı kayda değer; bekleme süresi uzuyorsa kritik iş ailelerini ayrı izleyin."],
+         [0,"ok","Finanse edilmiş kadro büyük ölçüde dolu."]]},
+
+ {id:"hareketlilik", name:"Net hareketlilik ve devir oranı", grp:"Hareketlilik",
+  formula:"Net hareketlilik = Çıkış &minus; Giriş",
+  note:"Standart, kontrol listesinde hareketliliği \"çıkışlar eksi girişler\" olarak anar ve çıkış ile girişleri tür ve nedene göre ister. Devir oranı (ortalama kadro paydası) türetilmiştir; gönüllü ve istemsiz ayrılışları ayrı raporlayın.",
+  fields:[{k:"donem_basi",l:"Dönem başı kadro",v:440},{k:"giren",l:"Girişler",v:48},{k:"ayrilan",l:"Çıkışlar",v:62}],
+  unit:"kişi (çıkış − giriş)", noHeur:true,
+  py:"net_hareketlilik(ayrilan=62, giren=48)",
+  calc:function(v){ gerek(v.ayrilan >= 0 && v.giren >= 0, "giriş ve çıkış negatif olamaz");
+    var d = v.ayrilan - v.giren, sonu = v.donem_basi + v.giren - v.ayrilan;
+    gerek(v.donem_basi > 0 && sonu >= 0, "kadro verileri tutarsız");
+    return {value:d, dec:0, expl:v.ayrilan + " − " + v.giren,
+      detail:[["Dönem sonu kadro", sonu],
+              ["Net hareketlilik oranı (dönem başına göre %)", r1(100*d/v.donem_basi)],
+              ["Devir oranı (ortalama kadroya göre %)", r1(100*v.ayrilan/((v.donem_basi+sonu)/2))]]}; },
+  bands:[[0.5,"warn","Çıkışlar girişleri aşıyor: kadro küçülüyor. Bunun planlı (düşüş senaryosu) mu plansız mı olduğunu ayırın; devir nedenlerini inceleyin."],
+         [-0.5,"ok","Giriş ve çıkış dengede."],
+         [-1e9,"ok","Girişler çıkışları aşıyor: kadro büyüyor. Büyüme, talep projeksiyonuyla uyumlu mu?"]]},
+
+ {id:"emeklilik", name:"Emeklilik ve ayrılış maruziyeti", grp:"Hareketlilik",
+  formula:"Maruziyet = (Planlama döneminde ayrılması beklenen &divide; Grup büyüklüğü) &times; 100",
+  note:"Standart, \"yüksek nitelikli uzmanların %46'sı emekli olacak\" türünden bir göstergeyi eğilim raporlaması örneği olarak verir. Halefiyet karşılama oranı, hazır halef sayısından türetilmiştir; halefiyet planlaması standardın risk stratejileri arasındadır.",
+  fields:[{k:"yaklasan",l:"Dönemde ayrılması beklenen",v:23},{k:"grup",l:"Gruptaki toplam kişi",v:50},
+          {k:"hazir_halef",l:"Hazır halefi olan",v:9}],
+  unit:"% ayrılış maruziyeti",
+  py:"emeklilik_maruziyeti(yaklasan=23, grup=50)",
+  calc:function(v){ var d = oranOk(v.yaklasan, v.grup, "yaklaşan ayrılış");
+    var hazir = v.yaklasan > 0 ? oranOk(v.hazir_halef, v.yaklasan, "hazır halef") : 0;
+    return {value:d, dec:1, expl:"(" + v.yaklasan + " ÷ " + v.grup + ") × 100",
+      detail:[["Beklenen kayıp sonrası kalan", v.grup-v.yaklasan],
+              ["Halefiyet karşılama oranı (%)", r1(hazir)],
+              ["Halefi hazır olmayan", v.yaklasan-v.hazir_halef]]}; },
+  bands:[[40,"bad","Grubun büyük bölümü yakında ayrılacak: bilgi ve deneyim kaybı riski yüksek; halefiyet, geliştirme ve elde tutma stratejileri önceliklidir."],
+         [20,"warn","Kayda değer ayrılış bekleniyor; halefiyet karşılama oranını izleyin."],
+         [0,"ok","Beklenen ayrılış sınırlı."]]},
+
+ {id:"teklif_kabul", name:"Teklif ile fiili başlama farkı", grp:"Hareketlilik",
+  formula:"Başlama oranı = (İşe başlayan &divide; Verilen teklif) &times; 100",
+  note:"Standart, teklif verme ile seçilen adayın fiilen işe başlaması arasındaki farkın dikkate alınmasını ve verilen tekliflerin üzerine eşdeğer yüzde tampon konmasını önerir (madde 6.3.20 n). Gereken teklif sayısı bu orandan türetilmiştir.",
+  fields:[{k:"teklif",l:"Verilen teklif",v:60},{k:"baslayan",l:"Fiilen işe başlayan",v:51},
+          {k:"gereken",l:"Hedeflenen başlama sayısı",v:40}],
+  unit:"% teklif–başlama",
+  py:"teklif_baslama_orani(baslayan=51, teklif=60)",
+  calc:function(v){ var d = oranOk(v.baslayan, v.teklif, "başlayan");
+    gerek(d > 0 && v.gereken >= 0, "başlama oranı sıfırdan büyük olmalı");
+    var g = Math.ceil(v.gereken*v.teklif/v.baslayan);
+    return {value:d, dec:1, expl:"(" + v.baslayan + " ÷ " + v.teklif + ") × 100",
+      detail:[["Başlamayan teklif", v.teklif-v.baslayan],
+              ["Gereken başlama için verilmesi gereken teklif", g],
+              ["Teklif tamponu", g-v.gereken]]}; },
+  bands:[[90,"ok","Teklifler büyük ölçüde işe başlamaya dönüşüyor; küçük bir tampon yeterli."],
+         [75,"warn","Tekliflerin kayda değer bölümü başlamıyor; planlarda yüzde tampon bırakın ve vazgeçme nedenlerini inceleyin."],
+         [0,"bad","Tekliflerin çoğu başlamaya dönüşmüyor; ücret, süreç ve aday deneyimini gözden geçirin."]]},
+
+ {id:"gecici_oran", name:"Koşullu işgücüne bağımlılık", grp:"Yapı",
+  formula:"Koşullu oran = ((Yüklenici + Geçici) &divide; (Kadrolu + Yüklenici + Geçici)) &times; 100",
+  note:"Standart, kurumun koşullu işgücüne (danışman, yüklenici, geçici ve gündelik çalışan) ne kadar bağımlı olduğunu, bu işgücünden hangi beceri ve kapasiteleri edindiğini ve hangi işlerin neden onlarca yapıldığını sorar (madde 6.3.20 e).",
+  fields:[{k:"kadrolu",l:"Kadrolu çalışan (FTE)",v:432},{k:"yuklenici",l:"Yüklenici ve danışman (FTE)",v:60},
+          {k:"gecici",l:"Geçici ve gündelik (FTE)",v:36}],
+  unit:"% koşullu işgücü",
+  py:"kosullu_isgucu_orani(kadrolu=432, yuklenici=60, gecici=36)",
+  calc:function(v){ gerek(v.kadrolu >= 0 && v.yuklenici >= 0 && v.gecici >= 0, "işgücü bileşenleri negatif olamaz");
+    var t = v.kadrolu+v.yuklenici+v.gecici;
+    gerek(t > 0, "toplam işgücü sıfırdan büyük olmalı");
+    var d = 100*(v.yuklenici+v.gecici)/t;
+    return {value:d, dec:1, expl:"((" + v.yuklenici + " + " + v.gecici + ") ÷ (" + v.kadrolu + " + " + v.yuklenici + " + " + v.gecici + ")) × 100",
+      detail:[["Toplam işgücü (FTE)", t],
+              ["Yüklenici ve danışman payı (%)", r1(100*v.yuklenici/t)],
+              ["Geçici ve gündelik payı (%)", r1(100*v.gecici/t)]]}; },
+  bands:[[30,"bad","İşgücünün önemli bölümü koşullu: hangi becerilerin ve işlerin neden dışarıda tutulduğunu sorgulayın; asıl yetkinlikleri dışarıda tutmak risktir."],
+         [15,"warn","Koşullu işgücüne kayda değer bağımlılık var; bu işgücünden edinilen becerileri ve kalıcı kadroyla karşılaştırmasını inceleyin."],
+         [0,"ok","Koşullu işgücüne bağımlılık sınırlı."]]},
+
+ {id:"yonetici_orani", name:"Yönetici başına çalışan", grp:"Yapı", noHeur:true,
+  formula:"Yönetici başına çalışan = Çalışan sayısı &divide; Yönetici sayısı",
+  note:"Standart, yönetici/çalışan oranının işgücü ve kurum hakkında ne söylediğinin sorulmasını ister (madde 6.3.20 d). Yönetici tanımını (yönetim kademeleri) yazılı tutun.",
+  fields:[{k:"calisan",l:"Çalışan sayısı",v:432},{k:"yonetici",l:"Yönetici sayısı",v:36}],
+  unit:"çalışan / yönetici",
+  py:"yonetici_basina_calisan(calisan=432, yonetici=36)",
+  calc:function(v){ var d = bolOk(v.calisan, v.yonetici, "yönetici sayısı");
+    gerek(v.calisan >= 0, "çalışan sayısı negatif olamaz");
+    return {value:d, dec:1, expl:v.calisan + " ÷ " + v.yonetici,
+      detail:[["Yönetici payı (%)", r1(100*v.yonetici/(v.calisan+v.yonetici))],
+              ["Toplam kadro", v.calisan+v.yonetici]]}; },
+  bands:[[0,"ok","Standart eşik vermez; oranı iş ailesi, sektör profili ve zaman içindeki değişimle birlikte okuyun."]]},
+
+ {id:"yetkinlik_acigi", name:"Yetkinlik bazında arz açığı", grp:"Talep ve arz",
+  formula:"Yetkinlik açığı = 100 &minus; (Gereken yetkinliğe sahip &divide; Gruptaki kişi) &times; 100",
+  note:"Standart, bir iş ailesi için arzın sabit kalsa da yetkinlik bazında değişebileceğini örnekler: BT programcılarına beş yıl boyunca sabit ihtiyaç olsa da programcıların %90'ının yeni bir dilde yetkin olması gerekebilir (madde 6.3.20).",
+  fields:[{k:"grup_fte",l:"İş ailesindeki kişi (FTE)",v:40},{k:"yetkin",l:"Gereken yetkinliğe sahip",v:4},
+          {k:"egitim_ay",l:"Yeniden beceri programı süresi (ay)",v:9}],
+  unit:"% yeni yetkinlik gerektiriyor",
+  py:"yetkinlik_acigi_orani(yetkin=4, grup=40)",
+  calc:function(v){ var d = 100 - oranOk(v.yetkin, v.grup_fte, "yetkin");
+    gerek(v.egitim_ay > 0, "eğitim süresi sıfırdan büyük olmalı");
+    var g = v.grup_fte - v.yetkin;
+    return {value:d, dec:1, expl:"100 − (" + v.yetkin + " ÷ " + v.grup_fte + ") × 100",
+      detail:[["Yeniden beceri gerektiren kişi", g],
+              ["Hazır yetkin kişi", v.yetkin],
+              ["Aylık eğitilmesi gereken kişi", r1(g/v.egitim_ay)]]}; },
+  bands:[[50,"bad","Grubun yarıdan fazlası yeni yetkinlik gerektiriyor; yeniden beceri, işe alım ve dış kaynak seçeneklerini birlikte planlayın."],
+         [20,"warn","Önemli bir bölüm yeni yetkinlik gerektiriyor; programın süresini ve temin süresini (lead time) planlayın."],
+         [0,"ok","Grubun çoğu gereken yetkinliğe sahip."]]},
+
+ {id:"senaryo", name:"Senaryoya göre talep projeksiyonu", grp:"Senaryo",
+  formula:"Talep = Mevcut talep &times; (1 + Yıllık değişim &divide; 100)<sup>yıl</sup>",
+  note:"Standart, geleceği en az üç senaryoya karşı sunmayı ister: büyüme, düşüş ve değişim yok. Burada yıllık sabit yüzde varsayımı basit bir türetmedir; gerçek senaryolar bölüm, konum ve yıl bazında farklılaşabilir.",
+  fields:[{k:"mevcut_talep",l:"Mevcut talep (FTE)",v:480},{k:"buyume_pct",l:"Büyüme senaryosu: yıllık değişim (%)",v:3.5,step:0.1},
+          {k:"dusus_pct",l:"Düşüş senaryosu: yıllık azalma (%)",v:2,step:0.1},{k:"yil",l:"Öngörü süresi (yıl)",v:3}],
+  unit:"FTE (büyüme senaryosu)", noHeur:true,
+  py:"senaryo_talebi(mevcut=480, yillik_pct=3.5, yil=3)",
+  calc:function(v){ gerek(v.mevcut_talep > 0 && v.yil >= 0 && v.buyume_pct > -100 && v.dusus_pct < 100, "senaryo girdileri geçersiz");
+    var b = v.mevcut_talep*Math.pow(1+v.buyume_pct/100, v.yil);
+    var dus = v.mevcut_talep*Math.pow(1+(-v.dusus_pct)/100, v.yil);
+    return {value:b, dec:1, expl:v.mevcut_talep + " × (1 + " + v.buyume_pct + " ÷ 100)^" + v.yil,
+      detail:[["Değişim yok senaryosu (FTE)", v.mevcut_talep],
+              ["Düşüş senaryosu (FTE)", r1(dus)],
+              ["Büyüme–düşüş aralığı (FTE)", r1(b-dus)]]}; },
+  bands:[[0,"ok","Her senaryo için arz açığını ayrı hesaplayın; aralık genişse tek bir tahmine dayanmayın, duyarlılık ve stres testi yapın."]]},
+
+ {id:"risk", name:"Arz riski puanı (olasılık × etki)", grp:"Risk",
+  formula:"Risk puanı = Olasılık (1–5) &times; Etki (1–5)",
+  note:"Standart, etki için önemsiz–hafif–orta–büyük–felaket, olasılık için nadir–düşük ihtimal–orta–muhtemel–neredeyse kesin ölçeklerinden ya da daha basit bir yüksek–orta–düşük değerlendirmesinden söz eder. Sayısal puan ve bantlar türetilmiştir; risk iştahı kurumca belirlenir.",
+  fields:[{k:"olasilik",l:"Olasılık (1 nadir … 5 neredeyse kesin)",v:5,step:1},{k:"etki",l:"Etki (1 önemsiz … 5 felaket)",v:4,step:1},
+          {k:"istah_esigi",l:"Kurumun risk iştahı eşiği (1–25)",v:10,step:1}],
+  unit:"puan (1–25)",
+  py:"risk_puani(olasilik=5, etki=4)",
+  calc:function(v){ gerek(v.olasilik === Math.floor(v.olasilik) && v.etki === Math.floor(v.etki) &&
+      v.olasilik >= 1 && v.olasilik <= 5 && v.etki >= 1 && v.etki <= 5, "olasılık ve etki 1 ile 5 arasında tam sayı olmalı");
+    gerek(v.istah_esigi >= 1 && v.istah_esigi <= 25, "risk iştahı eşiği 1 ile 25 arasında olmalı");
+    var d = v.olasilik*v.etki;
+    return {value:d, dec:0, expl:v.olasilik + " × " + v.etki,
+      detail:[["Olasılık düzeyi", OLASILIK[v.olasilik]],
+              ["Etki düzeyi", ETKI[v.etki]],
+              ["Risk iştahı eşiği aşıldı mı", d > v.istah_esigi ? "Evet" : "Hayır"]]}; },
+  bands:[[15,"bad","Yüksek risk: azaltma stratejisi, kaynak ve eylem planı gerekir; yönetim kuruluna raporlayın."],
+         [8,"warn","Orta risk: izleme ve planlı azaltma gerekir."],
+         [0,"ok","Düşük risk: izleme düzeyinde tutun."]]}
+];
+
+/* --- formül tablosu --- */
+(function(){
+  var rows = CALC.map(function(c){
+    return '<tr><td><b>' + c.name + '</b></td><td><span style="font-family:var(--serif)">' +
+           c.formula + '</span></td><td>' + c.note + '</td></tr>';
+  }).join("");
+  document.getElementById("fBody").innerHTML = rows;
+})();
+
+/* --- hesaplayıcı --- */
+var sel = document.getElementById("cMetric");
+CALC.forEach(function(c, i){
+  var o = document.createElement("option");
+  o.value = i; o.textContent = c.grp + " — " + c.name;
+  sel.appendChild(o);
+});
+
+function buildFields(){
+  var c = CALC[+sel.value];
+  document.getElementById("cFields").innerHTML = c.fields.map(function(f){
+    return '<div class="field"><label for="in_' + f.k + '">' + f.l + '</label>' +
+      '<input type="number" id="in_' + f.k + '" value="" step="' + (f.step || "any") + '" placeholder="' + f.v + '"></div>';
+  }).join("");
+  document.getElementById("cFields").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", run);
+  });
+}
+
+function readVals(){
+  var c = CALC[+sel.value], v = {}, missing = false;
+  c.fields.forEach(function(f){
+    var el = document.getElementById("in_" + f.k);
+    var raw = el && el.value !== "" ? parseFloat(el.value) : NaN;
+    if(isNaN(raw)){ missing = true; v[f.k] = f.v; } else { v[f.k] = raw; }
+  });
+  return {v:v, missing:missing};
+}
+
+function fmt(x, dec){
+  if(!isFinite(x)) return "—";
+  return x.toLocaleString("tr-TR", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+
+/* Hesaplama motoru: Python hazırsa gömülü modül, değilse JS yedeği */
+function compute(c, v){
+  if(PY.ready){
+    try{
+      PY.pyodide.globals.set("_metrik", c.id);
+      PY.pyodide.globals.set("_girdi", JSON.stringify(v));
+      var raw = PY.pyodide.runPython(
+        "import json\n" +
+        "json.dumps(hesapla(_metrik, **json.loads(_girdi)))");
+      var r = JSON.parse(raw);
+      return {value:r.deger, expl:r.ifade, dec:r.ondalik, detail:r.ayrinti,
+              unit:r.birim, engine:"python"};
+    }catch(err){
+      var msg = String(err);
+      /* Kullanıcı girdisi kaynaklı hata: motor sorunu değil, yedeğe geçme */
+      if(msg.indexOf("GecersizGirdi") !== -1 || msg.indexOf("ZeroDivisionError") !== -1) throw err;
+      setEngine("off", "Motor: JS yedeği — Python hatası");
+    }
+  }
+  var out = c.calc(v);
+  out.engine = "js";
+  return out;
+}
+
+function run(){
+  var c = CALC[+sel.value];
+  var r = readVals();
+  var out;
+  try { out = compute(c, r.v); } catch(e){ out = null; }
+  var box = document.getElementById("cResult");
+  if(!out || !isFinite(out.value)){
+    box.innerHTML = '<div class="result"><b>Hesaplanamadı.</b> Payda sıfır olamaz, parça bütünden büyük olamaz ve değerler geçerli aralıkta olmalı; alanları kontrol edin.</div>';
+    return;
+  }
+  var dec = (out.dec === undefined) ? 1 : out.dec;
+  var unit = out.unit || c.unit;
+  var html = '<div class="result">';
+  html += '<div class="big">' + fmt(out.value, dec) + ' <span>' + unit + '</span></div>';
+  html += '<div style="font-size:13px;color:var(--ink-soft);margin-top:6px">' + c.name +
+          ' · ' + (out.engine === "python" ? 'Python (Pyodide) ile hesaplandı' : 'JavaScript ile hesaplandı') +
+          (r.missing ? ' · <i>boş alanlar için örnek değer kullanıldı</i>' : '') + '</div>';
+
+  if(document.getElementById("oFormula").checked){
+    html += '<div class="formula">' + c.formula + '<br><span style="color:var(--ink-soft);font-size:15px">= ' +
+            out.expl + ' = <b>' + fmt(out.value, dec) + '</b> ' + unit + '</span></div>';
+  }
+  if(out.detail && out.detail.length){
+    html += '<dl>' + out.detail.map(function(d){
+      var val = (typeof d[1] === "number") ? d[1].toLocaleString("tr-TR") : d[1];
+      return '<dt>' + d[0] + '</dt><dd>' + val + '</dd>';
+    }).join("") + '</dl>';
+  }
+  if(document.getElementById("oInterp").checked && c.bands){
+    var band = c.bands[c.bands.length-1];
+    for(var i=0;i<c.bands.length;i++){ if(out.value >= c.bands[i][0]){ band = c.bands[i]; break; } }
+    html += '<div class="verdict ' + band[1] + '">' + band[2] + '</div>';
+    if(c.bands.length > 1 && !c.noHeur){
+      html += '<div class="note" style="margin-top:12px">Yorum eşikleri standarttan değil, başlangıç varsayımlarından gelir; kendi hedeflerinizle değiştirin.</div>';
+    }
+    html += '<div class="note" style="margin-top:12px">' + c.note + '</div>';
+  }
+  if(document.getElementById("oPy").checked){
+    var args = c.fields.map(function(f){ return f.k + "=" + r.v[f.k]; }).join(", ");
+    var call = 'hesapla("' + c.id + '", ' + args + ')';
+    html += '<pre style="margin-top:16px"><i>&gt;&gt;&gt; from iso30409_metrikler import hesapla</i>\n' +
+            '&gt;&gt;&gt; ' + call + '["deger"]\n' + out.value + '\n\n' +
+            '<i># eşdeğer doğrudan çağrı</i>\n&gt;&gt;&gt; ' + c.py + '</pre>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+sel.addEventListener("change", function(){ buildFields(); run(); });
+document.getElementById("btnRun").addEventListener("click", run);
+document.getElementById("btnExample").addEventListener("click", function(){
+  var c = CALC[+sel.value];
+  c.fields.forEach(function(f){ document.getElementById("in_" + f.k).value = f.v; });
+  run();
+});
+["oFormula","oInterp","oPy"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", function(){
+    var all = document.getElementById("oFormula").checked &&
+              document.getElementById("oInterp").checked &&
+              document.getElementById("oPy").checked;
+    document.getElementById("oAll").checked = all;
+    run();
+  });
+});
+document.getElementById("oAll").addEventListener("change", function(){
+  var s = this.checked;
+  ["oFormula","oInterp","oPy"].forEach(function(id){ document.getElementById(id).checked = s; });
+  run();
+});
+
+/* --- tablodan hesaplayıcıya aktarma --- */
+document.getElementById("btnAktar").addEventListener("click", function(){
+  if(!TBL.ok){ loadTblExample(); }
+  var idx = CALC.map(function(c){ return c.id; }).indexOf("arz_acigi");
+  sel.value = idx; buildFields();
+  document.getElementById("in_talep_fte").value = TBL.talep;
+  document.getElementById("in_arz_fte").value = TBL.arz;
+  document.getElementById("in_onaysiz_talep").value = TBL.onaysiz;
+  run();
+  document.getElementById("hesaplayici").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* =========================================================
+   4) PYTHON MOTORU (Pyodide / WebAssembly)
+   Gömülü iso30409_metrikler.py modülü tarayıcı içinde
+   gerçek CPython ile çalıştırılır. Erişim yoksa JS yedeği
+   devrede kalır ve sonuçlar değişmez.
+   ========================================================= */
+var PY = {ready:false, busy:false, pyodide:null};
+
+var PYODIDE_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+  "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"
+];
+
+function setEngine(state, text){
+  var chip = document.getElementById("engStatus");
+  chip.className = "chip" + (state ? " " + state : "");
+  chip.textContent = text;
+}
+
+function loadScript(src){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function(){ resolve(src); };
+    s.onerror = function(){ reject(new Error(src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function pySource(){
+  return document.getElementById("pysrc").textContent;
+}
+
+async function initPython(){
+  if(PY.ready) return true;
+  if(PY.busy) return false;
+  PY.busy = true;
+  document.getElementById("btnPy").disabled = true;
+  setEngine("busy", "Motor: Pyodide indiriliyor…");
+  try{
+    if(typeof loadPyodide === "undefined"){
+      try { await loadScript(PYODIDE_URLS[0]); }
+      catch(e){ await loadScript(PYODIDE_URLS[1]); }
+    }
+    setEngine("busy", "Motor: Python başlatılıyor…");
+    PY.pyodide = await loadPyodide();
+
+    /* Modülü sanal dosya sistemine yazmadan, gerçek bir modül nesnesi olarak kur:
+       böylece __name__ != "__main__" olur ve _demo() kendiliğinden çalışmaz.
+       Kayıt exec'ten ÖNCE yapılır; @dataclass işlenirken modülü sys.modules'te arar. */
+    PY.pyodide.globals.set("_kaynak", pySource());
+    PY.pyodide.runPython(
+      "import sys, types\n" +
+      "_m = types.ModuleType('iso30409_metrikler')\n" +
+      "_m.__file__ = 'iso30409_metrikler.py'\n" +
+      "sys.modules['iso30409_metrikler'] = _m\n" +
+      "exec(compile(_kaynak, 'iso30409_metrikler.py', 'exec'), _m.__dict__)\n" +
+      "from iso30409_metrikler import *\n" +
+      "import iso30409_metrikler as m\n"
+    );
+    var sur = PY.pyodide.runPython(
+      "import sys\n'.'.join(str(x) for x in sys.version_info[:3])");
+    PY.ready = true;
+    setEngine("on", "Motor: Python " + sur + " (Pyodide)");
+    run();
+    return true;
+  }catch(e){
+    setEngine("off", "Motor: tarayıcı (JS) — Pyodide yüklenemedi");
+    document.getElementById("pyOut").textContent =
+      "Python motoru yüklenemedi. Bu genellikle çevrimdışı olmaktan ya da ağ kısıtından kaynaklanır.\n" +
+      "Sayfa çalışmaya devam eder; hesaplamalar JavaScript yedeğiyle aynı sonuçları verir.\n\n" + e;
+    return false;
+  }finally{
+    PY.busy = false;
+    document.getElementById("btnPy").disabled = false;
+  }
+}
+
+document.getElementById("btnPy").addEventListener("click", initPython);
+
+/* --- konsol --- */
+var VARSAYILAN_KOD =
+  'from iso30409_metrikler import *\n' +
+  'import iso30409_metrikler as m\n\n' +
+  '# Talep ve arz\n' +
+  'print("Arz–talep açığı   :", arz_talep_acigi(480, 445), "FTE")\n' +
+  'print("Doluluk           :", round(doluluk_orani(445, 480), 1), "%")\n' +
+  'print("Boş kadro oranı   :", round(bos_kadro_orani(40, 480), 1), "%")\n\n' +
+  '# Hareketlilik\n' +
+  'print("Net hareketlilik  :", net_hareketlilik(62, 48))\n' +
+  'print("Devir oranı       :", round(devir_orani(62, 440, 48), 1), "%")\n' +
+  'print("Gereken teklif    :", gereken_teklif(40, 51, 60))\n\n' +
+  '# İş ailesi tablosu: aile bazında açık ve brüt eksik/fazla\n' +
+  't = ornek_tablo()\n' +
+  'for anahtar, deger in t.ozet(senaryo_pct=5).items():\n' +
+  '    print(f"{anahtar:<20}: {deger}")\n\n' +
+  '# Senaryo ve risk\n' +
+  'print("Büyüme senaryosu  :", round(senaryo_talebi(480, 3.5, 3), 1), "FTE")\n' +
+  'print("Düşüş senaryosu   :", round(senaryo_talebi(480, -2, 3), 1), "FTE")\n' +
+  'print("Risk puanı        :", risk_puani(5, 4), OLASILIK[5], "×", ETKI[4])\n\n' +
+  '# Dağıtıcı, hesaplayıcının kullandığı arayüzdür:\n' +
+  'print(hesapla("arz_acigi", talep_fte=480, arz_fte=445, onaysiz_talep=22))\n\n' +
+  '# Plan denetimi: hangi fazlar eksik?\n' +
+  'for uyari in plan_denetimi(ekip_ve_gerekce=True, strateji_hizasi=True, bolumlendirme=True):\n' +
+  '    print("!", uyari)\n';
+
+document.getElementById("pyCode").value = VARSAYILAN_KOD;
+
+async function runConsole(){
+  var out = document.getElementById("pyOut");
+  if(!PY.ready){
+    out.textContent = "Python motoru hazırlanıyor, ilk çalıştırma biraz sürebilir…";
+    var ok = await initPython();
+    if(!ok) return;
+  }
+  out.textContent = "çalışıyor…";
+  try{
+    PY.pyodide.globals.set("_kod", document.getElementById("pyCode").value);
+    var cikti = PY.pyodide.runPython(
+      "import io, contextlib, traceback\n" +
+      "_tampon = io.StringIO()\n" +
+      "with contextlib.redirect_stdout(_tampon), contextlib.redirect_stderr(_tampon):\n" +
+      "    try:\n" +
+      "        exec(_kod, globals())\n" +
+      "    except Exception:\n" +
+      "        traceback.print_exc()\n" +
+      "_tampon.getvalue()"
+    );
+    out.textContent = cikti && cikti.trim() ? cikti : "(çıktı yok)";
+  }catch(e){
+    out.textContent = "Hata: " + e;
+  }
+}
+
+document.getElementById("btnRunPy").addEventListener("click", runConsole);
+document.getElementById("btnReset").addEventListener("click", function(){
+  document.getElementById("pyCode").value = VARSAYILAN_KOD;
+  document.getElementById("pyOut").textContent = "Kod sıfırlandı.";
+});
+document.getElementById("btnDemo").addEventListener("click", function(){
+  document.getElementById("pyCode").value =
+    "import iso30409_metrikler as m\n\n" +
+    "# Modülün kendi doğrulama çıktısı (komut satırındaki\n" +
+    "# python3 iso30409_metrikler.py ile aynı sonucu verir)\n" +
+    "m._demo()\n";
+  runConsole();
+});
+
+/* modül kaynağını sayfada okunur kıl */
+document.getElementById("srcView").textContent = pySource().trim();
+
+buildTbl();
+loadTblExample();
+buildFields();
+run();
+</script>
+</body>
+</html>
