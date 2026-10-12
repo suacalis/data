@@ -1,0 +1,1771 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO/TS 30427 Maliyet Metrikleri Kümesi — Sınıflandırma ve Hesaplayıcı</title>
+<style>
+  :root{
+    --ink:#101418;
+    --ink-soft:#59636f;
+    --ink-faint:#8b95a1;
+    --line:#dde3ea;
+    --line-soft:#eef1f5;
+    --bg:#ffffff;
+    --canvas:#f6f8fa;
+    --accent:#0b5c8a;
+    --accent-soft:#e7f0f6;
+    --panel:#0e1520;
+    --panel-2:#16202e;
+    --panel-line:#28394f;
+    --out-ink:#8a3b12;  --out-bg:#fbeee6;
+    --eff-ink:#14615c;  --eff-bg:#e6f2f1;
+    --efc-ink:#33478c;  --efc-bg:#eaedf8;
+    --rea-ink:#7a5c00;  --rea-bg:#f8f1d9;
+    --cos-ink:#8c2f4b;  --cos-bg:#f9e8ee;
+    --ok:#1d6f42; --warn:#8a6100; --bad:#992121;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--canvas);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.62;
+  }
+  .sheet{max-width:1000px;margin:0 auto;background:var(--bg);padding:56px 60px 80px;
+    box-shadow:0 0 0 1px var(--line);}
+  @media(max-width:760px){ .sheet{padding:28px 20px 56px} }
+
+  h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:25px;margin:52px 0 4px;padding-bottom:8px;
+     border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  h3{font-size:17px;margin:32px 0 6px;letter-spacing:.01em}
+  h4{font-size:15px;margin:22px 0 4px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:12px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  small{color:var(--ink-soft)}
+  .lede{font-size:17px;color:var(--ink-soft)}
+
+  .srcbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 0;margin:0 0 26px;font-size:13.5px;color:var(--ink-soft)}
+  .srcbar b{color:var(--ink);font-weight:600}
+
+  .toc{background:var(--canvas);border:1px solid var(--line);padding:16px 20px;margin:26px 0 0;
+    font-size:14px;columns:2;column-gap:34px}
+  @media(max-width:640px){.toc{columns:1}}
+  .toc a{display:block;padding:3px 0;text-decoration:none;color:var(--ink)}
+  .toc a:hover{color:var(--accent);text-decoration:underline}
+  .toc b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 4px}
+
+  .keypoints li{margin:10px 0}
+  .keypoints b{font-weight:650}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink-soft);padding-bottom:6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:var(--canvas);font-weight:650;font-size:13px}
+  tbody tr:nth-child(even){background:#fcfdfe}
+  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;width:66px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink)}
+  .dot.o{background:var(--out-ink)} .dot.s{background:var(--eff-ink)} .dot.p{background:var(--efc-ink)}
+  .dot.r{background:var(--rea-ink)} .dot.c{background:var(--cos-ink)}
+
+  .tag{display:inline-block;font-size:11px;line-height:1.5;padding:1px 7px;border-radius:3px;
+    letter-spacing:.03em;white-space:nowrap;font-weight:600}
+  .tag.o{color:var(--out-ink);background:var(--out-bg)}
+  .tag.s{color:var(--eff-ink);background:var(--eff-bg)}
+  .tag.p{color:var(--efc-ink);background:var(--efc-bg)}
+  .tag.r{color:var(--rea-ink);background:var(--rea-bg)}
+  .tag.c{color:var(--cos-ink);background:var(--cos-bg)}
+  .tag.iso{color:#4a4a4a;background:#eeeeee}
+  .tag.lvl{color:#5a3a86;background:#f0eaf8}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--line-soft);padding:1px 5px;border-radius:3px}
+  pre{background:var(--panel);color:#e7eef6;border-radius:6px;padding:18px 20px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:14px 0}
+  pre b{color:#f0b866;font-weight:400}      /* anahtar kelime */
+  pre i{color:#7f8ea1;font-style:normal}    /* yorum */
+  pre u{color:#9fd28a;text-decoration:none} /* dize/sayı */
+  pre .fn{color:#79c0e8}
+  .filename{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin:14px 0 -8px}
+
+  .formula{font-family:var(--serif);font-size:16.5px;background:var(--canvas);
+    border-left:3px solid var(--accent);padding:12px 16px;margin:12px 0;overflow-x:auto}
+  .formula em{font-style:italic}
+
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 14px;color:var(--ink-soft);font-size:14px;margin:14px 0}
+
+  /* --- panel --- */
+  .panel{background:var(--panel);color:#dbe5f0;border-radius:8px;padding:22px 24px;margin:20px 0}
+  .panel h3{color:#fff;margin:0 0 4px;font-size:16px}
+  .panel .hint{color:#8fa2b8;font-size:13px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#8fa2b8;margin-bottom:5px}
+  .field label .req{color:#e08a5a}
+  select,input[type=number],input[type=text]{
+    width:100%;background:var(--panel-2);border:1px solid var(--panel-line);color:#eef4fb;
+    border-radius:5px;padding:9px 10px;font-family:var(--sans);font-size:14px}
+  input[type=number]{font-family:var(--mono)}
+  select:focus,input:focus{outline:2px solid #4a8fc0;outline-offset:1px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13.5px;color:#b9c7d6}
+  .checks label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .panel-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:5px;cursor:pointer;
+    border:1px solid transparent;padding:9px 18px}
+  .btn-run{background:#1c74ab;color:#fff}
+  .btn-run:hover{background:#2385c2}
+  .btn-ghost{background:transparent;color:#9fb3c9;border-color:var(--panel-line)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9fb3c9;
+    border:1px solid var(--panel-line);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7c8ea3}
+  .chip.busy::before{background:#e0a13c}
+  .chip.on::before{background:#4ec07a}
+  .chip.off::before{background:#c05a5a}
+
+  .console{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+  .console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+    background:var(--canvas);border-bottom:1px solid var(--line);padding:8px 12px;font-size:12.5px;color:var(--ink-soft)}
+  .console textarea{width:100%;border:0;display:block;background:var(--panel);color:#e7eef6;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:16px 20px;resize:vertical;min-height:190px}
+  .console textarea:focus{outline:2px solid #4a8fc0;outline-offset:-2px}
+  .console pre{margin:0;border-radius:0;background:#0a1017;border-top:1px solid var(--panel-line);min-height:64px}
+  .btn-sm{padding:6px 14px;font-size:13px}
+  details.src pre{max-height:420px;overflow:auto}
+  .btn-ghost:hover{color:#fff;border-color:#47607d}
+
+  .result{border:1px solid var(--line);border-top:3px solid var(--accent);padding:18px 20px;margin:18px 0}
+  .result .big{font-family:var(--serif);font-size:32px;line-height:1.1}
+  .result .big span{font-size:16px;color:var(--ink-soft);font-family:var(--sans)}
+  .result dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:14px 0 0;font-size:14px}
+  .result dt{color:var(--ink-soft)}
+  .result dd{margin:0;font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px;padding:10px 12px;font-size:14px;border-radius:4px;background:var(--canvas)}
+  .verdict.ok{color:var(--ok);background:#eef6f1}
+  .verdict.warn{color:var(--warn);background:#fbf5e7}
+  .verdict.bad{color:var(--bad);background:#faeeee}
+
+  /* --- matris --- */
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;
+    background:var(--canvas);border:1px solid var(--line);padding:14px 16px;margin:16px 0}
+  .filters label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .filters select,.filters input{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .matrix{font-size:13.5px}
+  .matrix th.rot{width:72px;text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom}
+  .matrix td.name{font-weight:500}
+  .matrix td.name em{display:block;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .matrix tr.group td{background:#f2f5f8;font-weight:650;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+  .count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+
+  /* --- pozisyon tablosu --- */
+  .postbl{font-size:13.5px}
+  .postbl input[type=text],.postbl input[type=date],.postbl input[type=number]{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .postbl input[type=text]{font-family:var(--sans)}
+  .postbl input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .postbl td.chk{text-align:center}
+  .postbl input[type=number]{text-align:right}
+  .postbl td:first-child{min-width:150px}
+  .postbl th.num,.postbl td.num{width:auto}
+  @media(max-width:760px){table{display:block;overflow-x:auto}}
+  .postbl td.calc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap}
+  .postbl tfoot td{background:var(--canvas);font-weight:650}
+  .tblbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+  .tblbar button{border-color:var(--line);color:var(--ink-soft);background:#fff}
+  .tblbar button:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tblbar .inline{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft)}
+  .tblbar .inline input{width:78px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .card{border:1px solid var(--line);border-top:3px solid var(--eff-ink);padding:12px 14px}
+  .card b{display:block;font-family:var(--serif);font-size:24px;line-height:1.2}
+  .card span{font-size:12px;color:var(--ink-soft)}
+  .card.alt{border-top-color:var(--efc-ink)}
+  .card.warn{border-top-color:var(--out-ink)}
+
+  details{border-bottom:1px solid var(--line);padding:12px 0}
+  summary{cursor:pointer;font-weight:600;font-size:15px}
+  summary::marker{color:var(--accent)}
+  details p{margin:10px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  @media (prefers-reduced-motion:no-preference){
+    .result{transition:border-color .2s}
+  }
+  @media print{
+    body{background:#fff} .sheet{box-shadow:none;max-width:none;padding:0}
+    .panel{background:#fff;color:#000;border:1px solid #000}
+    pre{background:#f4f4f4;color:#000}
+  }
+.postbl input[type=number]{min-width:64px}
+.postbl select{width:100%;padding:6px 4px;border:1px solid var(--line);border-radius:6px;font:inherit;font-size:13px;background:transparent;color:inherit}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>ISO/TS 30427 Maliyet Metrikleri Kümesi</h1>
+<div class="srcbar">
+  <span><b>Kaynak:</b> PD ISO/TS 30427:2021 — <i>Human resource management — Costs metrics cluster</i></span>
+  <span><b>Kapsam:</b> 5 kullanıcı · 5 metrik ailesi · 58 metrik ve etken</span>
+  <span><b>Hesaplama:</b> gömülü Python modülü (Pyodide/WebAssembly)</span>
+  <span><b>Sürüm:</b> Ekim 2026</span>
+</div>
+
+<h2 id="genel">Genel Bakış</h2>
+<p>ISO/TS 30427:2021, ISO 30414'ün <b>maliyetler</b> kümesini ayrıntılandıran bir teknik şartnamedir. Kurumların işgücü maliyetinin unsurlarını anlatır ve iç ve dış raporlama için karşılaştırılabilir
+ölçümlerin formülünü verir. Ayrıca maliyet verisini yorumlarken, özellikle iç müdahalelere karar verirken ve bunları dış paydaşlara (düzenleyiciler, yatırımcılar) raporlarken dikkate alınacak konuları vurgular. Dört metriği ele alır:
+<b>toplam işgücü maliyeti</b>, <b>dış işgücü maliyeti</b>, <b>temel maaş ve ücret oranı</b> ve <b>toplam istihdam maliyeti</b>. ISO 30414'ün maliyetler kümesindeki diğer metrikler başka belgelere bırakılmıştır: işe alım başına maliyet ISO/TS 30407'ye,
+işe alım ve devir maliyetleri ISO/TS 30421'e (şartnamenin yayımlandığı sırada hazırlık aşamasındaydı). Ek metrikler ve açıklamalar için ISO 30405, ISO/TS 30410 ve ISO/TS 30411 anılır. Bu sayfa, şartnamenin metrik kümesini
+filtrelenebilir bir matrise; hesaplanabilir metrikleri de formül + canlı hesaplayıcı + Python koduna dönüştürür. PD ISO/TS 30427:2021, ISO/TS 30427'nin İngiltere uyarlamasıdır (yayımlanmış belge; ISO ilk baskısı 23 Mart 2021)
+ve BSI tarafından 31 Mart 2021'de yayımlanmıştır. İlişkili belgeler: insan sermayesi raporlaması için ISO 30414 (madde 4.7.3, işgücü maliyetleri).</p>
+
+<h3>Önemli Noktalar</h3>
+<ul class="keypoints">
+  <li><b>Toplam işgücü maliyeti = toplam istihdam maliyeti + dış işgücü maliyeti.</b> Toplam işgücü maliyeti (toplam emek maliyeti) kurumun insana yaptığı harcamanın bütünüdür: maaş ve tazminat, yan haklar ve diğer ücret/ödeme maliyetleri ile doğrudan yönetilen koşullu (sözleşmeli ve geçici) işçilerin maliyeti.</li>
+  <li><b>Şartnamenin Tablo 1 toplamı hatalıdır.</b> "Toplam işgücü maliyeti" satırı 1 566 000 000 yazar; oysa 756 000 000 (istihdam) + 54 000 000 (dış) = 810 000 000'dur. Yazılan değer istihdam alt toplamını iki kez ekler (2 × 756 + 54 = 1 566; önceki yıl 2 × 685 + 45 = 1 415). Hesaplayıcı toplamı her bileşeni bir kez sayarak verir.</li>
+  <li><b>Dış işgücü maliyeti bileşenlerden oluşur.</b> Bağımsız yükleniciler, koşullu işçiler, geçici işçiler ve dış kaynaklı (outsource) işgücü maliyetleri toplanır; geçici işçi faturaları, ajans ücretleri, yüklenici ve danışman maliyetleri dahildir. Dış kaynaklı işgücü önemliyse ayrıca raporlanması tercih edilebilir.</li>
+  <li><b>Ücret oranı FTE temelinde raporlanır.</b> Tanımlı bir işgücü kategorisinin ortalama ücreti ve ödemesi, tüm çalışanların ortalamasına oranlanır; şartnameye göre bu metrik, kurumun fırsat eşitliği politikasını uygulayıp uygulamadığını belirlemeye yardımcı olur. Örnek: 70 ÷ 140 = 0,5:1; alternatif formülle 2:1.</li>
+  <li><b>Maliyet bağlamla okunur.</b> İşgücü bileşimi (küresel dağılım, eğitim, deneyim, iş düzeyi, ücret uygulamaları) maliyeti derinden etkiler; sektörler arasında farklar çok büyüktür, ancak sektör içinde işgücü maliyeti kıyaslama için çok değerli bir geçmiş ve öngörü göstergesidir.</li>
+  <li><b>Öngörü etkeni maliyetin gelire ya da işletme giderine oranıdır.</b> İşgücü maliyeti toplam giderlerin ne kadar büyük payını oluşturuyorsa, yetenek yönetiminin değer yaratma ya da yok etme potansiyeli o kadar yüksektir.</li>
+  <li><b>Ölçüm noktası sabittir.</b> Hesaplama mali yıl ya da bütçe döngüsüyle hizalı yapılır; dönem sonu (ay sonu, çeyrek sonu, yıl sonu) ve üç ilâ beş yıllık karşılaştırma aralığı kullanılır; farklı nokta seçilirse tutarlı uygulanır ve belgelenir.</li>
+</ul>
+
+<div class="toc">
+  <b>İçindekiler</b>
+  <a href="#genel">Genel bakış ve önemli noktalar</a>
+  <a href="#nezaman">Ne zaman kullanılır</a>
+  <a href="#cerceve">Çerçeve ve metodoloji</a>
+  <a href="#ornekler">Şartnamenin rapor örnekleri</a>
+  <a href="#adimlar">Metrik seçim adımları</a>
+  <a href="#kavramlar">Temel kavramlar</a>
+  <a href="#matris">Metrik matrisi</a>
+  <a href="#tablo">Maliyet kalemleri tablosu</a>
+  <a href="#formuller">Formüller ve tanımlar</a>
+  <a href="#hesaplayici">Hesaplayıcı</a>
+  <a href="#python">Python kod örnekleri</a>
+  <a href="#yorum">Sonuçların yorumlanması</a>
+  <a href="#sinirlamalar">Sınırlamalar</a>
+  <a href="#raporlama">Metriklerin raporlanması</a>
+  <a href="#ilgili">İlgili standartlar</a>
+  <a href="#sss">Sıkça sorulan sorular</a>
+</div>
+
+<h2 id="nezaman">Ne Zaman Kullanılır</h2>
+<ul>
+  <li><b>İnsana yapılan toplam harcamayı göstermek için:</b> yatırımcılar, kurumun işgücüne yatırdığı tutarı ve bu yatırımın kârlılık ve giderek finansal olmayan, soyut ölçülerdeki getirisini görmek ister (madde 4.1). İnsan sermayesini raporlamak, işgücünün bir yatırım olabileceğini kabul etmektir.</li>
+  <li><b>Sektör içi kıyaslama yaparken:</b> sektörler arasında işgücü maliyeti çok farklıdır; ama bir sektör içinde tarihsel ve öngörüsel performans göstergesi olarak mükemmel bir kıyaslama metriğidir (4.2, 7.5).</li>
+  <li><b>İşgücü yapısını ve dışa bağımlılığı izlerken:</b> dış işgücü maliyetinin iç işgücü maliyetine göre durumu, kurumun dış işgücüne bağımlılığını gösterir; geleneksel kalıcı istihdam yapısı değişen dış ve ekonomik bağlam karşısında zorlanmaktadır (5.1).</li>
+  <li><b>Toplam maliyeti yönetmek ve verimlilik–esneklik dengesini kurmak için:</b> dış işgücü maliyeti operasyonel ve çoğu zaman stratejik bir ölçüm aracıdır (5.4).</li>
+  <li><b>Fırsat eşitliği politikasını izlerken:</b> ücret oranı, ücretin tanımlı kategoriler arasında nasıl dağıldığını gösterir (6.2).</li>
+  <li><b>İstihdam maliyetini kesitlere göre analiz ederken:</b> pozisyon, performans düzeyi, kârlılık, verimlilik, çalışan bağlılığı, kıdem ve hareketlilik gibi kesitler maliyetin kullanımını iyileştirir (4.4, 7.4).</li>
+  <li><b>Dış raporlamada:</b> yatırımcı, finansal analist, sendika, medya ve sektör grupları (kıyaslama faaliyetleri) için karşılaştırılabilir göstergeler üretilir (ISO 30414 ile birlikte).</li>
+</ul>
+<div class="note">Bu belge bir <b>ölçme</b> belgesidir ve maliyeti ölçer; maliyetin "iyi" ya da "kötü" olduğuna karar vermez. Şartnamenin ifadesiyle sonuç beklenenden kötü göründüğünde ileri inceleme olumlu göstergeleri de ortaya çıkarabilir.</div>
+
+<h2 id="cerceve">Çerçeve ve Metodoloji</h2>
+
+<h3>Dört metrik, ortak yapı</h3>
+<p>Şartname, ISO 30414'te belgelenen maliyetler kümesinden dört metriği aşağıdaki gibi sıralar. Her metrik için genel tanım, amaç, formül ve kullanım biçimi; ilk iki metrik için ayrıca hedef kullanıcılar, bağlam ve öngörü etkenleri verilir.</p>
+<table>
+  <thead><tr><th>Metrik</th><th>Madde</th><th>Tanım</th><th>Amaç</th></tr></thead>
+  <tbody>
+    <tr><td><b>Toplam işgücü maliyeti</b></td><td>4</td>
+      <td>Toplam emek maliyeti olarak da bilinir; toplam istihdam maliyeti ile dış işgücü maliyetini içerir. Maaş ve tazminat, yan haklar ve diğer çalışan ücret/ödeme maliyetlerini kapsar.</td>
+      <td>Kurumun işgücünü yönetmek, sürdürmek ve geliştirmek için verdiği finansal değerin ana göstergesi; insana yapılan harcamayı nicelleştirmek.</td></tr>
+    <tr><td><b>Dış işgücü maliyeti</b></td><td>5</td>
+      <td>Yükleniciler, danışmanlar, geçici işçiler ve gig çalışanları için harcamalar: geçici işçi faturaları, ajans ücretleri, bağımsız yüklenici ve danışman maliyetleri; koşullu (geçici ve sözleşmeli) işçilere ödenen ücret ve yan haklar.</td>
+      <td>Dış işgücü maliyetinin iç işgücü maliyetine göre durumu, kurumun dış işgücüne bağımlılığını gösterir. Büyük kurumlar ve KOBİ'ler için iç ve dış raporlamada şiddetle önerilir.</td></tr>
+    <tr><td><b>Temel maaş ve ücret oranı</b></td><td>6</td>
+      <td>Kurumca tanımlanan işgücü kategorilerindeki ortalama maaş ve ücretin FTE esasına göre oran olarak raporlanması.</td>
+      <td>Kurumun fırsat eşitliği politikasını uygulayıp uygulamadığını belirlemeye yardımcı olmak.</td></tr>
+    <tr><td><b>Toplam istihdam maliyeti</b></td><td>7</td>
+      <td>Toplam çalışan emek maliyeti olarak da bilinir: ücret ve tazminat, çalışan yan hakları ve diğer doğrudan ilişkili istihdam maliyetleri.</td>
+      <td>Kurumun insanlarına değer verdiğini ve paydaşlara sunduğu sürdürülebilir değer önerisini göstermek.</td></tr>
+  </tbody>
+</table>
+
+<h3>Formüller</h3>
+<table>
+  <thead><tr><th>Metrik</th><th>Formül</th><th>Değişkenler</th></tr></thead>
+  <tbody>
+    <tr><td><b>Toplam işgücü maliyeti</b> (madde 4.3)</td><td style="font-family:var(--serif)">Toplam çalışan tazminat maliyeti + toplam çalışan yan hak maliyeti + dış işgücü maliyeti</td>
+      <td>Eşdeğer biçimde: toplam dış işgücü maliyeti + toplam istihdam maliyeti. Tablo 1: 756 + 54 = 810 milyon USD (şartnamede 1 566 yazılıdır; bkz. Sınırlamalar).</td></tr>
+    <tr><td><b>Dış işgücü maliyeti</b> (madde 5.3)</td><td style="font-family:var(--serif)">Geçici işçiler dahil koşullu işgücünün toplam maliyeti + sözleşmeli işçilerin toplam maliyeti</td>
+      <td>Tablo 2 satırları: bağımsız yükleniciler, koşullu işçiler, geçici işçiler, dış kaynaklı işgücü maliyetleri; toplam 1 920 bin USD.</td></tr>
+    <tr><td><b>Ücret oranı</b> (madde 6.3)</td><td style="font-family:var(--serif)">Tüm çalışanların ortalama toplam ücreti &divide; Tanımlı kategori ya da bireylerin yıllık toplam ücreti</td>
+      <td>Pay: tüm çalışanların ortalama toplam ücreti; payda: tanımlı kategorinin yıllık toplam ücreti. Alternatif (6.4.2, 6.4.3): kategorinin ortalama yıllık toplam ücreti ÷ tüm çalışanların ortalama toplam ücreti. Tablo 3 örneğinde 2:1.</td></tr>
+    <tr><td><b>Toplam istihdam maliyeti</b> (madde 7.3)</td><td style="font-family:var(--serif)">Toplam çalışan tazminat maliyeti + toplam çalışan yan hak maliyeti + diğer istihdam maliyetleri</td>
+      <td>Tablo 4: 510 + 75 + 170 + 1 = 756 milyon USD (önceki yıl 685).</td></tr>
+  </tbody>
+</table>
+
+<h3>Ölçüm noktası ve karşılaştırma (madde 5.3, 6.3)</h3>
+<ul>
+  <li>Hesaplama zaman içinde tutarlı olmalı ve mali yıl ya da yıllık bütçe döngüsüyle hizalanabilir; hesaplama noktası her ölçüm döneminin sonu olabilir: birinci ay sonu, ikinci çeyrek sonu ya da yıl sonu toplamları.</li>
+  <li>Kurum başka bir ölçüm noktası seçerse, tercih edilen nokta tutarlı kullanılmalı ve belgelenmelidir (ücret oranında "açıkça ifade edilmelidir").</li>
+  <li>Raporlama, önceki dönemlerle cari dönemin ve geçmiş yıllarla cari yılın karşılaştırmasını içermelidir; tipik karşılaştırma aralığı üç ilâ beş yıldır. Bu, eğilimlerin oluşmasına, beklenti ve sonuçların daha iyi yönetilmesine ve gelecek karşılaştırma için hedef koymaya imkân verir.</li>
+  <li>Dış işgücü maliyeti düzenli dönemlerle (örneğin üç aylık) raporlanırken gerçek toplamlar kullanılmalı; ayrıca güncel ya da en yakın gerçek maliyetlerle <b>tam yıl yıllıklandırılmış</b> ölçüm ve raporlama önerilir (5.1).</li>
+</ul>
+
+<h3>Kullanım biçimi (madde 4.4, 5.4, 6.4, 7.4)</h3>
+<ul>
+  <li><b>Toplam işgücü maliyeti</b> göreli pozisyon etkisi, performans düzeyi, kârlılık, verimlilik, çalışan bağlılığı, kıdem ve hareketlilik gibi ölçülerle birlikte analiz edildiğinde en iyi sonucu verir; böyle kullanıldığında belirli iş rolleri ve işgücü grupları arasında çalışan performansı, verimlilik, devir ve bağlılıktaki artış/azalış eğilimlerinin öngörücüsü olur.</li>
+  <li><b>Dış işgücü maliyeti</b> toplam işgücü maliyetini, toplam işletme giderlerini ve işgücü verimliliğini yönetmek, örgütsel verimlilik ve esnekliği en iyilemek için kullanılan operasyonel ve çoğu zaman stratejik bir araçtır.</li>
+  <li><b>Ücret oranı</b>: payda ve payın hangisinin hangi büyüklük olduğu 6.4'te tanımlanır (antesedan: tüm çalışanların ortalama toplam ücreti; sonuç: tanımlı kategorinin yıllık toplam ücreti); alternatif metrik bu oranı ters çevirir.</li>
+  <li><b>Toplam istihdam maliyeti</b> işgücünü pozisyon, performans düzeyi, kârlılık, verimlilik, bağlılık, kıdem ve hareketlilik gibi kesitlere bölüp maliyetleri karşılaştırarak daha iyi kullanılır.</li>
+</ul>
+
+<h3>Hedef kullanıcılar (madde 4.5, 5.5)</h3>
+<p>Toplam işgücü maliyeti ve dış işgücü maliyeti için hedef kullanıcılar aynıdır:</p>
+<table>
+  <thead><tr><th style="width:150px">Kullanıcı türü</th><th>Kullanıcılar</th></tr></thead>
+  <tbody>
+    <tr><td><b>İç kullanıcılar</b></td><td>Diğer insan kaynakları hizmet hatları; üst yönetim ekibi; hat yönetimi; sendika delegeleri (varsa); finans; hukuk.</td></tr>
+    <tr><td><b>Dış kullanıcılar</b></td><td>Yatırımcılar; finansal analistler; sendikalar (varsa); medya; sektör grupları (kıyaslama faaliyetleri).</td></tr>
+  </tbody>
+</table>
+<p>Ücret oranı ve toplam istihdam maliyeti için şartname ayrı kullanıcı listesi vermez.</p>
+
+<h3>Bağlam etkenleri (madde 4.6, 5.6, 6.5, 7.5)</h3>
+<p>Birçok etken ölçüm sonucunu önemli ölçüde etkileyebilir. Sonuçların beklenenden düşük ya da kötüleşiyor olduğu durumlar mümkündür; ileri inceleme olumlu iyileşme göstergeleri de bulabilir. Sonuçları destekleyen bağlam düşünülürken şunlar dikkate alınabilir:</p>
+<ul>
+  <li>Her ölçüm noktasındaki FTE ve kadro sayısı: FTE ya da kadro, metrik sonuçlarının bakış açısını ve anlamını değiştirecek kadar büyüdü ya da küçüldü mü?</li>
+  <li>Kurumun yürüttüğü güncel faaliyetler: artan üretim ya da ürün genişlemesi; yeniden yapılanmalar; işgücünü eğitmeye yönelik güncel faaliyetler.</li>
+  <li>Kültürel değişimler (olumlu ve olumsuz).</li>
+  <li>Kuşak bakış açıları.</li>
+  <li>Yayın ya da raporlamada artışa yol açan toplumsal değişim ya da farkındalık.</li>
+  <li>Sektör beklentisi.</li>
+  <li>Ekonomik etkenler: daralmalar; genişlemeler.</li>
+</ul>
+<p>Toplam işgücü maliyeti ve toplam istihdam maliyeti için ayrıca: göreli işgücü bileşimi (küresel dağılım, eğitim, deneyim, iş düzeyi, ücret uygulamaları) maliyeti derinden etkiler (4.2, 7.5).</p>
+
+<h3>Öngörü etkenleri (madde 4.7, 5.7, 6.6, 7.6)</h3>
+<ul>
+  <li><b>Toplam işgücü maliyetinin toplam gelire ya da toplam işletme giderine oranı:</b> işgücü maliyeti toplam giderlerin ne kadar büyük payını oluşturuyorsa, temel çalışan ve işgücü değişkenlerindeki değişimin kuruma etkisi o kadar büyüktür; işgücü maliyeti payı yüksek sektör ve kurumlarda etkin yetenek yönetiminin değer yaratma ya da yok etme potansiyeli de aynı ölçüde yüksektir (4.7, 7.6).</li>
+  <li><b>Dış işgücü maliyeti:</b> koşullu işgücü için kullanılan pozisyon karması ve türleriyle toplam işgücü maliyeti arasında güçlü bir ilişki ortaya çıkabilir; zaman serisinde ve farklı iş aileleri ya da kategorilerinde izlendiğinde belirli iş rollerinin, yetenek becerilerinin ve iş türlerinin önde gelen kaynağı olabilir (5.7).</li>
+  <li><b>Toplam istihdam maliyeti:</b> işgücü kesitlere ayrılıp maliyetler karşılaştırılırsa performans, verimlilik, devir ve bağlılıktaki artış ya da azalış eğilimlerinin öngörücüsü olur (7.6).</li>
+  <li><b>Ücret oranı:</b> şartname öngörü etkeni olmadığını belirtir ("None", madde 6.6).</li>
+</ul>
+
+<h2 id="ornekler">Şartnamenin Rapor Örnekleri</h2>
+<p>Şartname, her metrik için bir rapor örneği verir. Sayılar şartnamedeki örneklerdir; gerçek bir kuruma ait değildir.</p>
+
+<h3>Tablo 1 — Toplam işgücü maliyeti raporu (para birimi: USD)</h3>
+<table>
+  <thead><tr><th>İşgücü maliyeti</th><th class="num">Önceki yıl</th><th class="num">Cari yıl</th><th class="num">Yüzde değişim</th></tr></thead>
+  <tbody>
+    <tr><td>Çalışan maaşı</td><td class="num">464 000 000</td><td class="num">510 000 000</td><td class="num">9,9</td></tr>
+    <tr><td>İkramiye ve teşvik</td><td class="num">70 000 000</td><td class="num">75 000 000</td><td class="num">7,1</td></tr>
+    <tr><td>Yan haklar</td><td class="num">150 000 000</td><td class="num">170 000 000</td><td class="num">13,3</td></tr>
+    <tr><td>Diğer ücretler</td><td class="num">1 000 000</td><td class="num">1 000 000</td><td class="num">0,0</td></tr>
+    <tr><td><b>Toplam istihdam maliyeti</b></td><td class="num"><b>685 000 000</b></td><td class="num"><b>756 000 000</b></td><td class="num"><b>10,4</b></td></tr>
+    <tr><td>Dış işgücü maliyetleri</td><td class="num">45 000 000</td><td class="num">54 000 000</td><td class="num">20</td></tr>
+    <tr><td><b>Toplam işgücü maliyeti — şartnamede yazılan</b></td><td class="num"><b>1 415 000 000</b></td><td class="num"><b>1 566 000 000</b></td><td class="num"><b>10,7</b></td></tr>
+    <tr><td><b>Toplam işgücü maliyeti — bileşenlerin bir kez toplamı</b></td><td class="num"><b>730 000 000</b></td><td class="num"><b>810 000 000</b></td><td class="num"><b>11,0</b></td></tr>
+  </tbody>
+</table>
+<p>Son iki satırdaki fark şartnamedeki bir tutarsızlığı gösterir: yazılan toplam, istihdam alt toplamını ikinci kez ekler (2 × 756 + 54 = 1 566). Son satır bu sayfanın hesabıdır. Şartnamedeki "diğer ücretler" satırı önceki yıl sütununda "1000 000" biçiminde yazılmıştır (1 000 000).</p>
+
+<h3>Tablo 2 — Dış işgücü maliyetinin dökümü: altı aylık analiz ve karşılaştırma (000 USD)</h3>
+<table>
+  <thead><tr><th>Açıklama</th><th class="num">30-06-2020'ye kadar 6 ay</th><th class="num">Karşılaştırma 30-06-2019</th><th class="num">Karşılaştırma 30-06-2018</th><th class="num">Karşılaştırma 30-06-2017</th></tr></thead>
+  <tbody>
+    <tr><td>Bağımsız yükleniciler</td><td class="num">300</td><td class="num">280</td><td class="num">400</td><td class="num">200</td></tr>
+    <tr><td>Koşullu işçiler</td><td class="num">600</td><td class="num">560</td><td class="num">600</td><td class="num">400</td></tr>
+    <tr><td>Geçici işçiler</td><td class="num">420</td><td class="num">360</td><td class="num">440</td><td class="num">300</td></tr>
+    <tr><td>Dış kaynaklı (outsource) işgücü maliyetleri</td><td class="num">600</td><td class="num">560</td><td class="num">500</td><td class="num">450</td></tr>
+    <tr><td><b>Toplam dış işgücü maliyeti</b></td><td class="num"><b>1 920</b></td><td class="num"><b>1 760</b></td><td class="num"><b>1 940</b></td><td class="num"><b>1 350</b></td></tr>
+  </tbody>
+</table>
+<p>Sütun toplamları dört satırın toplamıyla uyumludur (300 + 600 + 420 + 600 = 1 920 vb.).</p>
+
+<h3>Tablo 3 — Üst yönetim personeli için ücret oranı: altı aylık analiz ve karşılaştırma</h3>
+<table>
+  <thead><tr><th>Tanımlı kategori</th><th class="num">30-06-2020'ye kadar 6 ay</th><th class="num">Karşılaştırma 30-06-2019</th><th class="num">Karşılaştırma 30-06-2018</th><th class="num">Karşılaştırma 30-06-2017</th></tr></thead>
+  <tbody>
+    <tr><td>Üst yönetim personeli (şartnamede "headcount" sütununda, 000)</td><td class="num">140</td><td class="num">130</td><td class="num">120</td><td class="num">100</td></tr>
+    <tr><td>Tüm çalışanların ortalama toplam ücreti (000)</td><td class="num">70</td><td class="num">65</td><td class="num">65</td><td class="num">60</td></tr>
+    <tr><td><b>Üst yönetim için oran</b></td><td class="num"><b>0,5:1</b></td><td class="num"><b>0,5:1</b></td><td class="num"><b>0,54:1</b></td><td class="num"><b>0,6:1</b></td></tr>
+  </tbody>
+</table>
+<p>Oran satırı, ortalama ücretin üst yönetim satırına bölünmesiyle bulunur (70 ÷ 140 = 0,5). Alternatif formülle (üst yönetim ÷ ortalama) aynı sayılar 2:1 verir (140 ÷ 70).</p>
+
+<h3>Tablo 4 — Toplam istihdam maliyeti raporu</h3>
+<p>Tablo 4, Tablo 1'in istihdam bölümüyle aynı sayıları verir: çalışan maaşı 464 → 510 milyon (9,9 %), ikramiye ve teşvik 70 → 75 (7,1 %), yan haklar 150 → 170 (13,3 %), diğer ücretler 1 → 1 (0,0 %) ve toplam istihdam maliyeti 685 → 756 milyon USD (10,4 %). Bu sayfada <a href="#tablo">maliyet kalemleri tablosunun</a> örnek verisi olarak yer alır.</p>
+
+<h2 id="adimlar">Metrik Seçim Adımları</h2>
+<ol>
+  <li><b>Ölçüm noktasını ve dönemi sabitleyin.</b> Ay sonu, çeyrek sonu ya da yıl sonu; mali yıl ya da bütçe döngüsüyle hizalı; seçimi belgeleyin.</li>
+  <li><b>Maliyet kalemlerini tanımlayın.</b> Maaş ve tazminat, ikramiye ve teşvik, yan haklar ve diğer istihdam maliyetleri; hangi ödemenin hangi kalemde sayıldığını yazın.</li>
+  <li><b>Dış işgücünü bileşenlere ayırın.</b> Bağımsız yükleniciler, koşullu işçiler, geçici işçiler ve dış kaynaklı işgücü; fatura, ajans ücreti, yüklenici ve danışman maliyetleri; dış kaynaklı işgücü önemliyse ayrı raporlayın.</li>
+  <li><b>Toplamı doğru kurun.</b> Toplam işgücü maliyeti = toplam istihdam maliyeti + dış işgücü maliyeti; alt toplamı yalnızca bir kez ekleyin.</li>
+  <li><b>Dış işgücü için yıllıklandırma kuralını belirleyin.</b> Düzenli dönemde gerçek toplamlar, ayrıca güncel gerçek maliyetle tam yıl yıllıklandırılmış değer.</li>
+  <li><b>Ücret oranı için kategorileri tanımlayın.</b> Hangi işgücü kategorileri karşılaştırılacak (ör. üst yönetim), hangi yön kullanılacak (kategori ÷ tüm çalışanlar ya da tersi) ve FTE temelini yazın.</li>
+  <li><b>Karşılaştırma tabanını kurun.</b> Önceki dönem, geçmiş üç ilâ beş yıl, bütçe ve varsa sektör verisi.</li>
+  <li><b>Bağlam ve öngörü etkenlerini yazın.</b> FTE ve kadro değişimi, yeniden yapılanma, üretim artışı ve ekonomik koşulları sayının yanına not edin; işgücü maliyetinin gelire ya da işletme giderine oranını ekleyin.</li>
+</ol>
+
+<h2 id="kavramlar">Temel Kavramlar</h2>
+<p>Şartname, 3. maddesinde yalnızca bir terim tanımlar: tam zaman eşdeğeri. Aşağıdaki tablo, metinde geçen temel kavramların kısa özetleridir. Açıklamalar özgün olarak yazılmıştır; bağlayıcı olan şartnamenin kendi metnidir.</p>
+<table>
+  <thead><tr><th style="width:90px">Madde</th><th style="width:250px">Kavram</th><th>Açıklama</th></tr></thead>
+  <tbody>
+    <tr><td><b>3.1</b></td><td>Tam zaman eşdeğeri <small>(full-time equivalent, FTE)</small></td>
+      <td>Tanımlı bir dönemde tüm çalışanların çalıştığı toplam saate denk gelecek tam zamanlı çalışan sayısı.</td></tr>
+    <tr><td><b>4.1</b></td><td>Toplam işgücü maliyeti <small>(total workforce costs)</small></td>
+      <td>Toplam emek maliyeti, toplam işgücü maliyeti ile benzerdir; toplam istihdam maliyeti ile dış işgücü maliyetini içerir.</td></tr>
+    <tr><td><b>4.1</b></td><td>Toplam istihdam maliyeti <small>(total costs of employment)</small></td>
+      <td>Belirli bir dönemde kurumun tüm çalışanlarla ilgili maliyetleri; toplam çalışan maliyeti ya da toplam çalışan emek maliyeti de denir.</td></tr>
+    <tr><td><b>4.1, 5.1</b></td><td>Dış işgücü maliyeti <small>(external workforce costs)</small></td>
+      <td>Kurumun doğrudan kontrol ettiği ya da yönettiği koşullu (sözleşmeli ve geçici) işçilerin ücret ve yan haklarının toplamı; yüklenici, danışman, geçici ve gig işçi harcamalarını içerir.</td></tr>
+    <tr><td><b>5.1</b></td><td>Yıllıklandırma <small>(annualized)</small></td>
+      <td>Düzenli dönemlerde gerçek toplamlarla raporlamanın yanında, güncel ya da en yakın gerçek maliyetle tam yıl bazında ölçüm ve raporlama.</td></tr>
+    <tr><td><b>5.2</b></td><td>Alt bileşenler</td>
+      <td>Geçici işgücü maliyeti ve yüklenici işgücü maliyeti; dış işgücü maliyetini hesaplamak ve raporlamak için gerekli alt bileşenler olarak önerilir.</td></tr>
+    <tr><td><b>6.1</b></td><td>Temel maaş ve ücret oranı</td>
+      <td>Tanımlı işgücü kategorilerindeki ortalama maaş ve ücretin FTE esasına göre oran olarak raporlanması.</td></tr>
+    <tr><td><b>6.4</b></td><td>Antesedan / sonuç</td>
+      <td>Ücret oranında pay (antesedan) ve payda (sonuç) rollerinin tanımı; alternatif metrik bu rolleri değiştirir.</td></tr>
+    <tr><td><b>4.7</b></td><td>İşgücü maliyeti payı</td>
+      <td>Toplam işgücü maliyetinin toplam gelire ya da toplam işletme giderine oranı; öngörü etkeni.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="matris">Metrik Matrisi</h2>
+<p>Aşağıdaki tablo, şartnamenin tanımladığı ve türettiği metrikler ile bağlam–öngörü etkenlerinin kullanıcı × süreç aşaması × raporlama sınıflandırmasıdır. Kullanıcı sütunları şartnamenin hedef kullanıcı listesine (madde 4.5, 5.5) dayanır;
+aşama ve raporlama sınıflandırması bu sayfanın yazarlık sınıflandırmasıdır. Filtreleri değiştirdiğinizde tablo anında daralır.</p>
+
+<div class="filters">
+  <div><label for="fUser">Kullanıcı</label>
+    <select id="fUser">
+      <option value="">Tümü</option>
+      <option value="hr">İK hizmet birimleri</option>
+      <option value="exec">Üst yönetim ve yönetim kurulu</option>
+      <option value="line">Hat yönetimi</option>
+      <option value="fin">Finans ve hukuk</option>
+      <option value="ext">Dış paydaş</option>
+    </select></div>
+  <div><label for="fStage">Metrik bölümü</label>
+    <select id="fStage">
+      <option value="">Tümü</option>
+      <option value="toplam">Toplam işgücü maliyeti (madde 4)</option>
+      <option value="dis">Dış işgücü maliyeti (madde 5)</option>
+      <option value="oran">Maaş ve ücret oranı (madde 6)</option>
+      <option value="istihdam">Toplam istihdam maliyeti (madde 7)</option>
+      <option value="baglam">Ölçüm, bağlam ve öngörü</option>
+    </select></div>
+  <div><label for="fType">Metrik ailesi</label>
+    <select id="fType">
+      <option value="">Tümü</option>
+      <option value="p">Toplam işgücü maliyeti</option>
+      <option value="c">Dış işgücü maliyeti</option>
+      <option value="s">Maaş ve ücret oranı</option>
+      <option value="r">Toplam istihdam maliyeti</option>
+      <option value="o">Ölçüm, bağlam ve öngörü</option>
+    </select></div>
+  <div><label for="fRep">Raporlama</label>
+    <select id="fRep">
+      <option value="">Tümü</option>
+      <option value="ic">İç raporlama</option>
+      <option value="dis">Dış raporlama</option>
+    </select></div>
+  <div><label for="fQ">Metrik adında ara</label>
+    <input type="text" id="fQ" placeholder="ör. yan haklar"></div>
+</div>
+
+<div class="count" id="mCount"></div>
+<table class="matrix">
+  <thead><tr>
+    <th>Metrik</th>
+    <th class="rot">İK</th>
+    <th class="rot">Üst yönetim</th>
+    <th class="rot">Hat yönetimi</th>
+    <th class="rot">Finans / hukuk</th>
+    <th class="rot">Dış paydaş</th>
+  </tr></thead>
+  <tbody id="mBody"></tbody>
+</table>
+<div class="legend">
+  <span><span class="dot p"></span> toplam işgücü maliyeti</span>
+  <span><span class="dot c"></span> dış işgücü maliyeti</span>
+  <span><span class="dot s"></span> maaş ve ücret oranı</span>
+  <span><span class="dot r"></span> toplam istihdam maliyeti</span>
+  <span><span class="dot o"></span> ölçüm, bağlam ve öngörü</span>
+  <span><span class="tag iso">30414</span> ISO 30414'te tanımlı maliyet metriği</span>
+  <span><span class="tag lvl">hesaplayıcı</span> bu sayfada hesaplanabilen metrik</span>
+  <span>Hesaplayıcıya bağlı metrikler <b>koyu</b> işaretlenmiştir.</span>
+</div>
+
+<h2 id="tablo">Maliyet Kalemleri Tablosu</h2>
+<p>Maliyet kalemlerini girin; her kalem için önceki ve cari dönem tutarını ve kalemin <i>istihdam</i> ya da <i>dış işgücü</i> grubuna ait olduğunu seçin. Kalem başına yüzde değişim ve cari paylar, grup toplamları ve
+<b>toplam işgücü maliyeti</b> (istihdam + dış işgücü; her kalem bir kez sayılır) anında güncellenir. Örnek veri şartnamenin Tablo 1 sayılarıdır (milyon USD); kendi para biriminizde ve ölçeğinizde girebilirsiniz.</p>
+
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnek">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizle">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsv">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktar">Hesaplayıcıya aktar</button>
+</div>
+
+<table class="postbl">
+  <thead><tr>
+    <th>Maliyet kalemi</th>
+    <th style="width:120px">Grup</th>
+    <th class="num">Önceki dönem</th><th class="num">Cari dönem</th>
+    <th class="calc" style="width:90px">Değişim (%)</th><th class="calc" style="width:90px">Cari pay (%)</th>
+  </tr></thead>
+  <tbody id="pBody"></tbody>
+  <tfoot>
+    <tr><td>Toplam istihdam maliyeti</td><td class="calc">—</td>
+      <td class="calc" id="tIstO">—</td><td class="calc" id="tIstC">—</td><td class="calc" id="tIstD">—</td><td class="calc" id="tIstP">—</td></tr>
+    <tr><td>Dış işgücü maliyeti</td><td class="calc">—</td>
+      <td class="calc" id="tDisO">—</td><td class="calc" id="tDisC">—</td><td class="calc" id="tDisD">—</td><td class="calc" id="tDisP">—</td></tr>
+    <tr><td>Toplam işgücü maliyeti</td><td class="calc">—</td>
+      <td class="calc" id="tTopO">—</td><td class="calc" id="tTopC">—</td><td class="calc" id="tTopD">—</td><td class="calc" id="tTopP">—</td></tr>
+  </tfoot>
+</table>
+
+<div class="cards" id="pCards"></div>
+<div class="note" id="pNot"></div>
+
+<h2 id="formuller">Formüller ve Tanımlar</h2>
+<p>Şartname dört metrik için formül verir: toplam işgücü maliyeti, dış işgücü maliyeti, ücret oranı ve toplam istihdam maliyeti; ilk üçü toplamdır, ücret oranı bir orandır. Aşağıda şartnamenin formülleri ile onlardan
+türetilen yardımcı hesaplar bulunur; türetilmiş olanlar notlarında belirtilmiştir.</p>
+<table>
+  <thead><tr><th>Metrik</th><th>Formül</th><th>Not</th></tr></thead>
+  <tbody id="fBody"></tbody>
+</table>
+
+<h2 id="hesaplayici">Hesaplayıcı</h2>
+<p>Metriği seçin, alanları doldurun; sonuç, formülün yerine konmuş hâli ve yorum aşağıda görünür.
+Kurulum gerekmez, veriler tarayıcıdan çıkmaz.</p>
+
+<div class="panel">
+  <h3>İşgücü Maliyeti Hesaplayıcısı</h3>
+  <p class="hint">Alanlar seçtiğiniz metriğe göre değişir. Maliyetler girdiğiniz para biriminde ve ölçekte (ör. milyon USD) hesaplanır; oranlar ve değişimler yüzde ya da oran olarak verilir.</p>
+  <div class="grid">
+    <div class="field" style="grid-column:1/-1">
+      <label for="cMetric">Metrik <span class="req">*</span></label>
+      <select id="cMetric"></select>
+    </div>
+  </div>
+  <div class="grid" id="cFields" style="margin-top:14px"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="oAll"> Tümünü seç</label>
+    <label><input type="checkbox" id="oFormula" checked> Formülün açık hâli</label>
+    <label><input type="checkbox" id="oInterp" checked> Yorum ve eşik</label>
+    <label><input type="checkbox" id="oPy"> Python karşılığı</label>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-run" id="btnRun">Hesapla</button>
+    <button class="btn-ghost" id="btnExample">Örnek veriyi yükle</button>
+    <button class="btn-ghost" id="btnPy">Python motorunu yükle</button>
+    <span class="chip" id="engStatus">Motor: tarayıcı (JavaScript)</span>
+  </div>
+  <p class="hint" style="margin:14px 0 0">Python motoru seçildiğinde hesaplama, bu sayfaya gömülü
+  <code style="background:#1c2836;color:#cfe0f0">iso30427_metrikler.py</code> modülünün
+  <code style="background:#1c2836;color:#cfe0f0">hesapla()</code> fonksiyonu tarafından, tarayıcı içinde
+  çalışan gerçek bir CPython yorumlayıcısında (Pyodide/WebAssembly) yapılır. İlk yüklemede yaklaşık
+  10–12 MB indirilir; sonrası önbellekten gelir. Çevrimdışıysanız sayfa JavaScript yedeğiyle
+  aynı sonuçları vermeye devam eder.</p>
+</div>
+
+<div id="cResult"></div>
+
+<h2 id="python">Python Kod Örnekleri</h2>
+<p>Bu sayfadaki hesaplamalar JavaScript'te taklit edilmez: modülün tamamı sayfaya gömülüdür ve
+Pyodide (WebAssembly üzerinde CPython) ile tarayıcı içinde çalıştırılır. Hesaplayıcıda Python motorunu
+seçtiğinizde her sonuç <code>hesapla()</code> fonksiyonundan gelir. Aynı dosya
+(<code>iso30427_metrikler.py</code>) komut satırında da bağımsız çalışır; doğrudan çalıştırıldığında
+örnek değerlerle doğrulama çıktısı üretir.</p>
+
+<div class="filename">iso30427_metrikler.py (özet)</div>
+<pre><i># --- Maliyet toplamları ---</i>
+
+<b>def</b> <span class="fn">toplam_istihdam_maliyeti</span>(maas, ikramiye, yan_hak, diger):
+    <i>"""Madde 7.3: ücret/ikramiye + yan haklar + diğer istihdam maliyetleri."""</i>
+    <b>return</b> maas + ikramiye + yan_hak + diger
+
+<b>def</b> <span class="fn">dis_isgucu_maliyeti</span>(bagimsiz, kosullu, gecici, fason):
+    <i>"""Madde 5.3 / Tablo 2: dış işgücü bileşenlerinin toplamı."""</i>
+    <b>return</b> bagimsiz + kosullu + gecici + fason
+
+<b>def</b> <span class="fn">toplam_isgucu_maliyeti</span>(istihdam, dis):
+    <i>"""Madde 4.3: istihdam + dış işgücü (her biri bir kez sayılır)."""</i>
+    <b>return</b> istihdam + dis
+
+<i># --- Oranlar ---</i>
+
+<b>def</b> <span class="fn">ucret_orani</span>(ortalama_tum, kategori):
+    <i>"""Madde 6.3: tüm çalışanların ortalaması ÷ kategorinin yıllık toplam ücreti."""</i>
+    <b>return</b> ortalama_tum / kategori
+
+<b>def</b> <span class="fn">yuzde_degisim</span>(onceki, cari):
+    <i>"""Tablo 1'deki yüzde değişim sütunu."""</i>
+    <b>return</b> <u>100</u> * (cari - onceki) / onceki
+</pre>
+
+<h3>Çalıştırılabilir konsol</h3>
+<p>Aşağıdaki kod, sayfaya gömülü modüle karşı çalışır. <b>Kodu çalıştır</b> düğmesi Python motorunu
+(yüklü değilse) indirir, modülü içe aktarır ve çıktıyı altta gösterir. Kodu serbestçe değiştirebilir,
+kendi verinizi yazabilirsiniz; her şey tarayıcıda kalır.</p>
+
+<div class="console">
+  <div class="console-bar">
+    <span>iso30427_metrikler modülüne karşı çalışır · Python 3 (Pyodide)</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button class="btn-run btn-sm" id="btnRunPy">Kodu çalıştır</button>
+      <button class="btn-ghost btn-sm" id="btnDemo" style="border-color:var(--line);color:var(--ink-soft)">Tam demoyu yükle</button>
+      <button class="btn-ghost btn-sm" id="btnReset" style="border-color:var(--line);color:var(--ink-soft)">Sıfırla</button>
+    </span>
+  </div>
+  <textarea id="pyCode" spellcheck="false"></textarea>
+  <pre id="pyOut">Çıktı burada görünecek. İlk çalıştırmada Python motoru indirilir (10–12 MB).</pre>
+</div>
+
+<details class="src"><summary>Gömülü modülün tam kaynağı (iso30427_metrikler.py)</summary>
+  <pre id="srcView">yükleniyor…</pre>
+</details>
+
+<h2 id="yorum">Sonuçların Yorumlanması</h2>
+<ul>
+  <li><b>Toplamı kontrol edin.</b> Toplam işgücü maliyeti, istihdam ve dış işgücü bileşenlerinin bir kez toplamıdır. Şartnamenin kendi Tablo 1'i istihdam alt toplamını iki kez eklediği için gerçek toplamdan yüksek bir değer verir; kendi raporunuzda alt toplam–toplam ilişkisini doğrulayın.</li>
+  <li><b>Bileşen hızlarına ayrı ayrı bakın.</b> Örnekte toplam istihdam maliyeti %10,4 artarken yan haklar %13,3, maaşlar %9,9 ve dış işgücü %20 artmıştır; toplamdaki artış bu farklı hızların bileşimidir.</li>
+  <li><b>Dış işgücü artışını bağımlılık sinyali olarak okuyun.</b> Dış işgücü maliyetinin iç işgücü maliyetine göre payının büyümesi, kurumun dış işgücüne bağımlılığının arttığını gösterir (madde 5.1); ancak bunun esneklik stratejisinden mi, işe alım güçlüğünden mi geldiğini bağlamdan ayırt edin.</li>
+  <li><b>Dönem sonu ile yıllıklandırılmış değeri karıştırmayın.</b> Altı aylık bir toplam yıllık bütçeyle doğrudan karşılaştırılamaz; şartname gerçek toplamların yanında yıllıklandırılmış ölçümü önerir.</li>
+  <li><b>Ücret oranını yönüyle okuyun.</b> 0,5:1 ve 2:1 aynı ilişkinin iki yönüdür (ortalama ÷ kategori ya da kategori ÷ ortalama); raporda hangi yönün kullanıldığını yazın. Örnekte oran 0,6'dan 0,5'e inmiştir: üst yönetimin tüm çalışanlara göre ücret farkı büyümüştür.</li>
+  <li><b>Maliyet artışını FTE ve kadroyla birlikte okuyun.</b> İşgücü büyüdüyse maliyetin artması doğaldır; kişi ya da FTE başına maliyet, artışın sayıdan mı yoksa birim maliyetten mi geldiğini ayırır.</li>
+  <li><b>İşgücü maliyeti payını (gelire oranı) izleyin.</b> Payı yüksek kurumlarda temel işgücü değişkenlerindeki küçük değişiklikler sonucu daha çok etkiler; bu yüzden yetenek yönetimi kararlarının finansal ağırlığı daha yüksektir.</li>
+  <li><b>Sonuç beklenenin altındaysa hemen olumsuz yorumlamayın.</b> Yeniden yapılanma, üretim artışı, işgücü eğitimi, kültürel değişim ya da ekonomik daralma/genişleme sayının anlamını değiştirebilir.</li>
+</ul>
+
+<h2 id="sinirlamalar">Sınırlamalar</h2>
+<ul>
+  <li><b>Şartnamenin Tablo 1'inde toplam işgücü maliyeti hatalıdır.</b> Yazılan 1 415 000 000 ve 1 566 000 000 değerleri, istihdam alt toplamını ikinci kez ekler (2 × 685 + 45 ve 2 × 756 + 54); bileşenlerin bir kez toplamı 730 000 000 ve 810 000 000'dur ve yüzde değişim %11,0'dır (şartnamede 10,7). Bu sayfadaki tablo şartnamenin değerlerini olduğu gibi gösterir, hesaplayıcı ise bileşenleri bir kez sayar. Formül (madde 4.3) bu hesabı destekler.</li>
+  <li><b>Tablo 3'te sütun adları ile formül uyuşmaz.</b> Üst yönetim satırı "headcount" (kişi sayısı) başlığı altında verilir, ama oranı üretmek için formülün kategori <i>yıllık toplam ücreti</i> olarak kullanılır (70 ÷ 140 = 0,5); alternatif oran bu satırdan 2:1 çıkar. Üst yönetim satırı bu sayfada şartnamedeki başlığıyla gösterilmiş, hesaplayıcıda kategori ücreti olarak kullanılmıştır.</li>
+  <li><b>Ücret oranının örnekteki yönü iki yerde farklı sunulur.</b> Ana formül (6.3) tüm çalışanların ortalamasını paya, kategoriyi paydaya koyar (0,5:1); alternatif (6.4.2, 6.4.3) tersini yapar (2:1). Şartname hangisinin tercih edileceğini söylemez.</li>
+  <li><b>Tablo 2'de "koşullu işçiler" ve "geçici işçiler" ayrı satırlardır</b>, oysa madde 5.3 koşullu işgücünü "geçici işçiler dahil" tanımlar; satırların örtüşüp örtüşmediği belirtilmez. Hesaplayıcı dört satırı toplar (şartnamenin sütun toplamlarıyla uyumlu).</li>
+  <li>Madde 4.1 dış işgücü maliyetinin raporlama kapsamını kurumun belirlemesine bırakır ("should be determined by the organization itself"); dış işgücü maliyeti toplam içine dahil edildiği için kapsam seçiminin kıyaslanabilirliği etkileyeceği unutulmamalıdır.</li>
+  <li><b>Şartname yorum eşiği vermez.</b> Hesaplayıcıdaki yorum satırları standarttan değil, bu sayfanın yorumlarındandır; iyi/kötü ücret oranı, hedef işgücü maliyeti payı ya da kabul edilebilir artış hızı için kurumunuzun hedeflerini ve sektör kıyaslamasını kullanın.</li>
+  <li>İşgücü maliyetinin gelire oranı ve FTE başına maliyet şartnamede formül olarak verilmez; öngörü etkeni olarak anılan orana ilişkin hesap bu sayfada türetilmiştir. Gelir ya da işletme gideri tanımı ve dönemi payda ile tutarlı olmalıdır.</li>
+  <li>Şartname para birimi ve ölçek konusunda tek bir biçim dayatmaz (Tablo 1 USD, Tablo 2 000 USD); farklı para birimlerinde ya da dönemlerde raporlanan maliyetleri birleştirmeden önce çevirin.</li>
+  <li>Şartname, işe alım başına maliyet, işe alım maliyeti ve devir maliyetini kapsamaz; bunlar ISO/TS 30407 ve ISO/TS 30421'e bırakılmıştır.</li>
+  <li>Bu sayfadaki tablolar şartnamenin örnek sayılarıdır; gerçek bir kuruma ait değildir.</li>
+</ul>
+
+<h2 id="raporlama">Metriklerin Raporlanması</h2>
+<table>
+  <thead><tr><th>Alıcı</th><th>Ne görmek ister</th><th>Rapor biçimi</th></tr></thead>
+  <tbody>
+    <tr><td>İK hizmet birimleri</td>
+      <td>Tüm maliyet kalemleri; istihdam ve dış işgücü kırılımı, pozisyon ve performans kesitleri, ücret oranı</td>
+      <td>Analitik rapor, aylık ya da çeyreklik</td></tr>
+    <tr><td>Üst yönetim ve yönetim kurulu</td>
+      <td>Toplam işgücü maliyeti ve eğilimi, işgücü maliyeti payı (gelire oranı), dış işgücü bağımlılığı</td>
+      <td>Skor kartı, dönemsel</td></tr>
+    <tr><td>Hat yönetimi</td>
+      <td>Kendi ekiplerinin maliyetleri, kadro ve FTE ile birlikte</td>
+      <td>Birim panosu, aylık</td></tr>
+    <tr><td>Finans ve hukuk</td>
+      <td>Bütçelenen ile fiili maliyet, dış işgücü sözleşmeleri, yıllıklandırılmış değerler, ücret oranının hukuki boyutu</td>
+      <td>Bütçe ekli rapor, çeyreklik</td></tr>
+    <tr><td>Dış paydaş (yatırımcı, finansal analist, sendika, medya, sektör grupları)</td>
+      <td>Karşılaştırılabilir toplam göstergeler ve yöntem dipnotu: toplam işgücü maliyeti, istihdam ve dış işgücü, ücret oranı</td>
+      <td>Faaliyet ve sürdürülebilirlik raporu, yıllık</td></tr>
+  </tbody>
+</table>
+<p><b>Her raporda bulunması gerekenler:</b> ölçüm noktası ve dönem, para birimi ve ölçek, maliyet kalemlerinin tanımı, dış işgücü bileşenleri ve yıllıklandırma kuralı, toplamın bileşenlerden bir kez toplandığı, ücret oranının yönü ve FTE temeli, karşılaştırma tabanı (önceki dönem, geçmiş yıllar, bütçe) ile FTE ve kadro sayıları.
+Sendika delegeleri iç kullanıcılar arasında sayılır; maliyet verisi paylaşımı kurum içi mutabakatın parçasıdır.</p>
+
+<h2 id="ilgili">İlgili Standartlar</h2>
+<ul>
+  <li><b>ISO 30414</b> — iç ve dış insan sermayesi raporlaması. Bu şartnamedeki metriklerin tanımı oradan gelir (madde 4.7.3, işgücü maliyetleri); maliyetler, ISO 30414'ün 11 çekirdek raporlama alanından biridir.</li>
+  <li><b>ISO/TS 30407</b> — işe alım başına maliyet; ISO 30414 maliyetler kümesindeki ayrı bir metrik.</li>
+  <li><b>ISO/TS 30421</b> — işe alım ve devir maliyetleri ile devir ve elde tutma metrikleri (şartnamenin yayımı sırasında hazırlık aşamasında).</li>
+  <li><b>ISO 30405, ISO/TS 30410, ISO/TS 30411</b> — işe alım kılavuzu, işe alımın etkisi ve işe alım kalitesi; ek metrikler ve açıklamalar için anılan belgeler.</li>
+  <li><b>ISO/TS 30425</b> — işgücü bulunabilirliği; FTE ve kadro sayıları bu şartnamedeki bağlam etkenlerinin verisini sağlar.</li>
+</ul>
+
+<h2 id="sss">Sıkça Sorulan Sorular</h2>
+<details><summary>Toplam işgücü maliyeti nasıl hesaplanır?</summary>
+<p>Toplam çalışan tazminat maliyeti, toplam çalışan yan hak maliyeti ve dış işgücü maliyetinin toplamıdır; eşdeğer olarak toplam istihdam maliyeti artı dış işgücü maliyeti. Her bileşen bir kez eklenir: örnekte 756 + 54 = 810 milyon USD. Şartnamenin Tablo 1'inde yazılı 1 566 milyon değeri istihdam alt toplamını iki kez eklediği için hatalıdır.</p></details>
+
+<details><summary>Dış işgücü maliyetine neler girer?</summary>
+<p>Yükleniciler, danışmanlar, geçici işçiler ve gig çalışanları için harcamalar: geçici işçi faturaları, ajans ücretleri, bağımsız yüklenici ve danışman maliyetleri. Koşullu (geçici ve sözleşmeli) işçilere ödenen tüm ücret ve yan haklar dahildir: saatlik ücret, maaş, fazla mesai primi, teşvik, vardiya farkı ve diğer ödemeler.
+Tablo 2 dört bileşeni verir: bağımsız yükleniciler, koşullu işçiler, geçici işçiler ve dış kaynaklı işgücü maliyetleri.</p></details>
+
+<details><summary>Dış kaynaklı işgücünü ayrı raporlamalı mıyım?</summary>
+<p>Şartnamenin girişi, dış kaynaklı (outsource) işgücü kurumun işgücü maliyetinin önemli ve maddi bir unsuruysa ayrı raporlamanın tercih edilebileceğini söyler.</p></details>
+
+<details><summary>Ücret oranı nedir ve neden raporlanır?</summary>
+<p>Kurumca tanımlanan bir işgücü kategorisinin ortalama maaş ve ücretinin tüm çalışanların ortalamasına oranıdır ve FTE esasına göre raporlanır. Şartnameye göre bu metrik, kurumun fırsat eşitliği politikasını uygulayıp uygulamadığını belirlemeye yardımcı olur. Örnekte üst yönetim için oran 0,5:1'dir; alternatif formülle 2:1.</p></details>
+
+<details><summary>Ücret oranında hangi yön kullanılmalı?</summary>
+<p>Ana formül (6.3) tüm çalışanların ortalamasını paya, kategorinin yıllık toplam ücretini paydaya koyar; alternatif formül (6.4.3) kategorinin ortalamasını tüm çalışanların ortalamasına böler. Şartname tercihi belirtmez; seçtiğiniz yönü raporda yazın ve seri boyunca değiştirmeyin.</p></details>
+
+<details><summary>Dış işgücü maliyetini yıllıklandırmak gerekir mi?</summary>
+<p>Düzenli dönemlerle (örneğin üç aylık) raporlarken gerçek toplamlar kullanılmalıdır; ayrıca güncel ya da en yakın gerçek maliyetlerle tam yıl yıllıklandırılmış ölçüm ve raporlama önerilir (madde 5.1).</p></details>
+
+<details><summary>Kaç yıl karşılaştırma yapmalıyım?</summary>
+<p>Tipik karşılaştırma aralığı üç ilâ beş yıldır. Bu süre eğilimlerin oluşmasına, beklenti ve sonuçların daha iyi yönetilmesine ve gelecek karşılaştırma için hedef koymaya imkân verir. Önceki dönemle cari dönem ve geçmiş yıllarla cari yıl karşılaştırılır.</p></details>
+
+<details><summary>İşgücü maliyeti payı neden öngörü etkeni sayılır?</summary>
+<p>Toplam işgücü maliyetinin toplam gelire ya da işletme giderine oranı yükseldikçe, temel çalışan ve işgücü değişkenlerindeki değişimlerin kuruma etkisi büyür; işgücü maliyetinin payı yüksek kurumlarda etkin yetenek yönetimiyle değer yaratma ya da yok etme potansiyeli de o ölçüde artar.</p></details>
+
+<footer>
+  ISO/TS 30427:2021 çerçevesinden üretilmiş çalışma aracı. Metrik adları, sınıflandırma ve formüller şartnameye dayanır; açıklamalar, örnek değerler ve kod özgün olarak yazılmıştır. Rapor örneklerindeki sayılar şartnameden alınmıştır.
+  Şartnamenin kendisi telif korumalıdır ve bu sayfa onun yerine geçmez.
+</footer>
+
+</div>
+
+<script type="text/x-python" id="pysrc">
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+iso30427_metrikler.py
+=====================
+ISO/TS 30427:2021 (Human resource management — Costs metrics cluster)
+çerçevesindeki işgücü maliyeti metriklerinin Python karşılığı.
+
+Teknik şartname, ISO 30414'ün "maliyetler" kümesinden dört metriği ayrıntılandırır:
+toplam işgücü maliyeti, dış işgücü maliyeti, temel maaş ve ücret oranı ve toplam
+istihdam maliyeti. (İşe alım başına maliyet ISO/TS 30407'de, işe alım ve devir
+maliyetleri ISO/TS 30421'de ele alınır.) Modül üç bölüme ayrılmıştır:
+
+    1) Maliyet toplamları — istihdam, dış işgücü, toplam işgücü maliyeti
+    2) Oranlar            — ücret oranı, maliyetin gelire oranı, FTE başına maliyet, değişim
+    3) Yardımcı yapılar   — maliyet kalemleri tablosu (Tablo 1), denetim, dağıtıcı
+
+Kullanım:
+    from iso30427_metrikler import toplam_istihdam_maliyeti, ucret_orani
+    toplam_istihdam_maliyeti(510, 75, 170, 1)   ->  756
+    ucret_orani(70, 140)                        ->  0.5
+
+Doğrudan çalıştırıldığında (python3 iso30427_metrikler.py) tüm fonksiyonlar
+örnek verilerle çalıştırılır ve sonuçlar tablo hâlinde yazdırılır.
+
+Not: Metrik adları, sınıflandırma ve formüller ISO/TS 30427:2021'e dayanır.
+Maliyetin gelire oranı ve FTE başına maliyet şartnamede formül olarak verilmez;
+bu modülde türetilmiş hesaplardır. Kod ve açıklamalar özgün olarak yazılmıştır;
+şartnamenin kendisi telif korumalıdır.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+__all__ = [
+    "GecersizGirdi",
+    # maliyet toplamları
+    "toplam_istihdam_maliyeti", "dis_isgucu_maliyeti", "toplam_isgucu_maliyeti",
+    # oranlar
+    "ucret_orani", "ters_ucret_orani", "maliyet_orani", "fte_basi_maliyet",
+    "yuzde_degisim",
+    # yardımcı
+    "Kalem", "MaliyetTablosu", "ornek_tablo", "maliyet_denetimi",
+    "hesapla", "METRIK_LISTESI",
+]
+
+
+class GecersizGirdi(ValueError):
+    """Girdiler tutarsız: payda sıfır, negatif maliyet vb."""
+
+
+def _bol(pay: float, payda: float, ad: str = "payda") -> float:
+    if payda <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return pay / payda
+
+
+def _negatif_yok(**degerler: float) -> None:
+    for ad, v in degerler.items():
+        if v < 0:
+            raise GecersizGirdi(f"{ad} negatif olamaz")
+
+
+# ---------------------------------------------------------------------------
+# 1) Maliyet toplamları (madde 4, 5 ve 7)
+# ---------------------------------------------------------------------------
+
+def toplam_istihdam_maliyeti(maas: float, ikramiye: float, yan_hak: float, diger: float) -> float:
+    """Madde 7.3: ücret/ikramiye + yan haklar + diğer istihdam maliyetleri."""
+    _negatif_yok(maas=maas, ikramiye=ikramiye, yan_hak=yan_hak, diger=diger)
+    return maas + ikramiye + yan_hak + diger
+
+
+def dis_isgucu_maliyeti(bagimsiz: float, kosullu: float, gecici: float, fason: float) -> float:
+    """Madde 5.3 / Tablo 2: bağımsız yükleniciler + koşullu + geçici işçiler + dış kaynaklı işgücü."""
+    _negatif_yok(bagimsiz=bagimsiz, kosullu=kosullu, gecici=gecici, fason=fason)
+    return bagimsiz + kosullu + gecici + fason
+
+
+def toplam_isgucu_maliyeti(istihdam: float, dis: float) -> float:
+    """Madde 4.3: toplam istihdam maliyeti + dış işgücü maliyeti (her biri bir kez sayılır)."""
+    _negatif_yok(istihdam=istihdam, dis=dis)
+    return istihdam + dis
+
+
+# ---------------------------------------------------------------------------
+# 2) Oranlar ve değişim
+# ---------------------------------------------------------------------------
+
+def ucret_orani(ortalama_tum: float, kategori: float) -> float:
+    """Madde 6.3: tüm çalışanların ortalama toplam ücreti ÷ tanımlı kategorinin yıllık toplam ücreti."""
+    return _bol(ortalama_tum, kategori, "kategori ücreti")
+
+
+def ters_ucret_orani(ortalama_tum: float, kategori: float) -> float:
+    """Madde 6.4.3 (alternatif): kategorinin ortalama ücreti ÷ tüm çalışanların ortalaması."""
+    return _bol(kategori, ortalama_tum, "tüm çalışanların ortalaması")
+
+
+def maliyet_orani(maliyet: float, gelir: float) -> float:
+    """İşgücü maliyetinin gelire (ya da işletme giderine) yüzdesi (madde 4.7; türetilmiş)."""
+    _negatif_yok(maliyet=maliyet)
+    return 100 * _bol(maliyet, gelir, "gelir ya da işletme gideri")
+
+
+def fte_basi_maliyet(maliyet: float, fte: float) -> float:
+    """Toplam maliyetin tam zaman eşdeğeri başına düşen payı (madde 3.1, 6.1; türetilmiş)."""
+    _negatif_yok(maliyet=maliyet)
+    return _bol(maliyet, fte, "FTE")
+
+
+def yuzde_degisim(onceki: float, cari: float) -> float:
+    """(cari − önceki) ÷ önceki × 100; Tablo 1'deki "yüzde değişim" sütunu."""
+    if onceki <= 0:
+        raise GecersizGirdi("önceki değer sıfırdan büyük olmalı")
+    if cari < 0:
+        raise GecersizGirdi("cari değer negatif olamaz")
+    return 100 * (cari - onceki) / onceki
+
+
+# ---------------------------------------------------------------------------
+# 3) Yardımcı yapılar: maliyet kalemleri tablosu (Tablo 1)
+# ---------------------------------------------------------------------------
+
+@dataclass
+class Kalem:
+    """Tek bir maliyet kalemi; grup 'istihdam' ya da 'dis' olur."""
+    ad: str
+    grup: str
+    onceki: float = 0
+    cari: float = 0
+
+    def degisim(self) -> float:
+        return yuzde_degisim(self.onceki, self.cari)
+
+
+@dataclass
+class MaliyetTablosu:
+    """Maliyet kalemleri tablosu."""
+    kalemler: list = field(default_factory=list)
+
+    def ekle(self, ad, grup, onceki, cari) -> "MaliyetTablosu":
+        if grup not in ("istihdam", "dis"):
+            raise GecersizGirdi("grup 'istihdam' ya da 'dis' olmalı")
+        self.kalemler.append(Kalem(ad, grup, onceki, cari))
+        return self
+
+    def _topla(self, grup: str, alan: str) -> float:
+        return sum(getattr(k, alan) for k in self.kalemler if k.grup == grup)
+
+    def ozet(self) -> dict:
+        ist_c, ist_o = self._topla("istihdam", "cari"), self._topla("istihdam", "onceki")
+        dis_c, dis_o = self._topla("dis", "cari"), self._topla("dis", "onceki")
+        top_c, top_o = toplam_isgucu_maliyeti(ist_c, dis_c), toplam_isgucu_maliyeti(ist_o, dis_o)
+        buyuk = max(self.kalemler, key=lambda k: k.cari)
+        return {
+            "kalem_sayisi": len(self.kalemler),
+            "istihdam_onceki": ist_o,
+            "istihdam_cari": ist_c,
+            "istihdam_degisim": round(yuzde_degisim(ist_o, ist_c), 1),
+            "dis_onceki": dis_o,
+            "dis_cari": dis_c,
+            "dis_degisim": round(yuzde_degisim(dis_o, dis_c), 1),
+            "toplam_onceki": top_o,
+            "toplam_cari": top_c,
+            "toplam_degisim": round(yuzde_degisim(top_o, top_c), 1),
+            "dis_payi": round(100 * dis_c / top_c, 1),
+            "en_buyuk_kalem": (buyuk.ad, buyuk.cari),
+        }
+
+
+def ornek_tablo() -> MaliyetTablosu:
+    """Şartnamenin Tablo 1 örneği (milyon USD)."""
+    t = MaliyetTablosu()
+    for satir in [
+        ("Çalışan maaşı",          "istihdam", 464, 510),
+        ("İkramiye ve teşvik",     "istihdam",  70,  75),
+        ("Yan haklar",             "istihdam", 150, 170),
+        ("Diğer ücretler",         "istihdam",   1,   1),
+        ("Dış işgücü maliyetleri", "dis",       45,  54),
+    ]:
+        t.ekle(*satir)
+    return t
+
+
+def maliyet_denetimi(olcum_noktasi_sabit: bool = False,
+                     mali_yil_hizali: bool = False,
+                     gecmis_donem_karsilastirmasi: bool = False,
+                     toplam_cift_sayilmiyor: bool = False,
+                     dis_isgucu_ayrintili: bool = False,
+                     fte_baglami: bool = False,
+                     segment_kirilimi: bool = False,
+                     baglam_notlari: bool = False) -> list:
+    """Bir maliyet raporunun eksiklerini listeler.
+
+    Maddeler ISO/TS 30427'nin 4–7. maddelerindeki beklentilerden türetilmiştir;
+    bir uygunluk sınaması değil, hazırlık kontrol listesidir.
+    """
+    kontroller = [
+        (olcum_noktasi_sabit, "Ölçüm noktası (ay sonu, çeyrek sonu, yıl sonu) sabitlenmemiş; seçilen nokta tutarlı uygulanmalı ve belgelenmeli."),
+        (mali_yil_hizali, "Hesaplama mali yıl ya da yıllık bütçe döngüsüyle hizalı değil."),
+        (gecmis_donem_karsilastirmasi, "Önceki dönem ve geçmiş yıllarla karşılaştırma yok; tipik aralık üç ila beş yıldır."),
+        (toplam_cift_sayilmiyor, "Toplam işgücü maliyeti kontrol edilmemiş: istihdam maliyeti alt toplamı ikinci kez eklenmiş olabilir (toplam = istihdam + dış işgücü)."),
+        (dis_isgucu_ayrintili, "Dış işgücü maliyeti bileşenlerine (yüklenici, koşullu, geçici, dış kaynaklı) ayrılmamış."),
+        (fte_baglami, "Her ölçüm noktasındaki FTE ve kadro sayısı verilmemiş; maliyet değişiminin anlamı belirsiz kalır."),
+        (segment_kirilimi, "Maliyetler pozisyon, performans, verimlilik, bağlılık, kıdem ve hareketlilik gibi kesitlere göre karşılaştırılmıyor."),
+        (baglam_notlari, "Sayının yanında bağlam ve öngörü etkenleri (yeniden yapılanma, üretim artışı, ekonomik koşullar) yazılmamış."),
+    ]
+    return [metin for tamam, metin in kontroller if not tamam]
+
+
+# ---------------------------------------------------------------------------
+# 4) Dağıtıcı: hesaplayıcı arayüzünün kullandığı tek giriş noktası
+# ---------------------------------------------------------------------------
+
+METRIK_LISTESI = [
+    "istihdam", "dis", "toplam", "oran", "ucret", "degisim", "fte_basi",
+]
+
+
+def _g(x) -> str:
+    """Sayıyı, bilimsel gösterim kullanmadan en kısa biçimde yazar."""
+    return f"{x:.12g}"
+
+
+def hesapla(metrik: str, **g) -> dict:
+    """Metrik kimliği ve girdilerle hesabı yapar; sözlük döndürür.
+
+    Dönen anahtarlar: deger, ifade (formülün yerine konmuş hâli), ondalik,
+    birim, ayrinti (etiket–değer çiftleri).
+    """
+    if metrik == "istihdam":
+        d = toplam_istihdam_maliyeti(g["maas"], g["ikramiye"], g["yan_hak"], g["diger"])
+        return {"deger": d, "ondalik": 1, "birim": "para birimi (girdi birimiyle)",
+                "ifade": f"{_g(g['maas'])} + {_g(g['ikramiye'])} + {_g(g['yan_hak'])} + {_g(g['diger'])}",
+                "ayrinti": [["Maaş payı (%)", round(100 * _bol(g["maas"], d, "toplam"), 1)],
+                            ["İkramiye ve teşvik payı (%)", round(100 * g["ikramiye"] / d, 1)],
+                            ["Yan hak payı (%)", round(100 * g["yan_hak"] / d, 1)],
+                            ["Önceki döneme göre değişim (%)", round(yuzde_degisim(g["onceki_toplam"], d), 1)]]}
+
+    if metrik == "dis":
+        d = dis_isgucu_maliyeti(g["bagimsiz"], g["kosullu"], g["gecici"], g["fason"])
+        return {"deger": d, "ondalik": 0, "birim": "bin para birimi (girdi birimiyle)",
+                "ifade": f"{_g(g['bagimsiz'])} + {_g(g['kosullu'])} + {_g(g['gecici'])} + {_g(g['fason'])}",
+                "ayrinti": [["Bağımsız yüklenici payı (%)", round(100 * _bol(g["bagimsiz"], d, "toplam"), 1)],
+                            ["Dış kaynaklı işgücü payı (%)", round(100 * g["fason"] / d, 1)],
+                            ["Önceki döneme göre değişim (%)", round(yuzde_degisim(g["onceki_toplam"], d), 1)]]}
+
+    if metrik == "toplam":
+        d = toplam_isgucu_maliyeti(g["istihdam"], g["dis"])
+        onceki = toplam_isgucu_maliyeti(g["onceki_istihdam"], g["onceki_dis"])
+        return {"deger": d, "ondalik": 1, "birim": "para birimi (girdi birimiyle)",
+                "ifade": f"{_g(g['istihdam'])} + {_g(g['dis'])}",
+                "ayrinti": [["Dış işgücü payı (%)", round(100 * _bol(g["dis"], d, "toplam"), 1)],
+                            ["Önceki dönem toplamı", onceki],
+                            ["Önceki döneme göre değişim (%)", round(yuzde_degisim(onceki, d), 1)],
+                            ["İstihdam iki kez eklenirse (Tablo 1'deki toplam)", 2 * g["istihdam"] + g["dis"]]]}
+
+    if metrik == "oran":
+        d = maliyet_orani(g["maliyet"], g["gelir"])
+        return {"deger": d, "ondalik": 1, "birim": "% (gelire oranı)",
+                "ifade": f"{_g(g['maliyet'])} ÷ {_g(g['gelir'])} × 100",
+                "ayrinti": [["Gelirin 1 biriminde işgücü maliyeti", round(g["maliyet"] / g["gelir"], 3)],
+                            ["Maliyet dışında kalan pay (%)", round(100 - d, 1)]]}
+
+    if metrik == "ucret":
+        d = ucret_orani(g["ortalama_tum"], g["kategori"])
+        return {"deger": d, "ondalik": 2, "birim": ": 1 (oran)",
+                "ifade": f"{_g(g['ortalama_tum'])} ÷ {_g(g['kategori'])}",
+                "ayrinti": [["Alternatif oran (kategori ÷ tüm çalışanlar)", round(ters_ucret_orani(g["ortalama_tum"], g["kategori"]), 2)],
+                            ["Kategori ile tüm çalışanlar arasındaki fark", g["kategori"] - g["ortalama_tum"]]]}
+
+    if metrik == "degisim":
+        d = yuzde_degisim(g["onceki"], g["cari"])
+        return {"deger": d, "ondalik": 1, "birim": "% değişim",
+                "ifade": f"({_g(g['cari'])} − {_g(g['onceki'])}) ÷ {_g(g['onceki'])} × 100",
+                "ayrinti": [["Mutlak fark", g["cari"] - g["onceki"]],
+                            ["Cari değerin öncekine katı", round(g["cari"] / g["onceki"], 2)]]}
+
+    if metrik == "fte_basi":
+        d = fte_basi_maliyet(g["maliyet"], g["fte"])
+        return {"deger": d, "ondalik": 2, "birim": "para birimi / FTE",
+                "ifade": f"{_g(g['maliyet'])} ÷ {_g(g['fte'])}",
+                "ayrinti": [["Toplam maliyet", g["maliyet"]],
+                            ["Tam zaman eşdeğeri (FTE)", g["fte"]]]}
+
+    raise ValueError(f"Bilinmeyen metrik: {metrik}")
+
+
+# ---------------------------------------------------------------------------
+# 5) Doğrulama çıktısı
+# ---------------------------------------------------------------------------
+
+def _demo() -> None:
+    cizgi = "-" * 64
+    print("ISO/TS 30427 — doğrulama çıktısı")
+    print(cizgi)
+
+    t = ornek_tablo()
+    print("Maliyet kalemleri (Tablo 1; milyon USD)")
+    print(f"{'Kalem':<26}{'Önceki':>8}{'Cari':>8}{'Değişim %':>11}")
+    for k in t.kalemler:
+        print(f"{k.ad:<26}{k.onceki:>8}{k.cari:>8}{k.degisim():>11.1f}")
+    print(cizgi)
+    for anahtar, deger in t.ozet().items():
+        print(f"{anahtar:<18}: {deger}")
+    print(cizgi)
+
+    print(f"Toplam istihdam maliyeti : {toplam_istihdam_maliyeti(510, 75, 170, 1)} (önceki {toplam_istihdam_maliyeti(464, 70, 150, 1)})")
+    print(f"Dış işgücü (Tablo 2)     : {dis_isgucu_maliyeti(300, 600, 420, 600)} bin USD")
+    print(f"Toplam işgücü maliyeti   : {toplam_isgucu_maliyeti(756, 54)} (Tablo 1'de yazan 1566, istihdamı iki kez ekler)")
+    print(f"Ücret oranı (Tablo 3)    : {ucret_orani(70, 140):.2f}:1  alternatif {ters_ucret_orani(70, 140):.1f}:1")
+    print(cizgi)
+
+    print("Dağıtıcı örneği:")
+    print(hesapla("toplam", istihdam=756, dis=54, onceki_istihdam=685, onceki_dis=45))
+    print(cizgi)
+
+    print("Rapor denetimi (hiçbir ön koşulu sağlamayan bir kurum için):")
+    for u in maliyet_denetimi():
+        print(" !", u)
+
+
+if __name__ == "__main__":
+    _demo()
+</script>
+<script>
+/* =========================================================
+   1) METRİK VERİ TABANI
+   u: kullanıcılar (hr İK hizmet birimleri / exec üst yönetim ve yönetim kurulu / line hat yönetimi /
+      fin finans ve hukuk / ext dış paydaş)
+   st: metrik bölümü (toplam madde 4, dis madde 5, oran madde 6, istihdam madde 7, baglam)
+   r: raporlama (ic, dis)
+   t: aile (p toplam işgücü maliyeti / c dış işgücü / s maaş ve ücret oranı / r toplam istihdam maliyeti / o ölçüm, bağlam ve öngörü)
+   calc: bu sayfadaki hesaplayıcı kimliği
+   iso: ISO 30414'te tanımlı maliyet metriği
+   k: ek etiket (ctx bağlam etkeni, pre öngörü etkeni, onk ön koşul, tur türetilmiş)
+   ========================================================= */
+var METRICS = [
+ {g:"Toplam işgücü maliyeti", t:"p", items:[
+  {n:"Toplam işgücü maliyeti", st:"toplam", r:["ic","dis"], iso:1, calc:"toplam", d:"Toplam istihdam maliyeti + dış işgücü maliyeti; ISO 30414:2018, 4.7.3 (4.3, Tablo 1)", u:["hr","exec","line","fin","ext"]},
+  {n:"Çalışan maaşı", st:"toplam", r:["ic","dis"], iso:1, d:"Tablo 1: 464 → 510 milyon USD", u:["hr","exec","fin","ext"]},
+  {n:"İkramiye ve teşvik", st:"toplam", r:["ic"], iso:1, d:"Tablo 1: 70 → 75 milyon USD", u:["hr","exec","fin"]},
+  {n:"Yan haklar", st:"toplam", r:["ic","dis"], iso:1, d:"Tablo 1: 150 → 170 milyon USD", u:["hr","exec","fin","ext"]},
+  {n:"Diğer ücretler", st:"toplam", r:["ic"], iso:1, d:"Tablo 1: 1 → 1 milyon USD", u:["hr","fin"]},
+  {n:"Kalem bazında yüzde değişim", st:"toplam", r:["ic","dis"], calc:"degisim", d:"Önceki yıl ile cari yıl karşılaştırması (Tablo 1: 9,9 · 7,1 · 13,3 · 0,0 · 10,4 · 20)", u:["hr","exec","fin","ext"]},
+  {n:"Toplamın bileşenlerin bir kez toplamı olarak doğrulanması", st:"toplam", r:["ic"], k:"tur", d:"Tablo 1'de yazılan toplam istihdam alt toplamını iki kez ekler; doğru toplam 810 milyon", u:["hr","exec","fin"]},
+  {n:"FTE başına işgücü maliyeti", st:"toplam", r:["ic"], k:"tur", calc:"fte_basi", d:"Toplam maliyet ÷ tam zaman eşdeğeri (3.1); şartnamede formül yok", u:["hr","exec","line","fin"]},
+  {n:"Sektör içi kıyaslama göstergesi", st:"toplam", r:["dis"], d:"Sektör içinde tarihsel ve öngörüsel performans göstergesi (4.2)", u:["hr","exec","fin","ext"]},
+  {n:"Göreli işgücü bileşimi etkisi", st:"toplam", r:["ic"], k:"ctx", d:"Küresel dağılım, eğitim, deneyim, iş düzeyi ve ücret uygulamaları maliyeti derinden etkiler (4.2)", u:["hr","exec","fin"]},
+  {n:"Pozisyon, performans, kârlılık, verimlilik, bağlılık, kıdem ve hareketlilik kesitleri", st:"toplam", r:["ic"], d:"Bu ölçülerle birlikte analiz edildiğinde maliyetin kullanımı iyileşir (4.4)", u:["hr","exec","line"]},
+  {n:"Maliyet eğilimi ile performans, verimlilik, devir ve bağlılık ilişkisi", st:"toplam", r:["ic"], k:"pre", d:"İş rolleri ve işgücü grupları arasında artış/azalış eğilimlerinin öngörücüsü (4.4)", u:["hr","exec","line"]},
+  {n:"Toplam işgücü maliyetinin toplam gelire oranı", st:"toplam", r:["ic","dis"], k:"pre", calc:"oran", d:"Maliyetin gelirdeki payı; yüksekse yetenek yönetiminin değer yaratma/yok etme potansiyeli büyür (4.7)", u:["hr","exec","fin","ext"]},
+  {n:"Toplam işgücü maliyetinin toplam işletme giderine oranı", st:"toplam", r:["ic","dis"], k:"pre", calc:"oran", d:"Öngörü etkeni (4.7)", u:["hr","exec","fin","ext"]},
+  {n:"İnsan sermayesinin yatırım olarak raporlanması", st:"toplam", r:["dis"], k:"ctx", d:"Yatırımcılar kurumun işgücüne yatırdığı tutarı ve getirisini görmek ister (4.1)", u:["exec","fin","ext"]}
+ ]},
+ {g:"Dış işgücü maliyeti", t:"c", items:[
+  {n:"Toplam dış işgücü maliyeti", st:"dis", r:["ic","dis"], iso:1, calc:"dis", d:"Koşullu (geçici dahil) ve sözleşmeli işçilerin toplam maliyeti (5.3, Tablo 2: 1 920 bin USD)", u:["hr","exec","line","fin","ext"]},
+  {n:"Bağımsız yükleniciler", st:"dis", r:["ic","dis"], iso:1, d:"Tablo 2: 300 bin USD (6 ay)", u:["hr","exec","fin","ext"]},
+  {n:"Koşullu işçiler", st:"dis", r:["ic","dis"], iso:1, d:"Tablo 2: 600 bin USD", u:["hr","exec","fin","ext"]},
+  {n:"Geçici işçiler", st:"dis", r:["ic","dis"], iso:1, d:"Tablo 2: 420 bin USD", u:["hr","exec","fin","ext"]},
+  {n:"Dış kaynaklı (outsource) işgücü maliyetleri", st:"dis", r:["ic","dis"], iso:1, d:"Tablo 2: 600 bin USD; önemliyse ayrı raporlanabilir (Giriş)", u:["hr","exec","fin","ext"]},
+  {n:"Geçici işgücü maliyeti ve yüklenici işgücü maliyeti (alt bileşenler)", st:"dis", r:["ic"], k:"onk", d:"Dış işgücü maliyetini hesaplamak ve raporlamak için gerekli (5.2)", u:["hr","fin"]},
+  {n:"Fatura, ajans ücreti, yüklenici ve danışman maliyetleri", st:"dis", r:["ic"], k:"onk", d:"Dış işgücüyle ilgili harcama türleri (5.1)", u:["hr","fin"]},
+  {n:"Ücretler: saatlik, maaş, fazla mesai primi, teşvik, vardiya farkı", st:"dis", r:["ic"], k:"onk", d:"Dış çalışanlara ödenen tüm ücretler ve diğer ödeme türleri (5.1)", u:["hr","fin"]},
+  {n:"Dış işgücünün iç işgücü maliyetine göre durumu (bağımlılık)", st:"dis", r:["ic","dis"], k:"tur", d:"Kurumun dış işgücüne bağımlılığını gösterir (5.1)", u:["hr","exec","ext"]},
+  {n:"Altı aylık karşılaştırma (2017–2020)", st:"dis", r:["ic","dis"], calc:"degisim", d:"Tablo 2: 1 350 → 1 940 → 1 760 → 1 920 bin USD", u:["hr","exec","fin","ext"]},
+  {n:"Tam yıl yıllıklandırılmış dış işgücü maliyeti", st:"dis", r:["ic"], d:"Güncel ya da en yakın gerçek maliyetlerle; gerçek toplamlarla birlikte önerilir (5.1)", u:["hr","exec","fin"]},
+  {n:"Dış işgücünün KOBİ ve büyük kurumlarda raporlanması", st:"dis", r:["ic","dis"], d:"İç ve dış raporlamada şiddetle önerilir (5.2)", u:["hr","exec","fin","ext"]},
+  {n:"İş aileleri ve kategorileri bazında dış işgücü", st:"dis", r:["ic"], k:"pre", d:"Belirli iş rolleri, yetenek becerileri ve iş türlerinin önde gelen kaynağı (5.7)", u:["hr","exec","line"]},
+  {n:"Koşullu işgücü pozisyon karması ile toplam maliyet ilişkisi", st:"dis", r:["ic"], k:"pre", d:"Güçlü ilişki ortaya çıkabilir (5.7)", u:["hr","exec","fin"]},
+  {n:"Dış işgücü kullanımının operasyonel ve stratejik yönetimi", st:"dis", r:["ic"], d:"Toplam maliyet, işletme gideri ve verimlilik yönetimi (5.4)", u:["hr","exec","line","fin"]}
+ ]},
+ {g:"Temel maaş ve ücret oranı", t:"s", items:[
+  {n:"Temel maaş ve ücret oranı", st:"oran", r:["ic","dis"], iso:1, calc:"ucret", d:"Tüm çalışanların ortalama toplam ücreti ÷ kategorinin yıllık toplam ücreti; örnek 0,5:1 (6.3, Tablo 3)", u:["hr","exec","line","fin","ext"]},
+  {n:"Alternatif ücret oranı (kategori ÷ tüm çalışanlar)", st:"oran", r:["ic"], iso:1, calc:"ucret", d:"Alternatif metrik; Tablo 3 örneğinde 2:1 (6.4.2, 6.4.3)", u:["hr","exec","fin"]},
+  {n:"Tüm çalışanların ortalama toplam ücreti", st:"oran", r:["ic"], k:"onk", d:"Oranın pay unsuru (antesedan) (6.4.1)", u:["hr","fin"]},
+  {n:"Tanımlı kategorinin yıllık toplam ücreti", st:"oran", r:["ic"], k:"onk", d:"Oranın payda unsuru (sonuç); kurumca tanımlanan kategori (6.1, 6.4.1)", u:["hr","fin"]},
+  {n:"Üst yönetim personeli için oran", st:"oran", r:["ic","dis"], d:"Tablo 3: 0,6 (2017) → 0,54 → 0,5 → 0,5 (2020)", u:["hr","exec","fin","ext"]},
+  {n:"Fırsat eşitliği politikasının uygulandığına dair gösterge", st:"oran", r:["ic","dis"], k:"ctx", d:"Metrik, politikanın uygulanıp uygulanmadığını belirlemeye yardımcı olur (6.2, 6.5)", u:["hr","exec","ext"]},
+  {n:"FTE esasına göre raporlama", st:"oran", r:["ic"], k:"onk", d:"Kategorilerdeki ortalama maaş ve ücret FTE bazlı oran olarak raporlanır (6.1)", u:["hr","fin"]},
+  {n:"Önceki dönem ve geçmiş yıllarla oran karşılaştırması", st:"oran", r:["ic","dis"], d:"Altı aylık analiz ve 2017–2019 karşılaştırmaları (6.3)", u:["hr","exec","ext"]}
+ ]},
+ {g:"Toplam istihdam maliyeti", t:"r", items:[
+  {n:"Toplam istihdam maliyeti", st:"istihdam", r:["ic","dis"], iso:1, calc:"istihdam", d:"Tazminat + yan haklar + diğer istihdam maliyetleri; toplam çalışan emek maliyeti (7.3, Tablo 4: 756 milyon USD)", u:["hr","exec","line","fin","ext"]},
+  {n:"Toplam çalışan tazminat maliyeti", st:"istihdam", r:["ic"], iso:1, d:"Maaş ve ücret ile ikramiye ve teşvik (7.1, 7.3)", u:["hr","exec","fin"]},
+  {n:"Toplam çalışan yan hak maliyeti", st:"istihdam", r:["ic"], iso:1, d:"Yan haklar (7.1, 7.3)", u:["hr","exec","fin"]},
+  {n:"Diğer doğrudan ilişkili istihdam maliyetleri", st:"istihdam", r:["ic"], iso:1, d:"Diğer istihdam maliyetleri (7.3)", u:["hr","fin"]},
+  {n:"İstihdam maliyetinin kalem payları", st:"istihdam", r:["ic"], k:"tur", d:"Maaş, ikramiye ve yan hakların toplamdaki payı", u:["hr","exec","fin"]},
+  {n:"Kesitlere göre istihdam maliyeti karşılaştırması", st:"istihdam", r:["ic"], d:"Pozisyon, performans, kârlılık, verimlilik, bağlılık, kıdem ve hareketlilik (7.4)", u:["hr","exec","line"]},
+  {n:"İstihdam maliyetinin toplam gelire ya da işletme giderine oranı", st:"istihdam", r:["ic","dis"], k:"pre", d:"Payı yüksekse çalışan değişkenlerindeki değişimin etkisi büyür (7.6)", u:["hr","exec","fin","ext"]},
+  {n:"Göreli işgücü yapısı: küresel dağılım, eğitim ve deneyim", st:"istihdam", r:["ic"], k:"ctx", d:"Toplam istihdam maliyetinin büyük bölümü üzerinde derin etki (7.5)", u:["hr","exec","fin"]}
+ ]},
+ {g:"Ölçüm, bağlam ve öngörü", t:"o", items:[
+  {n:"Ölçüm noktası (dönem sonu)", st:"baglam", r:["ic"], k:"onk", d:"Ay sonu, çeyrek sonu ya da yıl sonu toplamları; farklı nokta seçilirse tutarlı ve belgelenmiş olmalı (5.3, 6.3)", u:["hr","exec","fin"]},
+  {n:"Mali yıl ya da bütçe döngüsüyle hizalama", st:"baglam", r:["ic"], k:"onk", d:"Hesaplama zaman içinde tutarlı ve mali yılla hizalı (5.3, 6.3)", u:["hr","fin"]},
+  {n:"Üç ilâ beş yıllık karşılaştırma aralığı", st:"baglam", r:["ic","dis"], k:"onk", d:"Önceki dönemle cari dönem, geçmiş yıllarla cari yıl (5.3, 6.3)", u:["hr","exec","ext"]},
+  {n:"FTE ve kadro sayısı değişimi", st:"baglam", r:["ic"], k:"ctx", d:"FTE ya da kadro, metrik sonuçlarının anlamını değiştirecek kadar değişti mi? (4.6, 5.6, 6.5, 7.5)", u:["hr","exec","line","fin"]},
+  {n:"Artan üretim ya da ürün genişlemesi", st:"baglam", r:["ic"], k:"ctx", d:"Güncel faaliyet bağlamı", u:["hr","exec","line","fin"]},
+  {n:"Yeniden yapılanmalar", st:"baglam", r:["ic"], k:"ctx", d:"Güncel faaliyet bağlamı", u:["hr","exec","line","fin"]},
+  {n:"İşgücünü eğitmeye yönelik güncel faaliyetler", st:"baglam", r:["ic"], k:"ctx", d:"Güncel faaliyet bağlamı", u:["hr","line"]},
+  {n:"Kültürel değişimler (olumlu ve olumsuz)", st:"baglam", r:["ic"], k:"ctx", d:"Bağlam etkeni", u:["hr","exec"]},
+  {n:"Kuşak bakış açıları", st:"baglam", r:["ic"], k:"ctx", d:"Bağlam etkeni", u:["hr"]},
+  {n:"Yayın ya da raporlamada artışa yol açan toplumsal değişim ya da farkındalık", st:"baglam", r:["ic","dis"], k:"ctx", d:"Bağlam etkeni", u:["hr","exec","fin","ext"]},
+  {n:"Sektör beklentisi", st:"baglam", r:["ic","dis"], k:"ctx", d:"Bağlam etkeni; kıyaslamanın anlamlı olduğu aralığı belirler", u:["hr","exec","ext"]},
+  {n:"Ekonomik etkenler: daralma ve genişleme", st:"baglam", r:["ic","dis"], k:"ctx", d:"Bağlam etkeni", u:["hr","exec","fin","ext"]}
+ ]}
+];
+
+var USERS = ["hr","exec","line","fin","ext"];
+var AILE_AD = {p:"toplam işgücü maliyeti", c:"dış işgücü", s:"ücret oranı", r:"istihdam maliyeti", o:"ölçüm ve bağlam"};
+var EK_AD = {ctx:"bağlam etkeni", pre:"öngörü etkeni", onk:"ön koşul", tur:"türetilmiş"};
+
+/* --- matris çizimi --- */
+function renderMatrix(){
+  var fu = document.getElementById("fUser").value;
+  var fs = document.getElementById("fStage").value;
+  var ft = document.getElementById("fType").value;
+  var fr = document.getElementById("fRep").value;
+  var fq = document.getElementById("fQ").value.toLocaleLowerCase("tr");
+  var body = document.getElementById("mBody");
+  var html = "", shown = 0;
+
+  METRICS.forEach(function(grp){
+    if(ft && grp.t !== ft) return;
+    var rows = "";
+    grp.items.forEach(function(m){
+      if(fu && m.u.indexOf(fu) === -1) return;
+      if(fs && m.st !== fs) return;
+      if(fr && m.r.indexOf(fr) === -1) return;
+      if(fq && m.n.toLocaleLowerCase("tr").indexOf(fq) === -1) return;
+      shown++;
+      var cells = USERS.map(function(u){
+        if(m.u.indexOf(u) === -1) return '<td class="num"></td>';
+        var mark = '<span class="dot ' + grp.t + '"></span>';
+        return '<td class="num" title="' + m.n + '">' + (m.calc ? '<b>' + mark + '</b>' : mark) + '</td>';
+      }).join("");
+      var tags = '<span class="tag ' + grp.t + '">' + AILE_AD[grp.t] + '</span>' +
+                 (m.k ? ' <span class="tag lvl">' + EK_AD[m.k] + '</span>' : "") +
+                 (m.iso ? ' <span class="tag iso">30414</span>' : "") +
+                 (m.calc ? ' <span class="tag lvl">hesaplayıcı</span>' : "") +
+                 (m.r.indexOf("dis") !== -1 ? ' <span class="tag iso">dış rapor</span>' : "");
+      rows += '<tr><td class="name">' + (m.calc ? '<b>' + m.n + '</b>' : m.n) + ' ' + tags +
+              '<em>' + m.d + '</em></td>' + cells + '</tr>';
+    });
+    if(rows){
+      html += '<tr class="group"><td colspan="6">' + grp.g + '</td></tr>' + rows;
+    }
+  });
+
+  body.innerHTML = html || '<tr><td colspan="6">Bu filtre birleşimiyle eşleşen metrik yok.</td></tr>';
+  document.getElementById("mCount").textContent = shown + " metrik ve etken gösteriliyor.";
+}
+["fUser","fStage","fType","fRep","fQ"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", renderMatrix);
+});
+renderMatrix();
+
+/* =========================================================
+   2) MALİYET KALEMLERİ TABLOSU (Tablo 1)
+   ========================================================= */
+var SATIR = 10;
+/* kalem, grup (istihdam | dis), önceki dönem, cari dönem — milyon USD (Tablo 1) */
+var ORNEK_TBL = [
+  ["Çalışan maaşı",          "istihdam", 464, 510],
+  ["İkramiye ve teşvik",     "istihdam",  70,  75],
+  ["Yan haklar",             "istihdam", 150, 170],
+  ["Diğer ücretler",         "istihdam",   1,   1],
+  ["Dış işgücü maliyetleri", "dis",       45,  54]
+];
+
+function buildTbl(){
+  var html = "";
+  for(var i=0;i<SATIR;i++){
+    html += '<tr><td><input type="text" id="p_ad_' + i + '" placeholder="Kalem ' + (i+1) + '"></td>' +
+      '<td><select id="p_grp_' + i + '"><option value="istihdam">İstihdam</option><option value="dis">Dış işgücü</option></select></td>' +
+      '<td><input type="number" min="0" step="any" id="p_onc_' + i + '"></td>' +
+      '<td><input type="number" min="0" step="any" id="p_car_' + i + '"></td>' +
+      '<td class="calc" id="p_deg_' + i + '">—</td>' +
+      '<td class="calc" id="p_pay_' + i + '">—</td></tr>';
+  }
+  document.getElementById("pBody").innerHTML = html;
+  document.getElementById("pBody").querySelectorAll("input,select").forEach(function(el){
+    el.addEventListener("input", computeTbl);
+    el.addEventListener("change", computeTbl);
+  });
+}
+
+function pNum(k, i){
+  var v = parseFloat(document.getElementById("p_" + k + "_" + i).value);
+  return isNaN(v) || v < 0 ? 0 : v;
+}
+function pGrp(i){ return document.getElementById("p_grp_" + i).value; }
+
+var TBL = {n:0, ist_o:0, ist_c:0, dis_o:0, dis_c:0, ok:false};
+
+function computeTbl(){
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var f0 = function(x){ return x.toLocaleString("tr-TR", {maximumFractionDigits:2}); };
+  var n = 0, t = {istihdam:{o:0,c:0}, dis:{o:0,c:0}}, kalemler = [];
+
+  for(var i=0;i<SATIR;i++){
+    var o = pNum("onc", i), c = pNum("car", i);
+    var deg = document.getElementById("p_deg_" + i), pay = document.getElementById("p_pay_" + i);
+    if(!(o > 0 || c > 0)){ deg.textContent = pay.textContent = "—"; continue; }
+    var ad = document.getElementById("p_ad_" + i).value.trim() || ("Kalem " + (i+1));
+    var g = pGrp(i);
+    n++; t[g].o += o; t[g].c += c;
+    kalemler.push({ad:ad, c:c, i:i});
+    deg.textContent = o > 0 ? f1(100 * (c - o) / o) : "—";
+  }
+
+  var topO = t.istihdam.o + t.dis.o, topC = t.istihdam.c + t.dis.c;
+  kalemler.forEach(function(k){
+    document.getElementById("p_pay_" + k.i).textContent = topC > 0 ? f1(100 * k.c / topC) : "—";
+  });
+  var degf = function(o, c){ return o > 0 ? f1(100 * (c - o) / o) : "—"; };
+  var payf = function(c){ return topC > 0 ? f1(100 * c / topC) : "—"; };
+  document.getElementById("tIstO").textContent = n ? f0(t.istihdam.o) : "—";
+  document.getElementById("tIstC").textContent = n ? f0(t.istihdam.c) : "—";
+  document.getElementById("tIstD").textContent = n ? degf(t.istihdam.o, t.istihdam.c) : "—";
+  document.getElementById("tIstP").textContent = n ? payf(t.istihdam.c) : "—";
+  document.getElementById("tDisO").textContent = n ? f0(t.dis.o) : "—";
+  document.getElementById("tDisC").textContent = n ? f0(t.dis.c) : "—";
+  document.getElementById("tDisD").textContent = n ? degf(t.dis.o, t.dis.c) : "—";
+  document.getElementById("tDisP").textContent = n ? payf(t.dis.c) : "—";
+  document.getElementById("tTopO").textContent = n ? f0(topO) : "—";
+  document.getElementById("tTopC").textContent = n ? f0(topC) : "—";
+  document.getElementById("tTopD").textContent = n ? degf(topO, topC) : "—";
+  document.getElementById("tTopP").textContent = n ? (topC > 0 ? f1(100) : "—") : "—";
+
+  var kart = document.getElementById("pCards");
+  var ok = n > 0 && topC > 0;
+  TBL = {n:n, ist_o:t.istihdam.o, ist_c:t.istihdam.c, dis_o:t.dis.o, dis_c:t.dis.c, ok:ok};
+  if(!ok){
+    kart.innerHTML = "";
+    document.getElementById("pNot").textContent = "Tabloya maliyet kalemlerini girin ya da örnek veriyi yükleyin.";
+    return;
+  }
+
+  var enBuyuk = kalemler.reduce(function(a, k){ return (!a || k.c > a.c) ? k : a; }, null);
+  var kartlar = '';
+  kartlar += '<div class="card"><b>' + f0(topC) + '</b><span>Toplam işgücü maliyeti (cari)</span></div>';
+  kartlar += '<div class="card"><b>' + f0(t.istihdam.c) + '</b><span>Toplam istihdam maliyeti</span></div>';
+  kartlar += '<div class="card alt"><b>' + f0(t.dis.c) + '</b><span>Dış işgücü maliyeti</span></div>';
+  kartlar += '<div class="card alt"><b>' + f1(100 * t.dis.c / topC) + ' %</b><span>Dış işgücü payı</span></div>';
+  kartlar += '<div class="card warn"><b>' + (topO > 0 ? (topC >= topO ? "+" : "") + f1(100 * (topC - topO) / topO) + ' %' : "—") + '</b><span>Önceki döneme göre toplam değişim</span></div>';
+  kartlar += '<div class="card warn"><b>' + (enBuyuk ? f0(enBuyuk.c) : "—") + '</b><span>En büyük kalem: ' + (enBuyuk ? enBuyuk.ad : "—") + '</span></div>';
+  kart.innerHTML = kartlar;
+
+  var not = "Toplam işgücü maliyeti = " + f0(t.istihdam.c) + " (istihdam) + " + f0(t.dis.c) + " (dış işgücü) = " + f0(topC) + ". ";
+  not += "Her kalem yalnızca bir kez sayılır; şartnamenin Tablo 1'inde yazılı toplam istihdam alt toplamını iki kez ekler. ";
+  not += "Tutarlar girdiğiniz para birimi ve ölçekle gösterilir.";
+  document.getElementById("pNot").textContent = not;
+}
+
+function loadTblExample(){
+  for(var i=0;i<SATIR;i++){
+    var s = ORNEK_TBL[i];
+    document.getElementById("p_ad_" + i).value = s ? s[0] : "";
+    document.getElementById("p_grp_" + i).value = s ? s[1] : "istihdam";
+    document.getElementById("p_onc_" + i).value = s ? s[2] : "";
+    document.getElementById("p_car_" + i).value = s ? s[3] : "";
+  }
+  computeTbl();
+}
+
+document.getElementById("btnOrnek").addEventListener("click", loadTblExample);
+document.getElementById("btnTemizle").addEventListener("click", function(){
+  for(var i=0;i<SATIR;i++){
+    document.getElementById("p_ad_" + i).value = "";
+    document.getElementById("p_grp_" + i).value = "istihdam";
+    document.getElementById("p_onc_" + i).value = "";
+    document.getElementById("p_car_" + i).value = "";
+  }
+  computeTbl();
+});
+document.getElementById("btnCsv").addEventListener("click", function(){
+  var satir = ["Kalem;Grup;Onceki donem;Cari donem;Degisim %"];
+  for(var i=0;i<SATIR;i++){
+    var o = pNum("onc", i), c = pNum("car", i);
+    if(!(o > 0 || c > 0)) continue;
+    var ad = document.getElementById("p_ad_" + i).value.trim() || ("Kalem " + (i+1));
+    satir.push([ad, pGrp(i) === "dis" ? "dis isgucu" : "istihdam", o, c, o > 0 ? (100 * (c - o) / o).toFixed(1) : ""].join(";"));
+  }
+  if(TBL.ok){
+    var to = TBL.ist_o + TBL.dis_o, tc = TBL.ist_c + TBL.dis_c;
+    satir.push(["Toplam istihdam maliyeti", "", TBL.ist_o, TBL.ist_c, TBL.ist_o > 0 ? (100 * (TBL.ist_c - TBL.ist_o) / TBL.ist_o).toFixed(1) : ""].join(";"));
+    satir.push(["Dis isgucu maliyeti", "", TBL.dis_o, TBL.dis_c, TBL.dis_o > 0 ? (100 * (TBL.dis_c - TBL.dis_o) / TBL.dis_o).toFixed(1) : ""].join(";"));
+    satir.push(["Toplam isgucu maliyeti", "", to, tc, to > 0 ? (100 * (tc - to) / to).toFixed(1) : ""].join(";"));
+  }
+  var blob = new Blob(["﻿" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "iso30427_maliyet_tablosu.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* =========================================================
+   3) FORMÜL TABLOSU + HESAPLAYICI
+   Alan adları gömülü Python modülünün hesapla() imzasıyla birebir aynıdır.
+   ========================================================= */
+function gerek(kosul, mesaj){ if(!kosul) throw new Error("GecersizGirdi: " + mesaj); }
+function bolOk(pay, payda, ad){ gerek(payda > 0, ad + " sıfırdan büyük olmalı"); return pay / payda; }
+function negYok(v, ks){ ks.forEach(function(k){ gerek(v[k] >= 0, k + " negatif olamaz"); }); }
+function degisimOk(onceki, cari){
+  gerek(onceki > 0, "önceki değer sıfırdan büyük olmalı");
+  gerek(cari >= 0, "cari değer negatif olamaz");
+  return 100 * (cari - onceki) / onceki;
+}
+/* Python round() ile aynı davranış: tam yarım değerlerde en yakın çifte yuvarlar */
+function pyround(x, n){
+  var m = Math.pow(10, n), y = x * m, f = Math.floor(y);
+  if(y - f === 0.5) return (f % 2 === 0 ? f : f + 1) / m;
+  return Math.round(y) / m;
+}
+function r1(x){ return pyround(x, 1); }
+function r2(x){ return pyround(x, 2); }
+function r3(x){ return pyround(x, 3); }
+
+var CALC = [
+ {id:"toplam", name:"Toplam işgücü maliyeti", grp:"Toplam işgücü maliyeti", noHeur:true,
+  formula:"Toplam işgücü maliyeti = Toplam istihdam maliyeti + Dış işgücü maliyeti",
+  note:"Şartname madde 4.3: toplam çalışan tazminat maliyeti + çalışan yan hak maliyeti + dış işgücü maliyeti; eşdeğer olarak toplam dış işgücü maliyeti + toplam istihdam maliyeti. Örnek (Tablo 1): 756 + 54 = 810 milyon USD. Şartnamenin tablosunda yazılı 1 566 değeri istihdam alt toplamını iki kez ekler; son satır bu hatalı yöntemin sonucunu karşılaştırma için gösterir.",
+  fields:[{k:"istihdam",l:"Toplam istihdam maliyeti (cari)",v:756},{k:"dis",l:"Dış işgücü maliyeti (cari)",v:54},
+          {k:"onceki_istihdam",l:"Toplam istihdam maliyeti (önceki)",v:685},{k:"onceki_dis",l:"Dış işgücü maliyeti (önceki)",v:45}],
+  unit:"para birimi (girdi birimiyle)",
+  py:"toplam_isgucu_maliyeti(istihdam=756, dis=54)",
+  calc:function(v){
+    negYok(v, ["istihdam","dis"]);
+    var d = v.istihdam + v.dis;
+    negYok(v, ["onceki_istihdam","onceki_dis"]);
+    var onceki = v.onceki_istihdam + v.onceki_dis;
+    return {value:d, dec:1, expl:v.istihdam + " + " + v.dis,
+      detail:[["Dış işgücü payı (%)", r1(100 * bolOk(v.dis, d, "toplam"))],
+              ["Önceki dönem toplamı", onceki],
+              ["Önceki döneme göre değişim (%)", r1(degisimOk(onceki, d))],
+              ["İstihdam iki kez eklenirse (Tablo 1'deki toplam)", 2 * v.istihdam + v.dis]]}; },
+  bands:[[0,"ok","Şartname eşik vermez: toplamı bileşen hızlarıyla (maaş, yan hak, dış işgücü) ve FTE/kadro değişimiyle birlikte okuyun (madde 4.4, 4.6)."]]},
+
+ {id:"istihdam", name:"Toplam istihdam maliyeti", grp:"Toplam istihdam maliyeti", noHeur:true,
+  formula:"Toplam istihdam maliyeti = Maaş + İkramiye ve teşvik + Yan haklar + Diğer istihdam maliyetleri",
+  note:"Şartname madde 7.3: toplam çalışan tazminat maliyeti + çalışan yan hak maliyeti + diğer istihdam maliyetleri. Tablo 4 örneği: 510 + 75 + 170 + 1 = 756 milyon USD (önceki yıl 685; %10,4). Kalem payları ve değişim yüzdesi türetilmiştir.",
+  fields:[{k:"maas",l:"Çalışan maaşı",v:510},{k:"ikramiye",l:"İkramiye ve teşvik",v:75},{k:"yan_hak",l:"Yan haklar",v:170},{k:"diger",l:"Diğer ücretler",v:1},
+          {k:"onceki_toplam",l:"Önceki dönem toplam istihdam maliyeti",v:685}],
+  unit:"para birimi (girdi birimiyle)",
+  py:"toplam_istihdam_maliyeti(maas=510, ikramiye=75, yan_hak=170, diger=1)",
+  calc:function(v){
+    negYok(v, ["maas","ikramiye","yan_hak","diger"]);
+    var d = v.maas + v.ikramiye + v.yan_hak + v.diger;
+    return {value:d, dec:1, expl:v.maas + " + " + v.ikramiye + " + " + v.yan_hak + " + " + v.diger,
+      detail:[["Maaş payı (%)", r1(100 * bolOk(v.maas, d, "toplam"))],
+              ["İkramiye ve teşvik payı (%)", r1(100 * v.ikramiye / d)],
+              ["Yan hak payı (%)", r1(100 * v.yan_hak / d)],
+              ["Önceki döneme göre değişim (%)", r1(degisimOk(v.onceki_toplam, d))]]}; },
+  bands:[[0,"ok","Şartname eşik vermez: istihdam maliyetini pozisyon, performans, verimlilik, bağlılık, kıdem ve hareketlilik kesitlerine bölerek karşılaştırın (madde 7.4)."]]},
+
+ {id:"dis", name:"Dış işgücü maliyeti", grp:"Dış işgücü maliyeti", noHeur:true,
+  formula:"Dış işgücü maliyeti = Bağımsız yükleniciler + Koşullu işçiler + Geçici işçiler + Dış kaynaklı işgücü",
+  note:"Şartname madde 5.3: geçici işçiler dahil koşullu işgücünün toplam maliyeti + sözleşmeli işçilerin toplam maliyeti. Tablo 2 bu toplamı dört satırdan kurar: 300 + 600 + 420 + 600 = 1 920 bin USD (önceki yıl 1 760). Koşullu ve geçici işçi satırlarının örtüşüp örtüşmediği şartnamede belirtilmez; girdileri örtüşmeyecek biçimde verin.",
+  fields:[{k:"bagimsiz",l:"Bağımsız yükleniciler",v:300},{k:"kosullu",l:"Koşullu işçiler",v:600},{k:"gecici",l:"Geçici işçiler",v:420},{k:"fason",l:"Dış kaynaklı (outsource) işgücü maliyetleri",v:600},
+          {k:"onceki_toplam",l:"Önceki dönem toplam dış işgücü maliyeti",v:1760}],
+  unit:"bin para birimi (girdi birimiyle)",
+  py:"dis_isgucu_maliyeti(bagimsiz=300, kosullu=600, gecici=420, fason=600)",
+  calc:function(v){
+    negYok(v, ["bagimsiz","kosullu","gecici","fason"]);
+    var d = v.bagimsiz + v.kosullu + v.gecici + v.fason;
+    return {value:d, dec:0, expl:v.bagimsiz + " + " + v.kosullu + " + " + v.gecici + " + " + v.fason,
+      detail:[["Bağımsız yüklenici payı (%)", r1(100 * bolOk(v.bagimsiz, d, "toplam"))],
+              ["Dış kaynaklı işgücü payı (%)", r1(100 * v.fason / d)],
+              ["Önceki döneme göre değişim (%)", r1(degisimOk(v.onceki_toplam, d))]]}; },
+  bands:[[0,"ok","Dış işgücü artışını bağımlılık sinyali olarak okuyun, ancak nedenini bağlamdan ayırt edin; yıllıklandırılmış değeri de verin (madde 5.1)."]]},
+
+ {id:"oran", name:"İşgücü maliyetinin gelire oranı", grp:"Toplam işgücü maliyeti", noHeur:true,
+  formula:"Maliyet oranı = (İşgücü maliyeti &divide; Toplam gelir ya da işletme gideri) &times; 100",
+  note:"Şartname madde 4.7 ve 7.6, öngörü etkeni olarak toplam işgücü maliyetinin (ya da toplam istihdam maliyetinin) toplam gelire veya toplam işletme giderine oranını ölçmeyi söyler; formül vermez, hesap türetilmiştir. Varsayılan sayılar örnek amaçlıdır, şartnamede yoktur.",
+  fields:[{k:"maliyet",l:"İşgücü maliyeti",v:810},{k:"gelir",l:"Toplam gelir ya da toplam işletme gideri",v:4050}],
+  unit:"% (gelire oranı)",
+  py:"maliyet_orani(maliyet=810, gelir=4050)",
+  calc:function(v){
+    negYok(v, ["maliyet"]);
+    var d = 100 * bolOk(v.maliyet, v.gelir, "gelir ya da işletme gideri");
+    return {value:d, dec:1, expl:v.maliyet + " ÷ " + v.gelir + " × 100",
+      detail:[["Gelirin 1 biriminde işgücü maliyeti", r3(v.maliyet / v.gelir)],
+              ["Maliyet dışında kalan pay (%)", r1(100 - d)]]}; },
+  bands:[[0,"ok","Payı yüksek kurumlarda temel işgücü değişkenlerindeki değişim sonucu daha çok etkiler; yetenek yönetiminin değer yaratma/yok etme potansiyeli de büyüktür (madde 4.7)."]]},
+
+ {id:"ucret", name:"Temel maaş ve ücret oranı", grp:"Maaş ve ücret oranı", noHeur:true,
+  formula:"Ücret oranı = Tüm çalışanların ortalama toplam ücreti &divide; Tanımlı kategorinin yıllık toplam ücreti",
+  note:"Şartname madde 6.3. Tablo 3 örneği: 70 ÷ 140 = 0,5:1. Alternatif formül (6.4.2, 6.4.3) kategorinin ortalama yıllık toplam ücretini tüm çalışanların ortalamasına böler ve aynı örnekte 2:1 verir. Şartname hangi yönün seçileceğini söylemez; seçtiğiniz yönü raporda yazın. Oran FTE esasına göre raporlanır.",
+  fields:[{k:"ortalama_tum",l:"Tüm çalışanların ortalama toplam ücreti",v:70},{k:"kategori",l:"Tanımlı kategorinin yıllık toplam ücreti",v:140}],
+  unit:": 1 (oran)",
+  py:"ucret_orani(ortalama_tum=70, kategori=140)",
+  calc:function(v){
+    var d = bolOk(v.ortalama_tum, v.kategori, "kategori ücreti");
+    gerek(v.ortalama_tum > 0, "tüm çalışanların ortalaması sıfırdan büyük olmalı");
+    return {value:d, dec:2, expl:v.ortalama_tum + " ÷ " + v.kategori,
+      detail:[["Alternatif oran (kategori ÷ tüm çalışanlar)", r2(v.kategori / v.ortalama_tum)],
+              ["Kategori ile tüm çalışanlar arasındaki fark", v.kategori - v.ortalama_tum]]}; },
+  bands:[[0,"ok","Şartname eşik vermez: oranı yıllar arası seriyle ve kategorilerle okuyun; metrik fırsat eşitliği politikasının uygulanıp uygulanmadığını belirlemeye yardımcı olur (madde 6.2)."]]},
+
+ {id:"degisim", name:"Dönemler arası yüzde değişim", grp:"Dönemler arası", noHeur:true,
+  formula:"Değişim = ((Cari &minus; Önceki) &divide; Önceki) &times; 100",
+  note:"Tablo 1'deki \"yüzde değişim\" sütununu üretir (ör. maaş 464 → 510 = %9,9). Şartname hesabı formülle yazmaz; sütun içeriğinden okunmuştur. Aynı hesap Tablo 2'nin altı aylık karşılaştırmasında da kullanılabilir.",
+  fields:[{k:"onceki",l:"Önceki dönem değeri",v:464,step:0.1},{k:"cari",l:"Cari dönem değeri",v:510,step:0.1}],
+  unit:"% değişim",
+  py:"yuzde_degisim(onceki=464, cari=510)",
+  calc:function(v){
+    var d = degisimOk(v.onceki, v.cari);
+    return {value:d, dec:1, expl:"(" + v.cari + " − " + v.onceki + ") ÷ " + v.onceki + " × 100",
+      detail:[["Mutlak fark", v.cari - v.onceki],
+              ["Cari değerin öncekine katı", r2(v.cari / v.onceki)]]}; },
+  bands:[[0,"ok","Değişimi FTE ve kadro değişimi, yeniden yapılanma ve ekonomik koşullarla birlikte yorumlayın (madde 4.6)."]]},
+
+ {id:"fte_basi", name:"FTE başına işgücü maliyeti", grp:"Toplam işgücü maliyeti", noHeur:true,
+  formula:"FTE başına maliyet = İşgücü maliyeti &divide; Tam zaman eşdeğeri (FTE)",
+  note:"Şartname FTE'yi tanımlar (madde 3.1) ve her ölçüm noktasındaki FTE ve kadro sayısını bağlam etkeni olarak ister; FTE başına maliyet formülü şartnamede yoktur, türetilmiştir. Varsayılan değerlerdeki FTE sayısı örnek amaçlıdır, şartnamede yoktur. Maliyetin kapsamı (yalnız istihdam mı, dış işgücü dahil mi) ile FTE'nin kapsamı tutarlı olmalıdır.",
+  fields:[{k:"maliyet",l:"İşgücü maliyeti (tam para birimi)",v:756000000},{k:"fte",l:"Tam zaman eşdeğeri (FTE)",v:10000}],
+  unit:"para birimi / FTE",
+  py:"fte_basi_maliyet(maliyet=756000000, fte=10000)",
+  calc:function(v){
+    negYok(v, ["maliyet"]);
+    var d = bolOk(v.maliyet, v.fte, "FTE");
+    return {value:d, dec:2, expl:v.maliyet + " ÷ " + v.fte,
+      detail:[["Toplam maliyet", v.maliyet],
+              ["Tam zaman eşdeğeri (FTE)", v.fte]]}; },
+  bands:[[0,"ok","Artışın sayıdan mı yoksa birim maliyetten mi geldiğini ayırmak için kadro ve FTE değişimiyle birlikte okuyun (madde 4.6)."]]}
+];
+
+/* --- formül tablosu --- */
+(function(){
+  var rows = CALC.map(function(c){
+    return '<tr><td><b>' + c.name + '</b></td><td><span style="font-family:var(--serif)">' +
+           c.formula + '</span></td><td>' + c.note + '</td></tr>';
+  }).join("");
+  document.getElementById("fBody").innerHTML = rows;
+})();
+
+/* --- hesaplayıcı --- */
+var sel = document.getElementById("cMetric");
+CALC.forEach(function(c, i){
+  var o = document.createElement("option");
+  o.value = i; o.textContent = c.grp + " — " + c.name;
+  sel.appendChild(o);
+});
+
+function buildFields(){
+  var c = CALC[+sel.value];
+  document.getElementById("cFields").innerHTML = c.fields.map(function(f){
+    return '<div class="field"><label for="in_' + f.k + '">' + f.l + '</label>' +
+      '<input type="number" id="in_' + f.k + '" value="" step="' + (f.step || "any") + '" placeholder="' + f.v + '"></div>';
+  }).join("");
+  document.getElementById("cFields").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", run);
+  });
+}
+
+function readVals(){
+  var c = CALC[+sel.value], v = {}, missing = false;
+  c.fields.forEach(function(f){
+    var el = document.getElementById("in_" + f.k);
+    var raw = el && el.value !== "" ? parseFloat(el.value) : NaN;
+    if(isNaN(raw)){ missing = true; v[f.k] = f.v; } else { v[f.k] = raw; }
+  });
+  return {v:v, missing:missing};
+}
+
+function fmt(x, dec){
+  if(!isFinite(x)) return "—";
+  return x.toLocaleString("tr-TR", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+
+/* Hesaplama motoru: Python hazırsa gömülü modül, değilse JS yedeği */
+function compute(c, v){
+  if(PY.ready){
+    try{
+      PY.pyodide.globals.set("_metrik", c.id);
+      PY.pyodide.globals.set("_girdi", JSON.stringify(v));
+      var raw = PY.pyodide.runPython(
+        "import json\n" +
+        "json.dumps(hesapla(_metrik, **json.loads(_girdi)))");
+      var r = JSON.parse(raw);
+      return {value:r.deger, expl:r.ifade, dec:r.ondalik, detail:r.ayrinti,
+              unit:r.birim, durum:r.durum, engine:"python"};
+    }catch(err){
+      var msg = String(err);
+      /* Kullanıcı girdisi kaynaklı hata: motor sorunu değil, yedeğe geçme */
+      if(msg.indexOf("GecersizGirdi") !== -1 || msg.indexOf("ZeroDivisionError") !== -1) throw err;
+      setEngine("off", "Motor: JS yedeği — Python hatası");
+    }
+  }
+  var out = c.calc(v);
+  out.engine = "js";
+  return out;
+}
+
+function run(){
+  var c = CALC[+sel.value];
+  var r = readVals();
+  var out;
+  try { out = compute(c, r.v); } catch(e){ out = null; }
+  var box = document.getElementById("cResult");
+  if(!out || !isFinite(out.value)){
+    box.innerHTML = '<div class="result"><b>Hesaplanamadı.</b> Payda sıfır olamaz, parça bütünden büyük olamaz ve değerler geçerli aralıkta olmalı; alanları kontrol edin.</div>';
+    return;
+  }
+  var dec = (out.dec === undefined) ? 1 : out.dec;
+  var unit = out.unit || c.unit;
+  var html = '<div class="result">';
+  html += '<div class="big">' + fmt(out.value, dec) + ' <span>' + unit + '</span></div>';
+  html += '<div style="font-size:13px;color:var(--ink-soft);margin-top:6px">' + c.name +
+          ' · ' + (out.engine === "python" ? 'Python (Pyodide) ile hesaplandı' : 'JavaScript ile hesaplandı') +
+          (r.missing ? ' · <i>boş alanlar için örnek değer kullanıldı</i>' : '') + '</div>';
+
+  if(document.getElementById("oFormula").checked){
+    html += '<div class="formula">' + c.formula + '<br><span style="color:var(--ink-soft);font-size:15px">= ' +
+            out.expl + ' = <b>' + fmt(out.value, dec) + '</b> ' + unit + '</span></div>';
+  }
+  if(out.detail && out.detail.length){
+    html += '<dl>' + out.detail.map(function(d){
+      var val = (typeof d[1] === "number") ? d[1].toLocaleString("tr-TR") : d[1];
+      return '<dt>' + d[0] + '</dt><dd>' + val + '</dd>';
+    }).join("") + '</dl>';
+  }
+  if(document.getElementById("oInterp").checked){
+    if(c.durumMetin && out.durum){
+      html += '<div class="verdict ' + out.durum + '">' + c.durumMetin[out.durum] + '</div>';
+    } else if(c.bands){
+      var band = c.bands[c.bands.length-1];
+      for(var i=0;i<c.bands.length;i++){ if(out.value >= c.bands[i][0]){ band = c.bands[i]; break; } }
+      html += '<div class="verdict ' + band[1] + '">' + band[2] + '</div>';
+      if(c.bands.length > 1 && !c.noHeur){
+        html += '<div class="note" style="margin-top:12px">Yorum eşikleri standarttan değil, başlangıç varsayımlarından gelir; kendi hedeflerinizle değiştirin.</div>';
+      }
+    }
+    html += '<div class="note" style="margin-top:12px">' + c.note + '</div>';
+  }
+  if(document.getElementById("oPy").checked){
+    var args = c.fields.map(function(f){ return f.k + "=" + r.v[f.k]; }).join(", ");
+    var call = 'hesapla("' + c.id + '", ' + args + ')';
+    html += '<pre style="margin-top:16px"><i>&gt;&gt;&gt; from iso30427_metrikler import hesapla</i>\n' +
+            '&gt;&gt;&gt; ' + call + '["deger"]\n' + out.value + '\n\n' +
+            '<i># eşdeğer doğrudan çağrı</i>\n&gt;&gt;&gt; ' + c.py + '</pre>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+sel.addEventListener("change", function(){ buildFields(); run(); });
+document.getElementById("btnRun").addEventListener("click", run);
+document.getElementById("btnExample").addEventListener("click", function(){
+  var c = CALC[+sel.value];
+  c.fields.forEach(function(f){ document.getElementById("in_" + f.k).value = f.v; });
+  run();
+});
+["oFormula","oInterp","oPy"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", function(){
+    var all = document.getElementById("oFormula").checked &&
+              document.getElementById("oInterp").checked &&
+              document.getElementById("oPy").checked;
+    document.getElementById("oAll").checked = all;
+    run();
+  });
+});
+document.getElementById("oAll").addEventListener("change", function(){
+  var s = this.checked;
+  ["oFormula","oInterp","oPy"].forEach(function(id){ document.getElementById(id).checked = s; });
+  run();
+});
+
+/* --- tablodan hesaplayıcıya aktarma --- */
+document.getElementById("btnAktar").addEventListener("click", function(){
+  if(!TBL.ok){ loadTblExample(); }
+  var idx = CALC.map(function(c){ return c.id; }).indexOf("toplam");
+  sel.value = idx; buildFields();
+  document.getElementById("in_istihdam").value = TBL.ist_c;
+  document.getElementById("in_dis").value = TBL.dis_c;
+  document.getElementById("in_onceki_istihdam").value = TBL.ist_o;
+  document.getElementById("in_onceki_dis").value = TBL.dis_o;
+  run();
+  document.getElementById("hesaplayici").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* =========================================================
+   4) PYTHON MOTORU (Pyodide / WebAssembly)
+   Gömülü iso30427_metrikler.py modülü tarayıcı içinde
+   gerçek CPython ile çalıştırılır. Erişim yoksa JS yedeği
+   devrede kalır ve sonuçlar değişmez.
+   ========================================================= */
+var PY = {ready:false, busy:false, pyodide:null};
+
+var PYODIDE_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+  "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"
+];
+
+function setEngine(state, text){
+  var chip = document.getElementById("engStatus");
+  chip.className = "chip" + (state ? " " + state : "");
+  chip.textContent = text;
+}
+
+function loadScript(src){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function(){ resolve(src); };
+    s.onerror = function(){ reject(new Error(src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function pySource(){
+  return document.getElementById("pysrc").textContent;
+}
+
+async function initPython(){
+  if(PY.ready) return true;
+  if(PY.busy) return false;
+  PY.busy = true;
+  document.getElementById("btnPy").disabled = true;
+  setEngine("busy", "Motor: Pyodide indiriliyor…");
+  try{
+    if(typeof loadPyodide === "undefined"){
+      try { await loadScript(PYODIDE_URLS[0]); }
+      catch(e){ await loadScript(PYODIDE_URLS[1]); }
+    }
+    setEngine("busy", "Motor: Python başlatılıyor…");
+    PY.pyodide = await loadPyodide();
+
+    /* Modülü sanal dosya sistemine yazmadan, gerçek bir modül nesnesi olarak kur:
+       böylece __name__ != "__main__" olur ve _demo() kendiliğinden çalışmaz.
+       Kayıt exec'ten ÖNCE yapılır; @dataclass işlenirken modülü sys.modules'te arar. */
+    PY.pyodide.globals.set("_kaynak", pySource());
+    PY.pyodide.runPython(
+      "import sys, types\n" +
+      "_m = types.ModuleType('iso30427_metrikler')\n" +
+      "_m.__file__ = 'iso30427_metrikler.py'\n" +
+      "sys.modules['iso30427_metrikler'] = _m\n" +
+      "exec(compile(_kaynak, 'iso30427_metrikler.py', 'exec'), _m.__dict__)\n" +
+      "from iso30427_metrikler import *\n" +
+      "import iso30427_metrikler as m\n"
+    );
+    var sur = PY.pyodide.runPython(
+      "import sys\n'.'.join(str(x) for x in sys.version_info[:3])");
+    PY.ready = true;
+    setEngine("on", "Motor: Python " + sur + " (Pyodide)");
+    run();
+    return true;
+  }catch(e){
+    setEngine("off", "Motor: tarayıcı (JS) — Pyodide yüklenemedi");
+    document.getElementById("pyOut").textContent =
+      "Python motoru yüklenemedi. Bu genellikle çevrimdışı olmaktan ya da ağ kısıtından kaynaklanır.\n" +
+      "Sayfa çalışmaya devam eder; hesaplamalar JavaScript yedeğiyle aynı sonuçları verir.\n\n" + e;
+    return false;
+  }finally{
+    PY.busy = false;
+    document.getElementById("btnPy").disabled = false;
+  }
+}
+
+document.getElementById("btnPy").addEventListener("click", initPython);
+
+/* --- konsol --- */
+var VARSAYILAN_KOD =
+  'from iso30427_metrikler import *\n' +
+  'import iso30427_metrikler as m\n\n' +
+  '# Toplam istihdam maliyeti (Tablo 4, milyon USD)\n' +
+  'print("İstihdam (cari)    :", toplam_istihdam_maliyeti(510, 75, 170, 1))\n' +
+  'print("İstihdam (önceki)  :", toplam_istihdam_maliyeti(464, 70, 150, 1))\n' +
+  'print("Değişim            :", round(yuzde_degisim(685, 756), 1), "%")\n\n' +
+  '# Dış işgücü (Tablo 2, bin USD) ve toplam\n' +
+  'print("Dış işgücü         :", dis_isgucu_maliyeti(300, 600, 420, 600))\n' +
+  'print("Toplam işgücü      :", toplam_isgucu_maliyeti(756, 54))\n' +
+  'print("Tablo 1 yöntemi    :", 2 * 756 + 54, "(istihdam iki kez eklenmiş)")\n\n' +
+  '# Ücret oranı (Tablo 3)\n' +
+  'print("Oran               :", ucret_orani(70, 140), ": 1")\n' +
+  'print("Alternatif         :", ters_ucret_orani(70, 140), ": 1")\n\n' +
+  '# Kalem tablosu\n' +
+  't = ornek_tablo()\n' +
+  'for anahtar, deger in t.ozet().items():\n' +
+  '    print(f"{anahtar:<18}: {deger}")\n\n' +
+  '# Dağıtıcı, hesaplayıcının kullandığı arayüzdür:\n' +
+  'print(hesapla("toplam", istihdam=756, dis=54, onceki_istihdam=685, onceki_dis=45))\n\n' +
+  '# Rapor denetimi: hangi ön koşullar eksik?\n' +
+  'for uyari in maliyet_denetimi(olcum_noktasi_sabit=True, mali_yil_hizali=True):\n' +
+  '    print("!", uyari)\n';
+
+document.getElementById("pyCode").value = VARSAYILAN_KOD;
+
+async function runConsole(){
+  var out = document.getElementById("pyOut");
+  if(!PY.ready){
+    out.textContent = "Python motoru hazırlanıyor, ilk çalıştırma biraz sürebilir…";
+    var ok = await initPython();
+    if(!ok) return;
+  }
+  out.textContent = "çalışıyor…";
+  try{
+    PY.pyodide.globals.set("_kod", document.getElementById("pyCode").value);
+    var cikti = PY.pyodide.runPython(
+      "import io, contextlib, traceback\n" +
+      "_tampon = io.StringIO()\n" +
+      "with contextlib.redirect_stdout(_tampon), contextlib.redirect_stderr(_tampon):\n" +
+      "    try:\n" +
+      "        exec(_kod, globals())\n" +
+      "    except Exception:\n" +
+      "        traceback.print_exc()\n" +
+      "_tampon.getvalue()"
+    );
+    out.textContent = cikti && cikti.trim() ? cikti : "(çıktı yok)";
+  }catch(e){
+    out.textContent = "Hata: " + e;
+  }
+}
+
+document.getElementById("btnRunPy").addEventListener("click", runConsole);
+document.getElementById("btnReset").addEventListener("click", function(){
+  document.getElementById("pyCode").value = VARSAYILAN_KOD;
+  document.getElementById("pyOut").textContent = "Kod sıfırlandı.";
+});
+document.getElementById("btnDemo").addEventListener("click", function(){
+  document.getElementById("pyCode").value =
+    "import iso30427_metrikler as m\n\n" +
+    "# Modülün kendi doğrulama çıktısı (komut satırındaki\n" +
+    "# python3 iso30427_metrikler.py ile aynı sonucu verir)\n" +
+    "m._demo()\n";
+  runConsole();
+});
+
+/* modül kaynağını sayfada okunur kıl */
+document.getElementById("srcView").textContent = pySource().trim();
+
+buildTbl();
+loadTblExample();
+buildFields();
+run();
+</script>
+</body>
+</html>
