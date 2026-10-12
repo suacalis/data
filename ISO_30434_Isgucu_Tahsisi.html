@@ -1,0 +1,2098 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO 30434 İşgücü Tahsisi — Sınıflandırma ve Hesaplayıcı</title>
+<style>
+  :root{
+    --ink:#101418;
+    --ink-soft:#59636f;
+    --ink-faint:#8b95a1;
+    --line:#dde3ea;
+    --line-soft:#eef1f5;
+    --bg:#ffffff;
+    --canvas:#f6f8fa;
+    --accent:#0b5c8a;
+    --accent-soft:#e7f0f6;
+    --panel:#0e1520;
+    --panel-2:#16202e;
+    --panel-line:#28394f;
+    --out-ink:#8a3b12;  --out-bg:#fbeee6;
+    --eff-ink:#14615c;  --eff-bg:#e6f2f1;
+    --efc-ink:#33478c;  --efc-bg:#eaedf8;
+    --rea-ink:#7a5c00;  --rea-bg:#f8f1d9;
+    --cos-ink:#8c2f4b;  --cos-bg:#f9e8ee;
+    --ok:#1d6f42; --warn:#8a6100; --bad:#992121;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--canvas);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.62;
+  }
+  .sheet{max-width:1000px;margin:0 auto;background:var(--bg);padding:56px 60px 80px;
+    box-shadow:0 0 0 1px var(--line);}
+  @media(max-width:760px){ .sheet{padding:28px 20px 56px} }
+
+  h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:25px;margin:52px 0 4px;padding-bottom:8px;
+     border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  h3{font-size:17px;margin:32px 0 6px;letter-spacing:.01em}
+  h4{font-size:15px;margin:22px 0 4px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:12px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  small{color:var(--ink-soft)}
+  .lede{font-size:17px;color:var(--ink-soft)}
+
+  .srcbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 0;margin:0 0 26px;font-size:13.5px;color:var(--ink-soft)}
+  .srcbar b{color:var(--ink);font-weight:600}
+
+  .toc{background:var(--canvas);border:1px solid var(--line);padding:16px 20px;margin:26px 0 0;
+    font-size:14px;columns:2;column-gap:34px}
+  @media(max-width:640px){.toc{columns:1}}
+  .toc a{display:block;padding:3px 0;text-decoration:none;color:var(--ink)}
+  .toc a:hover{color:var(--accent);text-decoration:underline}
+  .toc b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 4px}
+
+  .keypoints li{margin:10px 0}
+  .keypoints b{font-weight:650}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink-soft);padding-bottom:6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:var(--canvas);font-weight:650;font-size:13px}
+  tbody tr:nth-child(even){background:#fcfdfe}
+  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;width:66px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink)}
+  .dot.o{background:var(--out-ink)} .dot.s{background:var(--eff-ink)} .dot.p{background:var(--efc-ink)}
+  .dot.r{background:var(--rea-ink)} .dot.c{background:var(--cos-ink)}
+
+  .tag{display:inline-block;font-size:11px;line-height:1.5;padding:1px 7px;border-radius:3px;
+    letter-spacing:.03em;white-space:nowrap;font-weight:600}
+  .tag.o{color:var(--out-ink);background:var(--out-bg)}
+  .tag.s{color:var(--eff-ink);background:var(--eff-bg)}
+  .tag.p{color:var(--efc-ink);background:var(--efc-bg)}
+  .tag.r{color:var(--rea-ink);background:var(--rea-bg)}
+  .tag.c{color:var(--cos-ink);background:var(--cos-bg)}
+  .tag.iso{color:#4a4a4a;background:#eeeeee}
+  .tag.lvl{color:#5a3a86;background:#f0eaf8}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--line-soft);padding:1px 5px;border-radius:3px}
+  pre{background:var(--panel);color:#e7eef6;border-radius:6px;padding:18px 20px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:14px 0}
+  pre b{color:#f0b866;font-weight:400}      /* anahtar kelime */
+  pre i{color:#7f8ea1;font-style:normal}    /* yorum */
+  pre u{color:#9fd28a;text-decoration:none} /* dize/sayı */
+  pre .fn{color:#79c0e8}
+  .filename{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin:14px 0 -8px}
+
+  .formula{font-family:var(--serif);font-size:16.5px;background:var(--canvas);
+    border-left:3px solid var(--accent);padding:12px 16px;margin:12px 0;overflow-x:auto}
+  .formula em{font-style:italic}
+
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 14px;color:var(--ink-soft);font-size:14px;margin:14px 0}
+
+  /* --- panel --- */
+  .panel{background:var(--panel);color:#dbe5f0;border-radius:8px;padding:22px 24px;margin:20px 0}
+  .panel h3{color:#fff;margin:0 0 4px;font-size:16px}
+  .panel .hint{color:#8fa2b8;font-size:13px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#8fa2b8;margin-bottom:5px}
+  .field label .req{color:#e08a5a}
+  select,input[type=number],input[type=text]{
+    width:100%;background:var(--panel-2);border:1px solid var(--panel-line);color:#eef4fb;
+    border-radius:5px;padding:9px 10px;font-family:var(--sans);font-size:14px}
+  input[type=number]{font-family:var(--mono)}
+  select:focus,input:focus{outline:2px solid #4a8fc0;outline-offset:1px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13.5px;color:#b9c7d6}
+  .checks label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .panel-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:5px;cursor:pointer;
+    border:1px solid transparent;padding:9px 18px}
+  .btn-run{background:#1c74ab;color:#fff}
+  .btn-run:hover{background:#2385c2}
+  .btn-ghost{background:transparent;color:#9fb3c9;border-color:var(--panel-line)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9fb3c9;
+    border:1px solid var(--panel-line);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7c8ea3}
+  .chip.busy::before{background:#e0a13c}
+  .chip.on::before{background:#4ec07a}
+  .chip.off::before{background:#c05a5a}
+
+  .console{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+  .console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+    background:var(--canvas);border-bottom:1px solid var(--line);padding:8px 12px;font-size:12.5px;color:var(--ink-soft)}
+  .console textarea{width:100%;border:0;display:block;background:var(--panel);color:#e7eef6;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:16px 20px;resize:vertical;min-height:190px}
+  .console textarea:focus{outline:2px solid #4a8fc0;outline-offset:-2px}
+  .console pre{margin:0;border-radius:0;background:#0a1017;border-top:1px solid var(--panel-line);min-height:64px}
+  .btn-sm{padding:6px 14px;font-size:13px}
+  details.src pre{max-height:420px;overflow:auto}
+  .btn-ghost:hover{color:#fff;border-color:#47607d}
+
+  .result{border:1px solid var(--line);border-top:3px solid var(--accent);padding:18px 20px;margin:18px 0}
+  .result .big{font-family:var(--serif);font-size:32px;line-height:1.1}
+  .result .big span{font-size:16px;color:var(--ink-soft);font-family:var(--sans)}
+  .result dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:14px 0 0;font-size:14px}
+  .result dt{color:var(--ink-soft)}
+  .result dd{margin:0;font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px;padding:10px 12px;font-size:14px;border-radius:4px;background:var(--canvas)}
+  .verdict.ok{color:var(--ok);background:#eef6f1}
+  .verdict.warn{color:var(--warn);background:#fbf5e7}
+  .verdict.bad{color:var(--bad);background:#faeeee}
+
+  /* --- matris --- */
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;
+    background:var(--canvas);border:1px solid var(--line);padding:14px 16px;margin:16px 0}
+  .filters label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .filters select,.filters input{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .matrix{font-size:13.5px}
+  .matrix th.rot{width:72px;text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom}
+  .matrix td.name{font-weight:500}
+  .matrix td.name em{display:block;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .matrix tr.group td{background:#f2f5f8;font-weight:650;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+  .count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+
+  /* --- pozisyon tablosu --- */
+  .postbl{font-size:13.5px}
+  .postbl input[type=text],.postbl input[type=date],.postbl input[type=number]{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .postbl input[type=text]{font-family:var(--sans)}
+  .postbl input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .postbl td.chk{text-align:center}
+  .postbl input[type=number]{text-align:right}
+  .postbl td:first-child{min-width:150px}
+  .postbl th.num,.postbl td.num{width:auto}
+  @media(max-width:760px){table{display:block;overflow-x:auto}}
+  .postbl td.calc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap}
+  .postbl tfoot td{background:var(--canvas);font-weight:650}
+  .tblbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+  .tblbar button{border-color:var(--line);color:var(--ink-soft);background:#fff}
+  .tblbar button:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tblbar .inline{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft)}
+  .tblbar .inline input{width:78px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .card{border:1px solid var(--line);border-top:3px solid var(--eff-ink);padding:12px 14px}
+  .card b{display:block;font-family:var(--serif);font-size:24px;line-height:1.2}
+  .card span{font-size:12px;color:var(--ink-soft)}
+  .card.alt{border-top-color:var(--efc-ink)}
+  .card.warn{border-top-color:var(--out-ink)}
+
+  details{border-bottom:1px solid var(--line);padding:12px 0}
+  summary{cursor:pointer;font-weight:600;font-size:15px}
+  summary::marker{color:var(--accent)}
+  details p{margin:10px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  @media (prefers-reduced-motion:no-preference){
+    .result{transition:border-color .2s}
+  }
+  @media print{
+    body{background:#fff} .sheet{box-shadow:none;max-width:none;padding:0}
+    .panel{background:#fff;color:#000;border:1px solid #000}
+    pre{background:#f4f4f4;color:#000}
+  }
+.postbl input[type=number]{min-width:84px}
+.postbl input[type=text]{min-width:110px}
+.tblbar .inline input{width:90px}
+.wf,.org,.hz{margin:14px 0}.wf-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:6px 0}
+.wf-box{border:2px solid var(--ink,#222);border-radius:6px;padding:8px 14px;background:var(--paper,#fff);font-size:13px;text-align:center}
+.wf-dark{background:var(--ink,#222);color:var(--paper,#fff)}.wf-dark small{color:inherit;opacity:.8}.wf-wide{flex:1;text-align:center}
+.wf-arr{font-size:22px;color:var(--ink-soft)}.wf-day{font-size:12px;color:var(--ink-soft);margin-left:46%}
+.org{border:2px dashed var(--line);border-radius:14px;padding:10px 14px}
+.org-top{font-weight:700;margin-bottom:6px}
+.org-stack{display:flex;gap:6px;justify-content:flex-end;font-size:12px;color:var(--ink-soft);margin-bottom:4px}
+.org-stack span{border:1px solid var(--line);padding:2px 8px;border-radius:4px}
+.org-main{border:1px solid var(--ink,#222);border-radius:6px;padding:8px 12px;background:var(--paper,#fff)}
+.org-h{font-weight:600;font-size:13px;margin-bottom:6px}
+.org-flow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.org-col{border:1px dashed var(--line);border-radius:6px;padding:8px 12px;text-align:center;font-size:13px;flex:1 1 140px}
+.org-col small{display:block;color:var(--ink-soft)}
+.org-units{display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:1 1 180px}
+.org-units span{border:1px solid var(--ink,#222);border-radius:10px;padding:8px;text-align:center;font-size:13px;background:rgba(70,120,200,.10)}
+.hz-head,.hz-row{display:flex;align-items:center;gap:10px;margin:6px 0}
+.hz-lab{flex:0 0 190px;font-size:13px}
+.hz-track{position:relative;flex:1;height:26px;background:rgba(120,130,150,.10);border-radius:4px}
+.hz-bar{position:absolute;top:2px;bottom:2px;border-radius:3px;font-size:11px;line-height:22px;padding:0 6px;overflow:hidden;white-space:nowrap}
+.hz-leg .hz-bar{position:static;display:inline-block;margin-right:8px}
+.hz-h{background:rgba(70,120,200,.35)}.hz-p{background:rgba(40,150,100,.45)}
+.hz-now{position:absolute;top:-2px;font-size:11px;color:var(--ink-soft);transform:translateX(-50%);white-space:nowrap}
+.hz-head .hz-track{background:none;height:16px}
+@media(max-width:760px){.hz-lab{flex-basis:110px}.hz-bar{font-size:10px}}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>ISO 30434 İşgücü Tahsisi</h1>
+<div class="srcbar">
+  <span><b>Kaynak:</b> BS ISO 30434:2023 — <i>Human resource management — Workforce allocation</i></span>
+  <span><b>Kapsam:</b> 5 kullanıcı · 5 madde grubu · 155 madde ve unsur</span>
+  <span><b>Hesaplama:</b> gömülü Python modülü (Pyodide/WebAssembly)</span>
+  <span><b>Sürüm:</b> Ekim 2026</span>
+</div>
+
+<h2 id="genel">Genel Bakış</h2>
+<p>ISO 30434:2023, <b>işin çalışanlara tahsis edilmesi</b> (workforce allocation) için bir süreç, uygulama ve yönetim faaliyetleri çerçevesi tanımlayan uluslararası bir standarttır. Giriş bölümüne göre işin çalışanlara tahsisi bir kurumdaki en temel yönetim görev ve sorumluluklarından biridir;
+insanlar, kurumun teslim yeteneği ve finansal sonuçlar üzerinde derin etkisi vardır ve insan kaynakları işlevinin dengeli sonuçları teşvik etmede önemli bir rolü olmalıdır. Standart tahsisi, <b>tahsis kararlarını hazırlama, atama ve bilgilendirme, çalışan yanıtlarını toplama ve tahsisi ayarlama</b> süreci olarak tanımlar.
+Tüm tahsis yöntemleri ve işgücü türleri için geçerli üst düzey ilkeleri ve süreçleri ele alır: iş kurum tarafından yönlendirilebilir ya da çalışan tarafından seçilebilir; kararlar insan muhakemesiyle ya da otomatik araçlarla alınabilir. Standart bir tahsis çerçevesi nasıl oluşturulur, süreç nasıl tasarlanır
+ve belgelenir, iletilir, ölçülür ve iyileştirilir bunu anlatır; ayrıca istenmeyen sonuçları durdurmak ya da hafifletmek için önleyici eylemler önerir. Bu sayfa, standardın maddelerini filtrelenebilir bir matrise; sayısallaştırılabilen doğrulama ve ölçüm kavramlarını birim bazlı bir doğrulama tablosuna,
+formüllere, canlı bir hesaplayıcıya ve Python koduna dönüştürür. BS ISO 30434:2023, ISO 30434'ün İngiltere uyarlamasıdır (ISO ilk baskısı Haziran 2023) ve BSI tarafından 30 Haziran 2023'te yayımlanmıştır. İlişkili belgeler: işgücü planlaması ISO 30409,
+işe alım ISO 30405, sağlık ve güvenlik ISO 45001, ergonomi ISO 6385, terimler ISO 30400.</p>
+
+<h3>Önemli Noktalar</h3>
+<ul class="keypoints">
+  <li><b>Tahsis dört adımdan oluşur:</b> hazırla (iş ve çalışanlar hakkında girdi verisi), ata (işi ve çalışanları eşleştir), bilgilendir (atamaları duyur), yanıtla (çalışanlar kabul eder, reddeder, sorgular ya da değiştirir). Her aşamada en az hazırla ve ata; bilgilendir ve yanıtla en azından işten önceki son aşamada bulunur.</li>
+  <li><b>Atamanın dört yönü:</b> işi ve çalışanları eşleştirme; hedef sonuçlara ulaşılabileceğini doğrulama; gerekirse önleyici eylem alma; uzlaşmayı kabul etme. Doğrulama için kurumlar hedef sonuçları tanımlamalıdır; hedefler tolerans aralıklarıyla ifade edilir (örn. tahmin edilen kullanım %110 ile %80 arasında).</li>
+  <li><b>Dört çaba biçimi nicelleştirilir:</b> talep (yapılması gereken iş miktarı), tahsis edilen iş, kapasite (çalışanların toplam uygunluğu) ve çalışan uygunluğu (bir çalışanın işi üstlenebileceği zaman ve süre). Doğrulama bunları dönem dönem karşılaştırır.</li>
+  <li><b>Üç doğrulama:</b> iş teslim edilecek mi (toplam talep ile tahsis edilen iş); çalışanlar kullanılacak mı (tahsis edilen iş ile toplam kapasite; yalnızca işgücü kısıtlı durumlarda); iş yükü aşırı mı (tahsis edilen iş ile çalışanın uygunluğu). Standart oran formüllerini yazmaz; bu sayfada yüzde olarak türetilmiştir.</li>
+  <li><b>Aşamalar ufka göre sıralanır.</b> Her aşamanın adımları, dönemi (atamanın geçerli olduğu süre) ve ufku (atama ile işin başlaması arasındaki süre) vardır. Aşamalar en uzun ufuktan en kısaya sıralanır; sonraki aşamalarda kararlar daha ayrıntılıdır. Vardiya örneği: günler 12 hafta, vardiya 2 hafta, görev 1 gün önceden.</li>
+  <li><b>Birimler ve havuzlar.</b> Tahsis rol ve konum gibi birimler içinde yapılır; ön nitelikli çalışanlar (ajans personeli, kayıtlı hemşireler) havuzlardan birimlere kaynaklanabilir. Her işgücünün kendi tahsis süreci olmalıdır.</li>
+  <li><b>Önleyici eylemler (Ek B).</b> Fazla/eksik tahsis ve birim açığı/fazlası durumlarında dokuz eylem sayılır: işi yeniden dağıtma, bölme, saatleri artırma ya da azaltma, birimler arası paylaşma; kalan açık ya da fazlada talebi/kapasiteyi değiştirme (işgücü planlaması türü).</li>
+</ul>
+
+<div class="toc">
+  <b>İçindekiler</b>
+  <a href="#genel">Genel bakış ve önemli noktalar</a>
+  <a href="#nezaman">Ne zaman kullanılır</a>
+  <a href="#cerceve">Çerçeve ve metodoloji</a>
+  <a href="#ornekler">Ek C örnekleri ve tablolar</a>
+  <a href="#adimlar">Uygulama adımları</a>
+  <a href="#kavramlar">Temel kavramlar</a>
+  <a href="#matris">Madde matrisi</a>
+  <a href="#tablo">Birim doğrulama tablosu</a>
+  <a href="#formuller">Formüller ve tanımlar</a>
+  <a href="#hesaplayici">Hesaplayıcı</a>
+  <a href="#python">Python kod örnekleri</a>
+  <a href="#yorum">Sonuçların yorumlanması</a>
+  <a href="#sinirlamalar">Sınırlamalar</a>
+  <a href="#raporlama">Çıktıların iletilmesi</a>
+  <a href="#ilgili">İlgili standartlar</a>
+  <a href="#sss">Sıkça sorulan sorular</a>
+</div>
+
+<h2 id="nezaman">Ne Zaman Kullanılır</h2>
+<p>Standardın kullanıcıları şunları içerir: işgücü profesyonelleri (kaynak yöneticileri, işgücü yöneticileri, çizelgeleyiciler, vardiya listesi koordinatörleri, tahsis ve kadrolama koordinatörleri, işgücü analistleri); insan kaynakları yöneticileri; hat ve üst yöneticiler; işgücü politikası yapıcıları;
+işgücü sistemleri ve süreçlerinde yer alan proje yöneticileri ve danışmanlar; işgücü teknolojisi tedarikçileri; sendika ya da çalışan temsilcileri ve işveren grupları.</p>
+<ul>
+  <li><b>Tahsis çerçevesi oluştururken:</b> sorumluluk ve yetki, hesap verebilirlik, operasyonel kaynak, liderlik, şeffaflık, çalışan özerkliği, iletişim ve sürekli iyileştirme için ilkeler (madde 6).</li>
+  <li><b>Vardiya, proje, pozisyon ya da görev tahsisini tasarlarken:</b> birimler, havuzlar, aşamalar, ufuklar ve bilgi akışı (madde 7); Ek C yedi sektör örneği verir.</li>
+  <li><b>Tahsisin sonuçlarını doğrularken:</b> teslimat, kullanım ve iş yükü karşılaştırmaları ve tolerans aralıkları (7.6.2.4, 5.10).</li>
+  <li><b>İstenmeyen sonuçlar öngörüldüğünde:</b> iş yükü dengesizliği, birim açığı ya da fazlası için önleyici eylemler ve uzlaşma kabulü (7.6.2.5, 7.6.2.6, Ek B).</li>
+  <li><b>Kendi kendine tahsis ya da otomatik sistem kurarken:</b> yönlendirilmiş ve kendi kendine tahsis ayrımı, sistem özellikleri ve kurumun sorumluluğu (7.5).</li>
+  <li><b>Tahsis sisteminin başarısını ölçerken:</b> plan uyumu, plan performansı, tahsis süresi, tahmin doğruluğu ve geçmiş kullanım (madde 8).</li>
+</ul>
+<div class="note">Bu standart bir <b>süreç çerçevesidir</b>: devamsızlık yönetimi ve zaman takibi, rol ya da beceri bazlı işgücü planlaması, çalışma standartları, eğitim ve yedekleme, işe alım, ücret ve performans değerlendirme, sağlık ve güvenlik, ergonomi, iş organizasyonu yöntemleri (yalın üretim, çevik proje yönetimi) ve dijital çalışanlar (robotlar, yapay zekâ botları) kapsam dışıdır.</div>
+
+<h2 id="cerceve">Çerçeve ve Metodoloji</h2>
+
+<h3>Şekil 1 — İşgücü yönetimi ve tahsis süreçleri</h3>
+<p>İşgücü tahsisi, daha geniş işgücü yönetimi süreçlerinin bir alt kümesidir. Tahsis süreçleri, işgücünü bölümlere ayıran, açıkları hesaplayan ve işe alım, eğitim ve transferleri planlayan işgücü planlaması süreçlerini izler (ISO 30409) ve genellikle çalışanların kendi işlerini yönettiği düzeyin bir öncesinde sona erer; devamsızlık yönetimi ve zaman takibi süreçleriyle arayüz oluşturur.</p>
+<div class="wf">
+  <div class="wf-day">İş günü ↓</div>
+  <div class="wf-row">
+    <div class="wf-box">İşgücü planlaması<br><small>ISO 30409</small></div>
+    <div class="wf-arr">&rarr;</div>
+    <div class="wf-box wf-dark">İşgücü tahsisi<br><small>ISO 30434</small></div>
+    <div class="wf-arr">&rarr;</div>
+    <div class="wf-box">Zaman takibi</div>
+  </div>
+  <div class="wf-row"><div class="wf-box wf-wide">Devamsızlık yönetimi</div></div>
+</div>
+
+<h3>Etkili tahsisin ilkeleri (Giriş)</h3>
+<ol type="a">
+  <li>Devlet ve kurum düzenlemelerine, politikalarına, kurallarına ve anlaşmalarına uymak;</li>
+  <li>Fiziksel ya da ruhsal olsun, çalışanlara sıfır zarar sağlamak;</li>
+  <li>İşi eşitlik ve saygıyla tahsis etmek;</li>
+  <li>Çalışma zamanı ve biçimlerinde esneklik seçeneklerini düşünmek;</li>
+  <li>Şeffaf ve adil tahsis kararlarını mümkün kılmak;</li>
+  <li>Tahsis kararlarını, çalışanların kendilerine tahsis edilen işi kabul edebileceği biçimde açık ve zamanında iletmek.</li>
+</ol>
+
+<h3>Atamanın yönleri ve dört çaba biçimi (madde 4)</h3>
+<table>
+  <thead><tr><th>Kavram</th><th>Tanım</th></tr></thead>
+  <tbody>
+    <tr><td><b>Atamanın dört yönü</b></td><td>(a) çalışanları ve işi eşleştirme; (b) hedef sonuçlara ulaşılabileceğini doğrulama; (c) gerekirse önleyici eylem alma; (d) uzlaşmayı kabul etme. Doğrulama; işin teslim edileceğini, çalışanların kullanılacağını ve iş yükünün hedef sonuçlar içinde makul olduğunu kontrol etmeyi içerebilir. Hedef sonuçlara ulaşılamayacaksa alternatif eylem ya da uzlaşma gerekir (eksik teslimi, düşük kullanımı ya da yüksek iş yükünü kabul etme).</td></tr>
+    <tr><td><b>Talep</b></td><td>Yapılması gereken iş miktarı.</td></tr>
+    <tr><td><b>Tahsis edilen iş</b></td><td>Belirli bir dönem için çalışanlara tahsis edilen iş.</td></tr>
+    <tr><td><b>Kapasite</b></td><td>Çalışanların toplam uygunluğu.</td></tr>
+    <tr><td><b>Çalışan uygunluğu</b></td><td>Bir çalışanın işi üstlenebileceği zaman ve süre.</td></tr>
+  </tbody>
+</table>
+
+<h3>Kurumu anlamak: karakteristikler (madde 5)</h3>
+<p>Çerçeve ve süreçleri tanımlamadan önce kurum, çalışanlar, iş, paydaşlar, kurallar ve politikalar belgelenmiş biçimde anlaşılmalı; mevcut süreç ve sistemler de dahil edilmelidir. Bir kurumun kendi içinde farklı işgücü grupları (işgücü içinde işgücü) ve her biri için benzersiz süreçler olabilir.</p>
+<table>
+  <thead><tr><th style="width:80px">Madde</th><th style="width:210px">Karakteristik</th><th>Dikkate alınacaklar</th></tr></thead>
+  <tbody>
+    <tr><td>5.2</td><td>Kurum</td><td>Değerler, vizyon, misyon ve strateji; tasarım ve yapı (yönetişim, karar ve yetki devri hiyerarşileri: iştirakler, bölgeler, pazarlar, müşteriler, ürünler, hizmet hatları, projeler).</td></tr>
+    <tr><td>5.3</td><td>İş</td><td>İşin nasıl ve hangi ayrıntıda tanımlandığı (proje aşaması, görev, vardiya, yer, zaman, uzaktan çalışma, gereken roller ve beceriler); talebin nasıl nicelleştirildiği (kadro, görev başına saat, FTE, hikâye puanı). Tablo 1 sektör örnekleri verir.</td></tr>
+    <tr><td>5.4</td><td>Çalışan</td><td>Uygunluk ya da uygunsuzluk; öznitelikler (rol, beceri, yetkinlik, eğitim, konum, tercih, kısıtlar); çalışanın kaynağı (çalışan, yüklenici, geçici görevlendirme).</td></tr>
+    <tr><td>5.5</td><td>Tahsis</td><td>Yöntem (insan muhakemesi, otomatik, teknoloji destekli); ayrıntı düzeyi; sonuç bağımlılığı; <b>kısıtlayıcı etkenler</b> — işgücü kısıtlı (kapasite teslim edilebilecek işi belirler), iş kısıtlı (iş gereken kapasiteyi belirler), her ikisi kısıtlı; sonuçlar ve karmaşıklık; tahsis stratejisi (işi önceliğe göre sırala, çalışanı önceliğe göre sırala ya da eş zamanlı optimizasyon).</td></tr>
+    <tr><td>5.6</td><td>Tahsis eden</td><td>Hat yöneticileri, matris kuruluşlarda işlevsel yöneticiler, işgücü planlamacıları ya da çalışanlar; konum, beceri, yetkinlik, eğitim, rol. Örnek: imalatta endüstri mühendisleri, sağlıkta hemşire yöneticileri, proje ortamlarında program yöneticileri.</td></tr>
+    <tr><td>5.7</td><td>İletişim</td><td>Ne iletildiği, kanallar ve ortamlar (dijital, e-posta, ilan panosu), gizlilik ve güvenlik, görünürlük, eşitlik, verimlilik, kültür ve iletişim sıklığı.</td></tr>
+    <tr><td>5.8</td><td>Paydaşlar</td><td>Operasyon, finans, İK, çalışanlar, çalışan temsilcileri, düzenleyici ya da hükümet kurumları ve müşteriler; girdi sağlar ya da çıktı alır (finanstan bütçe, vardiya listeleri, uygunluk planları).</td></tr>
+    <tr><td>5.9</td><td>Kurallar ve politikalar</td><td>Yasal ve sözleşmesel kurallar; çalışan, temsilci, yüklenici ve müşteri sözleşmeleri; kurum politikaları (sağlık, güvenlik ve iyi oluş, çeşitlilik, afet, gizlilik, veri güvenliği); çalışan gereksinimleri (işi kabul ya da reddetme, seyahat, fazla mesai, işe gidiş-geliş); özerklik ve kendi kendine tahsis; çalışanlar için esneklik; kurum için esneklik (zaman bankacılığı, yedek ve stand-by personel, işgücü hareketliliği).</td></tr>
+    <tr><td>5.10</td><td>Hedefler ve başarı faktörleri</td><td>Tahsisin başarısı, tahmin edilen sonuçları hedef sonuçlara karşı doğrulayarak ve geçmiş tahsis sisteminin performansını ölçerek değerlendirilir. Tahmin edilen sonuçlar: <b>teslimat</b> (çıktı, zamanında teslim, performans), <b>insanlar</b> (iş yükü, fiziksel, ruhsal ve sosyal iyi oluş), <b>finans</b> (kullanım, bütçeye uyum). Başarı faktörleri tolerans aralıklarıyla ifade edilir.</td></tr>
+  </tbody>
+</table>
+
+<h3>Tablo 1 — İş karakteristiklerine örnekler</h3>
+<table>
+  <thead><tr><th>Sektör ya da işlev</th><th>İş</th><th>Roller</th><th>Talep örneği</th></tr></thead>
+  <tbody>
+    <tr><td>İmalat</td><td>Gönder, depola, paketle, monte et, bileşen, hat, görev</td><td>Hat çalışanı, sürücü, kontrolör, makine operatörü, paketleyici</td><td>Vardiya başına kadro</td></tr>
+    <tr><td>Proje teslimi</td><td>Portföy, program, projeler, ekip, aşama, öge, görev</td><td>Ön yüz geliştirici, kıdemli köprü tasarımcısı, paydaş yöneticisi, eğitmen</td><td>Görev başına saat</td></tr>
+    <tr><td>Kurumsal destek</td><td>Pozisyon, konum</td><td>Yetenek kazanım görevlisi, doğu bölgesi uyum görevlisi, finans direktörü, resepsiyonist</td><td>Pozisyon sayısı, FTE</td></tr>
+  </tbody>
+</table>
+
+<h3>Çerçeve oluşturmak (madde 6)</h3>
+<p>Her kurumun, operasyonel hedeflerini ve performans hedeflerinin başarılı teslimini destekleyen etkili bir işgücü tahsisi çerçevesi olmalıdır; çerçeve bir ya da birden fazla işgücünü (her biri kendi ayrı tahsis süreciyle) kapsamalıdır. Çerçeve tasarımına geniş bir paydaş yelpazesi katılabilir. Önerilen yönetim ilkeleri:</p>
+<table>
+  <thead><tr><th style="width:40px">#</th><th style="width:210px">İlke</th><th>İçerik</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Sorumluluk ve yetki</td><td>Görev ya da pozisyon tanımında yetki, kapsam ve sorumluluk belgelenir. Tahsis işlevi başka işlevlere entegre olabilir ya da bağımsız bir birim olabilir; istenen operasyonel sonuçları etkileyecek kapsam ve yetki sağlanır.</td></tr>
+    <tr><td>2</td><td>Hesap verebilirlik</td><td>Ölçülebilir, stratejiye katkı veren ve organizasyon yapısı içinde net sahibi olan performans hedefleriyle belgelenir; çevresel, sosyal ve kurumsal yönetişim standartları gözetilir; görev tanımlarına işin etkililiğini ölçen metrikler dahil edilir (çalışanlara şeffaflık).</td></tr>
+    <tr><td>3</td><td>Operasyonel kaynak</td><td>İş yükü, kapasite ve yetkinliğin görünürlüğü; tahsis işlevinin dağıtılabilir iş yüküne, kaynak kapasitesine ve diğer kısıtlara erişimi; tahsis edenler eğitilmiş (hatta akredite) olmalı.</td></tr>
+    <tr><td>4</td><td>Liderlik beklentileri</td><td>Liderlik, istenen operasyonel sonuçlar için anlaşmayı, sağlamayı ve sürdürmeyi yönlendirir; diğer işlevleri hizalar; kurum politika ve kültürüne uygun çalışan katılımını ve temsilcilerin dahil edilmesini sağlar.</td></tr>
+    <tr><td>5</td><td>Çerçevenin şeffaflığı</td><td>Tahsis kuralları ve protokolleri kısa, erişilebilir, tutarlı uygulanır ve operasyonel liderlikçe desteklenir; çerçeveyi ve değişiklikleri iletme yolları belgelenir.</td></tr>
+    <tr><td>6</td><td>Çalışan özerkliği</td><td>Çalışanların atanan işi kabul etme ya da reddetme konusundaki özerkliği belgelenir (kapasite, yetenek, yetki ya da çalışma ruhsatı nedeniyle itiraz ya da sorgu).</td></tr>
+    <tr><td>7</td><td>İletişim</td><td>Her seviyedeki her çalışana ve paydaşa; şeffaflık, eşitlik ve verimlilik kültürünü destekler; çalışan gizliliğini ve hassas tahsis bilgilerinin güvenliğini korur; çağdaş ve herkese erişilebilir.</td></tr>
+    <tr><td>8</td><td>Sürekli iyileştirme</td><td>Performansa, etkililiğe ve uyuma katkı veren bileşenleri izleme ve ölçme; süreç iyileştirmelerini analiz etme, önerme ve uygulama yeteneği.</td></tr>
+  </tbody>
+</table>
+
+<h3>Şekil 2 — İşgücü, iş, birim ve havuzlar</h3>
+<p>Bir kurum birden fazla işgücüne sahip olabilir; her işgücünün kendi tahsis süreci vardır. İş birimlere dağıtılır, çalışanlar havuzdan birimlere kaynaklanır. İşgücü planlamasındaki segmentler ile tahsis birimlerindeki işgücü her zaman örtüşmeyebilir.</p>
+<div class="org">
+  <div class="org-top">Kurum 'X'</div>
+  <div class="org-stack"><span>İşgücü 3</span><span>İşgücü 2</span></div>
+  <div class="org-main">
+    <div class="org-h">İşgücü 1</div>
+    <div class="org-flow">
+      <div class="org-col"><b>İş</b><small>görevler · aşamalar · projeler</small></div>
+      <div class="wf-arr">&rarr;</div>
+      <div class="org-units"><span>Birim A</span><span>Birim B</span><span>Birim C</span><span>Birim D</span></div>
+      <div class="wf-arr">&larr;</div>
+      <div class="org-col"><b>Havuz</b><small>ön nitelikli çalışanlar</small></div>
+    </div>
+  </div>
+</div>
+
+<h3>Süreci tasarlamak (madde 7)</h3>
+<table>
+  <thead><tr><th style="width:80px">Madde</th><th style="width:190px">Konu</th><th>Özet</th></tr></thead>
+  <tbody>
+    <tr><td>7.1</td><td>Genel</td><td>Her işgücü için iş ve işgücü karakteristiklerine göre bir tahsis süreci tasarlanır ve belgelenir. En azından birimler, havuzlar, aşamalar, adımlar, dönemler, ufuklar, bilgi akışı ve sorumluluklar tanımlanır. Tahsis süreçleri genellikle tekrarlayıcıdır.</td></tr>
+    <tr><td>7.2</td><td>Birimler</td><td>Tahsis rol ve konum gibi birimler içinde yapılır (örn. Londra ofisindeki köprü mühendislerine görev atama); birimler dengeleme, eşleştirme, doğrulama ve sorumlulukları tanımlamada kullanılır; üst birimlere toplulaştırılabilir ya da daha küçüklere bölünebilir. Örnek: Sydney'deki bagaj işleyiciler "konum/rol/ekip", üst birim "konum/rol".</td></tr>
+    <tr><td>7.3</td><td>Havuzlar</td><td>Çalışanlar bir havuzdan birimlere kaynaklanabilir; ön nitelikli potansiyel çalışanlar (ajans personeli, eğitimli hızlı yemek çalışanları, kayıtlı hemşireler). Çalışanlar birime resmen ait olsun ya da olmasın tahsis amacıyla aynı statüdedir.</td></tr>
+    <tr><td>7.4</td><td>Aşamalar</td><td>Tahsis süreci aşamalara bölünür (vardiya için "açık-kapalı", "vardiya", "görev"; proje için "program", "proje", "aşama", "görev"; resepsiyonist için tek karar). Her aşamanın adımları, ufku ve dönemi vardır; aşamalar en uzun ufuktan en kısaya sıralanır.</td></tr>
+    <tr><td>7.4.2</td><td>Adımlar</td><td>Hazırla, ata, bilgilendir, yanıtla. En az hazırla ve ata. Atamalar geçici olabilir ("yumuşak rezervasyon"); taahhüt çoğunlukla çalışan bilgilendirildiğinde oluşur. Bilgilendirilmiş kararların değişim süreci belgelenir. Talep oynaklığı için esnek unsurlar (tampon, yedek, stand-by) kullanılır.</td></tr>
+    <tr><td>7.4.3</td><td>Dönem</td><td>Atamaların geçerli olduğu süre (sabit ya da değişken); aşamalar arasında örtüşebilir; üst aşamalarda genellikle daha uzundur. Vardiya çalışanlarına aylık sabit dönemler; proje çalışanlarına değişen başlangıç ve bitişle görevler.</td></tr>
+    <tr><td>7.4.4</td><td>Ufuk</td><td>Ata adımı ile işin başlaması arasındaki süre (bilgilendir adımı varsa bildirim süresi, yani bekleme süresi). Aylardan dakikalara kadar değişebilir; örn. toplu iş sözleşmelerindeki bildirim süreleri. Ufuk, kararları iletme son tarihidir; tahsis eden kararları erken kesinleştirip ufuk gelene kadar iletmeyebilir.</td></tr>
+    <tr><td>7.4.5</td><td>Bilgi akışı</td><td>Her aşama için: hazırla (veri, kurallar, paydaşlar) → ata (tahsis eden, doğrulayıcı, ufuk/dönem) → bilgilendir (çalışan ve paydaş için ufuk ve bilgi). Tablo 3 şablonu, Ek C'de yedi doldurulmuş örnek.</td></tr>
+    <tr><td>7.5.1</td><td>Tahsis eden ve doğrulayıcı</td><td>Atamadan sorumlu kişiler (tahsis eden) ve sonuçları doğrulamaktan sorumlu kişiler (doğrulayıcı) belgelenir; aynı kişi ya da sistem olabilir; çalışanlar kendi kendine tahsis ediyorsa tahsis eden çalışanlardır.</td></tr>
+    <tr><td>7.5.2</td><td>Yönlendirilmiş ve kendi kendine tahsis</td><td>Kurum hangi kararları çalışanların, hangilerini kurumun verdiğini tanımlar. Kendi kendine tahsiste: çalışanların gereken bilgisi, tahsis kurallarını ve esneklik unsurlarını bilmeleri, tüm kuralların uygulanması, çalışanlar arası çatışmalarda destek ve çalışanların aşırı taahhüt etmemesi. Yönlendirilmiş tahsiste tahsis edenlerin bilgi, eğitim, beceri, kurallara hakimiyet, esneklikten yararlanma bilgisi ve adil ve tarafsız olmaları.</td></tr>
+    <tr><td>7.5.3</td><td>Tahsis sistemleri</td><td>Sözlü yönlendirme ve kâğıttan tam otomatik ve optimize sistemlere kadar. Sistem özellikleri: çalışan rol/beceri envanteri, iş ayrıntıları, atama, sonuç doğrulama ve çalışan bilgilendirme modülleri. Otomasyon ne olursa olsun kurum tahsis sonuçlarından sorumludur; çalışanlara en çok etkisi olan aşamalar bilgilendirmeden önce tahsis edenle gözden geçirilmelidir.</td></tr>
+  </tbody>
+</table>
+
+<h3>Şekil 3 — Tahsis ufku ve dönemi (Tablo 2 vardiya örneğiyle ölçekli)</h3>
+<p>Aşağıdaki çizim, standardın Şekil 3'ündeki ufuk ve dönem kavramlarını Tablo 2'deki vardiya işi örneğiyle gösterir. Her aşamanın atama anı ile işin başlaması arasındaki ufuk, işin başlamasından sonraki dönem. Çubuk uzunlukları hafta cinsinden ölçeklidir (1 gün = 1/7 hafta; ölçek, standartta olmayan bir çizim türetmesidir).</p>
+<div class="hz" id="hzChart"></div>
+
+<h3>Tahsis adımları (madde 7.6)</h3>
+<table>
+  <thead><tr><th style="width:160px">Adım</th><th>Belgelenecekler ve kurallar</th></tr></thead>
+  <tbody>
+    <tr><td><b>1. Hazırla</b> (7.6.1)</td><td>
+      Kurallar ve politikalar (bir kez ya da değişimde derlenir); paydaş gereksinimleri; <b>iş bilgisi</b>: tanım ve kimlik, zaman (başlangıç ve bitiş ya da tamamlanma tarihi), roller, beceriler ve yeterlilikler, talep, diğer öznitelikler (konum, hareketlilik, fiziksellik); tamamlanmamış (kalan) iş; üst aşamalarda iş bilgisi daha belirsizdir.
+      <b>Çalışan bilgisi</b>: her dönem için uygunluk, roller, beceriler, yetkiler ve kısıtlar, tercihler, fiziksel/duyusal/bilişsel kısıtlar. Doğrulama için uygunluk rol, beceri ya da konum başına kapasiteye toplulaştırılır; <b>düzenli kapasite</b> (düzenli uygunluk, örn. sözleşme saatleri) ile <b>ek kapasite</b> (ek uygunluk, örn. sınır içinde fazla mesai) ayrılır; dış çalışanların hangisine katkı verdiğine karar verilir (imalatta işgücü kiralama çoğu zaman ek kapasite, dağıtım merkezlerinde düzenli kapasite olabilir). Kalan iş önceden tahsis edildiyse yalnızca kalan kapasite dikkate alınır. Ufuk uzadıkça belirsizlik artar. Diğer bilgiler (yol kapanması, çalışma istasyonu uygunluğu, önceki tahsisler).</td></tr>
+    <tr><td><b>2. Ata</b> (7.6.2)</td><td>
+      Dört yön: nasıl eşleştirileceği; sonuçların nasıl doğrulanacağı; önleyici eylemin ne zaman alınacağı; uzlaşmanın ne zaman kabul edileceği. <b>Eşleştirme</b>: kalan çalışan uygunluğu ile kalan iş ortak özellikleriyle (rol, beceri, zamanlama) eşleştirilir; kısıtsız işgücünde havuzdan arama; kısıtlı işgücünde öncelik, beceri, tercih üzerinden yineleme; kademeli yaklaşım (iç çalışanlar dış çalışanlardan, yüksek beceri düşükten önce); birbirine bağlı kararlarda atama algoritmaları; birimler arası dengeleme.
+      <b>Doğrulama</b>: tahmin edilen sonuçların hedef sonuçlardaki tolerans içinde olduğu: işin teslim edileceği (toplam talep ile toplam tahsis edilen iş), çalışanların kullanılacağı (tahsis edilen iş ile toplam kapasite; yalnızca işgücü kısıtlı durumlarda), iş yükünün aşırı olmadığı (tahsis edilen iş ile çalışanın uygunluğu); tahsis birimleri, daha geniş birimler ve birim içi roller ya da beceri düzeyinde; yerleşik ya da sonradan; nicel ve dönem dönem.
+      <b>Önleyici eylemler</b> (Ek B); <b>uzlaşmanın kabulü</b> (geç teslim, düşük kullanım, yüksek iş yükü).</td></tr>
+    <tr><td><b>3. Bilgilendir</b> (7.6.3)</td><td>Çalışanların ve paydaşların nasıl bilgilendirileceği belgelenir (duvara asılı çıktı, e-posta, tahsis sistemleri); bilgilendirme ufka uygun olarak işten önce yapılır. Paydaşlar farklı zamanlarda bilgilendirilebilir (proje yöneticileri çoğunlukla çalışanlardan önce; işlevsel yöneticiler görüşülmeli). Birim içinde paylaşım (örn. vardiya takası) gizlilik ve kişisel veri politikalarına uygun olmalı. Bilgilendirmeden sonraki değişiklikler için süreç belgelenir; bazı durumlarda zaman sınırı aşılırsa ek tazminat doğabilir.</td></tr>
+    <tr><td><b>4. Yanıtla</b> (7.6.4)</td><td>Çalışanlar alındıyı ve kabulü onaylayabilir; teyit kaydedilebilir ve izlenebilir olmalıdır. Çalışanlar ret, alternatif, yorum, sorgu ya da başka bilgiyle de yanıtlayabilir; yanıtları ele almak için yeterli süre ve her yanıt için süreç belgelenir. Onaydan sonra çalışan atanan işi üstlenir.</td></tr>
+  </tbody>
+</table>
+
+<h3>Sistem ölçümü, belgeleme ve iyileştirme (madde 8, 9, 10)</h3>
+<ul>
+  <li><b>Ölçüm (8):</b> tahsis sisteminin geçmiş performansını ölçme yöntemleri kurumun hedefleri ve başarı faktörlerine göre belgelenir; günlük ayarlamayı ve sistemin sürekli iyileştirilmesini mümkün kılar; İK, finans, yönetişim ve pazarlama gibi işlevsel ekiplerin hedef ve KPI'larıyla hizalanır. Beş örnek: plan uyumu, plan performansı, tahsis süresi, tahmin doğruluğu, geçmiş kullanım.</li>
+  <li><b>Belgeleme ve iletişim (9):</b> tahsis süreçleri, uygulamaları ve politikaları çalışan el kitaplarında, politika kılavuzlarında ya da web sayfalarında kaydedilir; çalışanlara, tahsis edenlere, doğrulayıcılara ve paydaşlara neden oluşturulduğu, amacı ve nasıl kullanılacağı iletilir; bilinmesi ve onaylanması istenir; karmaşık değişikliklerde ek eğitim gerekebilir.</li>
+  <li><b>Sürekli iyileştirme (10):</b> çerçevenin ve süreçlerin sürekli iyileştirilmesi için bir yöntem belirlenir; düzenli gözden geçirmeler: kuruma ilişkin değişiklikler, çerçevenin ve süreçlerin yeterliliği, sistem ölçümleri, değerlendirilebilecek iyileştirmeler. Gözden geçirmede tasarım (amaçlarını karşılıyor mu), uygulama (amaçlandığı gibi mi), etki (istenen sonucu üretti mi); ayrıca fayda, fizibilite ve doğruluk. Liderlik bilgilendirilir.</li>
+</ul>
+
+<h2 id="ornekler">Ek C Örnekleri ve Tablolar</h2>
+<p>Standart, süreç tasarımının uygulamasını Ek C'de yedi sektör örneğiyle gösterir; her biri için karakteristikler, birimlere ayırma, hedefler ve başarı ölçüleri ile Tablo C.1–C.7 (bilgi akışı: hazırla–ata–bilgilendir) verilir. Aşağıdaki tablolar özetlerdir.</p>
+
+<h3>Tablo 2 — Vardiya işi için tahsis aşamaları örneği</h3>
+<table>
+  <thead><tr><th>Aşama</th><th>Açıklama</th><th class="num">Dönem</th><th class="num">Ufuk</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>Çalışılan ya da izinli günler</td><td class="num">4 hafta</td><td class="num">12 hafta</td></tr>
+    <tr><td>2</td><td>Vardiya</td><td class="num">1 hafta</td><td class="num">2 hafta</td></tr>
+    <tr><td>3</td><td>Görev</td><td class="num">1 gün</td><td class="num">1 gün</td></tr>
+  </tbody>
+</table>
+<p>Not: ufuk, tahsis kararlarını iletme son tarihidir; tahsis eden tüm aşamalardaki kararları ilk aşamada çok erken kesinleştirebilir, ama ilgili aşamanın ufku gelene kadar iletmeyebilir.</p>
+
+<h3>Ek C — Yedi sektör örneğinin özeti</h3>
+<table>
+  <thead><tr><th>Örnek</th><th>İşgücü ve birimler</th><th>Aşamalar, ufuk ve dönem</th><th>Hedefler ve başarı ölçüleri</th></tr></thead>
+  <tbody>
+    <tr><td><b>C.1 Havayolu: pilotlar</b></td><td>Yaklaşık 2 500 kişi; tam zamanlıya yakın; birim uçak tipi (kaptan birinci subay rolünde çalışabilir, tersi olmaz)</td><td>Aşama 1 planlama (1–4 hafta önce, dönem 28 gün); aşama 2 operasyon öncesi (1–7 gün); aşama 3 operasyon günü (+1 dk–24 saat, sürekli döngü)</td><td>Nitelikli tüm pilotların planlı seferlere atanması; asgari-azami çalışma saati hedefleri; plansız küçülme için yedek mürettebat.</td></tr>
+    <tr><td><b>C.2 Çevik proje ekipleri</b></td><td>Bireyler ekibe, ekip ürüne atanır; 2–3 haftalık artışlarla kullanıcı hikâyeleri; ekip havuzlardan oluşur; karma çevik–şelale ortamlarında kısmi atama</td><td>Aşama 1 ekibe atama; aşama 2 ekibi projeye atama (1 ay–1 hafta); aşama 3 işin yürütülmesi (+1 dk–24 saat, sürekli)</td><td>Ekibin doğru yeteneğe sahip olması; çalışanlara "görev" atamaktan kaçınma (ekipler kendi kendini yönetir); göreli hikâye boyutu için kararlaştırılmış yöntem (puan).</td></tr>
+    <tr><td><b>C.3 Şelale proje ekibi</b></td><td>1 000 çalışan; birimler: ortak girişim işgücü, roller, rol/iş paketi, roller/lot, görev atanan kişiler</td><td>Aşama 1 iş paketi (3 hafta); aşama 2 lot/aşama (2 hafta); aşama 3 görev (2 gün)</td><td>Birim 1: haftada 44 saatten fazla atananlar %10'dan az; 36 saatten fazla atananlar %75'ten fazla. Birim 3: teslimat %95–110, kullanım %80–120, iş yükü %80–120.</td></tr>
+    <tr><td><b>C.4 İmalat</b></td><td>Düzenli ve geçici/ajans işgücü; birim: tesis ve bölüm; makine operatörleri, amirler, yardımcılar</td><td>Aşama 1 vardiya planı gözden geçirme (örn. 2 hafta, dönem 1 hafta); aşama 2 işyeri ataması (vardiya başında tüm vardiya için)</td><td>Üretim programı ve hedeflerinin, teslim tarihlerinin karşılanması, makine kullanımı; teşvikli görevlerde ve uzun çalışma dönemlerinde adil tahsis.</td></tr>
+    <tr><td><b>C.5 Çağrı merkezi</b></td><td>Tam, yarı zamanlı ve geçici çalışanlar; talep FTE × beceri × zaman dilimi; birimler gelen çağrı, giden çağrı, uzman çözüm ekipleri</td><td>Aşama 1 çizelge (taslak ~30 gün önce, yayın ve bildirim); aşama 2 operasyon günü (gün içi, sürekli)</td><td>Hizmet seviyesi sözleşmelerini (SLA) karşılayacak yeterli personel.</td></tr>
+    <tr><td><b>C.6 Acil durum hizmetleri</b></td><td>Olay yönetim ekipleri (temel, çekirdek, tam); birimler coğrafi konum ve hizmet grubu; istasyon dışı fazla personel havuzu</td><td>Aşama 1 hazırlık (ufuk 7–28 gün; yaz sezonu için 60 gün); aşama 2 devreye alma (1–7 gün); aşama 3 görevlendirme (1–4 saat)</td><td>Olayın ihtiyaçları için yeterli kaynak; yorgunluk riskini azaltmak için kaynak rotasyonu.</td></tr>
+    <tr><td><b>C.7 Profesyonel hizmetler</b></td><td>Tam, yarı zamanlı, geçici ve yüklenici çalışanlar; birim beceri ve yetenek; uzmanlaşmış ya da değiştirilebilir beceri</td><td>Aşama 1 çizelge (1–4 hafta, dönem 28 gün); aşama 2 operasyon öncesi (1–7 gün); aşama 3 operasyon günü (+1 dk–24 saat)</td><td>Uygunluğu görüp proje yöneticilerine kaynak önermek; bütçelenen çizelgeyi gerçek zaman takibiyle karşılaştırmak; boşlukları izlemek; bireysel tercihleri, beceri ve bilgi aktarımını ve iş–yaşam dengesini gözetmek.</td></tr>
+  </tbody>
+</table>
+
+<h3>Tablo B.1 — Olası önleyici eylemler (Ek B)</h3>
+<p>Önleyici eylemler, atama adımındaki doğrulamayla belirlenen istenmeyen sonuçları durdurmak ya da hafifletmek içindir. İstenmeyen sonuçlar, hedef sonuçları karşılaması beklenmeyen tahmin edilen sonuçlardır. Örnek: hedef kullanım %85 iken tahmin edilen kullanımın %68 olması istenmeyen bir sonuçtur. Eylemlerin sırası ve önceliği kurumun özelliklerine, kurallarına ve politikalarına göre belirlenir.</p>
+<table>
+  <thead><tr><th style="width:42%">Durum</th><th>Birimler için önleyici eylem</th></tr></thead>
+  <tbody>
+    <tr><td>a) Bazı çalışanlara fazla, bazılarına az iş tahsis edilmiş</td><td>1) Fazla tahsis edilenlerden eksik tahsis edilenlere işi yeniden dağıt; 2) İşi kişiler arasında böl (birden fazla kişi, resmî iş paylaşımı)</td></tr>
+    <tr><td>b) Bir birimde çalışan açığı var</td><td>3) Tahsis edilen çalışma saatlerini artır (fazla mesai sınırları içinde)</td></tr>
+    <tr><td>c) Bir birimde çalışan fazlası var</td><td>4) Tahsis edilen çalışma saatlerini azalt (kullanım hedefleri içinde)</td></tr>
+    <tr><td>d) Bazı birimlerde fazlalık, aynı çalışan ya da iş özelliklerine sahip diğerlerinde açık var</td><td>5) İşi ve çalışanları birimler arasında paylaş ya da kaydır (geçici iç transfer, birimler arası proje katkısı)</td></tr>
+    <tr><td colspan="2"><i>1–5 numaralı eylemlerden sonra</i></td></tr>
+    <tr><td>e) Birimde kalan çalışan açığı</td><td>6) Toplam talebi azalt<sup>a</sup>; 7) Kapasiteyi artır ve yeni çalışan ata (işe al ya da sözleşmeli çalıştır)<sup>a</sup></td></tr>
+    <tr><td>f) Birimde kalan çalışan fazlası</td><td>8) Toplam talebi artır ve kullanılmayan çalışanları ata<sup>a</sup>; 9) Kapasiteyi azalt (izin ya da işten çıkarma, yüklenici kullanımını durdur)<sup>a</sup></td></tr>
+  </tbody>
+</table>
+<p><sup>a</sup> İşgücü planlaması türü eylemler; kesin olarak tahsis süreçleri kapsamında değildir. Not: işgücü planlaması türünden diğer eylemler (örn. kurum içinde yetkinlik geliştirme) dahil edilmemiştir. Standartta 6 ve 8 numaralı eylemlerin örnek metinleri birbirinin tersi gibi görünür (bkz. Sınırlamalar).</p>
+
+<h2 id="adimlar">Uygulama Adımları</h2>
+<ol>
+  <li><b>Kurumu anlayın ve belgeleyin (madde 5).</b> Kurum, iş, çalışan, tahsis, tahsis eden, iletişim, paydaşlar, kurallar ve politikalar; mevcut süreçler ve sistemler.</li>
+  <li><b>Hedefleri ve tolerans aralıklarını yazın (5.10).</b> Teslimat, insanlar ve finans hedefleri; ör. kullanım, iş yükü, teslim için tolerans bantları.</li>
+  <li><b>Çerçeveyi oluşturun (madde 6).</b> Sorumluluk, hesap verebilirlik, kaynak, liderlik, şeffaflık, özerklik, iletişim ve iyileştirme.</li>
+  <li><b>Her işgücü için süreci tasarlayın (madde 7).</b> Birimler, havuzlar, aşamalar (ufka göre sıralı), adımlar, dönem, ufuk, bilgi akışı, tahsis eden ve doğrulayıcı.</li>
+  <li><b>Hazırlayın ve atayın (7.6.1, 7.6.2).</b> Kuralları ve iş/çalışan bilgisini toplayın; eşleştirin; kapasiteyi düzenli ve ek olarak ayırın.</li>
+  <li><b>Doğrulayın ve gerekirse önleyici eylem alın (7.6.2.4, 7.6.2.5).</b> Teslimat, kullanım ve iş yükünü toleranslarla karşılaştırın; Tablo B.1'den eylem seçin; uzlaşmayı kabul edin ve yönetin.</li>
+  <li><b>Bilgilendirin ve yanıtları alın (7.6.3, 7.6.4).</b> Ufka uygun zamanda duyurun; gizliliği koruyun; kabul, ret ve sorguları kaydedin ve ele alın.</li>
+  <li><b>Ölçün, belgeleyin ve iyileştirin (madde 8–10).</b> Plan uyumu, plan performansı, tahmin doğruluğu, geçmiş kullanım; politikaları iletin; tasarım, uygulama ve etkiyi gözden geçirin.</li>
+</ol>
+
+<h2 id="kavramlar">Temel Kavramlar</h2>
+<p>Standart 3. maddesinde ISO 30400'e ek olarak dört terim tanımlar. Aşağıdaki tablo bu terimlerin ve metinde geçen diğer kavramların kısa özetleridir. Açıklamalar özgün olarak yazılmıştır; bağlayıcı olan standardın kendi metnidir.</p>
+<table>
+  <thead><tr><th style="width:90px">Madde</th><th style="width:240px">Kavram</th><th>Açıklama</th></tr></thead>
+  <tbody>
+    <tr><td><b>3.1</b></td><td>İşgücü tahsisi <small>(workforce allocation)</small></td>
+      <td>Tahsis kararlarını hazırlama, atama ve bilgilendirme, çalışanların yanıtlarını toplama ve tahsisi ayarlama süreci.</td></tr>
+    <tr><td><b>3.2</b></td><td>Tahsis kararı <small>(allocation decision)</small></td>
+      <td>Hangi çalışan(lar)ın hangi işe atanacağının belirlenmesi.</td></tr>
+    <tr><td><b>3.3</b></td><td>Tahsis ufku <small>(allocation horizon)</small></td>
+      <td>İşin başlamasından önce bir tahsis kararının verildiği ve/veya çalışanların ve diğer paydaşların bilgilendirilmesinin amaçlandığı dönem.</td></tr>
+    <tr><td><b>3.4</b></td><td>Tahsis aşaması <small>(allocation stage)</small></td>
+      <td>Belirli bir tahsis ufku ile ilgili tahsis kararları etrafında bir kez ya da tekrarlı atılan hazırla, ata, bilgilendir ve yanıtla adımları dizisi.</td></tr>
+    <tr><td><b>7.2</b></td><td>Birim <small>(unit)</small></td>
+      <td>Ortak özellikleri paylaşan iş ve çalışanların sınırlı bağlamı (ör. konum/rol/ekip); dengeleme, eşleştirme ve doğrulama bu bağlamda yapılır.</td></tr>
+    <tr><td><b>7.3</b></td><td>Havuz <small>(pool)</small></td>
+      <td>Birimlere çalışan kaynağı olan, ön nitelikli potansiyel çalışanlar kümesi.</td></tr>
+    <tr><td><b>7.4.3</b></td><td>Tahsis dönemi <small>(allocation period)</small></td>
+      <td>Bir aşamada yapılan atamaların geçerli olduğu süre.</td></tr>
+    <tr><td><b>7.5.1</b></td><td>Tahsis eden ve doğrulayıcı <small>(allocator, validator)</small></td>
+      <td>Çalışanları işe atamaktan sorumlu kişi/sistem ve atama sonuçlarını doğrulamaktan sorumlu kişi/sistem.</td></tr>
+    <tr><td><b>5.5</b></td><td>Kısıtlayıcı etken <small>(driving constraint)</small></td>
+      <td>Tahsis anında işin ya da işgücü kapasitesinin sabit olup olmadığı: işgücü kısıtlı, iş kısıtlı ya da her ikisi.</td></tr>
+    <tr><td><b>7.6.1.5</b></td><td>Düzenli ve ek kapasite</td>
+      <td>Düzenli uygunluktan (sözleşme çalışma süreleri) gelen düzenli kapasite ile ek uygunluktan (sınır içinde fazla mesai) gelen ek kapasite.</td></tr>
+    <tr><td><b>7.4.2</b></td><td>Yumuşak rezervasyon <small>(soft-booking)</small></td>
+      <td>Atamanın kesin taahhüt olmaksızın geçici yapılması; bazı sektörlerdeki adı.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="matris">Madde Matrisi</h2>
+<p>Aşağıdaki tablo, standardın ilke, karakteristik, süreç, doğrulama, ölçüm ve örnek unsurlarının kullanıcı × bölüm × iletişim sınıflandırmasıdır. Kullanıcı sütunları standardın kullanıcı listesine (Giriş) dayanır; bölüm sınıflandırması ve "çalışanlara ve paydaşlara iletilir" ayrımı bu sayfanın yazarlık sınıflandırmasıdır. Filtreleri değiştirdiğinizde tablo anında daralır.</p>
+
+<div class="filters">
+  <div><label for="fUser">Kullanıcı</label>
+    <select id="fUser">
+      <option value="">Tümü</option>
+      <option value="alloc">İşgücü profesyonelleri ve tahsis edenler</option>
+      <option value="hr">İK yöneticileri ve politika yapıcılar</option>
+      <option value="mgr">Hat ve üst yöneticiler</option>
+      <option value="tech">Teknoloji tedarikçileri ve danışmanlar</option>
+      <option value="rep">Çalışanlar ve temsilcileri</option>
+    </select></div>
+  <div><label for="fStage">Bölüm</label>
+    <select id="fStage">
+      <option value="">Tümü</option>
+      <option value="ilke">İlkeler, kapsam ve çerçeve (Giriş, 3–6)</option>
+      <option value="anlama">Kurumu anlama (madde 5)</option>
+      <option value="tasarim">Süreç tasarımı (madde 7.1–7.5)</option>
+      <option value="adim">Tahsis adımları (7.6) ve Ek B</option>
+      <option value="olcum">Ölçüm (madde 8)</option>
+      <option value="dok">Belgeleme ve iyileştirme (9, 10)</option>
+      <option value="ek">Ekler (A, C)</option>
+    </select></div>
+  <div><label for="fType">Madde grubu</label>
+    <select id="fType">
+      <option value="">Tümü</option>
+      <option value="p">İlkeler ve çerçeve</option>
+      <option value="c">Kurumu anlama</option>
+      <option value="s">Süreç tasarımı</option>
+      <option value="r">Tahsis adımları, doğrulama ve önleyici eylem</option>
+      <option value="o">Ölçüm, iyileştirme ve ekler</option>
+    </select></div>
+  <div><label for="fRep">İletişim</label>
+    <select id="fRep">
+      <option value="">Tümü</option>
+      <option value="ic">Kurum içi tasarım ve kayıt</option>
+      <option value="dis">Çalışanlara ve paydaşlara iletilir</option>
+    </select></div>
+  <div><label for="fQ">Madde adında ara</label>
+    <input type="text" id="fQ" placeholder="ör. doğrulama"></div>
+</div>
+
+<div class="count" id="mCount"></div>
+<table class="matrix">
+  <thead><tr>
+    <th>Madde / unsur</th>
+    <th class="rot">İşgücü profesyonelleri</th>
+    <th class="rot">İK ve politika yapıcılar</th>
+    <th class="rot">Hat ve üst yöneticiler</th>
+    <th class="rot">Teknoloji ve danışmanlar</th>
+    <th class="rot">Çalışanlar ve temsilciler</th>
+  </tr></thead>
+  <tbody id="mBody"></tbody>
+</table>
+<div class="legend">
+  <span><span class="dot p"></span> ilke ve çerçeve</span>
+  <span><span class="dot c"></span> kurumu anlama</span>
+  <span><span class="dot s"></span> süreç tasarımı</span>
+  <span><span class="dot r"></span> tahsis adımı</span>
+  <span><span class="dot o"></span> ölçüm ve ekler</span>
+  <span><span class="tag lvl">hesaplayıcı</span> bu sayfada hesaplanabilen unsur</span>
+  <span>Hesaplayıcıya bağlı unsurlar <b>koyu</b> işaretlenmiştir.</span>
+</div>
+
+<h2 id="tablo">Birim Doğrulama Tablosu</h2>
+<p>Standart, tahsis edilen sonuçların her dönem ve birim için doğrulanmasını ister (7.6.2.4): <b>iş teslim edilecek mi</b> (toplam talep ile tahsis edilen iş), <b>çalışanlar kullanılacak mı</b> (tahsis edilen iş ile toplam kapasite) ve <b>iş yükü aşırı mı</b> (tahsis edilen iş ile çalışanın uygunluğu).
+Her birim için talep, tahsis edilen iş ve kapasiteyi (aynı birimde, örn. saat ya da FTE) girin; isteğe bağlı olarak en çok yüklenen çalışanın tahsisi ve uygunluğunu yazın. Tolerans aralıkları varsayılan olarak Ek C.3 örneğindendir (teslimat %95–110, kullanım %80–120, iş yükü üst sınırı %120);
+kendi hedeflerinize göre değiştirin. Oranlar bu sayfada türetilmiştir; standart yüzde formülü vermez. Örnek veri örnek amaçlıdır. Tolerans dışı sonuçlar için Tablo B.1'den eylem numaraları önerilir (öneri kuralı türetilmiştir).</p>
+
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnek">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizle">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsv">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktar">Hesaplayıcıya aktar</button>
+</div>
+<div class="tblbar">
+  <span class="inline"><label for="tTeslAlt">Teslimat alt (%)</label><input type="number" id="tTeslAlt" step="any" value="95"></span>
+  <span class="inline"><label for="tTeslUst">Teslimat üst (%)</label><input type="number" id="tTeslUst" step="any" value="110"></span>
+  <span class="inline"><label for="tKulAlt">Kullanım alt (%)</label><input type="number" id="tKulAlt" step="any" value="80"></span>
+  <span class="inline"><label for="tKulUst">Kullanım üst (%)</label><input type="number" id="tKulUst" step="any" value="120"></span>
+  <span class="inline"><label for="tYukUst">İş yükü üst (%)</label><input type="number" id="tYukUst" step="any" value="120"></span>
+</div>
+
+<table class="postbl">
+  <thead><tr>
+    <th>Birim (rol/konum)</th>
+    <th class="num">Talep</th><th class="num">Tahsis edilen iş</th><th class="num">Kapasite</th>
+    <th class="num">En yüklü çalışanın tahsisi</th><th class="num">O çalışanın uygunluğu</th>
+    <th class="calc" style="width:80px">Teslimat (%)</th><th class="calc" style="width:80px">Kullanım (%)</th><th class="calc" style="width:80px">İş yükü (%)</th>
+    <th class="calc" style="width:170px">Durum ve önerilen eylemler</th>
+  </tr></thead>
+  <tbody id="pBody"></tbody>
+  <tfoot><tr>
+    <td>Toplam</td>
+    <td class="calc" id="tTal">—</td><td class="calc" id="tTah">—</td><td class="calc" id="tKap">—</td>
+    <td class="calc">—</td><td class="calc">—</td>
+    <td class="calc" id="tTes">—</td><td class="calc" id="tKul">—</td><td class="calc">—</td><td class="calc" id="tDur">—</td>
+  </tr></tfoot>
+</table>
+
+<div class="cards" id="pCards"></div>
+<div class="note" id="pNot"></div>
+
+<h2 id="formuller">Formüller ve Tanımlar</h2>
+<p>Standart, işgücü tahsisi için formül ya da birim vermez; doğrulamayı karşılaştırma olarak tanımlar ve madde 8'de beş sistem ölçümünü sözlü olarak anlatır. Aşağıdaki oran ve hesaplar, bu karşılaştırmaları sayıya dökmek için <b>bu sayfada türetilmiştir</b>; kapasite ayrımı (düzenli ve ek) ile 8. maddenin beş örneği standartta tanımlıdır.</p>
+<table>
+  <thead><tr><th>Hesap</th><th>Formül</th><th>Not</th></tr></thead>
+  <tbody id="fBody"></tbody>
+</table>
+
+<h2 id="hesaplayici">Hesaplayıcı</h2>
+<p>Hesabı seçin, alanları doldurun; sonuç, formülün yerine konmuş hâli ve yorum aşağıda görünür.
+Kurulum gerekmez, veriler tarayıcıdan çıkmaz.</p>
+
+<div class="panel">
+  <h3>İşgücü Tahsisi Hesaplayıcısı</h3>
+  <p class="hint">Alanlar seçtiğiniz hesaba göre değişir. Talep, tahsis ve kapasite aynı birimde (saat, gün ya da FTE) girilir; oranlar yüzde olarak verilir. Tüm oranlar türetilmiştir.</p>
+  <div class="grid">
+    <div class="field" style="grid-column:1/-1">
+      <label for="cMetric">Hesap <span class="req">*</span></label>
+      <select id="cMetric"></select>
+    </div>
+  </div>
+  <div class="grid" id="cFields" style="margin-top:14px"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="oAll"> Tümünü seç</label>
+    <label><input type="checkbox" id="oFormula" checked> Formülün açık hâli</label>
+    <label><input type="checkbox" id="oInterp" checked> Yorum ve eşik</label>
+    <label><input type="checkbox" id="oPy"> Python karşılığı</label>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-run" id="btnRun">Hesapla</button>
+    <button class="btn-ghost" id="btnExample">Örnek veriyi yükle</button>
+    <button class="btn-ghost" id="btnPy">Python motorunu yükle</button>
+    <span class="chip" id="engStatus">Motor: tarayıcı (JavaScript)</span>
+  </div>
+  <p class="hint" style="margin:14px 0 0">Python motoru seçildiğinde hesaplama, bu sayfaya gömülü
+  <code style="background:#1c2836;color:#cfe0f0">iso30434_metrikler.py</code> modülünün
+  <code style="background:#1c2836;color:#cfe0f0">hesapla()</code> fonksiyonu tarafından, tarayıcı içinde
+  çalışan gerçek bir CPython yorumlayıcısında (Pyodide/WebAssembly) yapılır. İlk yüklemede yaklaşık
+  10–12 MB indirilir; sonrası önbellekten gelir. Çevrimdışıysanız sayfa JavaScript yedeğiyle
+  aynı sonuçları vermeye devam eder.</p>
+</div>
+
+<div id="cResult"></div>
+
+<h2 id="python">Python Kod Örnekleri</h2>
+<p>Bu sayfadaki hesaplamalar JavaScript'te taklit edilmez: modülün tamamı sayfaya gömülüdür ve
+Pyodide (WebAssembly üzerinde CPython) ile tarayıcı içinde çalıştırılır. Hesaplayıcıda Python motorunu
+seçtiğinizde her sonuç <code>hesapla()</code> fonksiyonundan gelir. Aynı dosya
+(<code>iso30434_metrikler.py</code>) komut satırında da bağımsız çalışır; doğrudan çalıştırıldığında
+örnek değerlerle doğrulama çıktısı üretir.</p>
+
+<div class="filename">iso30434_metrikler.py (özet)</div>
+<pre><i># --- Doğrulama (7.6.2.4) ---</i>
+
+<b>def</b> <span class="fn">teslimat_orani</span>(talep, tahsis):
+    <i>"""İş teslim edilecek mi: tahsis ÷ talep × 100."""</i>
+    <b>return</b> <u>100</u> * tahsis / talep
+
+<b>def</b> <span class="fn">kullanim_orani</span>(tahsis, kapasite_toplam):
+    <i>"""Çalışanlar kullanılacak mı: tahsis ÷ toplam kapasite × 100."""</i>
+    <b>return</b> <u>100</u> * tahsis / kapasite_toplam
+
+<b>def</b> <span class="fn">is_yuku_orani</span>(tahsis, uygunluk):
+    <i>"""İş yükü aşırı mı: bir çalışanın tahsisi ÷ uygunluğu × 100."""</i>
+    <b>return</b> <u>100</u> * tahsis / uygunluk
+
+<b>def</b> <span class="fn">hedef_farki</span>(tahmin, hedef):
+    <i>"""Örnek: tahmin %68, hedef %85 → −17 puan (istenmeyen sonuç)."""</i>
+    <b>return</b> tahmin - hedef
+
+<i># --- Kapasite ve sistem ölçümü ---</i>
+
+<b>def</b> <span class="fn">kapasite</span>(kisi, saat, izin, ek):
+    <i>"""Düzenli kapasite + ek kapasite (7.6.1.5)."""</i>
+    <b>return</b> kisi * (saat - izin) + kisi * ek
+</pre>
+
+<h3>Çalıştırılabilir konsol</h3>
+<p>Aşağıdaki kod, sayfaya gömülü modüle karşı çalışır. <b>Kodu çalıştır</b> düğmesi Python motorunu
+(yüklü değilse) indirir, modülü içe aktarır ve çıktıyı altta gösterir. Kodu serbestçe değiştirebilir,
+kendi verinizi yazabilirsiniz; her şey tarayıcıda kalır.</p>
+
+<div class="console">
+  <div class="console-bar">
+    <span>iso30434_metrikler modülüne karşı çalışır · Python 3 (Pyodide)</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button class="btn-run btn-sm" id="btnRunPy">Kodu çalıştır</button>
+      <button class="btn-ghost btn-sm" id="btnDemo" style="border-color:var(--line);color:var(--ink-soft)">Tam demoyu yükle</button>
+      <button class="btn-ghost btn-sm" id="btnReset" style="border-color:var(--line);color:var(--ink-soft)">Sıfırla</button>
+    </span>
+  </div>
+  <textarea id="pyCode" spellcheck="false"></textarea>
+  <pre id="pyOut">Çıktı burada görünecek. İlk çalıştırmada Python motoru indirilir (10–12 MB).</pre>
+</div>
+
+<details class="src"><summary>Gömülü modülün tam kaynağı (iso30434_metrikler.py)</summary>
+  <pre id="srcView">yükleniyor…</pre>
+</details>
+
+<h2 id="yorum">Sonuçların Yorumlanması</h2>
+<ul>
+  <li><b>Hedefle birlikte okuyun.</b> %68'lik tahmin edilen kullanım, hedef %85 ise istenmeyen sonuçtur (standart örneği); hedef %60 ise sorun değildir. Standart kendisi eşik vermez; hedefler ve tolerans aralıkları kurumca belirlenir.</li>
+  <li><b>Üç doğrulamayı ayrı yorumlayın.</b> Teslimat düşükse (tahsis edilen iş talebin altında) iş teslim edilemez; kullanım düşükse çalışan kapasitesi boşta; iş yükü yüksekse belirli çalışanlar aşırı yüklüdür. Aynı birimde toplam kullanım normal görünürken bir çalışanın iş yükü sınırı aşabilir.</li>
+  <li><b>Kullanım yalnızca işgücü kısıtlı durumda anlamlıdır.</b> Standart, çalışanların kullanılıp kullanılmayacağının doğrulamasını yalnızca işgücü kısıtlı senaryolarda önerir; iş kısıtlı işgücünde (ör. tren sürücüleri, perakende geçici işçileri) kapasite işe göre belirlenir.</li>
+  <li><b>Düzenli ve ek kapasiteyi ayırın.</b> Fazla mesai gibi ek uygunluğa dayanan bir tahsis, düzenli kapasiteyi aşsa bile geçerli olabilir ama ek kapasite sınırlarını ve çalışan yorgunluğu kısıtlarını gözetmelidir.</li>
+  <li><b>Önleyici eylemleri sıraya koyun.</b> Standart eylemlerin önceliğini kurumun özelliklerine, kurallarına ve politikalarına bırakır; 1–5 numaralı birim içi eylemler önce, 6–9 numaralı işgücü planlaması türü eylemler 1–5'ten sonra kalan açık ya da fazlada düşünülür.</li>
+  <li><b>Sonuçları önceki aşamalara geri besleyin.</b> İstenmeyen sonuçlar önceki aşamalardaki taahhütlerden doğuyorsa bu bilgi o aşamalara geri verilmelidir.</li>
+  <li><b>Belirsizliği hesaba katın.</b> Ufuk uzadıkça iş ve çalışan bilgisi daha belirsizdir; uzun ufuklu doğrulamada tolerans aralıklarını geniş tutun, kısa ufuklu aşamalarda daralt.</li>
+  <li><b>Çalışanlara etkisi en yüksek aşamaları insan gözüyle kontrol edin.</b> Otomatik sistem kullanılsa da sorumluluk kurumdadır; bilgilendirmeden önce çalışanlara en çok etkisi olan aşamalar tahsis edenle gözden geçirilir.</li>
+</ul>
+
+<h2 id="sinirlamalar">Sınırlamalar</h2>
+<ul>
+  <li><b>Ek C.3 doğrulama oranlarının tanımı, 7.6.2.4 ile örtüşmez.</b> Madde 7.6.2.4: teslimat = toplam talep ile tahsis edilen iş; kullanım = tahsis edilen iş ile kapasite; iş yükü = tahsis edilen iş ile çalışanın uygunluğu. C.3'teki hedefler ise teslimatı "toplam rol kapasitesi ÷ talep" (%95–110), kullanımı "toplam rol tahsisi ÷ kapasite" (%80–120) ve iş yükünü "toplam rol talebi ÷ tahsis" (%80–120) olarak tanımlar. Teslimat ve iş yükü oranlarının pay ve paydaları 7.6.2.4'ten farklıdır; bu sayfanın hesaplayıcısı 7.6.2.4'ü izler, C.3'ün tolerans sayılarını varsayılan olarak alır.</li>
+  <li><b>Madde 5.10'daki tolerans örneği ters yazılmıştır.</b> "Kullanım %110 ile %80 arasında sınırlı olabilir" üst sınırı önce yazar; alt sınır %80, üst sınır %110'dur.</li>
+  <li><b>Tablo B.1'de 6 ve 8 numaralı eylemlerin örnekleri tutarsızdır.</b> "Toplam talebi azalt (örn. istenen faaliyet ya da ürünü artır, teslim süresini hızlandır)" ve "Toplam talebi artır (örn. istenen faaliyet ya da ürünü azalt, teslim süresini yavaşlat)" ifadelerinde parantez içi örnekler eylemin tersini söyler. Bu sayfa eylemleri başlıklarıyla verir, örnekleri çıkarmıştır.</li>
+  <li><b>Standart oran formülü ya da birim vermez.</b> Teslimat, kullanım ve iş yükü karşılaştırmalarının yüzde, fark ya da başka bir biçimde ifade edileceği; birimin saat, gün, kadro ya da FTE olacağı kurumun seçimidir (7.6.2.4 "saat, gün, hafta, ay, kadro ya da FTE" der). Bu sayfadaki yüzdeler, fark, tolerans sapması ve önleyici eylem öneri kuralı türetilmiştir.</li>
+  <li><b>Tablo B.1'deki eylemlerin durumlara eşleştirilmesi türetilmiştir.</b> Standart eylemleri a)–f) durumlarına bağlar; bu sayfa durumu oranlardan çıkarır (ör. teslimat alt sınırın altı → eylem 3, 5, 7, 6). Birim bazlı eksik teslimat ile kapasite fazlası aynı anda varsa (eşleştirme sorunu) her iki grup eylem de önerilir; seçim kurumun kuralları ve önceliklerine bağlıdır.</li>
+  <li><b>"Uygunluk" ve "kapasite" farklı düzeylerde tanımlanır.</b> Kapasite çalışanların toplam uygunluğu, uygunluk bir çalışanın zamanı olarak tanımlıdır; iş yükü doğrulaması bireysel düzeydedir ve tablodaki "en yüklü çalışan" alanı yalnızca bir çalışanı kapsar. Tüm çalışanların iş yüklerini ayrı ayrı kontrol etmek kurumun işidir.</li>
+  <li><b>Bölüm ayrıştırması: kapsam dışı konular listesi uzun.</b> Devamsızlık ve zaman takibi, eğitim ve yedekleme, ücret ve performans, sağlık ve güvenlik gibi tahsisle sıkı ilişkili konular kapsam dışıdır; bunlar için ilgili standartlara bakın.</li>
+  <li><b>Ek C tabloları sektöre özgü örneklerdir.</b> Bu sayfada özetlenmiştir; tam Tablo C.1–C.7 ayrıntıları (veri, kurallar, paydaşlar, tahsis eden/doğrulayıcı, ufuk, bilgilendirme içeriği) standartta yer alır ve bağlayıcı değildir.</li>
+  <li>Bu sayfadaki birim tablosunun örnek verisi ve ufuk çizimi (Şekil 3) örnek amaçlı ya da türetilmiştir; standart bunları sayısal veri olarak vermez. Şekil 1 ve 2, standardın çizimlerinin yeniden çizimleridir.</li>
+</ul>
+
+<h2 id="raporlama">Çıktıların İletilmesi</h2>
+<table>
+  <thead><tr><th>Alıcı</th><th>Ne görmek ister</th><th>Biçim</th></tr></thead>
+  <tbody>
+    <tr><td>İşgücü profesyonelleri ve tahsis edenler</td>
+      <td>Birimler, aşamalar, ufuklar, doğrulama sonuçları (teslimat, kullanım, iş yükü), önleyici eylem önerileri, geçmiş sistem ölçümleri</td>
+      <td>Tahsis ve doğrulama panosu, dönemsel</td></tr>
+    <tr><td>İK yöneticileri ve politika yapıcılar</td>
+      <td>Çerçeve, kurallar ve politikalar, hedef sonuçlar ve toleranslar, uyum, çalışan özerkliği ve esneklik</td>
+      <td>Politika el kitabı, yıllık gözden geçirme</td></tr>
+    <tr><td>Hat ve üst yöneticiler</td>
+      <td>Teslimat ve finans sonuçları (kullanım, bütçeye uyum), uzlaşmalar, riskler, sistem performansı</td>
+      <td>Skor kartı, dönemsel</td></tr>
+    <tr><td>Çalışanlar ve temsilcileri</td>
+      <td>Kendilerine tahsis edilen iş, bilgilendirme ufku, yanıt hakkı ve kanalları, değişiklik kuralları, gizliliğin korunması</td>
+      <td>Duyuru (ilan, e-posta, portal) ve el kitabı; temsilcilere politikalar ve fazla mesai/ek vardiya onayları</td></tr>
+    <tr><td>Teknoloji tedarikçileri ve danışmanlar</td>
+      <td>Kurumun tahsis süreci tasarımı, bilgi akışı (Tablo 3), sistem gereksinimleri (envanter, iş ayrıntıları, atama, doğrulama, bilgilendirme modülleri)</td>
+      <td>Süreç ve gereksinim belgesi</td></tr>
+  </tbody>
+</table>
+<p><b>Her süreç belgesinde bulunması gerekenler:</b> işgücü ve birimler, havuzlar, aşamalar ve sıraları, her aşama için adımlar, dönem ve ufuk, bilgi akışı tablosu, tahsis eden ve doğrulayıcı, kurallar ve politikalar, hedef sonuçlar ve tolerans aralıkları, önleyici eylemler ve uzlaşma kuralları, çalışanın yanıt süreci, sistem ölçümleri ve gözden geçirme dönemi.</p>
+
+<h2 id="ilgili">İlgili Standartlar</h2>
+<ul>
+  <li><b>ISO 30409</b> — işgücü planlaması; tahsis süreçleri işgücünü bölümlere ayıran, açıkları hesaplayan ve işe alım, eğitim ve transferleri planlayan işgücü planlaması süreçlerini izler (Şekil 1).</li>
+  <li><b>ISO 30405</b> — işe alım; kapsam dışı bırakılan işe alım için.</li>
+  <li><b>ISO 45001</b> — iş sağlığı ve güvenliği yönetim sistemleri; sağlık ve güvenlik kapsam dışıdır.</li>
+  <li><b>ISO 6385</b> — iş sistemlerinin tasarımında ergonomi ilkeleri; iş ergonomisi kapsam dışıdır.</li>
+  <li><b>ISO 30400</b> — insan kaynakları yönetimi terimler sözlüğü.</li>
+  <li><b>ISO/TS 30425</b> — işgücü bulunabilirliği; kadro, FTE ve devamsızlık metrikleri tahsis girdilerini (uygunluk) tamamlayıcıdır.</li>
+  <li><b>Ek C (bilgilendirici)</b> — standardın içinde yer alan yedi sektör örneği (havayolu, çevik ve şelale projeler, imalat, çağrı merkezi, acil durum hizmetleri, profesyonel hizmetler).</li>
+</ul>
+
+<h2 id="sss">Sıkça Sorulan Sorular</h2>
+<details><summary>İşgücü tahsisi nedir?</summary>
+<p>İşin çalışanlara atanması: tahsis kararlarını hazırlama, atama ve bilgilendirme, çalışanların yanıtlarını toplama ve tahsisi ayarlama süreci. Vardiya çalışanları için ne zaman çalışacakları, proje çalışanları için hangi görevi yapacakları, ya da bir pozisyona atanma biçiminde olabilir.</p></details>
+
+<details><summary>Tahsis ile işgücü planlaması arasındaki fark nedir?</summary>
+<p>İşgücü planlaması (ISO 30409) işgücünü bölümlere ayırır, açıkları hesaplar ve işe alım, eğitim ve transferleri planlar. Tahsis, planlanan işgücünün belirli dönemler için belirli işe atanmasıdır ve genellikle çalışanların kendi işlerini yönettiği düzeyden önce sona erer.</p></details>
+
+<details><summary>Tahsisin dört adımı nedir?</summary>
+<p>Hazırla (iş ve çalışan bilgisini topla), ata (işi ve çalışanları eşleştir), bilgilendir (atamaları çalışanlara ve paydaşlara bildir) ve yanıtla (çalışanlar kabul eder, reddeder, sorar ya da değiştirir). En az hazırla ve ata her aşamada bulunur.</p></details>
+
+<details><summary>Aşama, ufuk ve dönem nasıl farklıdır?</summary>
+<p>Aşama, bir ufka bağlı tahsis kararları ve adımlarıdır. Ufuk, ata adımı (ya da bilgilendirme) ile işin başlaması arasındaki süredir (kararları iletme son tarihi). Dönem, atamanın geçerli olduğu süredir. Vardiya örneğinde "günler" aşamasının dönemi 4 hafta, ufku 12 haftadır.</p></details>
+
+<details><summary>Doğrulama neleri kontrol eder?</summary>
+<p>Tahmin edilen sonuçların hedef sonuçlardaki tolerans aralığında olduğunu: işin teslim edileceğini (toplam talep ile toplam tahsis edilen iş), çalışanların kullanılacağını (tahsis edilen iş ile toplam kapasite; yalnızca işgücü kısıtlı durumlarda) ve iş yükünün aşırı olmadığını (tahsis edilen iş ile çalışanın uygunluğu).</p></details>
+
+<details><summary>İstenmeyen sonuç çıkarsa ne yapılır?</summary>
+<p>Kurum önleyici eylemleri belgeler: işi yeniden dağıtmak, bölmek, saatleri artırmak ya da azaltmak, birimler arası paylaşmak; kalan açık ya da fazlada talebi ya da kapasiteyi değiştirmek (işe alım, kapasite azaltma gibi işgücü planlaması türü eylemler). Hâlâ hedefe ulaşılamıyorsa uzlaşmayı kabul etme süreci belgelenir ve etkisi yönetilir.</p></details>
+
+<details><summary>Kendi kendine tahsis nedir?</summary>
+<p>Kararları çalışanların kendilerinin aldığı tahsistir (ör. vardiya takası, çevik ekibin kendi iş listesinden görev alması). Kurum çalışanların gerekli bilgiye, kurallara ve esneklik unsurlarına sahip olmasını, tüm kuralların uygulanmasını, çatışmalarda destek sağlanmasını ve çalışanların aşırı taahhüt etmemesini sağlamalıdır.</p></details>
+
+<details><summary>Otomatik sistem kullanırsam sorumluluk kimde?</summary>
+<p>Her zaman kurumda. Sistem desteği sözlü yönlendirmeden tam otomatik optimizasyona kadar değişebilir; ancak kurum tahsis sonuçlarından sorumludur ve çalışanlara en çok etkisi olan aşamalar bilgilendirmeden önce bir tahsis eden tarafından gözden geçirilmelidir.</p></details>
+
+<footer>
+  ISO 30434:2023 çerçevesinden üretilmiş çalışma aracı. İlkeler, süreç adımları ve kavramlar standarda dayanır; açıklamalar, örnek değerler, oranlar ve kod özgün olarak yazılmıştır. Standardın kendisi telif korumalıdır ve bu sayfa onun yerine geçmez.
+</footer>
+
+</div>
+
+<script type="text/x-python" id="pysrc">
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+iso30434_metrikler.py
+=====================
+ISO 30434:2023 (Human resource management — Workforce allocation) çerçevesindeki
+işgücü tahsisi doğrulama ve sistem ölçümlerinin Python karşılığı.
+
+Standart, işin çalışanlara tahsisini dört adımda (hazırla, ata, bilgilendir, yanıtla)
+tanımlar. Atama adımında tahmin edilen sonuçların hedef sonuçlar için kabul
+edilebilir toleranslar içinde olduğu doğrulanır (7.6.2.4):
+  - iş teslim edilecek mi?      toplam talep ile toplam tahsis edilen işin karşılaştırılması
+  - çalışanlar kullanılacak mı? toplam tahsis edilen iş ile toplam kapasitenin karşılaştırılması
+  - iş yükü aşırı mı?           tahsis edilen iş ile çalışanın uygunluğunun karşılaştırılması
+Madde 8 beş sistem ölçümü örneği verir. Standart bu karşılaştırmaların yüzde
+formülünü tanımlamaz; oranlar bu modülde türetilmiştir. Modül üç bölüme ayrılmıştır:
+
+    1) Doğrulama    — teslimat, kullanım, iş yükü, hedef farkı, tolerans sapması
+    2) Kapasite ve ölçümler — kapasite, plan uyumu, plan performansı, tahmin doğruluğu, geçmiş kullanım
+    3) Yapılar      — birim tablosu, önleyici eylem önerileri (Tablo B.1), denetim, dağıtıcı
+
+Kullanım:
+    from iso30434_metrikler import kullanim_orani, hedef_farki
+    kullanim_orani(68, 100)      ->  68.0
+    hedef_farki(68, 85)          ->  -17.0
+
+Doğrudan çalıştırıldığında (python3 iso30434_metrikler.py) tüm fonksiyonlar
+örnek verilerle çalıştırılır ve sonuçlar tablo hâlinde yazdırılır.
+
+Not: Standardın terimleri ve kavramları ISO 30434:2023'e dayanır. Oranlar,
+tolerans eşleştirmesi ve önleyici eylem önerisi kuralları bu modülde türetilmiştir.
+Kod ve açıklamalar özgün olarak yazılmıştır; standardın kendisi telif korumalıdır.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+__all__ = [
+    "GecersizGirdi", "ONLEYICI_EYLEMLER",
+    "teslimat_orani", "kullanim_orani", "is_yuku_orani", "hedef_farki", "tolerans_sapmasi",
+    "kapasite", "plan_uyumu", "plan_performansi", "tahmin_orani", "tahmin_hatasi", "gecmis_kullanim",
+    "onleyici_eylemler", "Birim", "TahsisTablosu", "ornek_tablo", "tahsis_denetimi",
+    "hesapla", "METRIK_LISTESI",
+]
+
+
+class GecersizGirdi(ValueError):
+    """Girdiler tutarsız: payda sıfır, negatif değer, tolerans aralığı ters vb."""
+
+
+# Tablo B.1: olası önleyici eylemler (numaralar standarttaki gibi)
+ONLEYICI_EYLEMLER = {
+    1: "Fazla tahsis edilen çalışanlardan eksik tahsis edilenlere işi yeniden dağıt",
+    2: "İşi kişiler arasında böl (birden fazla kişi, resmî iş paylaşımı)",
+    3: "Tahsis edilen çalışma saatlerini artır (fazla mesai sınırları içinde)",
+    4: "Tahsis edilen çalışma saatlerini azalt (kullanım hedefleri içinde)",
+    5: "İşi ve çalışanları birimler arasında paylaş ya da kaydır (geçici iç transfer vb.)",
+    6: "Toplam talebi azalt (işgücü planlaması türü eylem)",
+    7: "Kapasiteyi artır ve yeni çalışan ata: işe al ya da sözleşmeli çalıştır (işgücü planlaması türü)",
+    8: "Toplam talebi artır ve kullanılmayan çalışanları ata (işgücü planlaması türü)",
+    9: "Kapasiteyi azalt: izin ya da işten çıkarma, yüklenici kullanımını durdur (işgücü planlaması türü)",
+}
+
+
+def _bol(pay: float, payda: float, ad: str = "payda") -> float:
+    if payda <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return pay / payda
+
+
+def _negatif_yok(**degerler: float) -> None:
+    for ad, v in degerler.items():
+        if v < 0:
+            raise GecersizGirdi(f"{ad} negatif olamaz")
+
+
+# ---------------------------------------------------------------------------
+# 1) Doğrulama (madde 7.6.2.4, 5.10)
+# ---------------------------------------------------------------------------
+
+def teslimat_orani(talep: float, tahsis: float) -> float:
+    """İş teslim edilecek mi: tahsis edilen iş ÷ toplam talep × 100 (%)."""
+    _negatif_yok(tahsis=tahsis)
+    return 100 * _bol(tahsis, talep, "toplam talep")
+
+
+def kullanim_orani(tahsis: float, kapasite_toplam: float) -> float:
+    """Çalışanlar kullanılacak mı: tahsis edilen iş ÷ toplam kapasite × 100 (%)."""
+    _negatif_yok(tahsis=tahsis)
+    return 100 * _bol(tahsis, kapasite_toplam, "toplam kapasite")
+
+
+def is_yuku_orani(tahsis: float, uygunluk: float) -> float:
+    """İş yükü aşırı mı: bir çalışana tahsis edilen iş ÷ çalışanın uygunluğu × 100 (%)."""
+    _negatif_yok(tahsis=tahsis)
+    return 100 * _bol(tahsis, uygunluk, "çalışanın uygunluğu")
+
+
+def hedef_farki(tahmin: float, hedef: float) -> float:
+    """Tahmin − hedef (yüzde puanı): negatif değer hedefin altında kalındığını gösterir.
+
+    Standart örneği: tahmin edilen kullanım %68, hedef kullanım %85 → istenmeyen sonuç.
+    """
+    _negatif_yok(tahmin=tahmin, hedef=hedef)
+    return tahmin - hedef
+
+
+def tolerans_sapmasi(tahmin: float, alt: float, ust: float) -> float:
+    """Tahminin tolerans aralığının dışına çıkma miktarı: aralık içindeyse 0, altında negatif, üstünde pozitif."""
+    if alt > ust:
+        raise GecersizGirdi("tolerans alt sınırı üst sınırdan büyük olamaz")
+    _negatif_yok(tahmin=tahmin, alt=alt)
+    if tahmin < alt:
+        return tahmin - alt
+    if tahmin > ust:
+        return tahmin - ust
+    return 0.0
+
+
+# ---------------------------------------------------------------------------
+# 2) Kapasite ve sistem ölçümleri (madde 7.6.1.5 ve 8)
+# ---------------------------------------------------------------------------
+
+def kapasite(kisi: float, saat: float, izin: float, ek: float) -> dict:
+    """Düzenli ve ek kapasite (saat): düzenli = kişi × (sözleşme saati − planlı izin); ek = kişi × ek uygunluk."""
+    _negatif_yok(kisi=kisi, saat=saat, izin=izin, ek=ek)
+    if izin > saat:
+        raise GecersizGirdi("planlı izin sözleşme saatini aşamaz")
+    duzenli = kisi * (saat - izin)
+    ek_kap = kisi * ek
+    return {"duzenli": duzenli, "ek": ek_kap, "toplam": duzenli + ek_kap}
+
+
+def plan_uyumu(uretken_sure: float, tahsisli_uretken_sure: float) -> float:
+    """Schedule adherence: işyerinde geçirilen üretken süre ÷ toplam tahsis edilen üretken süre × 100."""
+    _negatif_yok(uretken_sure=uretken_sure)
+    return 100 * _bol(uretken_sure, tahsisli_uretken_sure, "tahsis edilen üretken süre")
+
+
+def plan_performansi(calisma_ortaminda: float, atanan_sure: float) -> float:
+    """Schedule performance: çalışma ortamında geçirilen toplam süre ÷ atanan ya da planlanan süre × 100."""
+    _negatif_yok(calisma_ortaminda=calisma_ortaminda)
+    return 100 * _bol(calisma_ortaminda, atanan_sure, "atanan süre")
+
+
+def tahmin_orani(tahmin: float, gercek: float) -> float:
+    """Forecast demand accuracy: tahmin edilen talep ÷ fiilen çalışılan süre × 100 (100 = tam isabet)."""
+    _negatif_yok(tahmin=tahmin)
+    return 100 * _bol(tahmin, gercek, "fiilen çalışılan süre")
+
+
+def tahmin_hatasi(tahmin: float, gercek: float) -> float:
+    """Mutlak yüzde hata: |tahmin − gerçek| ÷ gerçek × 100 (türetilmiş)."""
+    _negatif_yok(tahmin=tahmin)
+    return 100 * abs(tahmin - gercek) / _pozitif(gercek, "fiilen çalışılan süre")
+
+
+def _pozitif(x: float, ad: str) -> float:
+    if x <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return x
+
+
+def gecmis_kullanim(fiili: float, kapasite_toplam: float) -> float:
+    """Past utilization: fiilen çalışılan süre ÷ çalışanların kapasitesi × 100."""
+    _negatif_yok(fiili=fiili)
+    return 100 * _bol(fiili, kapasite_toplam, "kapasite")
+
+
+# ---------------------------------------------------------------------------
+# 3) Yapılar: birim tablosu ve önleyici eylemler (Tablo B.1)
+# ---------------------------------------------------------------------------
+
+def onleyici_eylemler(teslimat: float, kullanim: float, yuk: float | None, tol: dict) -> list:
+    """Tolerans dışı sonuçlara Tablo B.1'den eylem numarası önerir (türetilmiş kural).
+
+    tol: {"teslimat": (alt, ust), "kullanim": (alt, ust), "yuk": ust}
+    - teslimat alt sınırın altında (eksik tahsis / işçi açığı): 3, 5, sonra 7 ve 6
+    - kullanım alt sınırın altında (işçi fazlası):             4, 5, sonra 8 ve 9
+    - iş yükü üst sınırın üstünde (aşırı yüklü çalışan):       1, 2
+    """
+    out = []
+    if teslimat < tol["teslimat"][0]:
+        out += [3, 5, 7, 6]
+    if kullanim < tol["kullanim"][0]:
+        out += [4, 5, 8, 9]
+    if yuk is not None and yuk > tol["yuk"]:
+        out += [1, 2]
+    sirali = []
+    for n in out:
+        if n not in sirali:
+            sirali.append(n)
+    return sirali
+
+
+@dataclass
+class Birim:
+    """Bir tahsis birimi (rol ve konum)."""
+    ad: str
+    talep: float
+    tahsis: float
+    kapasite: float
+    en_yuklu_tahsis: float | None = None
+    en_yuklu_uygunluk: float | None = None
+
+    def teslimat(self) -> float:
+        return teslimat_orani(self.talep, self.tahsis)
+
+    def kullanim(self) -> float:
+        return kullanim_orani(self.tahsis, self.kapasite)
+
+    def yuk(self) -> float | None:
+        if self.en_yuklu_tahsis is None or self.en_yuklu_uygunluk is None:
+            return None
+        return is_yuku_orani(self.en_yuklu_tahsis, self.en_yuklu_uygunluk)
+
+
+@dataclass
+class TahsisTablosu:
+    """Birimlere göre doğrulama tablosu; tolerans varsayılanları Ek C.3 örneğindendir."""
+    birimler: list = field(default_factory=list)
+    tol: dict = field(default_factory=lambda: {"teslimat": (95, 110), "kullanim": (80, 120), "yuk": 120})
+
+    def ekle(self, ad, talep, tahsis, kapasite, en_yuklu_tahsis=None, en_yuklu_uygunluk=None) -> "TahsisTablosu":
+        _negatif_yok(talep=talep, tahsis=tahsis, kapasite=kapasite)
+        self.birimler.append(Birim(ad, talep, tahsis, kapasite, en_yuklu_tahsis, en_yuklu_uygunluk))
+        return self
+
+    def ozet(self) -> dict:
+        talep = sum(b.talep for b in self.birimler)
+        tahsis = sum(b.tahsis for b in self.birimler)
+        kap = sum(b.kapasite for b in self.birimler)
+        out = {
+            "birim_sayisi": len(self.birimler),
+            "toplam_talep": talep, "toplam_tahsis": tahsis, "toplam_kapasite": kap,
+            "teslimat": round(teslimat_orani(talep, tahsis), 1),
+            "kullanim": round(kullanim_orani(tahsis, kap), 1),
+        }
+        eylem = {}
+        for b in self.birimler:
+            e = onleyici_eylemler(b.teslimat(), b.kullanim(), b.yuk(), self.tol)
+            if e:
+                eylem[b.ad] = e
+        out["onleyici_eylemler"] = eylem
+        return out
+
+
+def ornek_tablo() -> TahsisTablosu:
+    """Örnek amaçlı üç birim (standart bu sayıları vermez); toleranslar Ek C.3'ten."""
+    t = TahsisTablosu()
+    t.ekle("Birim A (rol/konum)", 1200, 1100, 1100, 46, 40)
+    t.ekle("Birim B", 700, 700, 1000, 38, 40)
+    t.ekle("Birim C", 600, 620, 640, 40, 40)
+    return t
+
+
+def tahsis_denetimi(cerceve_belgeli: bool = False,
+                    birimler_ve_havuzlar_tanimli: bool = False,
+                    asama_ufuk_donem_belgeli: bool = False,
+                    hedef_sonuc_tolerans_yazili: bool = False,
+                    dogrulama_yapiliyor: bool = False,
+                    onleyici_eylemler_belgeli: bool = False,
+                    bilgilendirme_ve_yanit_surec_var: bool = False,
+                    sistem_olcumleri_var: bool = False) -> list:
+    """Bir tahsis sürecinin eksiklerini listeler.
+
+    Maddeler ISO 30434'ün 6–10. maddelerindeki beklentilerden türetilmiştir;
+    bir uygunluk sınaması değil, hazırlık kontrol listesidir.
+    """
+    kontroller = [
+        (cerceve_belgeli, "Sorumluluk, hesap verebilirlik, kaynak, liderlik, şeffaflık, iletişim ve sürekli iyileştirmeyi içeren tahsis çerçevesi (madde 6) belgelenmemiş."),
+        (birimler_ve_havuzlar_tanimli, "Her işgücü için birimler ve havuzlar (madde 7.2–7.3) tanımlı değil."),
+        (asama_ufuk_donem_belgeli, "Tahsis aşamaları, adımları, dönemi ve ufku (madde 7.4) ufku en uzundan en kısaya doğru belgelenmemiş."),
+        (hedef_sonuc_tolerans_yazili, "Hedef sonuçlar ve tolerans aralıkları (madde 5.10) yazılı değil."),
+        (dogrulama_yapiliyor, "Teslimat, kullanım ve iş yükü doğrulaması (madde 7.6.2.4) dönem dönem yapılmıyor."),
+        (onleyici_eylemler_belgeli, "Önleyici eylemler ve uzlaşma kabulü süreçleri (madde 7.6.2.5–7.6.2.6) belgelenmemiş."),
+        (bilgilendirme_ve_yanit_surec_var, "Bilgilendirme ufku ve çalışan yanıtı (kabul, ret, sorgu) süreci (madde 7.6.3–7.6.4) tanımlı değil."),
+        (sistem_olcumleri_var, "Tahsis sisteminin geçmiş performansı için ölçümler (madde 8) belgelenmemiş."),
+    ]
+    return [metin for tamam, metin in kontroller if not tamam]
+
+
+# ---------------------------------------------------------------------------
+# 4) Dağıtıcı: hesaplayıcı arayüzünün kullandığı tek giriş noktası
+# ---------------------------------------------------------------------------
+
+METRIK_LISTESI = ["teslimat", "kullanim", "is_yuku", "hedef_fark", "tolerans", "kapasite",
+                  "plan_uyumu", "plan_performansi", "tahmin", "gecmis"]
+
+
+def _g(x) -> str:
+    """Sayıyı, bilimsel gösterim kullanmadan en kısa biçimde yazar."""
+    return f"{x:.12g}"
+
+
+def hesapla(metrik: str, **g) -> dict:
+    """Metrik kimliği ve girdilerle hesabı yapar; sözlük döndürür.
+
+    Dönen anahtarlar: deger, ifade (formülün yerine konmuş hâli), ondalik,
+    birim, ayrinti (etiket–değer çiftleri).
+    """
+    if metrik == "teslimat":
+        d = teslimat_orani(g["talep"], g["tahsis"])
+        return {"deger": d, "ondalik": 1, "birim": "% (tahsis ÷ talep)",
+                "ifade": f"{_g(g['tahsis'])} ÷ {_g(g['talep'])} × 100",
+                "ayrinti": [["Karşılanmayan talep", round(g["talep"] - g["tahsis"], 2)],
+                            ["Talebe göre fark (puan)", round(d - 100, 1)]]}
+
+    if metrik == "kullanim":
+        d = kullanim_orani(g["tahsis"], g["kapasite"])
+        return {"deger": d, "ondalik": 1, "birim": "% (tahsis ÷ kapasite)",
+                "ifade": f"{_g(g['tahsis'])} ÷ {_g(g['kapasite'])} × 100",
+                "ayrinti": [["Kullanılmayan kapasite", round(g["kapasite"] - g["tahsis"], 2)],
+                            ["Kapasiteye göre fark (puan)", round(d - 100, 1)]]}
+
+    if metrik == "is_yuku":
+        d = is_yuku_orani(g["tahsis"], g["uygunluk"])
+        return {"deger": d, "ondalik": 1, "birim": "% (tahsis ÷ uygunluk)",
+                "ifade": f"{_g(g['tahsis'])} ÷ {_g(g['uygunluk'])} × 100",
+                "ayrinti": [["Uygunluğun üstünde (+) ya da altında (−) saat", round(g["tahsis"] - g["uygunluk"], 2)]]}
+
+    if metrik == "hedef_fark":
+        d = hedef_farki(g["tahmin"], g["hedef"])
+        return {"deger": d, "ondalik": 1, "birim": "puan (tahmin − hedef)",
+                "ifade": f"{_g(g['tahmin'])} − {_g(g['hedef'])}",
+                "ayrinti": [["Hedefe göre oran", round(_bol(g["tahmin"], g["hedef"], "hedef"), 3)],
+                            ["Hedefin yüzdesi olarak (%)", round(100 * g["tahmin"] / g["hedef"], 1)]]}
+
+    if metrik == "tolerans":
+        d = tolerans_sapmasi(g["tahmin"], g["alt"], g["ust"])
+        durum = "aralık içinde" if d == 0 else ("aralığın altında" if d < 0 else "aralığın üstünde")
+        return {"deger": d, "ondalik": 1, "birim": "puan (aralık dışı sapma)",
+                "ifade": f"{_g(g['tahmin'])} ile [{_g(g['alt'])}, {_g(g['ust'])}] aralığı",
+                "ayrinti": [["Durum", durum],
+                            ["Aralık genişliği", round(g["ust"] - g["alt"], 2)]]}
+
+    if metrik == "kapasite":
+        k = kapasite(g["kisi"], g["saat"], g["izin"], g["ek"])
+        return {"deger": k["toplam"], "ondalik": 0, "birim": "saat (toplam kapasite)",
+                "ifade": f"{_g(g['kisi'])} × ({_g(g['saat'])} − {_g(g['izin'])} + {_g(g['ek'])})",
+                "ayrinti": [["Düzenli kapasite (saat)", k["duzenli"]],
+                            ["Ek kapasite (saat)", k["ek"]],
+                            ["Ek kapasitenin payı (%)", round(100 * _bol(k["ek"], k["toplam"], "toplam kapasite"), 1)]]}
+
+    if metrik == "plan_uyumu":
+        d = plan_uyumu(g["uretken_sure"], g["tahsisli_uretken_sure"])
+        return {"deger": d, "ondalik": 1, "birim": "% (plan uyumu)",
+                "ifade": f"{_g(g['uretken_sure'])} ÷ {_g(g['tahsisli_uretken_sure'])} × 100",
+                "ayrinti": [["Planlanan ile gerçekleşen fark (saat)", round(g["uretken_sure"] - g["tahsisli_uretken_sure"], 2)]]}
+
+    if metrik == "plan_performansi":
+        d = plan_performansi(g["calisma_ortaminda"], g["atanan_sure"])
+        return {"deger": d, "ondalik": 1, "birim": "% (plan performansı)",
+                "ifade": f"{_g(g['calisma_ortaminda'])} ÷ {_g(g['atanan_sure'])} × 100",
+                "ayrinti": [["Atanan ile fiili fark (saat)", round(g["calisma_ortaminda"] - g["atanan_sure"], 2)]]}
+
+    if metrik == "tahmin":
+        d = tahmin_orani(g["tahmin"], g["gercek"])
+        return {"deger": d, "ondalik": 1, "birim": "% (tahmin ÷ gerçek)",
+                "ifade": f"{_g(g['tahmin'])} ÷ {_g(g['gercek'])} × 100",
+                "ayrinti": [["Mutlak yüzde hata (%)", round(tahmin_hatasi(g["tahmin"], g["gercek"]), 1)],
+                            ["Fark (tahmin − gerçek)", round(g["tahmin"] - g["gercek"], 2)]]}
+
+    if metrik == "gecmis":
+        d = gecmis_kullanim(g["fiili"], g["kapasite"])
+        return {"deger": d, "ondalik": 1, "birim": "% (geçmiş kullanım)",
+                "ifade": f"{_g(g['fiili'])} ÷ {_g(g['kapasite'])} × 100",
+                "ayrinti": [["Kullanılmayan kapasite", round(g["kapasite"] - g["fiili"], 2)]]}
+
+    raise ValueError(f"Bilinmeyen metrik: {metrik}")
+
+
+# ---------------------------------------------------------------------------
+# 5) Doğrulama çıktısı
+# ---------------------------------------------------------------------------
+
+def _demo() -> None:
+    cizgi = "-" * 64
+    print("ISO 30434 — doğrulama çıktısı")
+    print(cizgi)
+
+    print(f"Standart örneği: tahmin kullanım %68, hedef %85 → fark {hedef_farki(68, 85):+.0f} puan")
+    print(f"Teslimat  (1050 / 1000)    : %{teslimat_orani(1000, 1050):.1f}")
+    print(f"Kullanım  (700 / 1000)     : %{kullanim_orani(700, 1000):.1f}")
+    print(f"Tolerans  (68, [80, 120])  : {tolerans_sapmasi(68, 80, 120):+.1f} puan")
+    k = kapasite(10, 160, 16, 20)
+    print(f"Kapasite  (10 kişi)        : düzenli {k['duzenli']:.0f} + ek {k['ek']:.0f} = {k['toplam']:.0f} saat")
+    print(cizgi)
+
+    t = ornek_tablo()
+    for anahtar, deger in t.ozet().items():
+        print(f"{anahtar:<18}: {deger}")
+    print("Eylem numaraları (Tablo B.1):")
+    for n in sorted({n for e in t.ozet()["onleyici_eylemler"].values() for n in e}):
+        print(f"  {n}: {ONLEYICI_EYLEMLER[n]}")
+    print(cizgi)
+
+    print("Dağıtıcı örneği:")
+    print(hesapla("kullanim", tahsis=68, kapasite=100))
+    print(cizgi)
+
+    print("Süreç denetimi (hiçbir ön koşulu sağlamayan bir kurum için):")
+    for u in tahsis_denetimi():
+        print(" !", u)
+
+
+if __name__ == "__main__":
+    _demo()
+</script>
+<script>
+/* =========================================================
+   1) MADDE VERİ TABANI
+   u: kullanıcılar (alloc işgücü profesyonelleri ve tahsis edenler / hr İK yöneticileri ve politika yapıcılar /
+      mgr hat ve üst yöneticiler / tech teknoloji tedarikçileri ve danışmanlar / rep çalışanlar ve temsilcileri)
+   st: bölüm (ilke, anlama, tasarim, adim, olcum, ek)
+   r: raporlama (ic, dis)
+   t: aile (p ilkeler ve çerçeve / c kurumu anlama / s süreç tasarımı / r tahsis adımları, doğrulama ve önleyici eylem / o ölçüm, iyileştirme ve ekler)
+   calc: bu sayfadaki hesaplayıcı kimliği
+   k: ek etiket (onk ön koşul, tur türetilmiş, ctx bağlam)
+   ========================================================= */
+var METRICS = [
+ {g:"İlkeler ve çerçeve (Giriş, madde 3–6)", t:"p", items:[
+  {n:"İlke a: uyum", st:"ilke", r:["ic"], d:"Devlet ve kurum düzenlemelerine, politikalarına, kurallarına ve anlaşmalarına uyum (Giriş)", u:["hr","mgr","alloc","rep"]},
+  {n:"İlke b: sıfır zarar", st:"ilke", r:["ic"], d:"Çalışanlara fiziksel ya da ruhsal zarar vermemek (Giriş)", u:["alloc","hr","mgr","rep"]},
+  {n:"İlke c: eşitlik ve saygı", st:"ilke", r:["ic"], d:"İşi eşitlik ve saygıyla tahsis etmek (Giriş)", u:["alloc","hr","mgr","rep"]},
+  {n:"İlke d: esneklik", st:"ilke", r:["ic"], d:"Çalışma zamanı ve biçimlerinde esneklik seçeneklerini düşünmek (Giriş)", u:["alloc","hr","mgr","rep"]},
+  {n:"İlke e: şeffaf ve adil kararlar", st:"ilke", r:["ic"], d:"Şeffaf ve adil tahsis kararlarını mümkün kılmak (Giriş)", u:["alloc","hr","mgr","rep"]},
+  {n:"İlke f: açık ve zamanında iletişim", st:"ilke", r:["ic","dis"], d:"Kararları, çalışanların kendilerine tahsis edilen işi kabul edebileceği biçimde açık ve zamanında iletmek (Giriş)", u:["alloc","hr","mgr","rep"]},
+  {n:"İşgücü tahsisi (3.1)", st:"ilke", r:["ic"], d:"Tahsis kararlarını hazırlama, atama ve bilgilendirme, çalışan yanıtlarını toplama ve tahsisi ayarlama süreci", u:["alloc","hr","mgr","tech"]},
+  {n:"Tahsis kararı (3.2)", st:"ilke", r:["ic"], d:"Hangi çalışanın hangi işe atanacağının belirlenmesi", u:["alloc","hr","mgr","tech"]},
+  {n:"Tahsis ufku ve tahsis aşaması (3.3, 3.4)", st:"ilke", r:["ic","dis"], d:"İşin başlamasından önceki karar/bilgilendirme dönemi; belirli bir ufka bağlı hazırla–ata–bilgilendir–yanıtla adımları dizisi", u:["alloc","hr","mgr","tech"]},
+  {n:"Atamanın dört yönü: eşleştirme", st:"ilke", r:["ic"], d:"İşi ve çalışanları eşleştirme (4)", u:["alloc","mgr"]},
+  {n:"Atamanın dört yönü: doğrulama", st:"ilke", r:["ic"], d:"Hedef sonuçlara ulaşılabileceğini doğrulama (4)", u:["alloc","mgr","hr"]},
+  {n:"Atamanın dört yönü: önleyici eylem", st:"ilke", r:["ic"], d:"Gerekirse önleyici eylem alma (4)", u:["alloc","mgr"]},
+  {n:"Atamanın dört yönü: uzlaşmayı kabul", st:"ilke", r:["ic"], d:"Uzlaşmayı kabul etme (4)", u:["alloc","mgr","hr"]},
+  {n:"Çaba biçimi: talep", st:"ilke", r:["ic"], calc:"teslimat", d:"Gerçekleştirilmesi gereken iş miktarı (4)", u:["alloc","mgr"]},
+  {n:"Çaba biçimi: tahsis edilen iş", st:"ilke", r:["ic"], calc:"teslimat", d:"Belirli bir dönem için çalışanlara tahsis edilen iş (4)", u:["alloc","mgr"]},
+  {n:"Çaba biçimi: kapasite", st:"ilke", r:["ic"], calc:"kapasite", d:"Çalışanların toplam uygunluğu (4)", u:["alloc","mgr"]},
+  {n:"Çaba biçimi: çalışan uygunluğu", st:"ilke", r:["ic"], calc:"is_yuku", d:"Bir çalışanın işi üstlenebileceği zaman ve süre (4)", u:["alloc","mgr","rep"]},
+  {n:"Kapsam: tüm tahsis yöntemleri ve işgücü türleri", st:"ilke", r:["ic"], d:"Küçük ekiplerden büyük kurumlara; iç çalışanlar ve dış kaynaklı işçiler (Kapsam)", u:["hr","mgr","tech"]},
+  {n:"Kapsam dışı konular", st:"ilke", r:["ic"], k:"onk", d:"Devamsızlık ve zaman takibi, rol/beceri bazlı işgücü planlaması (ISO 30409), çalışma standartları, eğitim ve yedekleme, işe alım, ücret ve performans, sağlık ve güvenlik (ISO 45001), ergonomi (ISO 6385), iş organizasyonu yöntemleri, dijital çalışanlar (Kapsam)", u:["hr","mgr"]},
+  {n:"Çerçeve: sorumluluk ve yetki", st:"ilke", r:["ic"], d:"Görev tanımında yetki, kapsam ve sorumluluk belgelenir (6, 1)", u:["hr","mgr","rep"]},
+  {n:"Çerçeve: hesap verebilirlik", st:"ilke", r:["ic"], d:"Ölçülebilir performans hedefleri ve sahipliğiyle belgelenir; çevresel, sosyal ve kurumsal yönetişim standartları gözetilir (6, 2)", u:["hr","mgr"]},
+  {n:"Çerçeve: operasyonel kaynaklar", st:"ilke", r:["ic"], d:"İş yükü, kapasite ve yetkinlik görünürlüğü; tahsis edenlerin eğitimi (6, 3)", u:["hr","mgr","alloc"]},
+  {n:"Çerçeve: liderlik beklentileri", st:"ilke", r:["ic"], d:"Liderlik anlaşma, güçlendirme ve sürdürmeyi yönlendirir; çalışan katılımı ve temsilcilerin dahil edilmesi (6, 4)", u:["hr","mgr","rep"]},
+  {n:"Çerçeve: şeffaflık", st:"ilke", r:["ic","dis"], d:"Tahsis kuralları ve protokolleri kısa, erişilebilir ve tutarlı uygulanır (6, 5)", u:["hr","mgr","rep"]},
+  {n:"Çerçeve: çalışan özerkliği", st:"ilke", r:["ic"], d:"Atanan işi kabul etme ya da reddetme yeteneği belgelenir (6, 6)", u:["hr","mgr","rep"]},
+  {n:"Çerçeve: iletişim", st:"ilke", r:["ic","dis"], d:"Her çalışana ve paydaşa; gizlilik ve güvenlik korunur (6, 7)", u:["hr","mgr","rep","tech"]},
+  {n:"Çerçeve: sürekli iyileştirme", st:"ilke", r:["ic"], d:"Performansı, etkililiği ve uyumu izleme ve ölçme yeteneği (6, 8)", u:["hr","mgr"]}
+ ]},
+ {g:"Kurumu anlama (madde 5)", t:"c", items:[
+  {n:"Kurumun değerleri, vizyonu, misyonu ve stratejisi", st:"anlama", r:["ic"], d:"Kurum özellikleri (5.2)", u:["hr","mgr"]},
+  {n:"Kurumun tasarımı ve yapısı", st:"anlama", r:["ic"], d:"Yönetişim, karar ve yetki devri hiyerarşileri; iştirakler, bölgeler, pazarlar, müşteriler, ürünler, hizmet hatları, projeler (5.2)", u:["hr","mgr"]},
+  {n:"İşin tanımı ve ayrıntı düzeyi", st:"anlama", r:["ic"], d:"Proje aşaması, görev, vardiya, yer ve zaman; uzaktan çalışma; gereken roller ve beceriler (5.3)", u:["alloc","mgr"]},
+  {n:"Talebin nicelleştirilmesi", st:"anlama", r:["ic"], calc:"teslimat", d:"Kadro, görev başına saat, FTE, hikâye puanı (5.3)", u:["alloc","mgr"]},
+  {n:"Tablo 1: imalat iş özellikleri", st:"anlama", r:["ic"], d:"Gönderme, depolama, paketleme, montaj; hat çalışanı, sürücü, kontrolör, makine operatörü; vardiya başına kadro", u:["alloc","mgr"]},
+  {n:"Tablo 1: proje teslimi iş özellikleri", st:"anlama", r:["ic"], d:"Portföy, program, proje, ekip, aşama, görev; ön yüz geliştirici, köprü tasarımcısı; görev başına saat", u:["alloc","mgr"]},
+  {n:"Tablo 1: kurumsal destek iş özellikleri", st:"anlama", r:["ic"], d:"Pozisyon, konum; yetenek kazanımı, uyum görevlisi, finans direktörü, resepsiyonist; pozisyon sayısı, FTE", u:["alloc","mgr"]},
+  {n:"Çalışanın uygunluğu ya da uygun olmaması", st:"anlama", r:["ic"], calc:"kapasite", d:"Çalışan özellikleri (5.4)", u:["alloc","mgr","rep"]},
+  {n:"Çalışan öznitelikleri", st:"anlama", r:["ic"], d:"Rol, beceri, yetkinlik, eğitim (sertifika), konum, tercih ve kısıtlar (fiziksel, duyusal, bilişsel) (5.4)", u:["alloc","mgr","rep"]},
+  {n:"Çalışanın kaynağı", st:"anlama", r:["ic"], d:"Çalışan, yüklenici, geçici görevlendirme (5.4)", u:["alloc","hr","mgr"]},
+  {n:"Tahsis yöntemi", st:"anlama", r:["ic"], d:"İnsan kararı, otomatik ya da teknoloji destekli (5.5)", u:["alloc","mgr","tech"]},
+  {n:"Tahsis ayrıntı düzeyi", st:"anlama", r:["ic"], d:"Proje, aşama, vardiya ya da görev düzeyi (5.5)", u:["alloc","mgr"]},
+  {n:"Sonuç bağımlılığı", st:"anlama", r:["ic"], calc:"kullanim", d:"İş teslimi, kullanım, verimlilik, iş yükü sonuçları dikkate alınarak ya da alınmadan tahsis (5.5)", u:["alloc","mgr","hr"]},
+  {n:"Kısıtlayıcı etken: işgücü kısıtlı", st:"anlama", r:["ic"], d:"Kapasite teslim edilebilecek işi belirler (çevik projeler, profesyonel hizmetlerde kalıcı çalışanlar) (5.5)", u:["alloc","mgr","hr"]},
+  {n:"Kısıtlayıcı etken: iş kısıtlı", st:"anlama", r:["ic"], d:"İş gereken kapasiteyi belirler (şelale projeler, tren sürücüleri, perakende geçici işçileri) (5.5)", u:["alloc","mgr","hr"]},
+  {n:"Kısıtlayıcı etken: hem iş hem işgücü kısıtlı", st:"anlama", r:["ic"], d:"Hastane birimleri, sabit ekip büyüklüğü ve teslim tarihli projeler (5.5)", u:["alloc","mgr","hr"]},
+  {n:"Sonuçlar ve karmaşıklık", st:"anlama", r:["ic"], d:"Tahsisin daha önemli işleri etkilemesi; kararların birbirine bağlılığı (5.5)", u:["alloc","mgr","hr"]},
+  {n:"Tahsis stratejisi", st:"anlama", r:["ic"], d:"İşi önceliğe göre sıralama, çalışanı önceliğe göre sıralama ya da eş zamanlı eşleştirme algoritması (5.5)", u:["alloc","mgr","tech"]},
+  {n:"Tahsis edenlerin özellikleri", st:"anlama", r:["ic"], d:"Hat yöneticileri, matris kuruluşlarda işlevsel yöneticiler, işgücü planlamacıları ya da çalışanlar; konum, beceri, yetkinlik, eğitim, rol (5.6)", u:["alloc","mgr","hr"]},
+  {n:"İletişim: ne iletilir", st:"anlama", r:["ic","dis"], d:"Çalışanların nasıl ve ne zaman, hangi bilgiyle bilgilendirileceği (5.7)", u:["alloc","mgr","rep"]},
+  {n:"İletişim: kanallar ve ortamlar", st:"anlama", r:["ic","dis"], d:"Dijital, e-posta, ilan panosu (5.7)", u:["alloc","mgr","tech"]},
+  {n:"İletişim: gizlilik ve güvenlik", st:"anlama", r:["ic","dis"], d:"Gizliliğin korunması ve güvenliğin sağlanması (5.7)", u:["hr","mgr","rep","tech"]},
+  {n:"İletişim: görünürlük, eşitlik, verimlilik ve kültür", st:"anlama", r:["ic","dis"], d:"Tahsis iletişiminin kalitesi (5.7)", u:["hr","mgr","rep"]},
+  {n:"İletişim: sıklık", st:"anlama", r:["ic","dis"], d:"Bilgilendirme sıklığı (5.7)", u:["alloc","mgr","rep"]},
+  {n:"Paydaşlar", st:"anlama", r:["ic"], d:"Operasyon, finans, İK, çalışanlar, çalışan temsilcileri, düzenleyici ya da hükümet kurumları ve müşteriler (5.8)", u:["alloc","hr","mgr","rep","tech"]},
+  {n:"Kurallar: mevzuat, düzenleme ve sözleşmeler", st:"anlama", r:["ic"], d:"Yasal, düzenleyici ve sözleşmesel kurallar (5.9)", u:["hr","mgr","rep"]},
+  {n:"Kurallar: çalışan, temsilci, yüklenici ve müşteri sözleşmeleri", st:"anlama", r:["ic"], d:"İş sözleşmeleri, toplu iş sözleşmeleri, tedarik zinciri ortaklık sözleşmeleri, hizmet seviyesi sözleşmeleri (5.9)", u:["hr","mgr","rep"]},
+  {n:"Politikalar: sağlık, güvenlik ve iyi oluş", st:"anlama", r:["ic"], d:"Örnek: çalışma alanı başına asgari ilk yardımcı ve yangın görevlisi (5.9)", u:["hr","mgr","rep"]},
+  {n:"Politikalar: çeşitlilik ve kapsayıcılık, afet, gizlilik, veri güvenliği", st:"anlama", r:["ic"], d:"Kurum politikaları (5.9)", u:["hr","mgr","rep"]},
+  {n:"Çalışan gereksinimleri: kabul/ret hakkı, seyahat, fazla mesai, işe gidiş-geliş", st:"anlama", r:["ic"], d:"Fazla mesai ya da yorgunluk kısıtları dahil (5.9)", u:["mgr","rep"]},
+  {n:"Çalışan özerkliği ve kendi kendine tahsis politikaları", st:"anlama", r:["ic"], d:"Çalışanların kendi iş tahsisi (5.9)", u:["hr","mgr","rep"]},
+  {n:"Çalışanlar için esneklik", st:"anlama", r:["ic"], d:"İş–aile çatışmasını önleme; esnek zaman, kısmi süreli; ekibin kendi kendini örgütlemesi; yerinde ve uzaktan çalışma (5.9)", u:["hr","mgr","rep"]},
+  {n:"Kurum için esneklik", st:"anlama", r:["ic"], d:"Zaman bankacılığı, yedek ve stand-by personel, işgücü hareketliliği; talep dalgalanması ve belirsizlik için (5.9)", u:["alloc","mgr","hr"]},
+  {n:"Esneklikte temsilci katılımı", st:"anlama", r:["ic"], d:"Esnek çalışmanın getirilmesi, koşulları ve uygulanmasında çalışan temsilcilerinin katılımı (5.9)", u:["hr","rep"]},
+  {n:"Hedefler ve başarı faktörleri", st:"anlama", r:["ic"], d:"Tahsisin hedefleri; başarı faktörleri belgelenir (5.10)", u:["hr","mgr"]},
+  {n:"Tahmin edilen sonuç kategorileri", st:"anlama", r:["ic"], d:"Teslimat (çıktı, zamanında teslim, performans), insanlar (iş yükü, fiziksel, ruhsal ve sosyal iyi oluş), finans (kullanım, bütçeye uyum) (5.10)", u:["hr","mgr"]},
+  {n:"Tolerans aralıkları", st:"anlama", r:["ic"], calc:"tolerans", d:"Örnek: tahmin edilen kullanım %110 ile %80 arasında sınırlı olabilir (5.10)", u:["hr","mgr"]}
+ ]},
+ {g:"Süreç tasarımı (madde 7.1–7.5)", t:"s", items:[
+  {n:"Her işgücü için ayrı tahsis süreci", st:"tasarim", r:["ic"], d:"Asgari: birimler, havuzlar, aşamalar, adımlar, dönemler, ufuklar, bilgi akışı ve sorumluluklar (7.1)", u:["hr","mgr"]},
+  {n:"Birimler", st:"tasarim", r:["ic"], d:"Rol ve konum gibi birimler içinde tahsis; dengeleme, eşleştirme, doğrulama ve sorumlulukları tanımlama (7.2)", u:["alloc","mgr"]},
+  {n:"Birimlerin toplulaştırılması ve bölünmesi", st:"tasarim", r:["ic"], d:"Üst düzey birimler ya da yönetilebilir küçük birimler (7.2)", u:["alloc","mgr"]},
+  {n:"Havuzlar", st:"tasarim", r:["ic"], d:"Ön nitelikli potansiyel çalışanlar: ajans personeli, eğitimli çalışanlar, kayıtlı hemşireler; havuzdaki kişiler birimdekilerle aynı statüdedir (7.3)", u:["alloc","mgr","hr"]},
+  {n:"Tahsis aşamaları", st:"tasarim", r:["ic"], d:"İşgücü planlamasına göre vardiya, proje ve pozisyon için tek ya da birçok karar (7.4.1)", u:["alloc","mgr"]},
+  {n:"Aşamaların ufka göre sıralanması", st:"tasarim", r:["ic"], d:"Aşamalar en uzun ufuktan en kısaya sıralanır; sonraki aşamalarda kararlar daha ayrıntılıdır (7.4.1)", u:["alloc","mgr"]},
+  {n:"Adım 1: hazırla", st:"tasarim", r:["ic"], d:"İş ve çalışanlar hakkında girdi verisi toplama (7.4.2)", u:["alloc","mgr"]},
+  {n:"Adım 2: ata", st:"tasarim", r:["ic"], d:"İşi ve çalışanları eşleştirme (7.4.2)", u:["alloc","mgr"]},
+  {n:"Adım 3: bilgilendir", st:"tasarim", r:["ic","dis"], d:"Çalışanları ve/veya paydaşları atamalardan haberdar etme (7.4.2)", u:["alloc","mgr","rep"]},
+  {n:"Adım 4: yanıtla", st:"tasarim", r:["ic","dis"], d:"Çalışanlar ve/veya paydaşlar atamayı onaylar, kabul eder, reddeder, sorgular ya da değiştirir (7.4.2)", u:["alloc","mgr","rep"]},
+  {n:"Asgari adımlar", st:"tasarim", r:["ic"], k:"onk", d:"Her aşamada hazırla ve ata; bilgilendir ve yanıtla en azından işten önceki son aşamada (7.4.2)", u:["alloc","mgr"]},
+  {n:"Geçici atama (yumuşak rezervasyon)", st:"tasarim", r:["ic"], d:"Atamalar geçici olabilir; taahhüt çoğunlukla çalışan bilgilendirildiğinde oluşur (7.4.2)", u:["alloc","mgr","rep"]},
+  {n:"Önceki kararların değişiklik yönetimi", st:"tasarim", r:["ic"], d:"Bilgilendirilmiş kararların değiştirilmesi için süreç belgelenir (7.4.2, 7.6.3.3)", u:["alloc","mgr","rep"]},
+  {n:"Esnek unsurlar: tampon, yedek, stand-by", st:"tasarim", r:["ic"], d:"Talep oynaklığı ve belirsizliği için (7.4.2)", u:["alloc","mgr","hr"]},
+  {n:"Tahsis dönemi", st:"tasarim", r:["ic"], d:"Atamaların uygulandığı süre; sabit ya da değişken; aşamalar arasında örtüşebilir (7.4.3)", u:["alloc","mgr"]},
+  {n:"Tahsis ufku", st:"tasarim", r:["ic","dis"], d:"Ata adımı ile işin başlaması arasındaki süre; bilgilendir adımı varsa bildirim süresi (7.4.4)", u:["alloc","mgr","rep"]},
+  {n:"Tablo 2: vardiya işi aşamaları", st:"tasarim", r:["ic","dis"], d:"Gün açık/kapalı: dönem 4 hafta, ufuk 12 hafta; vardiya: 1 hafta, 2 hafta; görev: 1 gün, 1 gün (7.4.4)", u:["alloc","mgr","rep"]},
+  {n:"Bilgi akışı belgesi (Tablo 3)", st:"tasarim", r:["ic","dis"], d:"Hazırla (veri, kurallar, paydaşlar), ata (tahsis eden, doğrulayıcı, ufuk/dönem), bilgilendir (çalışan ve paydaş: ufuk ve bilgi) (7.4.5)", u:["alloc","mgr"]},
+  {n:"Tahsis eden ve doğrulayıcı", st:"tasarim", r:["ic"], d:"Atamadan ve sonuçları doğrulamadan sorumlu kişiler ya da sistemler belgelenir; aynı olabilir (7.5.1)", u:["alloc","mgr","hr","tech"]},
+  {n:"Tahsis edenlerin ve doğrulayıcıların gereksinimleri", st:"tasarim", r:["ic"], d:"Tahsis edenler kuralları bilir ve izler; gereksinimler belgelenir (7.5.1)", u:["hr","mgr"]},
+  {n:"Yönlendirilmiş tahsis", st:"tasarim", r:["ic"], d:"Kurumun aldığı kararlar; tahsis edenlerin bilgi, eğitim, beceri, kurallara hakimiyet, esneklikten yararlanma, adil ve tarafsız olma gereksinimleri (7.5.2)", u:["hr","mgr"]},
+  {n:"Kendi kendine tahsis", st:"tasarim", r:["ic"], d:"Çalışanlar karar verir; bilgi, kurallar ve esneklik unsurları, çatışmalarda destek, aşırı taahhüt etmeme (7.5.2)", u:["hr","mgr","rep"]},
+  {n:"Tahsis sistemleri", st:"tasarim", r:["ic"], d:"Sözlü yönlendirme ve kâğıt kayıttan tam otomatik sistemlere; rol/beceri envanteri, iş ayrıntıları, atama, doğrulama ve bilgilendirme modülleri (7.5.3)", u:["alloc","mgr","tech"]},
+  {n:"Sistem kullanımında kurumun sorumluluğu", st:"tasarim", r:["ic"], d:"Otomasyon düzeyi ne olursa olsun kurum sonuçlardan sorumludur; çalışanlara en çok etkisi olan aşamalar bilgilendirmeden önce gözden geçirilir (7.5.3)", u:["hr","mgr","tech"]}
+ ]},
+ {g:"Tahsis adımları, doğrulama ve önleyici eylem (madde 7.6, Ek B)", t:"r", items:[
+  {n:"Hazırla: kurallar ve politikalar", st:"adim", r:["ic"], d:"Aşamada etkili kurallar belgelenir; atama ve bilgilendirmeye dahil edilir; yalnızca bir kez ya da değişimde derlenir (7.6.1.2)", u:["alloc","mgr"]},
+  {n:"Hazırla: paydaş gereksinimleri", st:"adim", r:["ic"], d:"Her aşama için belgelenir (7.6.1.3)", u:["alloc","mgr"]},
+  {n:"Hazırla: iş bilgisi", st:"adim", r:["ic"], d:"Tanım, zaman (başlangıç/bitiş/tamamlanma), roller, beceriler ve yeterlilikler, talep, diğer öznitelikler (konum, hareketlilik, fiziksellik) (7.6.1.4)", u:["alloc","mgr"]},
+  {n:"Kalan işin hesaba katılması", st:"adim", r:["ic"], d:"Tamamlanmamış iş; ilerleme izlemesi gerektirir (7.6.1.4)", u:["alloc","mgr"]},
+  {n:"Hazırla: çalışan bilgisi", st:"adim", r:["ic"], d:"Her dönem için uygunluk, roller ve beceriler, tercihler, kısıtlar (7.6.1.5)", u:["alloc","mgr","rep"]},
+  {n:"Düzenli ve ek kapasite", st:"adim", r:["ic"], calc:"kapasite", d:"Düzenli uygunluktan gelen düzenli kapasite ile ek uygunluktan gelen ek kapasite (fazla mesai); dış çalışanların hangisine katkı verdiği belirlenir (7.6.1.5)", u:["alloc","mgr","hr"]},
+  {n:"Kalan kapasite", st:"adim", r:["ic"], d:"Kalan iş önceden tahsis edildiyse yalnızca kalan kapasite dikkate alınır (7.6.1.5)", u:["alloc","mgr"]},
+  {n:"Çalışan bilgisinde belirsizlik", st:"adim", r:["ic"], d:"Hastalık, istifa; ufuk uzadıkça belirsizlik artar (7.6.1.5)", u:["alloc","mgr","hr"]},
+  {n:"Diğer bilgiler", st:"adim", r:["ic"], d:"Yol kapanması ve trafik bilgisi, çalışma istasyonu uygunluğu, önceki tahsisler (adil tahsis için) (7.6.1.6)", u:["alloc","mgr","tech"]},
+  {n:"Ata: eşleştirme stratejileri", st:"adim", r:["ic"], d:"Kısıtsız işgücünden havuzdan arama; kısıtlıda iterasyon; kademeli yaklaşım (iç önce dış, yüksek beceri önce); birbirine bağlı kararlarda atama algoritmaları; birimler arası dengeleme (7.6.2.2)", u:["alloc","mgr","tech"]},
+  {n:"Ata: kurallara ve paydaş gereksinimlerine uyum", st:"adim", r:["ic"], d:"Eşleştirme hedeflere ve başarı faktörlerine göre optimize edilir (7.6.2.3)", u:["alloc","mgr"]},
+  {n:"Doğrulama: iş teslim edilecek mi", st:"adim", r:["ic"], calc:"teslimat", d:"Toplam talep ile toplam tahsis edilen iş karşılaştırılır (7.6.2.4)", u:["alloc","mgr","hr"]},
+  {n:"Doğrulama: çalışanlar kullanılacak mı", st:"adim", r:["ic"], calc:"kullanim", d:"Tahsis edilen iş ile toplam kapasite; yalnızca işgücü kısıtlı durumlarda (7.6.2.4)", u:["alloc","mgr","hr"]},
+  {n:"Doğrulama: iş yükü aşırı mı", st:"adim", r:["ic"], calc:"is_yuku", d:"Tahsis edilen iş ile çalışanın uygunluğu karşılaştırılır (7.6.2.4)", u:["alloc","mgr","hr","rep"]},
+  {n:"Doğrulama düzeyleri", st:"adim", r:["ic"], d:"Tahsis birimleri, daha geniş birimler ve birim içi bireysel roller ya da beceriler (7.6.2.4)", u:["alloc","mgr"]},
+  {n:"Doğrulama: yerleşik ya da sonradan", st:"adim", r:["ic"], d:"Eşleştirme sırasında (zamanlama yazılımı, yönetici muhakemesi) ya da sonrasında (haftalık kaynak toplantıları) (7.6.2.4)", u:["alloc","mgr","tech"]},
+  {n:"Doğrulama: nicel ve dönem dönem", st:"adim", r:["ic"], d:"Saat, gün, hafta, ay, kadro ya da gün/hafta/ay başına FTE; görselleştirme isteğe bağlıdır (7.6.2.4)", u:["alloc","mgr"]},
+  {n:"Doğrulamada belirsizliğin hesaba katılması", st:"adim", r:["ic"], d:"İş ve çalışan ya da kapasite bilgisindeki belirsizlik (7.6.2.4)", u:["alloc","mgr"]},
+  {n:"Hedef sonuçtan sapma", st:"adim", r:["ic"], calc:"hedef_fark", d:"Örnek: tahmin kullanım %68, hedef %85 → istenmeyen sonuç (7.6.2.5)", u:["alloc","mgr","hr"]},
+  {n:"Tolerans aralığı kontrolü", st:"adim", r:["ic"], calc:"tolerans", d:"Tahmin edilen sonuçların kabul edilebilir toleranslar içinde olduğunun kontrolü (5.10, 7.6.2.4)", u:["alloc","mgr","hr"]},
+  {n:"Önleyici eylem 1: işi yeniden dağıt", st:"adim", r:["ic"], d:"Fazla tahsis edilenlerden eksik tahsis edilenlere (Tablo B.1)", u:["alloc","mgr","rep"]},
+  {n:"Önleyici eylem 2: işi böl", st:"adim", r:["ic"], d:"Birden fazla kişi, resmî iş paylaşımı (Tablo B.1)", u:["alloc","mgr","rep"]},
+  {n:"Önleyici eylem 3: çalışma saatlerini artır", st:"adim", r:["ic"], d:"Fazla mesai sınırları içinde (Tablo B.1)", u:["alloc","mgr","rep"]},
+  {n:"Önleyici eylem 4: çalışma saatlerini azalt", st:"adim", r:["ic"], d:"Kullanım hedefleri içinde (Tablo B.1)", u:["alloc","mgr","rep"]},
+  {n:"Önleyici eylem 5: birimler arası paylaş ya da kaydır", st:"adim", r:["ic"], d:"Geçici iç transfer, birimler arası katkı (Tablo B.1)", u:["alloc","mgr","hr"]},
+  {n:"Önleyici eylem 6: toplam talebi azalt", st:"adim", r:["ic"], k:"ctx", d:"İşgücü planlaması türü; örnek metin tutarsızdır (Tablo B.1)", u:["hr","mgr"]},
+  {n:"Önleyici eylem 7: kapasiteyi artır, yeni çalışan ata", st:"adim", r:["ic"], k:"ctx", d:"İşe al ya da sözleşmeli çalıştır; işgücü planlaması türü (Tablo B.1)", u:["hr","mgr"]},
+  {n:"Önleyici eylem 8: toplam talebi artır, kullanılmayan çalışanları ata", st:"adim", r:["ic"], k:"ctx", d:"İşgücü planlaması türü; örnek metin tutarsızdır (Tablo B.1)", u:["hr","mgr"]},
+  {n:"Önleyici eylem 9: kapasiteyi azalt", st:"adim", r:["ic"], k:"ctx", d:"İzin ya da işten çıkarma, yüklenici kullanımını durdurma; işgücü planlaması türü (Tablo B.1)", u:["hr","mgr"]},
+  {n:"Önleyici eylemlerin önceliği ve sırası", st:"adim", r:["ic"], d:"Kurumun özellikleri, kuralları ve politikalarına göre belirlenir (7.6.2.5)", u:["hr","mgr"]},
+  {n:"Önceki aşamalara geri bildirim", st:"adim", r:["ic"], d:"İstenmeyen sonuçlar önceki aşamaların taahhütlerinden doğuyorsa geri beslenir (7.6.2.5)", u:["alloc","mgr"]},
+  {n:"Uzlaşmayı kabul", st:"adim", r:["ic"], d:"Geç teslim, düşük kullanım ya da yüksek iş yükü kabul edilebilir; süreç ve etkiyi yönetme yolları belgelenir (7.6.2.6)", u:["hr","mgr"]},
+  {n:"Bilgilendir: yöntem ve zamanlama", st:"adim", r:["ic","dis"], d:"İlan panosu, e-posta, tahsis sistemi; ufka uygun zamanda (7.6.3.1)", u:["alloc","mgr","rep","tech"]},
+  {n:"Bilgilendir: paydaşlar farklı zamanda", st:"adim", r:["ic","dis"], d:"Proje yöneticileri çoğunlukla çalışanlardan önce bilgilendirilir; işlevsel yöneticiler önce görüşülmelidir (7.6.3.1)", u:["alloc","mgr","hr"]},
+  {n:"Ortak çalışanlar ve gizlilik", st:"adim", r:["ic","dis"], d:"Birim içinde paylaşım (örn. vardiya takası) gizlilik ve kişisel veri politikalarına uygun (7.6.3.2)", u:["mgr","rep","hr","tech"]},
+  {n:"Tahsis değişiklikleri", st:"adim", r:["ic","dis"], d:"Bilgilendirmeden sonraki değişikliklerin etkisi; zaman sınırı aşılırsa ek tazminat doğabilir (7.6.3.3)", u:["alloc","mgr","rep"]},
+  {n:"Yanıtla: onay ve kayıt", st:"adim", r:["ic","dis"], d:"Alındı ve kabul teyidi; kaydedilebilir ve izlenebilir (7.6.4)", u:["alloc","mgr","rep","tech"]},
+  {n:"Yanıtla: ret, alternatif, yorum, sorgu", st:"adim", r:["ic","dis"], d:"Yanıtlara yeterli süre; her yanıt için süreç (7.6.4)", u:["alloc","mgr","rep"]}
+ ]},
+ {g:"Ölçüm, iyileştirme ve ekler (madde 8–10, Ek A, Ek C)", t:"o", items:[
+  {n:"Sistem ölçümü: plan uyumu", st:"olcum", r:["ic"], calc:"plan_uyumu", d:"İşyerinde geçirilen üretken sürenin toplam tahsis edilen üretken süreye oranı (8, a)", u:["alloc","mgr","hr"]},
+  {n:"Sistem ölçümü: plan performansı", st:"olcum", r:["ic"], calc:"plan_performansi", d:"Çalışma ortamında geçirilen toplam sürenin atanan ya da planlanan süreye oranı (8, b)", u:["alloc","mgr","hr"]},
+  {n:"Sistem ölçümü: tahsis süresi", st:"olcum", r:["ic"], d:"Yeni işin çalışanlara tahsis edilme süresi (8, c)", u:["alloc","mgr","hr"]},
+  {n:"Sistem ölçümü: tahmin doğruluğu", st:"olcum", r:["ic"], calc:"tahmin", d:"Tahmin edilen talebin fiilen çalışılan süreyle karşılaştırılması (8, d)", u:["alloc","mgr","hr"]},
+  {n:"Sistem ölçümü: geçmiş kullanım", st:"olcum", r:["ic"], calc:"gecmis", d:"Fiilen çalışılan sürenin çalışanların kapasitesine karşılaştırılması (8, e)", u:["alloc","mgr","hr"]},
+  {n:"Ölçümlerin işlevsel ekiplerle hizalanması", st:"olcum", r:["ic"], d:"İK, finans, yönetişim ve pazarlama gibi hedefleri olan ekiplerle (8)", u:["hr","mgr"]},
+  {n:"Günlük ayarlama ve sürekli iyileştirme için ölçüm", st:"olcum", r:["ic"], d:"Ölçüm, günlük ayarlamayı ve sistemin iyileştirilmesini mümkün kılar (8)", u:["alloc","mgr"]},
+  {n:"Dokümantasyon ve iletişim", st:"dok", r:["ic","dis"], d:"Çalışan el kitapları, politika kılavuzları, web sayfaları; çalışanlara, tahsis edenlere, doğrulayıcılara ve paydaşlara iletilir (9)", u:["hr","mgr","rep"]},
+  {n:"Politikaların bilinmesi ve onaylanması", st:"dok", r:["ic","dis"], d:"Çalışanlar, tahsis edenler ve paydaşlar politikaları bilir ve onaylar; karmaşık değişikliklerde ek eğitim (9)", u:["hr","mgr","rep"]},
+  {n:"Sürekli iyileştirme: gözden geçirme konuları", st:"dok", r:["ic"], d:"Kuruma ilişkin değişiklikler, çerçevenin ve süreçlerin yeterliliği, sistem ölçümleri, değerlendirilebilecek iyileştirmeler (10)", u:["hr","mgr"]},
+  {n:"Gözden geçirme: tasarım, uygulama, etki", st:"dok", r:["ic"], d:"Tasarım amaçlarını karşılıyor mu, amaçlandığı gibi uygulandı mı, istenen sonuçları üretti mi (10)", u:["hr","mgr"]},
+  {n:"Gözden geçirme: fayda, fizibilite, doğruluk", st:"dok", r:["ic"], d:"Değerlendirme katkısı, uygulanabilirlik ve doğruluk (10)", u:["hr","mgr"]},
+  {n:"Liderliğin bilgilendirilmesi", st:"dok", r:["ic"], d:"Değerlendirme ve alınacak eylemler konusunda liderlik bilgilendirilir (10)", u:["hr","mgr"]},
+  {n:"Ek A.1: görev düzeyinde iş", st:"ek", r:["ic"], d:"Açık biçimde tahsis edilen en düşük iş düzeyi; adı, açıklaması, kimliği, zamanı, rolleri, talebi (A.1)", u:["alloc","mgr"]},
+  {n:"Ek A.1: tahmin ya da öngörü olarak iş", st:"ek", r:["ic"], d:"Görevler aşama düzeyinde bilinmiyorsa; dönem, roller, talep (FTE, dakika, saat), diğer öznitelikler (A.1)", u:["alloc","mgr"]},
+  {n:"Ek A.1: toplulaştırılmış iş", st:"ek", r:["ic"], d:"Alt proje, aşama, çıktı, vardiya gibi görev üstü toplamlar (A.1)", u:["alloc","mgr"]},
+  {n:"Ek A.1: kısıtsız iş", st:"ek", r:["ic"], d:"Teslim süresi kısıt değilse ya da talep tahmin edilmediyse; yönetici muhakemesiyle doğrulama (A.1 notu)", u:["alloc","mgr"]},
+  {n:"Ek A.2: uygunluğu kısıtlayanlar", st:"ek", r:["ic"], d:"Yasa ve kurum anlaşmaları, iş sözleşmeleri, işgücü kiralama anlaşmaları, bireysel çalışma zamanı anlaşmaları, izin ve eğitim planı, kontrol dışı devamsızlık, esneklik unsurları (A.2.2)", u:["alloc","mgr","hr","rep"]},
+  {n:"Ek A.2: tercihler", st:"ek", r:["ic","dis"], d:"Saat sayısı, izin günleri, tercih edilen zaman, iş türü, ek saat, konum; çalışan bildirir (A.2.2)", u:["alloc","mgr","rep"]},
+  {n:"Ek A.2: roller, beceriler, yetkiler ve kısıtlar", st:"ek", r:["ic"], d:"Deneyim, ekipman bilgisi, yeterlilik düzeyi, geçmiş performans, sertifikalar; yasal ve diğer kısıtlar; fiziksel, duyusal, bilişsel kısıtlar eşit ve saygılı biçimde ele alınır (A.2.3)", u:["alloc","mgr","hr","rep"]},
+  {n:"Ek A.2: diğer çalışan bilgisi", st:"ek", r:["ic"], d:"Üs ve mevcut konum, hareketlilik; sürece özgü öznitelikler (A.2.4)", u:["alloc","mgr"]},
+  {n:"Ek C.1: havayolu işletmesi: pilot işgücü", st:"ek", r:["ic"], d:"Yaklaşık 2 500 kişi; birim uçak tipi; aşamalar: planlama (1–4 hafta, dönem 28 gün), operasyon öncesi (1–7 gün), operasyon günü (+1 dk–24 saat) (C.1)", u:["alloc","mgr","hr"]},
+  {n:"Ek C.2: çevik proje ekipleri", st:"ek", r:["ic"], d:"Kişiler ekibe, ekip ürüne atanır; kullanıcı hikâyeleri 2–3 haftalık artışlarla; hikâye puanları; ekip kendi kendini yönetir (C.2)", u:["alloc","mgr","hr","tech"]},
+  {n:"Ek C.3: şelale proje ekibi", st:"ek", r:["ic"], d:"1 000 çalışan; birimler: ortak girişim işgücü, roller, rol/iş paketi, roller/lot, görev atanan kişiler; aşamalar: iş paketi 3 hafta, lot/aşama 2 hafta, görev 2 gün (C.3)", u:["alloc","mgr","hr"]},
+  {n:"Ek C.4: üretim: imalat işgücü", st:"ek", r:["ic"], d:"Birim: tesis ve bölüm; vardiya planı gözden geçirme, işyeri ataması; üretim hedefleri ve makine kullanımı (C.4)", u:["alloc","mgr","hr","rep"]},
+  {n:"Ek C.5: çağrı merkezi", st:"ek", r:["ic"], d:"Talep FTE × beceri × zaman dilimi; taslak çizelge ~30 gün önce; gün içi yeniden tahsis; hizmet seviyesi sözleşmeleri (C.5)", u:["alloc","mgr","hr"]},
+  {n:"Ek C.6: acil durum hizmetleri (büyük olaylar)", st:"ek", r:["ic"], d:"Olay yönetim ekipleri (temel, çekirdek, tam); aşamalar: hazırlık, devreye alma, görevlendirme; ufuklar 7–28 gün, 1–7 gün, 1–4 saat (C.6)", u:["alloc","mgr","hr"]},
+  {n:"Ek C.7: profesyonel hizmetler", st:"ek", r:["ic"], d:"Birim: beceri ve yetenekler; uzmanlaşmış ya da değiştirilebilir beceri; proje yöneticilerine kaynak önerme; bütçelenen çizelge ile fiili süre takibi (C.7)", u:["alloc","mgr","hr"]},
+  {n:"Tablo B.1 örneği ve işgücü planlaması eylemleri", st:"ek", r:["ic"], k:"ctx", d:"6–9 numaralı eylemler tam olarak tahsis kapsamında değil, işgücü planlaması türü eylemlerdir (Ek B)", u:["hr","mgr"]}
+ ]}
+];
+
+var USERS = ["alloc","hr","mgr","tech","rep"];
+var AILE_AD = {p:"ilke ve çerçeve", c:"kurumu anlama", s:"süreç tasarımı", r:"tahsis adımı", o:"ölçüm ve ekler"};
+var EK_AD = {ctx:"bağlam", onk:"ön koşul", tur:"türetilmiş"};
+
+/* --- matris çizimi --- */
+function renderMatrix(){
+  var fu = document.getElementById("fUser").value;
+  var fs = document.getElementById("fStage").value;
+  var ft = document.getElementById("fType").value;
+  var fr = document.getElementById("fRep").value;
+  var fq = document.getElementById("fQ").value.toLocaleLowerCase("tr");
+  var body = document.getElementById("mBody");
+  var html = "", shown = 0;
+
+  METRICS.forEach(function(grp){
+    if(ft && grp.t !== ft) return;
+    var rows = "";
+    grp.items.forEach(function(m){
+      if(fu && m.u.indexOf(fu) === -1) return;
+      if(fs && m.st !== fs) return;
+      if(fr && m.r.indexOf(fr) === -1) return;
+      if(fq && m.n.toLocaleLowerCase("tr").indexOf(fq) === -1) return;
+      shown++;
+      var cells = USERS.map(function(u){
+        if(m.u.indexOf(u) === -1) return '<td class="num"></td>';
+        var mark = '<span class="dot ' + grp.t + '"></span>';
+        return '<td class="num" title="' + m.n + '">' + (m.calc ? '<b>' + mark + '</b>' : mark) + '</td>';
+      }).join("");
+      var tags = '<span class="tag ' + grp.t + '">' + AILE_AD[grp.t] + '</span>' +
+                 (m.k ? ' <span class="tag lvl">' + EK_AD[m.k] + '</span>' : "") +
+                 (m.calc ? ' <span class="tag lvl">hesaplayıcı</span>' : "") +
+                 "";
+      rows += '<tr><td class="name">' + (m.calc ? '<b>' + m.n + '</b>' : m.n) + ' ' + tags +
+              '<em>' + m.d + '</em></td>' + cells + '</tr>';
+    });
+    if(rows){
+      html += '<tr class="group"><td colspan="6">' + grp.g + '</td></tr>' + rows;
+    }
+  });
+
+  body.innerHTML = html || '<tr><td colspan="6">Bu filtre birleşimiyle eşleşen metrik yok.</td></tr>';
+  document.getElementById("mCount").textContent = shown + " metrik ve etken gösteriliyor.";
+}
+["fUser","fStage","fType","fRep","fQ"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", renderMatrix);
+});
+renderMatrix();
+
+/* =========================================================
+   2) ŞEKİL 3 ÇİZİMİ (Tablo 2 vardiya örneği; hafta cinsinden ölçekli)
+   ========================================================= */
+(function(){
+  var asamalar = [["Aşama 1: çalışılan ya da izinli günler", 4, 12, "dönem 4 hafta", "ufuk 12 hafta"],
+                  ["Aşama 2: vardiya", 1, 2, "dönem 1 hafta", "ufuk 2 hafta"],
+                  ["Aşama 3: görev", 1/7, 1/7, "dönem 1 gün", "ufuk 1 gün"]];
+  var maxH = 12, maxP = 4, toplam = maxH + maxP, x0 = 100 * maxH / toplam;
+  var h = '<div class="hz-head"><span></span><span class="hz-track"><span class="hz-now" style="left:' + x0 + '%">işin başlangıcı</span></span></div>';
+  asamalar.forEach(function(a){
+    var hw = 100 * a[2] / toplam, pw = 100 * a[1] / toplam;
+    h += '<div class="hz-row"><span class="hz-lab">' + a[0] + '</span><span class="hz-track">' +
+      '<span class="hz-bar hz-h" style="left:' + (x0 - hw) + '%;width:' + hw + '%" title="' + a[4] + '">' + (hw > 12 ? a[4] : "") + '</span>' +
+      '<span class="hz-bar hz-p" style="left:' + x0 + '%;width:' + Math.max(pw, 0.8) + '%" title="' + a[3] + '">' + (pw > 12 ? a[3] : "") + '</span></span></div>';
+  });
+  h += '<div class="hz-leg"><span class="hz-bar hz-h">ufuk (atama → işin başlaması)</span> <span class="hz-bar hz-p">dönem (atamanın geçerli olduğu süre)</span></div>';
+  document.getElementById("hzChart").innerHTML = h;
+})();
+
+/* =========================================================
+   3) BİRİM DOĞRULAMA TABLOSU
+   ========================================================= */
+var SATIR = 8;
+/* birim, talep, tahsis, kapasite, en yüklü çalışanın tahsisi, uygunluğu — örnek amaçlı */
+var ORNEK_TBL = [
+  ["Birim A (rol/konum)", 1200, 1100, 1100, 46, 40],
+  ["Birim B", 700, 700, 1000, 38, 40],
+  ["Birim C", 600, 620, 640, 40, 40]
+];
+var ALAN = ["tal","tah","kap","yt","yu"];
+var EYLEM = {1:"işi yeniden dağıt", 2:"işi böl", 3:"saatleri artır", 4:"saatleri azalt", 5:"birimler arası paylaş",
+             6:"talebi azalt", 7:"kapasiteyi artır", 8:"talebi artır", 9:"kapasiteyi azalt"};
+
+function buildTbl(){
+  var html = "";
+  for(var i=0;i<SATIR;i++){
+    html += '<tr><td><input type="text" id="p_ad_' + i + '" placeholder="Birim ' + (i+1) + '"></td>';
+    ALAN.forEach(function(k){ html += '<td><input type="number" min="0" step="any" id="p_' + k + '_' + i + '"></td>'; });
+    ["tes","kul","yuk","dur"].forEach(function(k){ html += '<td class="calc" id="p_' + k + '_' + i + '">—</td>'; });
+    html += '</tr>';
+  }
+  document.getElementById("pBody").innerHTML = html;
+  document.getElementById("pBody").querySelectorAll("input").forEach(function(el){ el.addEventListener("input", computeTbl); });
+  ["tTeslAlt","tTeslUst","tKulAlt","tKulUst","tYukUst"].forEach(function(id){ document.getElementById(id).addEventListener("input", computeTbl); });
+}
+
+function pv(k, i){
+  var v = parseFloat(document.getElementById("p_" + k + "_" + i).value);
+  return isNaN(v) ? null : v;
+}
+function tol(id){ var v = parseFloat(document.getElementById(id).value); return isNaN(v) ? null : v; }
+
+/* Tablo B.1'den eylem önerisi — gömülü Python'daki onleyici_eylemler() ile aynı kural */
+function eylemOner(tes, kul, yuk, t){
+  var out = [];
+  if(tes < t.tesAlt) out = out.concat([3,5,7,6]);
+  if(kul < t.kulAlt) out = out.concat([4,5,8,9]);
+  if(yuk !== null && yuk > t.yukUst) out = out.concat([1,2]);
+  var s = [];
+  out.forEach(function(n){ if(s.indexOf(n) === -1) s.push(n); });
+  return s;
+}
+
+var TBL = {n:0, ok:false, ilk:null};
+
+function computeTbl(){
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var f0 = function(x){ return x.toLocaleString("tr-TR", {maximumFractionDigits:2}); };
+  var t = {tesAlt:tol("tTeslAlt"), tesUst:tol("tTeslUst"), kulAlt:tol("tKulAlt"), kulUst:tol("tKulUst"), yukUst:tol("tYukUst")};
+  var tolOk = t.tesAlt !== null && t.tesUst !== null && t.kulAlt !== null && t.kulUst !== null && t.yukUst !== null && t.tesAlt <= t.tesUst && t.kulAlt <= t.kulUst;
+  var n = 0, hatali = 0, sT = 0, sA = 0, sK = 0, ilk = null, disinda = 0, tumEylem = [];
+
+  for(var i=0;i<SATIR;i++){
+    var ad = document.getElementById("p_ad_" + i).value.trim() || ("Birim " + (i+1));
+    var s = {};
+    ALAN.forEach(function(k){ s[k] = pv(k, i); });
+    var c = {};
+    ["tes","kul","yuk","dur"].forEach(function(k){ c[k] = document.getElementById("p_" + k + "_" + i); c[k].textContent = "—"; });
+    if(s.tal === null && s.tah === null && s.kap === null) continue;
+    if(!(s.tal > 0) || s.tah === null || !(s.kap > 0) || s.tah < 0 || !tolOk || (s.yt !== null && s.yt < 0) || (s.yu !== null && !(s.yu > 0))){
+      hatali++; c.dur.textContent = "tutarsız"; continue;
+    }
+    n++; sT += s.tal; sA += s.tah; sK += s.kap;
+    var tes = 100 * s.tah / s.tal, kul = 100 * s.tah / s.kap;
+    var yuk = (s.yt !== null && s.yu !== null) ? 100 * s.yt / s.yu : null;
+    c.tes.textContent = f1(tes); c.kul.textContent = f1(kul); c.yuk.textContent = yuk === null ? "—" : f1(yuk);
+    var e = eylemOner(tes, kul, yuk, t);
+    var notlar = [];
+    if(tes < t.tesAlt) notlar.push("teslimat altında"); else if(tes > t.tesUst) notlar.push("teslimat üstünde");
+    if(kul < t.kulAlt) notlar.push("kullanım altında"); else if(kul > t.kulUst) notlar.push("kullanım üstünde");
+    if(yuk !== null && yuk > t.yukUst) notlar.push("iş yükü yüksek");
+    if(notlar.length){ disinda++; c.dur.textContent = notlar.join("; ") + (e.length ? " → eylem " + e.join(", ") : ""); e.forEach(function(x){ if(tumEylem.indexOf(x) === -1) tumEylem.push(x); }); }
+    else c.dur.textContent = "toleranslar içinde";
+    if(ilk === null) ilk = {tal:s.tal, tah:s.tah, kap:s.kap, yt:s.yt, yu:s.yu};
+  }
+
+  var ok = n > 0;
+  document.getElementById("tTal").textContent = n ? f0(sT) : "—";
+  document.getElementById("tTah").textContent = n ? f0(sA) : "—";
+  document.getElementById("tKap").textContent = n ? f0(sK) : "—";
+  document.getElementById("tTes").textContent = n ? f1(100 * sA / sT) : "—";
+  document.getElementById("tKul").textContent = n ? f1(100 * sA / sK) : "—";
+  document.getElementById("tDur").textContent = n ? (disinda + " / " + n + " birim tolerans dışı") : "—";
+
+  var kart = document.getElementById("pCards");
+  TBL = {n:n, ok:ok, ilk:ilk};
+  if(!ok){
+    kart.innerHTML = "";
+    document.getElementById("pNot").textContent = hatali ? "Tutarsız satır var: talep ve kapasite sıfırdan büyük, tahsis negatif olmamalı; tolerans alt sınırları üst sınırlarını aşmamalı." :
+      "Tabloya birimleri girin ya da örnek veriyi yükleyin.";
+    return;
+  }
+  var kartlar = '';
+  kartlar += '<div class="card"><b>' + f1(100 * sA / sT) + ' %</b><span>Toplam teslimat (tahsis ÷ talep)</span></div>';
+  kartlar += '<div class="card"><b>' + f1(100 * sA / sK) + ' %</b><span>Toplam kullanım (tahsis ÷ kapasite)</span></div>';
+  kartlar += '<div class="card alt"><b>' + n + '</b><span>Doğrulanan birim</span></div>';
+  kartlar += '<div class="card alt"><b>' + disinda + '</b><span>Tolerans dışı birim</span></div>';
+  kartlar += '<div class="card warn"><b>' + f0(sT - sA) + '</b><span>Karşılanmayan talep (toplam)</span></div>';
+  kartlar += '<div class="card warn"><b>' + f0(sK - sA) + '</b><span>Kullanılmayan kapasite (toplam)</span></div>';
+  kart.innerHTML = kartlar;
+
+  var not = "";
+  if(tumEylem.length){
+    tumEylem.sort(function(a, b){ return a - b; });
+    not += "Önerilen önleyici eylemler (Tablo B.1 numaraları; öneri kuralı bu sayfada türetilmiştir): " + tumEylem.map(function(x){ return x + ") " + EYLEM[x]; }).join("; ") + ". 6–9 numaralı eylemler işgücü planlaması türündedir. ";
+  } else not += "Tüm birimler tolerans aralıklarında; önleyici eylem önerilmedi. ";
+  if(hatali) not += hatali + " tutarsız satır hesaba katılmadı. ";
+  not += "Toplam, birimlerin toplamıdır; birim oranlarının ortalaması değildir. Tolerans aralıkları Ek C.3 örneğinden varsayılmıştır.";
+  document.getElementById("pNot").textContent = not;
+}
+
+function loadTblExample(){
+  for(var i=0;i<SATIR;i++){
+    var s = ORNEK_TBL[i];
+    document.getElementById("p_ad_" + i).value = s ? s[0] : "";
+    ALAN.forEach(function(k, j){ document.getElementById("p_" + k + "_" + i).value = s ? s[j+1] : ""; });
+  }
+  computeTbl();
+}
+
+document.getElementById("btnOrnek").addEventListener("click", loadTblExample);
+document.getElementById("btnTemizle").addEventListener("click", function(){
+  for(var i=0;i<SATIR;i++){
+    document.getElementById("p_ad_" + i).value = "";
+    ALAN.forEach(function(k){ document.getElementById("p_" + k + "_" + i).value = ""; });
+  }
+  computeTbl();
+});
+document.getElementById("btnCsv").addEventListener("click", function(){
+  var satir = ["Birim;Talep;Tahsis;Kapasite;En yuklu tahsis;Uygunluk;Teslimat %;Kullanim %;Is yuku %"];
+  for(var i=0;i<SATIR;i++){
+    var s = {};
+    ALAN.forEach(function(k){ s[k] = pv(k, i); });
+    if(!(s.tal > 0) || s.tah === null || !(s.kap > 0)) continue;
+    var ad = document.getElementById("p_ad_" + i).value.trim() || ("Birim " + (i+1));
+    satir.push([ad, s.tal, s.tah, s.kap, s.yt === null ? "" : s.yt, s.yu === null ? "" : s.yu,
+      (100 * s.tah / s.tal).toFixed(1), (100 * s.tah / s.kap).toFixed(1),
+      (s.yt !== null && s.yu > 0) ? (100 * s.yt / s.yu).toFixed(1) : ""].join(";"));
+  }
+  var blob = new Blob(["\ufeff" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "iso30434_birim_dogrulama.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* =========================================================
+   4) FORMÜL TABLOSU + HESAPLAYICI
+   Alan adları gömülü Python modülünün hesapla() imzasıyla birebir aynıdır.
+   ========================================================= */
+function gerek(kosul, mesaj){ if(!kosul) throw new Error("GecersizGirdi: " + mesaj); }
+function bolOk(pay, payda, ad){ gerek(payda > 0, ad + " sıfırdan büyük olmalı"); return pay / payda; }
+function negYok(v, ks){ ks.forEach(function(k){ gerek(v[k] >= 0, k + " negatif olamaz"); }); }
+/* Python round() ile aynı davranış: tam yarım değerlerde en yakın çifte yuvarlar */
+function pyround(x, n){
+  var m = Math.pow(10, n), y = x * m, f = Math.floor(y);
+  if(y - f === 0.5) return (f % 2 === 0 ? f : f + 1) / m;
+  return Math.round(y) / m;
+}
+function r1(x){ return pyround(x, 1); }
+function r2(x){ return pyround(x, 2); }
+function r3(x){ return pyround(x, 3); }
+
+var CALC = [
+ {id:"teslimat", name:"Teslimat oranı: iş teslim edilecek mi", grp:"Doğrulama", noHeur:true,
+  formula:"Teslimat = (Tahsis edilen iş &divide; Toplam talep) &times; 100",
+  note:"Madde 7.6.2.4: işin teslim edileceği, toplam talep ile toplam tahsis edilen iş karşılaştırılarak doğrulanır. Standart yüzde formülü vermez; oran bu sayfada türetilmiştir. Birim saat, gün, kadro ya da FTE olabilir (talep ve tahsis aynı birimde olmalı). Varsayılan değerler örnek amaçlıdır.",
+  fields:[{k:"talep",l:"Toplam talep",v:1200},{k:"tahsis",l:"Tahsis edilen iş",v:1100}],
+  unit:"% (tahsis ÷ talep)",
+  py:"teslimat_orani(talep=1200, tahsis=1100)",
+  calc:function(v){
+    negYok(v, ["tahsis"]);
+    var d = 100 * bolOk(v.tahsis, v.talep, "toplam talep");
+    return {value:d, dec:1, expl:v.tahsis + " ÷ " + v.talep + " × 100",
+      detail:[["Karşılanmayan talep", r2(v.talep - v.tahsis)],
+              ["Talebe göre fark (puan)", r1(d - 100)]]}; },
+  bands:[[0,"ok","Standart eşik vermez: hedef sonuçları ve tolerans aralığını kurum belirler (madde 5.10). Hedefin altında kalan teslimat için önleyici eylem (Tablo B.1) değerlendirilir."]]},
+
+ {id:"kullanim", name:"Kullanım oranı: çalışanlar kullanılacak mı", grp:"Doğrulama", noHeur:true,
+  formula:"Kullanım = (Tahsis edilen iş &divide; Toplam kapasite) &times; 100",
+  note:"Madde 7.6.2.4: çalışanların kullanılacağı, tahsis edilen iş ile toplam kapasite karşılaştırılarak doğrulanır; yalnızca işgücü kısıtlı senaryolarda (5.5). Standart yüzde formülü vermez; oran türetilmiştir. Madde 5.10 örneği: tahmin edilen kullanım %68, hedef %85 ise istenmeyen sonuç.",
+  fields:[{k:"tahsis",l:"Tahsis edilen iş",v:700},{k:"kapasite",l:"Toplam kapasite",v:1000}],
+  unit:"% (tahsis ÷ kapasite)",
+  py:"kullanim_orani(tahsis=700, kapasite_toplam=1000)",
+  calc:function(v){
+    negYok(v, ["tahsis"]);
+    var d = 100 * bolOk(v.tahsis, v.kapasite, "toplam kapasite");
+    return {value:d, dec:1, expl:v.tahsis + " ÷ " + v.kapasite + " × 100",
+      detail:[["Kullanılmayan kapasite", r2(v.kapasite - v.tahsis)],
+              ["Kapasiteye göre fark (puan)", r1(d - 100)]]}; },
+  bands:[[0,"ok","Kullanım yalnızca işgücü kısıtlı durumlarda anlamlıdır; iş kısıtlı işgücünde kapasite işe göre belirlenir (madde 5.5, 7.6.2.4)."]]},
+
+ {id:"is_yuku", name:"İş yükü oranı: iş yükü aşırı mı", grp:"Doğrulama", noHeur:true,
+  formula:"İş yükü = (Çalışana tahsis edilen iş &divide; Çalışanın uygunluğu) &times; 100",
+  note:"Madde 7.6.2.4: iş yükünün aşırı olmadığı, tahsis edilen iş ile çalışanın uygunluğu karşılaştırılarak doğrulanır. Standart yüzde formülü vermez; oran türetilmiştir. Uygunluk; sözleşme, planlı izin, ek uygunluk (fazla mesai sınırları) gibi kısıtlardan etkilenir (Ek A.2.2).",
+  fields:[{k:"tahsis",l:"Çalışana tahsis edilen iş (saat)",v:46},{k:"uygunluk",l:"Çalışanın uygunluğu (saat)",v:40}],
+  unit:"% (tahsis ÷ uygunluk)",
+  py:"is_yuku_orani(tahsis=46, uygunluk=40)",
+  calc:function(v){
+    negYok(v, ["tahsis"]);
+    var d = 100 * bolOk(v.tahsis, v.uygunluk, "çalışanın uygunluğu");
+    return {value:d, dec:1, expl:v.tahsis + " ÷ " + v.uygunluk + " × 100",
+      detail:[["Uygunluğun üstünde (+) ya da altında (−) saat", r2(v.tahsis - v.uygunluk)]]}; },
+  bands:[[0,"ok","Çalışanın uygunluğunu aşan tahsis yalnızca ek uygunluk (fazla mesai) sınırları içindeyse geçerlidir; aşıldığında yeniden dağıt ya da böl (Tablo B.1, eylem 1 ve 2)."]]},
+
+ {id:"hedef_fark", name:"Hedef farkı (tahmin − hedef)", grp:"Doğrulama", noHeur:true,
+  formula:"Fark = Tahmin &minus; Hedef",
+  note:"Madde 7.6.2.5 örneği: hedef kullanım %85 iken tahmin edilen kullanımın %68 olması istenmeyen bir sonuçtur (fark −17 puan). Farkın puan olarak ifade edilmesi türetilmiştir.",
+  fields:[{k:"tahmin",l:"Tahmin edilen değer (%)",v:68,step:0.1},{k:"hedef",l:"Hedef değer (%)",v:85,step:0.1}],
+  unit:"puan (tahmin − hedef)",
+  py:"hedef_farki(tahmin=68, hedef=85)",
+  calc:function(v){
+    negYok(v, ["tahmin","hedef"]);
+    var d = v.tahmin - v.hedef;
+    return {value:d, dec:1, expl:v.tahmin + " − " + v.hedef,
+      detail:[["Hedefe göre oran", r3(bolOk(v.tahmin, v.hedef, "hedef"))],
+              ["Hedefin yüzdesi olarak (%)", r1(100 * v.tahmin / v.hedef)]]}; },
+  bands:[[0.0000001,"ok","Tahmin hedefin üstünde; tolerans aralığının üst sınırını da kontrol edin."],
+         [-0.0000001,"ok","Tahmin hedefe eşit."],
+         [-1e9,"bad","Tahmin hedefin altında: istenmeyen sonuç olabilir; önleyici eylem değerlendirilir (madde 7.6.2.5, Ek B)."]]},
+
+ {id:"tolerans", name:"Tolerans aralığı sapması", grp:"Doğrulama", noHeur:true,
+  formula:"Sapma = Tahmin &minus; Alt sınır (alt sınırın altındaysa); Tahmin &minus; Üst sınır (üstündeyse); 0 (aralıktaysa)",
+  note:"Madde 5.10: başarı faktörleri tolerans aralıklarıyla ifade edilir (örn. tahmin edilen kullanım %110 ile %80 arasında sınırlı olabilir; standart sınırları ters sırayla yazar). Aralık dışı sapma miktarı türetilmiştir. Varsayılan sınırlar Ek C.3'ün kullanım aralığıdır (%80–120).",
+  fields:[{k:"tahmin",l:"Tahmin edilen değer (%)",v:68,step:0.1},{k:"alt",l:"Tolerans alt sınırı (%)",v:80,step:0.1},{k:"ust",l:"Tolerans üst sınırı (%)",v:120,step:0.1}],
+  unit:"puan (aralık dışı sapma)",
+  py:"tolerans_sapmasi(tahmin=68, alt=80, ust=120)",
+  calc:function(v){
+    gerek(v.alt <= v.ust, "tolerans alt sınırı üst sınırdan büyük olamaz");
+    negYok(v, ["tahmin","alt"]);
+    var d = v.tahmin < v.alt ? v.tahmin - v.alt : (v.tahmin > v.ust ? v.tahmin - v.ust : 0);
+    var durum = d === 0 ? "aralık içinde" : (d < 0 ? "aralığın altında" : "aralığın üstünde");
+    return {value:d, dec:1, expl:v.tahmin + " ile [" + v.alt + ", " + v.ust + "] aralığı",
+      detail:[["Durum", durum],
+              ["Aralık genişliği", r2(v.ust - v.alt)]]}; },
+  bands:[[0.0000001,"bad","Tahmin tolerans aralığının üstünde: iş yükü ya da maliyet açısından aşırı olabilir."],
+         [-0.0000001,"ok","Tahmin tolerans aralığında."],
+         [-1e9,"bad","Tahmin tolerans aralığının altında: önleyici eylem (Tablo B.1) değerlendirilir."]]},
+
+ {id:"kapasite", name:"Düzenli ve ek kapasite", grp:"Kapasite", noHeur:true,
+  formula:"Düzenli = Kişi &times; (Sözleşme saati &minus; Planlı izin); Ek = Kişi &times; Ek uygunluk; Toplam = Düzenli + Ek",
+  note:"Madde 7.6.1.5: kurumlar düzenli uygunluktan (sözleşme çalışma süreleri) gelen düzenli kapasite ile ek uygunluktan (sınır içinde fazla mesai) gelen ek kapasiteyi ayırmalı; dış çalışanların hangisine katkı verdiğine karar vermelidir. Standart formül vermez; saat cinsinden hesap türetilmiştir. Varsayılan değerler örnek amaçlıdır.",
+  fields:[{k:"kisi",l:"Çalışan sayısı",v:10},{k:"saat",l:"Kişi başına sözleşme saati (dönem)",v:160},{k:"izin",l:"Kişi başına planlı izin saati",v:16},{k:"ek",l:"Kişi başına ek uygunluk (fazla mesai sınırı, saat)",v:20}],
+  unit:"saat (toplam kapasite)",
+  py:"kapasite(kisi=10, saat=160, izin=16, ek=20)",
+  calc:function(v){
+    negYok(v, ["kisi","saat","izin","ek"]);
+    gerek(v.izin <= v.saat, "planlı izin sözleşme saatini aşamaz");
+    var duz = v.kisi * (v.saat - v.izin), ek = v.kisi * v.ek, top = duz + ek;
+    return {value:top, dec:0, expl:v.kisi + " × (" + v.saat + " − " + v.izin + " + " + v.ek + ")",
+      detail:[["Düzenli kapasite (saat)", duz],
+              ["Ek kapasite (saat)", ek],
+              ["Ek kapasitenin payı (%)", r1(100 * bolOk(ek, top, "toplam kapasite"))]]}; },
+  bands:[[0,"ok","Atamada düzenli kapasite öncelikli; ek kapasite fazla mesai sınırları ve yorgunluk kısıtları içinde kullanılır (madde 5.9, 7.6.1.5)."]]},
+
+ {id:"plan_uyumu", name:"Plan uyumu (schedule adherence)", grp:"Sistem ölçümü", noHeur:true,
+  formula:"Plan uyumu = (İşyerinde geçirilen üretken süre &divide; Toplam tahsis edilen üretken süre) &times; 100",
+  note:"Madde 8, örnek a): işyerinde geçirilen üretken sürenin toplam tahsis edilen üretken süreye oranı. Standart oranı yüzde olarak yazmaz; yüzde gösterimi türetilmiştir. Varsayılan değerler örnek amaçlıdır.",
+  fields:[{k:"uretken_sure",l:"İşyerinde geçirilen üretken süre (saat)",v:1450},{k:"tahsisli_uretken_sure",l:"Toplam tahsis edilen üretken süre (saat)",v:1600}],
+  unit:"% (plan uyumu)",
+  py:"plan_uyumu(uretken_sure=1450, tahsisli_uretken_sure=1600)",
+  calc:function(v){
+    negYok(v, ["uretken_sure"]);
+    var d = 100 * bolOk(v.uretken_sure, v.tahsisli_uretken_sure, "tahsis edilen üretken süre");
+    return {value:d, dec:1, expl:v.uretken_sure + " ÷ " + v.tahsisli_uretken_sure + " × 100",
+      detail:[["Planlanan ile gerçekleşen fark (saat)", r2(v.uretken_sure - v.tahsisli_uretken_sure)]]}; },
+  bands:[[0,"ok","Plan uyumunu kurumun hedefleriyle ve işlevsel ekiplerin KPI'larıyla hizalayın (madde 8)."]]},
+
+ {id:"plan_performansi", name:"Plan performansı (schedule performance)", grp:"Sistem ölçümü", noHeur:true,
+  formula:"Plan performansı = (Çalışma ortamında geçirilen toplam süre &divide; Atanan ya da planlanan süre) &times; 100",
+  note:"Madde 8, örnek b): çalışma ortamında geçirilen toplam sürenin toplam atanan ya da planlanan süreye oranı. Yüzde gösterimi türetilmiştir. Plan uyumundan farkı, 'üretken' süre yerine çalışma ortamında geçirilen toplam süreyi kullanmasıdır.",
+  fields:[{k:"calisma_ortaminda",l:"Çalışma ortamında geçirilen toplam süre (saat)",v:1580},{k:"atanan_sure",l:"Atanan ya da planlanan süre (saat)",v:1600}],
+  unit:"% (plan performansı)",
+  py:"plan_performansi(calisma_ortaminda=1580, atanan_sure=1600)",
+  calc:function(v){
+    negYok(v, ["calisma_ortaminda"]);
+    var d = 100 * bolOk(v.calisma_ortaminda, v.atanan_sure, "atanan süre");
+    return {value:d, dec:1, expl:v.calisma_ortaminda + " ÷ " + v.atanan_sure + " × 100",
+      detail:[["Atanan ile fiili fark (saat)", r2(v.calisma_ortaminda - v.atanan_sure)]]}; },
+  bands:[[0,"ok","Plan uyumu ile birlikte okuyun: ortamda geçirilen sürenin ne kadarının üretken olduğunu plan uyumu gösterir."]]},
+
+ {id:"tahmin", name:"Tahmin doğruluğu (forecast demand accuracy)", grp:"Sistem ölçümü", noHeur:true,
+  formula:"Tahmin oranı = (Tahmin edilen talep &divide; Fiilen çalışılan süre) &times; 100",
+  note:"Madde 8, örnek d): tahmin edilen talebin fiilen çalışılan süreyle karşılaştırılması. Standart karşılaştırma biçimini belirtmez; oran (100 = tam isabet) ve mutlak yüzde hata türetilmiştir. Varsayılan değerler örnek amaçlıdır.",
+  fields:[{k:"tahmin",l:"Tahmin edilen talep (saat)",v:1180},{k:"gercek",l:"Fiilen çalışılan süre (saat)",v:1250}],
+  unit:"% (tahmin ÷ gerçek)",
+  py:"tahmin_orani(tahmin=1180, gercek=1250)",
+  calc:function(v){
+    negYok(v, ["tahmin"]);
+    var d = 100 * bolOk(v.tahmin, v.gercek, "fiilen çalışılan süre");
+    return {value:d, dec:1, expl:v.tahmin + " ÷ " + v.gercek + " × 100",
+      detail:[["Mutlak yüzde hata (%)", r1(100 * Math.abs(v.tahmin - v.gercek) / v.gercek)],
+              ["Fark (tahmin − gerçek)", r2(v.tahmin - v.gercek)]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Üst aşamalarda iş bilgisi daha belirsiz olduğundan doğruluğu aşama bazında izleyin (madde 7.6.1.4, not 2)."]]},
+
+ {id:"gecmis", name:"Geçmiş kullanım (past utilization)", grp:"Sistem ölçümü", noHeur:true,
+  formula:"Geçmiş kullanım = (Fiilen çalışılan süre &divide; Çalışanların kapasitesi) &times; 100",
+  note:"Madde 8, örnek e): fiilen çalışılan sürenin çalışanların kapasitesiyle karşılaştırılması. Yüzde gösterimi türetilmiştir. Atama sırasındaki tahmin edilen kullanımın (7.6.2.4) fiilen gerçekleşen karşılığıdır.",
+  fields:[{k:"fiili",l:"Fiilen çalışılan süre (saat)",v:1250},{k:"kapasite",l:"Çalışanların kapasitesi (saat)",v:1640}],
+  unit:"% (geçmiş kullanım)",
+  py:"gecmis_kullanim(fiili=1250, kapasite_toplam=1640)",
+  calc:function(v){
+    negYok(v, ["fiili"]);
+    var d = 100 * bolOk(v.fiili, v.kapasite, "kapasite");
+    return {value:d, dec:1, expl:v.fiili + " ÷ " + v.kapasite + " × 100",
+      detail:[["Kullanılmayan kapasite", r2(v.kapasite - v.fiili)]]}; },
+  bands:[[0,"ok","Tahmin edilen kullanım ile gerçekleşeni karşılaştırın; sapma tahsis sisteminin iyileştirme fırsatını gösterir (madde 8, 10)."]]}
+];
+
+/* --- formül tablosu --- */
+(function(){
+  var rows = CALC.map(function(c){
+    return '<tr><td><b>' + c.name + '</b></td><td><span style="font-family:var(--serif)">' +
+           c.formula + '</span></td><td>' + c.note + '</td></tr>';
+  }).join("");
+  document.getElementById("fBody").innerHTML = rows;
+})();
+
+/* --- hesaplayıcı --- */
+var sel = document.getElementById("cMetric");
+CALC.forEach(function(c, i){
+  var o = document.createElement("option");
+  o.value = i; o.textContent = c.grp + " — " + c.name;
+  sel.appendChild(o);
+});
+
+function buildFields(){
+  var c = CALC[+sel.value];
+  document.getElementById("cFields").innerHTML = c.fields.map(function(f){
+    return '<div class="field"><label for="in_' + f.k + '">' + f.l + '</label>' +
+      '<input type="number" id="in_' + f.k + '" value="" step="' + (f.step || "any") + '" placeholder="' + f.v + '"></div>';
+  }).join("");
+  document.getElementById("cFields").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", run);
+  });
+}
+
+function readVals(){
+  var c = CALC[+sel.value], v = {}, missing = false;
+  c.fields.forEach(function(f){
+    var el = document.getElementById("in_" + f.k);
+    var raw = el && el.value !== "" ? parseFloat(el.value) : NaN;
+    if(isNaN(raw)){ missing = true; v[f.k] = f.v; } else { v[f.k] = raw; }
+  });
+  return {v:v, missing:missing};
+}
+
+function fmt(x, dec){
+  if(!isFinite(x)) return "—";
+  return x.toLocaleString("tr-TR", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+
+/* Hesaplama motoru: Python hazırsa gömülü modül, değilse JS yedeği */
+function compute(c, v){
+  if(PY.ready){
+    try{
+      PY.pyodide.globals.set("_metrik", c.id);
+      PY.pyodide.globals.set("_girdi", JSON.stringify(v));
+      var raw = PY.pyodide.runPython(
+        "import json\n" +
+        "json.dumps(hesapla(_metrik, **json.loads(_girdi)))");
+      var r = JSON.parse(raw);
+      return {value:r.deger, expl:r.ifade, dec:r.ondalik, detail:r.ayrinti,
+              unit:r.birim, durum:r.durum, engine:"python"};
+    }catch(err){
+      var msg = String(err);
+      /* Kullanıcı girdisi kaynaklı hata: motor sorunu değil, yedeğe geçme */
+      if(msg.indexOf("GecersizGirdi") !== -1 || msg.indexOf("ZeroDivisionError") !== -1) throw err;
+      setEngine("off", "Motor: JS yedeği — Python hatası");
+    }
+  }
+  var out = c.calc(v);
+  out.engine = "js";
+  return out;
+}
+
+function run(){
+  var c = CALC[+sel.value];
+  var r = readVals();
+  var out;
+  try { out = compute(c, r.v); } catch(e){ out = null; }
+  var box = document.getElementById("cResult");
+  if(!out || !isFinite(out.value)){
+    box.innerHTML = '<div class="result"><b>Hesaplanamadı.</b> Payda sıfır olamaz, parça bütünden büyük olamaz ve değerler geçerli aralıkta olmalı; alanları kontrol edin.</div>';
+    return;
+  }
+  var dec = (out.dec === undefined) ? 1 : out.dec;
+  var unit = out.unit || c.unit;
+  var html = '<div class="result">';
+  html += '<div class="big">' + fmt(out.value, dec) + ' <span>' + unit + '</span></div>';
+  html += '<div style="font-size:13px;color:var(--ink-soft);margin-top:6px">' + c.name +
+          ' · ' + (out.engine === "python" ? 'Python (Pyodide) ile hesaplandı' : 'JavaScript ile hesaplandı') +
+          (r.missing ? ' · <i>boş alanlar için örnek değer kullanıldı</i>' : '') + '</div>';
+
+  if(document.getElementById("oFormula").checked){
+    html += '<div class="formula">' + c.formula + '<br><span style="color:var(--ink-soft);font-size:15px">= ' +
+            out.expl + ' = <b>' + fmt(out.value, dec) + '</b> ' + unit + '</span></div>';
+  }
+  if(out.detail && out.detail.length){
+    html += '<dl>' + out.detail.map(function(d){
+      var val = (typeof d[1] === "number") ? d[1].toLocaleString("tr-TR") : d[1];
+      return '<dt>' + d[0] + '</dt><dd>' + val + '</dd>';
+    }).join("") + '</dl>';
+  }
+  if(document.getElementById("oInterp").checked){
+    if(c.durumMetin && out.durum){
+      html += '<div class="verdict ' + out.durum + '">' + c.durumMetin[out.durum] + '</div>';
+    } else if(c.bands){
+      var band = c.bands[c.bands.length-1];
+      for(var i=0;i<c.bands.length;i++){ if(out.value >= c.bands[i][0]){ band = c.bands[i]; break; } }
+      html += '<div class="verdict ' + band[1] + '">' + band[2] + '</div>';
+      if(c.bands.length > 1 && !c.noHeur){
+        html += '<div class="note" style="margin-top:12px">Yorum eşikleri standarttan değil, başlangıç varsayımlarından gelir; kendi hedeflerinizle değiştirin.</div>';
+      }
+    }
+    html += '<div class="note" style="margin-top:12px">' + c.note + '</div>';
+  }
+  if(document.getElementById("oPy").checked){
+    var args = c.fields.map(function(f){ return f.k + "=" + r.v[f.k]; }).join(", ");
+    var call = 'hesapla("' + c.id + '", ' + args + ')';
+    html += '<pre style="margin-top:16px"><i>&gt;&gt;&gt; from iso30434_metrikler import hesapla</i>\n' +
+            '&gt;&gt;&gt; ' + call + '["deger"]\n' + out.value + '\n\n' +
+            '<i># eşdeğer doğrudan çağrı</i>\n&gt;&gt;&gt; ' + c.py + '</pre>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+sel.addEventListener("change", function(){ buildFields(); run(); });
+document.getElementById("btnRun").addEventListener("click", run);
+document.getElementById("btnExample").addEventListener("click", function(){
+  var c = CALC[+sel.value];
+  c.fields.forEach(function(f){ document.getElementById("in_" + f.k).value = f.v; });
+  run();
+});
+["oFormula","oInterp","oPy"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", function(){
+    var all = document.getElementById("oFormula").checked &&
+              document.getElementById("oInterp").checked &&
+              document.getElementById("oPy").checked;
+    document.getElementById("oAll").checked = all;
+    run();
+  });
+});
+document.getElementById("oAll").addEventListener("change", function(){
+  var s = this.checked;
+  ["oFormula","oInterp","oPy"].forEach(function(id){ document.getElementById(id).checked = s; });
+  run();
+});
+
+/* --- tablodan hesaplayıcıya aktarma --- */
+document.getElementById("btnAktar").addEventListener("click", function(){
+  if(!TBL.ok){ loadTblExample(); }
+  var idx = CALC.map(function(c){ return c.id; }).indexOf("kullanim");
+  sel.value = idx; buildFields();
+  var ilk = TBL.ilk;
+  if(ilk){
+    document.getElementById("in_tahsis").value = ilk.tah;
+    document.getElementById("in_kapasite").value = ilk.kap;
+  }
+  run();
+  document.getElementById("hesaplayici").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* =========================================================
+   4) PYTHON MOTORU (Pyodide / WebAssembly)
+   Gömülü iso30434_metrikler.py modülü tarayıcı içinde
+   gerçek CPython ile çalıştırılır. Erişim yoksa JS yedeği
+   devrede kalır ve sonuçlar değişmez.
+   ========================================================= */
+var PY = {ready:false, busy:false, pyodide:null};
+
+var PYODIDE_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+  "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"
+];
+
+function setEngine(state, text){
+  var chip = document.getElementById("engStatus");
+  chip.className = "chip" + (state ? " " + state : "");
+  chip.textContent = text;
+}
+
+function loadScript(src){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function(){ resolve(src); };
+    s.onerror = function(){ reject(new Error(src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function pySource(){
+  return document.getElementById("pysrc").textContent;
+}
+
+async function initPython(){
+  if(PY.ready) return true;
+  if(PY.busy) return false;
+  PY.busy = true;
+  document.getElementById("btnPy").disabled = true;
+  setEngine("busy", "Motor: Pyodide indiriliyor…");
+  try{
+    if(typeof loadPyodide === "undefined"){
+      try { await loadScript(PYODIDE_URLS[0]); }
+      catch(e){ await loadScript(PYODIDE_URLS[1]); }
+    }
+    setEngine("busy", "Motor: Python başlatılıyor…");
+    PY.pyodide = await loadPyodide();
+
+    /* Modülü sanal dosya sistemine yazmadan, gerçek bir modül nesnesi olarak kur:
+       böylece __name__ != "__main__" olur ve _demo() kendiliğinden çalışmaz.
+       Kayıt exec'ten ÖNCE yapılır; @dataclass işlenirken modülü sys.modules'te arar. */
+    PY.pyodide.globals.set("_kaynak", pySource());
+    PY.pyodide.runPython(
+      "import sys, types\n" +
+      "_m = types.ModuleType('iso30434_metrikler')\n" +
+      "_m.__file__ = 'iso30434_metrikler.py'\n" +
+      "sys.modules['iso30434_metrikler'] = _m\n" +
+      "exec(compile(_kaynak, 'iso30434_metrikler.py', 'exec'), _m.__dict__)\n" +
+      "from iso30434_metrikler import *\n" +
+      "import iso30434_metrikler as m\n"
+    );
+    var sur = PY.pyodide.runPython(
+      "import sys\n'.'.join(str(x) for x in sys.version_info[:3])");
+    PY.ready = true;
+    setEngine("on", "Motor: Python " + sur + " (Pyodide)");
+    run();
+    return true;
+  }catch(e){
+    setEngine("off", "Motor: tarayıcı (JS) — Pyodide yüklenemedi");
+    document.getElementById("pyOut").textContent =
+      "Python motoru yüklenemedi. Bu genellikle çevrimdışı olmaktan ya da ağ kısıtından kaynaklanır.\n" +
+      "Sayfa çalışmaya devam eder; hesaplamalar JavaScript yedeğiyle aynı sonuçları verir.\n\n" + e;
+    return false;
+  }finally{
+    PY.busy = false;
+    document.getElementById("btnPy").disabled = false;
+  }
+}
+
+document.getElementById("btnPy").addEventListener("click", initPython);
+
+/* --- konsol --- */
+var VARSAYILAN_KOD =
+  'from iso30434_metrikler import *\n' +
+  'import iso30434_metrikler as m\n\n' +
+  '# Standart örneği: tahmin kullanım %68, hedef %85\n' +
+  'print("Hedef farkı     :", hedef_farki(68, 85), "puan")\n' +
+  'print("Tolerans sapması:", tolerans_sapmasi(68, 80, 120), "puan")\n\n' +
+  '# Doğrulama (7.6.2.4)\n' +
+  'print("Teslimat        :", round(teslimat_orani(1200, 1100), 1), "%")\n' +
+  'print("Kullanım        :", round(kullanim_orani(700, 1000), 1), "%")\n' +
+  'print("İş yükü         :", round(is_yuku_orani(46, 40), 1), "%")\n\n' +
+  '# Düzenli ve ek kapasite (7.6.1.5)\n' +
+  'print("Kapasite        :", kapasite(10, 160, 16, 20))\n\n' +
+  '# Birim tablosu ve Tablo B.1 eylem önerisi\n' +
+  't = ornek_tablo()\n' +
+  'for anahtar, deger in t.ozet().items():\n' +
+  '    print(f"{anahtar:<18}: {deger}")\n' +
+  'for n in (3, 5, 4):\n' +
+  '    print(n, ONLEYICI_EYLEMLER[n])\n\n' +
+  '# Dağıtıcı, hesaplayıcının kullandığı arayüzdür:\n' +
+  'print(hesapla("kullanim", tahsis=700, kapasite=1000))\n\n' +
+  '# Süreç denetimi: hangi adımlar eksik?\n' +
+  'for uyari in tahsis_denetimi(cerceve_belgeli=True, hedef_sonuc_tolerans_yazili=True):\n' +
+  '    print("!", uyari)\n';
+
+document.getElementById("pyCode").value = VARSAYILAN_KOD;
+
+async function runConsole(){
+  var out = document.getElementById("pyOut");
+  if(!PY.ready){
+    out.textContent = "Python motoru hazırlanıyor, ilk çalıştırma biraz sürebilir…";
+    var ok = await initPython();
+    if(!ok) return;
+  }
+  out.textContent = "çalışıyor…";
+  try{
+    PY.pyodide.globals.set("_kod", document.getElementById("pyCode").value);
+    var cikti = PY.pyodide.runPython(
+      "import io, contextlib, traceback\n" +
+      "_tampon = io.StringIO()\n" +
+      "with contextlib.redirect_stdout(_tampon), contextlib.redirect_stderr(_tampon):\n" +
+      "    try:\n" +
+      "        exec(_kod, globals())\n" +
+      "    except Exception:\n" +
+      "        traceback.print_exc()\n" +
+      "_tampon.getvalue()"
+    );
+    out.textContent = cikti && cikti.trim() ? cikti : "(çıktı yok)";
+  }catch(e){
+    out.textContent = "Hata: " + e;
+  }
+}
+
+document.getElementById("btnRunPy").addEventListener("click", runConsole);
+document.getElementById("btnReset").addEventListener("click", function(){
+  document.getElementById("pyCode").value = VARSAYILAN_KOD;
+  document.getElementById("pyOut").textContent = "Kod sıfırlandı.";
+});
+document.getElementById("btnDemo").addEventListener("click", function(){
+  document.getElementById("pyCode").value =
+    "import iso30434_metrikler as m\n\n" +
+    "# Modülün kendi doğrulama çıktısı (komut satırındaki\n" +
+    "# python3 iso30434_metrikler.py ile aynı sonucu verir)\n" +
+    "m._demo()\n";
+  runConsole();
+});
+
+/* modül kaynağını sayfada okunur kıl */
+document.getElementById("srcView").textContent = pySource().trim();
+
+buildTbl();
+loadTblExample();
+buildFields();
+run();
+</script>
+</body>
+</html>
