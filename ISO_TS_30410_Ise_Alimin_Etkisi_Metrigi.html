@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO/TS 30410 İşe Alımın Etkisi Metriği — Sınıflandırma ve Hesaplayıcı</title>
+<style>
+  :root{
+    --ink:#101418;
+    --ink-soft:#59636f;
+    --ink-faint:#8b95a1;
+    --line:#dde3ea;
+    --line-soft:#eef1f5;
+    --bg:#ffffff;
+    --canvas:#f6f8fa;
+    --accent:#0b5c8a;
+    --accent-soft:#e7f0f6;
+    --panel:#0e1520;
+    --panel-2:#16202e;
+    --panel-line:#28394f;
+    --out-ink:#8a3b12;  --out-bg:#fbeee6;
+    --eff-ink:#14615c;  --eff-bg:#e6f2f1;
+    --efc-ink:#33478c;  --efc-bg:#eaedf8;
+    --rea-ink:#7a5c00;  --rea-bg:#f8f1d9;
+    --cos-ink:#8c2f4b;  --cos-bg:#f9e8ee;
+    --ok:#1d6f42; --warn:#8a6100; --bad:#992121;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--canvas);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.62;
+  }
+  .sheet{max-width:1000px;margin:0 auto;background:var(--bg);padding:56px 60px 80px;
+    box-shadow:0 0 0 1px var(--line);}
+  @media(max-width:760px){ .sheet{padding:28px 20px 56px} }
+
+  h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:25px;margin:52px 0 4px;padding-bottom:8px;
+     border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  h3{font-size:17px;margin:32px 0 6px;letter-spacing:.01em}
+  h4{font-size:15px;margin:22px 0 4px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:12px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  small{color:var(--ink-soft)}
+  .lede{font-size:17px;color:var(--ink-soft)}
+
+  .srcbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 0;margin:0 0 26px;font-size:13.5px;color:var(--ink-soft)}
+  .srcbar b{color:var(--ink);font-weight:600}
+
+  .toc{background:var(--canvas);border:1px solid var(--line);padding:16px 20px;margin:26px 0 0;
+    font-size:14px;columns:2;column-gap:34px}
+  @media(max-width:640px){.toc{columns:1}}
+  .toc a{display:block;padding:3px 0;text-decoration:none;color:var(--ink)}
+  .toc a:hover{color:var(--accent);text-decoration:underline}
+  .toc b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 4px}
+
+  .keypoints li{margin:10px 0}
+  .keypoints b{font-weight:650}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink-soft);padding-bottom:6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:var(--canvas);font-weight:650;font-size:13px}
+  tbody tr:nth-child(even){background:#fcfdfe}
+  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;width:66px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink)}
+  .dot.o{background:var(--out-ink)} .dot.s{background:var(--eff-ink)} .dot.p{background:var(--efc-ink)}
+  .dot.r{background:var(--rea-ink)} .dot.c{background:var(--cos-ink)}
+
+  .tag{display:inline-block;font-size:11px;line-height:1.5;padding:1px 7px;border-radius:3px;
+    letter-spacing:.03em;white-space:nowrap;font-weight:600}
+  .tag.o{color:var(--out-ink);background:var(--out-bg)}
+  .tag.s{color:var(--eff-ink);background:var(--eff-bg)}
+  .tag.p{color:var(--efc-ink);background:var(--efc-bg)}
+  .tag.r{color:var(--rea-ink);background:var(--rea-bg)}
+  .tag.c{color:var(--cos-ink);background:var(--cos-bg)}
+  .tag.iso{color:#4a4a4a;background:#eeeeee}
+  .tag.lvl{color:#5a3a86;background:#f0eaf8}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--line-soft);padding:1px 5px;border-radius:3px}
+  pre{background:var(--panel);color:#e7eef6;border-radius:6px;padding:18px 20px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:14px 0}
+  pre b{color:#f0b866;font-weight:400}      /* anahtar kelime */
+  pre i{color:#7f8ea1;font-style:normal}    /* yorum */
+  pre u{color:#9fd28a;text-decoration:none} /* dize/sayı */
+  pre .fn{color:#79c0e8}
+  .filename{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin:14px 0 -8px}
+
+  .formula{font-family:var(--serif);font-size:16.5px;background:var(--canvas);
+    border-left:3px solid var(--accent);padding:12px 16px;margin:12px 0;overflow-x:auto}
+  .formula em{font-style:italic}
+
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 14px;color:var(--ink-soft);font-size:14px;margin:14px 0}
+
+  /* --- panel --- */
+  .panel{background:var(--panel);color:#dbe5f0;border-radius:8px;padding:22px 24px;margin:20px 0}
+  .panel h3{color:#fff;margin:0 0 4px;font-size:16px}
+  .panel .hint{color:#8fa2b8;font-size:13px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#8fa2b8;margin-bottom:5px}
+  .field label .req{color:#e08a5a}
+  select,input[type=number],input[type=text]{
+    width:100%;background:var(--panel-2);border:1px solid var(--panel-line);color:#eef4fb;
+    border-radius:5px;padding:9px 10px;font-family:var(--sans);font-size:14px}
+  input[type=number]{font-family:var(--mono)}
+  select:focus,input:focus{outline:2px solid #4a8fc0;outline-offset:1px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13.5px;color:#b9c7d6}
+  .checks label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .panel-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:5px;cursor:pointer;
+    border:1px solid transparent;padding:9px 18px}
+  .btn-run{background:#1c74ab;color:#fff}
+  .btn-run:hover{background:#2385c2}
+  .btn-ghost{background:transparent;color:#9fb3c9;border-color:var(--panel-line)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9fb3c9;
+    border:1px solid var(--panel-line);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7c8ea3}
+  .chip.busy::before{background:#e0a13c}
+  .chip.on::before{background:#4ec07a}
+  .chip.off::before{background:#c05a5a}
+
+  .console{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+  .console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+    background:var(--canvas);border-bottom:1px solid var(--line);padding:8px 12px;font-size:12.5px;color:var(--ink-soft)}
+  .console textarea{width:100%;border:0;display:block;background:var(--panel);color:#e7eef6;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:16px 20px;resize:vertical;min-height:190px}
+  .console textarea:focus{outline:2px solid #4a8fc0;outline-offset:-2px}
+  .console pre{margin:0;border-radius:0;background:#0a1017;border-top:1px solid var(--panel-line);min-height:64px}
+  .btn-sm{padding:6px 14px;font-size:13px}
+  details.src pre{max-height:420px;overflow:auto}
+  .btn-ghost:hover{color:#fff;border-color:#47607d}
+
+  .result{border:1px solid var(--line);border-top:3px solid var(--accent);padding:18px 20px;margin:18px 0}
+  .result .big{font-family:var(--serif);font-size:32px;line-height:1.1}
+  .result .big span{font-size:16px;color:var(--ink-soft);font-family:var(--sans)}
+  .result dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:14px 0 0;font-size:14px}
+  .result dt{color:var(--ink-soft)}
+  .result dd{margin:0;font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px;padding:10px 12px;font-size:14px;border-radius:4px;background:var(--canvas)}
+  .verdict.ok{color:var(--ok);background:#eef6f1}
+  .verdict.warn{color:var(--warn);background:#fbf5e7}
+  .verdict.bad{color:var(--bad);background:#faeeee}
+
+  /* --- matris --- */
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;
+    background:var(--canvas);border:1px solid var(--line);padding:14px 16px;margin:16px 0}
+  .filters label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .filters select,.filters input{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .matrix{font-size:13.5px}
+  .matrix th.rot{width:72px;text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom}
+  .matrix td.name{font-weight:500}
+  .matrix td.name em{display:block;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .matrix tr.group td{background:#f2f5f8;font-weight:650;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+  .count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+
+  /* --- pozisyon tablosu --- */
+  .postbl{font-size:13.5px}
+  .postbl input[type=text],.postbl input[type=date],.postbl input[type=number]{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .postbl input[type=text]{font-family:var(--sans)}
+  .postbl input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .postbl td.chk{text-align:center}
+  .postbl input[type=number]{text-align:right}
+  .postbl td:first-child{min-width:150px}
+  .postbl th.num,.postbl td.num{width:auto}
+  @media(max-width:760px){table{display:block;overflow-x:auto}}
+  .postbl td.calc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap}
+  .postbl tfoot td{background:var(--canvas);font-weight:650}
+  .tblbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+  .tblbar button{border-color:var(--line);color:var(--ink-soft);background:#fff}
+  .tblbar button:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tblbar .inline{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft)}
+  .tblbar .inline input{width:78px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .card{border:1px solid var(--line);border-top:3px solid var(--eff-ink);padding:12px 14px}
+  .card b{display:block;font-family:var(--serif);font-size:24px;line-height:1.2}
+  .card span{font-size:12px;color:var(--ink-soft)}
+  .card.alt{border-top-color:var(--efc-ink)}
+  .card.warn{border-top-color:var(--out-ink)}
+
+  details{border-bottom:1px solid var(--line);padding:12px 0}
+  summary{cursor:pointer;font-weight:600;font-size:15px}
+  summary::marker{color:var(--accent)}
+  details p{margin:10px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  @media (prefers-reduced-motion:no-preference){
+    .result{transition:border-color .2s}
+  }
+  @media print{
+    body{background:#fff} .sheet{box-shadow:none;max-width:none;padding:0}
+    .panel{background:#fff;color:#000;border:1px solid #000}
+    pre{background:#f4f4f4;color:#000}
+  }
+.postbl input[type=number]{min-width:56px}
+.flow{margin:14px 0}
+.fl-ctx{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:8px}
+.fl-out{background:rgba(120,130,150,.18)}.fl-mid{background:rgba(120,130,150,.12)}.fl-in{background:rgba(70,120,200,.10)}
+.fl-lab{font-size:12px;font-weight:600;color:var(--ink-soft);margin-bottom:6px}
+.fl-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:6px 0}
+.fl-box{border:2px solid var(--ink,#222);border-radius:6px;padding:8px 12px;background:var(--paper,#fff);font-size:13px;flex:1 1 150px;text-align:center}
+.fl-top{font-weight:700;font-size:14px}
+.fl-arrow{text-align:center;font-size:20px;line-height:1;color:var(--ink-soft)}
+.fl-side{flex:0 0 auto}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>ISO/TS 30410 İşe Alımın Etkisi Metriği</h1>
+<div class="srcbar">
+  <span><b>Kaynak:</b> PD ISO/TS 30410:2018 — <i>Human resource management — Impact of hire metric</i></span>
+  <span><b>Kapsam:</b> 5 kullanıcı · 5 metrik ailesi · 50 metrik ve etken</span>
+  <span><b>Hesaplama:</b> gömülü Python modülü (Pyodide/WebAssembly)</span>
+  <span><b>Sürüm:</b> Ekim 2026</span>
+</div>
+
+<h2 id="genel">Genel Bakış</h2>
+<p>ISO/TS 30410:2018, <b>işe alımın etkisi</b> (impact of hire) metriğini tanımlayan bir teknik şartnamedir. Giriş bölümüne göre giderek rekabetçi ve kaynak duyarlı bir pazarda kritik pozisyonların kurum performansını farklılaştırmadaki etkisi büyüktür;
+ölçümün odağı verimlilik ve etkililikten, stratejik karar vermeyi destekleyen <b>etki ölçülerine</b> kayar. Etkili olmak için ölçümler, kurum sonuçlarında stratejik fark yaratan bileşenlere odaklanmalıdır: atama kararlarının kalitesi, özellikle de kritik pozisyonlara yapılan atamalar ve bu pozisyonlardaki kişilerin performansı.
+Şartname bunu işe alımın etkisi olarak adlandırır ve yalnızca kurumun stratejisi için en kritik pozisyonlara uygular. Kapsamı iki parçadır: işgücü segmentasyonu yaklaşımlarıyla kritik pozisyonların belirlenmesi (ISO 30409'a atıfla) ve kritik pozisyonların ile bu pozisyonlara alınan kişilerin performansının
+kurumun değer yaratımına etkisini belirleyen ölçüler. Üç etki ölçüsü verir: <b>kritik pozisyonların etkisi</b>, <b>kritik pozisyon sahiplerinin performans değişiminin etkisi</b> ve <b>boş kritik pozisyonların etkisi</b>. Bu sayfa, şartnamenin ölçülerini filtrelenebilir bir matrise;
+hesaplanabilir ölçüleri de formül + canlı hesaplayıcı + Python koduna dönüştürür. PD ISO/TS 30410:2018, ISO/TS 30410'un İngiltere uyarlamasıdır (yayımlanmış belge; ISO ilk baskısı 15 Haziran 2018) ve BSI tarafından 30 Haziran 2018'de yayımlanmıştır.
+İlişkili belgeler: işgücü planlaması ISO 30409, işe alım kılavuzu ISO 30405, terimler ISO 30400.</p>
+
+<h3>Önemli Noktalar</h3>
+<ul class="keypoints">
+  <li><b>Yalnızca kritik pozisyonlar.</b> Kritik pozisyon, kurumun sonuçları ve rekabet avantajı üzerinde doğrudan ve önemli etkisi olan iş rolüdür. Kurum stratejisi kapsamında (güvenlik, emniyet, büyüme, sürdürülebilirlik gibi) belirlenir; sektöre, türe (kâr amaçlı/amaçsız) göre değişir ve her zaman üst düzey pozisyon olmak zorunda değildir.</li>
+  <li><b>Üç formül.</b> Pozisyonun etkisi IR = SR × B; bireysel etki II = IR ÷ NR. Performans değişiminin etkisi D = II × (R − T) ÷ T. Boş pozisyonun kaybı L = II × M ÷ 12.</li>
+  <li><b>Şartname örneği tek bir zincirdir.</b> SR = %40, B = 10 milyon $, NR = 5 → IR = 4 milyon $, II = 0,8 milyon $. R = 5, T = 4 → D = +0,2 milyon $; R = 4 → 0; R = 3 → −0,2 milyon $. M = 6 ay → L = 0,4 milyon $.</li>
+  <li><b>Tüm değerler yıllıklandırılmıştır.</b> B, kurumun/alt grubun/iş biriminin yıllıklandırılmış iş değeridir ve finansal ile finansal olmayan (örgütsel performans) boyutları kapsar (madde 3.3).</li>
+  <li><b>Performans ölçeği kuruma bağlıdır.</b> R ve T aynı ölçekte verilir: 1–5, 1–7 ya da 1–10; hedef 4/5, 5/7 ya da 7/10 olabilir. Ölçek doğrusal değilse formül yanıltabilir; derecelendirme sistemi yoksa performans beklentileri ile sonuçlar karşılaştırılabilir.</li>
+  <li><b>Boşluk süresi üç parçadır.</b> M (ay), eşdeğer yetkinlikte bir yedeği bulma ve işe başlatma süresi ile yeni kişinin performansını hedefe çıkarma süresini kapsar; yetenek hattı yoksa risk büyür.</li>
+  <li><b>Etki ölçümü ticari açıdan hassastır.</b> Kritik pozisyonlar sürdürülebilirlik için rekabet etkenlerini içerebilir; ölçümler ticari açıdan hassas veri taşıyabilir.</li>
+</ul>
+
+<div class="toc">
+  <b>İçindekiler</b>
+  <a href="#genel">Genel bakış ve önemli noktalar</a>
+  <a href="#nezaman">Ne zaman kullanılır</a>
+  <a href="#cerceve">Çerçeve ve metodoloji</a>
+  <a href="#ornekler">Şartnamenin hesaplanmış örnekleri</a>
+  <a href="#adimlar">Metrik seçim adımları</a>
+  <a href="#kavramlar">Temel kavramlar</a>
+  <a href="#matris">Metrik matrisi</a>
+  <a href="#tablo">Kritik pozisyon tablosu</a>
+  <a href="#formuller">Formüller ve tanımlar</a>
+  <a href="#hesaplayici">Hesaplayıcı</a>
+  <a href="#python">Python kod örnekleri</a>
+  <a href="#yorum">Sonuçların yorumlanması</a>
+  <a href="#sinirlamalar">Sınırlamalar</a>
+  <a href="#raporlama">Metriklerin raporlanması</a>
+  <a href="#ilgili">İlgili standartlar</a>
+  <a href="#sss">Sıkça sorulan sorular</a>
+</div>
+
+<h2 id="nezaman">Ne Zaman Kullanılır</h2>
+<ul>
+  <li><b>Hangi pozisyonların stratejik fark yarattığını belirlerken:</b> işgücü segmentasyonu, iş ailelerini, işlevleri, rolleri ve yetkinlikleri sınıflar ve kurumun performansı için stratejik önemi en yüksek pozisyonlara odaklanmayı sağlar (madde 4.1).</li>
+  <li><b>Bir kritik pozisyonun iş değerine katkısını sayısallaştırırken:</b> pozisyonun toplam iş değerindeki payı ve pozisyondaki kişi sayısından yıllık etki ve bireysel etki hesaplanır (madde 5).</li>
+  <li><b>Yeni atanan ya da yerleşik pozisyon sahiplerinin etkinliğini değerlendirirken:</b> performans değişimi metriği, sahiplerin hedef performansa göre etkisini ölçer; önceki ve yedek sahiplerin performansını karşılaştırmak için de kullanılabilir (madde 6.4.1).</li>
+  <li><b>Boş kalan kritik pozisyonların riskini hesaplarken:</b> pozisyonun yeni olup doldurulmadığı ya da bir ayrılıştan sonra dolmadığı durumlarda kaybedilen iş değeri ve yedekleme süresi (madde 7).</li>
+  <li><b>Yetenek hattı ve yedekleme planlaması kararlarında:</b> özel bilgi, beceri ve yetenek gerektiren ve kıt olan kritik pozisyonlar için iç yetenek hattı geliştirme ihtiyacını gösterir (madde 3.1, 7.4.3).</li>
+  <li><b>İşgücü planlaması, örgüt tasarımı, yetenek yönetimi, yedekleme ve insan sermayesi raporlamasında:</b> şartname bu alanlarla ilgilenenler içindir ve her büyüklük, sektör ve türdeki kuruma ölçeklenebilir (Kapsam).</li>
+</ul>
+<div class="note">Bu belge bir <b>ölçme</b> belgesidir ve kritik pozisyonlarla sınırlıdır. Her pozisyon için etki hesaplamak şartnamenin amacı değildir; kritik olmayan pozisyonlar için formüller anlamlı bir pay (SR) vermez. Sonuçlar tahmindir: pay (SR), iş değeri (B) ve yedekleme süresi (M) kurumca belirlenir.</div>
+
+<h2 id="cerceve">Çerçeve ve Metodoloji</h2>
+
+<h3>Bağlam ve bileşenler (Ek A akış şeması)</h3>
+<p>Şartnamenin bilgilendirici Ek A'sı, işe alımın etkisinin bağlamını ve bileşenlerini bir akış şemasıyla gösterir: işgücü planlamasından iki adım çıkar — işgücü segmentasyonu ve kritik pozisyonların belirlenmesi —; bunlar işe alımın etkisi ölçülerini besler; bu ölçüler üçe ayrılır. Hepsi iç bağlamın (stratejik değerlendirmeler, yönetişim, amaç, örgütsel performans) içindedir; o da dış çevresel alt bağlamın (kurumun sektörü, büyüklüğü, büyüme evresi) ve dış çevresel bağlamın (kurum dışı) içindedir.</p>
+<div class="flow">
+  <div class="fl-ctx fl-out"><div class="fl-lab">Dış çevresel bağlam (kurum dışı)</div>
+    <div class="fl-ctx fl-mid"><div class="fl-lab">Dış çevresel alt bağlam (kurumun sektörü, büyüklüğü, büyüme evresi vb.)</div>
+      <div class="fl-ctx fl-in"><div class="fl-lab">İç bağlam (stratejik değerlendirmeler, yönetişim, amaç, örgütsel performans vb.)</div>
+        <div class="fl-box fl-top">İşgücü planlaması</div>
+        <div class="fl-arrow">&darr;</div>
+        <div class="fl-row">
+          <div class="fl-box">İşgücü segmentasyonu</div>
+          <div class="fl-box">Kritik pozisyonların belirlenmesi</div>
+          <div class="fl-arrow fl-side">&rarr;</div>
+          <div class="fl-box fl-top">İşe alımın etkisi ölçüleri</div>
+        </div>
+        <div class="fl-arrow">&darr;</div>
+        <div class="fl-row">
+          <div class="fl-box">Kritik pozisyonların etkisi</div>
+          <div class="fl-box">Kritik pozisyon sahiplerinin performans değişiminin etkisi</div>
+          <div class="fl-box">Boş kritik pozisyonların etkisi</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>İşgücü segmentasyonu: kritik pozisyonların belirlenmesi (madde 4)</h3>
+<table>
+  <thead><tr><th>Yaklaşım</th><th>Madde</th><th>Tanım</th></tr></thead>
+  <tbody>
+    <tr><td><b>Rol temelli segmentasyon</b></td><td>4.2</td>
+      <td>İşler, yapılan işin değerine ya da türüne göre ayrılır. Dış çevrenin geleceğe dönük taranmasına ve mevcut ile gelecekteki roller için gereken bilgi, beceri, yetenek ve diğer etkenleri belirleyen sistematik işgücü planlamasına dayanır; kurumun güçlü yanlarını ve farklılaştırıcılarını kullanan kritik pozisyonları bulmaya yardım eder.</td></tr>
+    <tr><td><b>Çalışan temelli segmentasyon</b></td><td>4.3</td>
+      <td>İşler demografik özelliklere, konuma ya da diğer gözlenebilir veya çıkarsanan özelliklere göre ayrılır; işgücü arz tahminiyle ilgilidir. Kurumun stratejik büyümesini, bireysel katkıları ve yedekleme hazırlığını gözeten kanıta dayalı bir yaklaşım gerektirir.</td></tr>
+    <tr><td><b>Kritik pozisyon belirleme</b></td><td>4.4</td>
+      <td>Paydaşların ürün ve hizmetlerden yararlanma kararını önemli ölçüde etkileyen etkenlere, teslimat sistem ve süreçlerinin değer yaratma, sağlama ve ekleme biçimine ve bunların risklerine bakılır; değer yaratma ya da zedelemede en büyük etki ve nüfuza sahip pozisyonlar saptanır.</td></tr>
+  </tbody>
+</table>
+
+<h3>Üç etki ölçüsü ve formüller</h3>
+<table>
+  <thead><tr><th>Ölçü</th><th>Madde</th><th>Formül</th><th>Değişkenler</th></tr></thead>
+  <tbody>
+    <tr><td><b>Kritik pozisyonların etkisi</b></td><td>5</td>
+      <td style="font-family:var(--serif)">I<sub>R</sub> = S<sub>R</sub> &times; B<br>I<sub>I</sub> = I<sub>R</sub> &divide; N<sub>R</sub></td>
+      <td>I<sub>R</sub>: kritik pozisyonun yıllıklandırılmış iş etkisi (birden çok kişiyle karşılanabilir); S<sub>R</sub>: pozisyonun B içindeki yüzde payı; B: yıllıklandırılmış iş değeri; N<sub>R</sub>: pozisyondaki kişi sayısı; I<sub>I</sub>: bireyin yıllık iş etkisi.</td></tr>
+    <tr><td><b>Performans değişiminin etkisi</b></td><td>6</td>
+      <td style="font-family:var(--serif)">D = I<sub>I</sub> &times; (R &minus; T) &divide; T</td>
+      <td>D: pozisyon sahibinin performans puanı R'nin hedef T'ye göre farkından doğan değer farkı; R: bireyin performans puanı (ör. 1–5, 1–7, 1–10); T: pozisyonun hedef performans puanı (ör. 4/5, 5/7, 7/10).</td></tr>
+    <tr><td><b>Boş kritik pozisyonların etkisi</b></td><td>7</td>
+      <td style="font-family:var(--serif)">L = I<sub>I</sub> &times; M &divide; 12</td>
+      <td>L: kritik pozisyondaki bir kişinin kaybından ve yedekleme süresinden doğan iş etkisi; M: yedekleme süresi (ay): eşdeğer yetkinlikte bir kişiyi bulma ve işe başlatma süresi artı performansı hedefe çıkarma süresi.</td></tr>
+  </tbody>
+</table>
+
+<h3>Kullanım biçimi (madde 5.4, 6.4, 7.4)</h3>
+<ul>
+  <li><b>Dört adım (5.4.1):</b> (1) kurum sonuçlarına ve rekabet avantajına doğrudan ve önemli etkisi olan, iş değerini yaratma ya da zedelemede en büyük etkiye sahip pozisyonları belirleyin; (2) bu pozisyonların toplam iş değerine yüzde katkısını saptayın; (3) bu pozisyonlardaki kişi sayısını belirleyin; (4) kritik pozisyonlardaki kötü performansın riskini ve bu riski, iş değerine etkisini azaltarak nasıl hafifleteceğinizi değerlendirin.</li>
+  <li><b>Hedef kullanıcılar (5.4.2, 6.4.2, 7.4.2):</b> kritik pozisyonların performans ve değer maksimizasyonuna ilişkin stratejik hedeflere ne kadar etkin katkı verdiğini izleyen kurumlar; kritik pozisyonların etkisini sayısallaştırmak için hedefler, ilgili risk ve fırsat parametreleri ile B içindeki pay belirlenir. Performans değişimi metriği, kritik pozisyon sahiplerinin performans farkını ve bunun örgütsel risk, fırsat ve değer parametrelerine etkisini belirler; boş pozisyon metriği kritik pozisyonların iş değeri riskine odaklanır ve yedekleme süresini ve maliyetini ölçmeyi, yetenek hattı geliştirmeyi amaçlar.</li>
+  <li><b>Performans değişimi (6.4.1):</b> pozisyon sahipleri ister yeni atanmış ister yerleşik olsun etkililiklerinin etkisi belirlenebilir; önceki ve yedek pozisyon sahiplerinin performansı karşılaştırılabilir.</li>
+  <li><b>Boş pozisyon (7.4.1):</b> yeni ve doldurulmamış, ya da bir sahibin herhangi bir nedenle ayrılmasından sonra doldurulmamış kritik pozisyon için iş değeri kaybı riski; pozisyon hiç doldurulmamışsa hesaplanan kaybın bir yüzdesi söz konusu olur. Uzun vadeli etkiler (kilit müşteri ya da itibar kaybı vb.) varsa daha karmaşık bir hesap benimsenebilir.</li>
+</ul>
+
+<h3>Bağlam etkenleri (madde 5.4.3, 6.4.3, 7.4.3)</h3>
+<ul>
+  <li>Bağlam etkenleri kurumun büyüklüğüne, türüne, sektörüne ve büyüme evresine göre değişir.</li>
+  <li>Kritik pozisyonlar sürdürülebilirlik için rekabet etkenlerini ve ticari açıdan hassas veriyi içerebilir (5.4.3).</li>
+  <li>Performans yönetimi yaklaşımları farklıdır: bazı kurumlar sonuçları doğrusal olmayan ölçeklerle (1–5, 1–7 gibi olmayan) ölçer; hedeften sapmanın etkisi sonuçlarla doğrudan orantılı olmayabilir. Derecelendirme sistemi yoksa performans beklentileri belirlenip sonuçlarla karşılaştırılabilir (6.4.3).</li>
+  <li>Kritik pozisyon sahipleri kurumun rekabet avantajı için kilit olan özel bilgi, beceri, yetenek ve diğer etkenlere sahip olabilir; kurumun altyapısı sahibin performansını mümkün kılıyor mu, engelliyor mu ya da pozisyonun etkisini azaltıyor mu sorusu düşünülmelidir (6.4.3).</li>
+  <li>İşgücü segmentasyonu, bir bireyin ya da ekibin ayrılışının iş sürekliliğine (çekirdek operasyonlar, finansal sürdürülebilirlik, itibar) ve kurumun hedeflerine anında sonuçlar doğurabildiği durumlarda özellikle önemlidir; özel bilgi ve becerilerin kıt olduğu rollerde dışarıdan bulmaya güvenmek yerine iç yetenek hattı geliştirilmelidir (7.4.3).</li>
+</ul>
+<p>Şartname bu metrik için ayrı "öngörü etkenleri" bölümü vermez.</p>
+
+<h2 id="ornekler">Şartnamenin Hesaplanmış Örnekleri</h2>
+<p>Şartname tablo vermez; her formül için birbirine bağlı sayısal örnekler verir. Sayılar şartnamedeki örneklerdir; gerçek bir kuruma ait değildir.</p>
+
+<h3>Örnek zinciri: pozisyonun etkisi → bireysel etki → performans değişimi → boşluk</h3>
+<table>
+  <thead><tr><th>Adım</th><th>Girdi</th><th>Hesap</th><th class="num">Sonuç</th></tr></thead>
+  <tbody>
+    <tr><td>Pozisyonun etkisi (I<sub>R</sub>)</td><td>S<sub>R</sub> = %40; B = 10 milyon $</td><td>0,4 &times; 10 milyon $</td><td class="num">4 milyon $</td></tr>
+    <tr><td>Bireysel etki (I<sub>I</sub>)</td><td>N<sub>R</sub> = 5</td><td>4 milyon $ &divide; 5</td><td class="num">0,8 milyon $</td></tr>
+    <tr><td>Performans farkı (D) — hedefin üstünde</td><td>R = 5; T = 4</td><td>0,8 &times; (5 &minus; 4) &divide; 4</td><td class="num">+0,2 milyon $</td></tr>
+    <tr><td>Performans farkı (D) — hedefte</td><td>R = 4; T = 4</td><td>0,8 &times; (4 &minus; 4) &divide; 4</td><td class="num">0</td></tr>
+    <tr><td>Performans farkı (D) — hedefin altında</td><td>R = 3; T = 4</td><td>0,8 &times; (3 &minus; 4) &divide; 4</td><td class="num">&minus;0,2 milyon $</td></tr>
+    <tr><td>Boş pozisyon kaybı (L)</td><td>M = 6 ay</td><td>0,8 &times; 6 &divide; 12</td><td class="num">0,4 milyon $</td></tr>
+  </tbody>
+</table>
+<p>Şartname yorumları: hedefin üstünde performans gösteren kişinin sağladığı ek değer 0,2 milyon $'dır; hedefte performans gösteren için fark sıfırdır; hedefin altında performans gösteren için ek değer bir kayıptır (0,2 milyon $). Boş pozisyon örneğinde altı aylık yedekleme süresi 0,4 milyon $'lık kayba karşılık gelir.</p>
+
+<h2 id="adimlar">Metrik Seçim Adımları</h2>
+<ol>
+  <li><b>İşgücü segmentasyonunu seçin.</b> Rol temelli (değer ya da iş türü) ve/veya çalışan temelli (demografi, konum); işgücü planlamasıyla (ISO 30409) bağlayın.</li>
+  <li><b>Kritik pozisyonları belirleyin.</b> Paydaşların kararını etkileyen etkenler, teslimat sistemleri ve riskleri, değer yaratan ya da zedeleyen pozisyonlar; pozisyonların üst düzey olması gerekmez.</li>
+  <li><b>İş değerini (B) tanımlayın.</b> Kurum, alt grup ya da iş birimi; finansal ve finansal olmayan boyutlar; yıllıklandırılmış.</li>
+  <li><b>Payı (S<sub>R</sub>) ve kişi sayısını (N<sub>R</sub>) belirleyin.</b> Her kritik pozisyonun B içindeki yüzde payı ve pozisyondaki kişi sayısı; pay tahminlerinin dayanağını yazın.</li>
+  <li><b>Performans ölçeği ve hedefi (R, T) yazın.</b> Kurumun ölçeği (1–5, 1–7, 1–10) ve hedef puan; ölçek doğrusal değilse etkisini belirtin; derecelendirme yoksa beklenti–sonuç karşılaştırması kullanın.</li>
+  <li><b>Yedekleme süresini (M) ölçün.</b> Bir yedeği bulma, işe başlatma ve performansı hedefe çıkarma süresi; ortalama süre ve maliyet.</li>
+  <li><b>Riski ve azaltma planını yazın.</b> Kötü performans ve boş kalma riski; yetenek hattı, yedekleme planı.</li>
+  <li><b>Bağlamı belgeleyin.</b> Kurum büyüklüğü, türü, sektörü, büyüme evresi; ticari açıdan hassas veriyi koruyun.</li>
+</ol>
+
+<h2 id="kavramlar">Temel Kavramlar</h2>
+<p>Şartname 3. maddesinde ISO 30400'den alınan ve kendi üç terimini verir. Aşağıdaki tablo bu terimlerin ve metinde geçen diğer kavramların kısa özetleridir. Açıklamalar özgün olarak yazılmıştır; bağlayıcı olan şartnamenin kendi metnidir.</p>
+<table>
+  <thead><tr><th style="width:90px">Madde</th><th style="width:250px">Kavram</th><th>Açıklama</th></tr></thead>
+  <tbody>
+    <tr><td><b>3.1</b></td><td>Kritik pozisyon <small>(critical position)</small></td>
+      <td>Kurumun sonuçları üzerinde doğrudan ve önemli etkisi olan iş rolü. Güvenlik, emniyet, büyüme, sürdürülebilirlik gibi kritik yönler kurum stratejisi kapsamında belirlenir; sektöre ve kurum türüne göre değişir ve her zaman üst düzey pozisyon değildir. Etkisi, sahibinin performansının etkili olup olmamasına ve rolün belirli bir süre boş kalıp kalmamasına bağlı olarak olumlu ya da olumsuz olabilir. Özel bilgi/beceri kıt ise iç yetenek hattı geliştirilir.</td></tr>
+    <tr><td><b>3.2</b></td><td>İşe alımın etkisi <small>(impact of hire)</small></td>
+      <td>Yeni işe alımın tanımlı bir dönemde kurumun başarısına katkısının ölçülmesi (ISO 30400:2016, 6.10).</td></tr>
+    <tr><td><b>3.3</b></td><td>İş değeri <small>(business value)</small></td>
+      <td>Kurumun/alt grubun/iş biriminin yarattığı değerin ölçümü; finansal ve finansal olmayan örgütsel yönleri kapsar.</td></tr>
+    <tr><td><b>4.1</b></td><td>İşgücü segmentasyonu</td>
+      <td>Stratejik işgücü planlamasının temeli; iş ailelerini, işlevleri, rolleri ve yetkinlikleri sınıflar; iki yaklaşım: rol temelli ve çalışan temelli.</td></tr>
+    <tr><td><b>5.1</b></td><td>Kritik pozisyonların etkisi</td>
+      <td>Kritik pozisyon(lar)ın etkilediği toplam yıllıklandırılmış iş değeri.</td></tr>
+    <tr><td><b>5.3</b></td><td>I<sub>R</sub>, I<sub>I</sub></td>
+      <td>Pozisyonun ve pozisyondaki bir bireyin yıllık iş etkisi; I, kurumun başarısına tanımlı dönemdeki katkının ölçüsüdür.</td></tr>
+    <tr><td><b>6.3</b></td><td>R, T, D</td>
+      <td>Bireyin performans puanı, pozisyonun hedef puanı ve bunların farkından doğan değer farkı.</td></tr>
+    <tr><td><b>7.3</b></td><td>Yedekleme süresi (M)</td>
+      <td>Kaybedilen bir kişiyi eşdeğer yetkinlikte biriyle değiştirmek için gereken ortalama süre: uygun yeni işe alımı bulma ve işe başlatma artı performansını hedef düzeye getirme.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="matris">Metrik Matrisi</h2>
+<p>Aşağıdaki tablo, şartnamenin tanımladığı ve türettiği ölçüler ile bağlam etkenlerinin kullanıcı × süreç aşaması × raporlama sınıflandırmasıdır. Şartname hedef kullanıcıyı genel olarak (kritik pozisyonların etkisini izleyen kurumlar) belirttiği için
+kullanıcı, bölüm ve raporlama sınıflandırması bu sayfanın yazarlık sınıflandırmasıdır. Filtreleri değiştirdiğinizde tablo anında daralır.</p>
+
+<div class="filters">
+  <div><label for="fUser">Kullanıcı</label>
+    <select id="fUser">
+      <option value="">Tümü</option>
+      <option value="hr">İK ve yetenek yönetimi</option>
+      <option value="exec">Üst yönetim ve yönetim kurulu</option>
+      <option value="line">Hat yönetimi</option>
+      <option value="fin">Finans ve strateji</option>
+      <option value="ext">Dış paydaş</option>
+    </select></div>
+  <div><label for="fStage">Metrik bölümü</label>
+    <select id="fStage">
+      <option value="">Tümü</option>
+      <option value="seg">Kritik pozisyon belirleme (madde 4)</option>
+      <option value="etki">Pozisyonların etkisi (madde 5)</option>
+      <option value="perf">Performans değişimi (madde 6)</option>
+      <option value="bos">Boş pozisyonlar (madde 7)</option>
+      <option value="baglam">Bağlam ve kapsam</option>
+    </select></div>
+  <div><label for="fType">Metrik ailesi</label>
+    <select id="fType">
+      <option value="">Tümü</option>
+      <option value="r">Kritik pozisyon belirleme</option>
+      <option value="p">Pozisyonların etkisi</option>
+      <option value="c">Performans değişiminin etkisi</option>
+      <option value="s">Boş pozisyonların etkisi</option>
+      <option value="o">Bağlam ve kapsam</option>
+    </select></div>
+  <div><label for="fRep">Raporlama</label>
+    <select id="fRep">
+      <option value="">Tümü</option>
+      <option value="ic">İç raporlama</option>
+      <option value="dis">Dış raporlama</option>
+    </select></div>
+  <div><label for="fQ">Metrik adında ara</label>
+    <input type="text" id="fQ" placeholder="ör. boş pozisyon"></div>
+</div>
+
+<div class="count" id="mCount"></div>
+<table class="matrix">
+  <thead><tr>
+    <th>Metrik</th>
+    <th class="rot">İK / yetenek yönetimi</th>
+    <th class="rot">Üst yönetim</th>
+    <th class="rot">Hat yönetimi</th>
+    <th class="rot">Finans / strateji</th>
+    <th class="rot">Dış paydaş</th>
+  </tr></thead>
+  <tbody id="mBody"></tbody>
+</table>
+<div class="legend">
+  <span><span class="dot r"></span> kritik pozisyon belirleme</span>
+  <span><span class="dot p"></span> pozisyonların etkisi</span>
+  <span><span class="dot c"></span> performans değişimi</span>
+  <span><span class="dot s"></span> boş pozisyonlar</span>
+  <span><span class="dot o"></span> bağlam ve kapsam</span>
+  <span><span class="tag lvl">hesaplayıcı</span> bu sayfada hesaplanabilen metrik</span>
+  <span>Hesaplayıcıya bağlı metrikler <b>koyu</b> işaretlenmiştir.</span>
+</div>
+
+<h2 id="tablo">Kritik Pozisyon Tablosu</h2>
+<p>Yıllıklandırılmış iş değerini (B) ve hedef performans puanını (T) girin; her kritik pozisyon için toplam iş değerindeki payı (S<sub>R</sub>, %), kişi sayısını (N<sub>R</sub>) ve isterseniz bir pozisyon sahibinin performans puanını (R) ile yedekleme süresini (M, ay) yazın.
+Pozisyon etkisi I<sub>R</sub>, bireysel etki I<sub>I</sub>, performans farkı D ve boşluk kaybı L anında hesaplanır. Örnek veri şartnamenin zinciridir (S<sub>R</sub> = %40, B = 10 milyon $, N<sub>R</sub> = 5, R = 5, T = 4, M = 6).
+Payların toplamı %100'ü aşarsa pozisyonların etkisi örtüşüyor olabilir; şartname bu konuda bir şey söylemez, tabloda uyarı verilir. D ve L, pozisyondaki bir kişi için hesaplanır.</p>
+
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnek">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizle">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsv">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktar">Hesaplayıcıya aktar</button>
+  <span class="inline"><label for="isDegeri">Yıllıklandırılmış iş değeri (B)</label>
+    <input type="number" id="isDegeri" min="0" step="any" value="10"></span>
+  <span class="inline"><label for="hedef">Hedef performans puanı (T)</label>
+    <input type="number" id="hedef" min="0" step="any" value="4"></span>
+</div>
+
+<table class="postbl">
+  <thead><tr>
+    <th>Kritik pozisyon</th>
+    <th class="num">Pay S<sub>R</sub> (%)</th><th class="num">Kişi N<sub>R</sub></th>
+    <th class="num">Puan R</th><th class="num">Süre M (ay)</th>
+    <th class="calc" style="width:80px">I<sub>R</sub></th><th class="calc" style="width:80px">I<sub>I</sub></th>
+    <th class="calc" style="width:80px">D</th><th class="calc" style="width:80px">L</th>
+  </tr></thead>
+  <tbody id="pBody"></tbody>
+  <tfoot><tr>
+    <td>Toplam</td>
+    <td class="calc" id="tSr">—</td>
+    <td class="calc" id="tNr">—</td>
+    <td class="calc">—</td><td class="calc">—</td>
+    <td class="calc" id="tIr">—</td>
+    <td class="calc">—</td>
+    <td class="calc" id="tD">—</td>
+    <td class="calc" id="tL">—</td>
+  </tr></tfoot>
+</table>
+
+<div class="cards" id="pCards"></div>
+<div class="note" id="pNot"></div>
+
+<h2 id="formuller">Formüller ve Tanımlar</h2>
+<p>Şartname üç ölçü için dört formül verir: I<sub>R</sub> ve I<sub>I</sub> (madde 5), D (madde 6) ve L (madde 7). Aşağıda şartnamenin formülleri ile onlardan türetilen yardımcı hesaplar bulunur; türetilmiş olanlar notlarında belirtilmiştir.</p>
+<table>
+  <thead><tr><th>Metrik</th><th>Formül</th><th>Not</th></tr></thead>
+  <tbody id="fBody"></tbody>
+</table>
+
+<h2 id="hesaplayici">Hesaplayıcı</h2>
+<p>Metriği seçin, alanları doldurun; sonuç, formülün yerine konmuş hâli ve yorum aşağıda görünür.
+Kurulum gerekmez, veriler tarayıcıdan çıkmaz.</p>
+
+<div class="panel">
+  <h3>İşe Alımın Etkisi Hesaplayıcısı</h3>
+  <p class="hint">Alanlar seçtiğiniz metriğe göre değişir. Para değerleri girdiğiniz birimde (ör. milyon $) çıkar; pay yüzde, süre ay olarak girilir.</p>
+  <div class="grid">
+    <div class="field" style="grid-column:1/-1">
+      <label for="cMetric">Metrik <span class="req">*</span></label>
+      <select id="cMetric"></select>
+    </div>
+  </div>
+  <div class="grid" id="cFields" style="margin-top:14px"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="oAll"> Tümünü seç</label>
+    <label><input type="checkbox" id="oFormula" checked> Formülün açık hâli</label>
+    <label><input type="checkbox" id="oInterp" checked> Yorum ve eşik</label>
+    <label><input type="checkbox" id="oPy"> Python karşılığı</label>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-run" id="btnRun">Hesapla</button>
+    <button class="btn-ghost" id="btnExample">Örnek veriyi yükle</button>
+    <button class="btn-ghost" id="btnPy">Python motorunu yükle</button>
+    <span class="chip" id="engStatus">Motor: tarayıcı (JavaScript)</span>
+  </div>
+  <p class="hint" style="margin:14px 0 0">Python motoru seçildiğinde hesaplama, bu sayfaya gömülü
+  <code style="background:#1c2836;color:#cfe0f0">iso30410_metrikler.py</code> modülünün
+  <code style="background:#1c2836;color:#cfe0f0">hesapla()</code> fonksiyonu tarafından, tarayıcı içinde
+  çalışan gerçek bir CPython yorumlayıcısında (Pyodide/WebAssembly) yapılır. İlk yüklemede yaklaşık
+  10–12 MB indirilir; sonrası önbellekten gelir. Çevrimdışıysanız sayfa JavaScript yedeğiyle
+  aynı sonuçları vermeye devam eder.</p>
+</div>
+
+<div id="cResult"></div>
+
+<h2 id="python">Python Kod Örnekleri</h2>
+<p>Bu sayfadaki hesaplamalar JavaScript'te taklit edilmez: modülün tamamı sayfaya gömülüdür ve
+Pyodide (WebAssembly üzerinde CPython) ile tarayıcı içinde çalıştırılır. Hesaplayıcıda Python motorunu
+seçtiğinizde her sonuç <code>hesapla()</code> fonksiyonundan gelir. Aynı dosya
+(<code>iso30410_metrikler.py</code>) komut satırında da bağımsız çalışır; doğrudan çalıştırıldığında
+örnek değerlerle doğrulama çıktısı üretir.</p>
+
+<div class="filename">iso30410_metrikler.py (özet)</div>
+<pre><i># --- Kritik pozisyonların etkisi ---</i>
+
+<b>def</b> <span class="fn">pozisyon_etkisi</span>(sr_yuzde, b):
+    <i>"""IR = SR × B (SR yüzde olarak girilir)."""</i>
+    <b>return</b> sr_yuzde / <u>100</u> * b
+
+<b>def</b> <span class="fn">birey_etkisi</span>(ir, nr):
+    <i>"""II = IR / NR."""</i>
+    <b>return</b> ir / nr
+
+<i># --- Performans değişimi ve boşluk ---</i>
+
+<b>def</b> <span class="fn">performans_farki</span>(ii, r, t):
+    <i>"""D = II × (R − T) / T: örnekte +0,2; 0; −0,2 milyon $."""</i>
+    <b>return</b> ii * (r - t) / t
+
+<b>def</b> <span class="fn">bosluk_kaybi</span>(ii, m):
+    <i>"""L = II × M / 12: örnekte M = 6 ay → 0,4 milyon $."""</i>
+    <b>return</b> ii * m / <u>12</u>
+</pre>
+
+<h3>Çalıştırılabilir konsol</h3>
+<p>Aşağıdaki kod, sayfaya gömülü modüle karşı çalışır. <b>Kodu çalıştır</b> düğmesi Python motorunu
+(yüklü değilse) indirir, modülü içe aktarır ve çıktıyı altta gösterir. Kodu serbestçe değiştirebilir,
+kendi verinizi yazabilirsiniz; her şey tarayıcıda kalır.</p>
+
+<div class="console">
+  <div class="console-bar">
+    <span>iso30410_metrikler modülüne karşı çalışır · Python 3 (Pyodide)</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button class="btn-run btn-sm" id="btnRunPy">Kodu çalıştır</button>
+      <button class="btn-ghost btn-sm" id="btnDemo" style="border-color:var(--line);color:var(--ink-soft)">Tam demoyu yükle</button>
+      <button class="btn-ghost btn-sm" id="btnReset" style="border-color:var(--line);color:var(--ink-soft)">Sıfırla</button>
+    </span>
+  </div>
+  <textarea id="pyCode" spellcheck="false"></textarea>
+  <pre id="pyOut">Çıktı burada görünecek. İlk çalıştırmada Python motoru indirilir (10–12 MB).</pre>
+</div>
+
+<details class="src"><summary>Gömülü modülün tam kaynağı (iso30410_metrikler.py)</summary>
+  <pre id="srcView">yükleniyor…</pre>
+</details>
+
+<h2 id="yorum">Sonuçların Yorumlanması</h2>
+<ul>
+  <li><b>Etki bir tahmindir.</b> I<sub>R</sub>, B ve S<sub>R</sub>'nin çarpımıdır; ikisi de kurumca belirlenir. Payı belirlerken dayanağı (süreç analizi, gelir bağlantısı, uzman kararı) yazın ve duyarlılığı gösterin: S<sub>R</sub> %40 yerine %30 olursa I<sub>R</sub> 4 yerine 3 milyon $ olur.</li>
+  <li><b>Bireysel etki eşit paylaşımı varsayar.</b> I<sub>I</sub> = I<sub>R</sub> ÷ N<sub>R</sub>, pozisyondaki herkesin eşit etkisi olduğunu varsayar. Deneyim ya da yetkinlik farkları D'de yansıtılır.</li>
+  <li><b>D, hedefe göre doğrusaldır.</b> Hedefin bir puan üstü ya da altı değeri aynı oranda artırır veya azaltır. Şartname doğrusal olmayan ölçeklerde etkinin orantılı olmayabileceğini belirtir; böyle bir ölçekte D'yi bir yaklaşım olarak okuyun.</li>
+  <li><b>D'nin işareti önemlidir.</b> Pozitif D, hedefin üstünde performansın ek değeri; negatif D, hedefin altındaki performansın kaybıdır (şartname örneği: −0,2 milyon $). Bir kritik pozisyonda hedefin altı performans, ek bir risk kaynağıdır.</li>
+  <li><b>Boşluk kaybı süreyle doğrusal artar.</b> L = I<sub>I</sub> × M ÷ 12; 12 ayı aşan yedekleme süresinde kayıp bireysel yıllık etkiyi aşar. Şartname bu durumu ayrıca tartışmaz; uzun vadeli etkiler (kilit müşteri, itibar) için daha karmaşık bir hesap benimsenebileceğini söyler.</li>
+  <li><b>M'nin üç parçasını ayrı izleyin.</b> Bulma, işe başlatma ve performansı hedefe çıkarma süreleri farklı müdahaleler gerektirir; iç yetenek hattı ilk iki parçayı kısaltır.</li>
+  <li><b>Üç ölçüyü birlikte okuyun.</b> Aynı pozisyon için yüksek I<sub>I</sub>, hedefin altı performans ve uzun yedekleme süresi bir araya gelirse riskin büyük olduğu bir pozisyon vardır; çözüm genellikle yetenek hattı ve yedekleme planıdır.</li>
+</ul>
+
+<h2 id="sinirlamalar">Sınırlamalar</h2>
+<ul>
+  <li><b>D'nin değişken listesinde B geçer ama formülde kullanılmaz.</b> Madde 6.3 "D, B üzerindeki farklı etkidir" der, B'yi tanımlar; formülde ise yalnızca I<sub>I</sub>, R ve T vardır. B dolaylı olarak I<sub>I</sub> üzerinden girer.</li>
+  <li><b>R ve T'nin örnekleri ölçeğe göre farklı yazılır.</b> D'nin tanımı "5/7 yerine 4/7 ya da 3/5 yerine 4/5" örnekleri verir; formül ise puanların farkını T'ye böler. R ve T'nin aynı ölçekte olması gerekir; bunu şartname örtük bırakır.</li>
+  <li><b>D'nin formülü doğrusaldır, şartname bunu kendisi sınırlar.</b> 6.4.3, doğrusal olmayan ölçeklerde sapmanın etkisinin orantılı olmadığını belirtir ama alternatif bir formül vermez.</li>
+  <li><b>Kritik pozisyonların payları (S<sub>R</sub>) örtüşebilir.</b> Birden çok pozisyon aynı iş değerini etkileyebilir; şartname payların toplamının %100'ü aşıp aşamayacağını söylemez. Bu sayfa toplamı gösterir ve %100'ü aşınca uyarır.</li>
+  <li><b>M için üst sınır ya da kısmi kayıp yöntemi verilmez.</b> 7.4.1 pozisyon boşalmış ve hiç doldurulmamışsa hesaplanan kaybın bir yüzdesinin söz konusu olduğunu söyler; yüzdenin nasıl belirleneceğini tanımlamaz. Formül yedekleme süresi boyunca etkinin tamamen kaybedildiğini varsayar.</li>
+  <li><b>Şartname eşik vermez.</b> Hangi etkinin ya da kaybın "yüksek" sayılacağı kuruma bırakılmıştır; hesaplayıcıdaki yorum satırları standarttan değil, bu sayfanın yorumlarındandır.</li>
+  <li><b>Başlık "işe alımın etkisi" iken ölçü yalnızca yeni işe alımla ilgili değildir.</b> 6.4.1 yeni atananlar ve yerleşik sahipler için de geçerli der; metrik kritik pozisyonların ve onlardaki kişilerin etkisini ölçer.</li>
+  <li>Pay (SR) tersine hesabı ve aylık bireysel etki şartnamede yoktur; bu sayfada türetilmiştir. Para birimi şartnamede $ olarak verilir; birimi kendi ölçeğinizde girebilirsiniz.</li>
+  <li>Küçük N<sub>R</sub> değerlerinde bireysel etki çok değişkendir; bir tek kişilik pozisyonda I<sub>I</sub> = I<sub>R</sub>'dir. Etki hesapları ticari açıdan hassas veri taşır; raporun kime gideceğini önceden belirleyin.</li>
+  <li>Bu sayfadaki sayılar şartname örneklerinden alınmıştır; gerçek bir kuruma ait değildir.</li>
+</ul>
+
+<h2 id="raporlama">Metriklerin Raporlanması</h2>
+<table>
+  <thead><tr><th>Alıcı</th><th>Ne görmek ister</th><th>Rapor biçimi</th></tr></thead>
+  <tbody>
+    <tr><td>İK ve yetenek yönetimi</td>
+      <td>Kritik pozisyon listesi ve segmentasyon dayanağı; her pozisyon için I<sub>R</sub>, I<sub>I</sub>, D ve L; yedekleme süreleri ve yetenek hattı durumu</td>
+      <td>Analitik rapor, yıllık ve olay bazlı</td></tr>
+    <tr><td>Üst yönetim ve yönetim kurulu</td>
+      <td>Toplam kritik pozisyon etkisi, riskli pozisyonlar (hedefin altı performans, uzun boşluk), azaltma planı</td>
+      <td>Skor kartı, dönemsel</td></tr>
+    <tr><td>Hat yönetimi</td>
+      <td>Kendi kritik pozisyonlarının etkisi, yerine geçecek adaylar, yedekleme süresi</td>
+      <td>Birim raporu, çeyreklik</td></tr>
+    <tr><td>Finans ve strateji</td>
+      <td>İş değeri (B) tanımı, payların dayanağı, boşluk kaybının bütçeye etkisi</td>
+      <td>Bütçe ekli rapor, yıllık</td></tr>
+    <tr><td>Dış paydaş (yatırımcı, analist, düzenleyici)</td>
+      <td>Ticari açıdan hassas olmayan özet göstergeler ve yöntem dipnotu; ayrıntılı etki rakamları genellikle iç kullanımdadır</td>
+      <td>Yıllık rapor (özet)</td></tr>
+  </tbody>
+</table>
+<p><b>Her raporda bulunması gerekenler:</b> kritik pozisyon tanımı ve segmentasyon yöntemi, iş değeri (B) kapsamı ve dönemi, payların (S<sub>R</sub>) dayanağı, performans ölçeği ve hedef (T), yedekleme süresi (M) tanımı, bu sayıların tahmin olduğu ve ticari hassasiyet notu.</p>
+
+<h2 id="ilgili">İlgili Standartlar</h2>
+<ul>
+  <li><b>ISO 30409</b> — işgücü planlaması; işgücü segmentasyonu yaklaşımları ve kritik pozisyonların belirlenmesinde atıf yapılan belge.</li>
+  <li><b>ISO 30400</b> — insan kaynakları yönetimi terimler sözlüğü; işe alımın etkisi tanımı buradan gelir (6.10).</li>
+  <li><b>ISO 30405</b> — işe alım kılavuzu.</li>
+  <li><b>ISO 30408</b> — insan yönetişimi kılavuzu.</li>
+  <li><b>ISO/TS 30411</b> — işe alım kalitesi metriği; işe alımın etkisi metriğinin tamamlayıcısı (bu belgeden ayrı).</li>
+  <li><b>Cascio ve Boudreau (2011), Devoll (2007), Huselid, Beatty ve Becker (2005)</b> — şartnamenin kaynakçasındaki çalışmalar: insan kaynakları girişimlerinin finansal etkisi, kurum için "kilit" roller ve "A pozisyonları".</li>
+</ul>
+
+<h2 id="sss">Sıkça Sorulan Sorular</h2>
+<details><summary>Kritik pozisyon nedir?</summary>
+<p>Kurumun sonuçları üzerinde doğrudan ve önemli etkisi olan iş rolüdür. Kurum stratejisinin parçası olarak belirlenir (güvenlik, emniyet, büyüme, sürdürülebilirlik gibi kritik yönler); sektöre ve kurum türüne göre değişir ve her zaman üst düzey pozisyon değildir.</p></details>
+
+<details><summary>Pozisyonun etkisi nasıl hesaplanır?</summary>
+<p>I<sub>R</sub> = S<sub>R</sub> × B: pozisyonun toplam iş değerindeki yüzde payı ile yıllıklandırılmış iş değerinin çarpımı. Örnekte %40 ve 10 milyon $ için 4 milyon $. Bireysel etki bunun pozisyondaki kişi sayısına bölünmesidir: 4 ÷ 5 = 0,8 milyon $.</p></details>
+
+<details><summary>Performans değişiminin etkisi neyi gösterir?</summary>
+<p>D = I<sub>I</sub> × (R − T) ÷ T, bir pozisyon sahibinin performans puanının hedefin üstünde ya da altında olmasının değere etkisini verir. Örnekte R = 5 ve T = 4 için +0,2 milyon $; R = 3 için −0,2 milyon $; R = T ise sıfır.</p></details>
+
+<details><summary>Yedekleme süresi (M) neleri kapsar?</summary>
+<p>Kaybedilen bir kişiyi eşdeğer yetkinlikte biriyle değiştirmenin ortalama süresi: uygun yeni işe alımı bulma ve işe başlatma süresi artı yeni kişinin performansını hedef düzeye çıkarma süresi. L = I<sub>I</sub> × M ÷ 12 ile kayıp hesaplanır.</p></details>
+
+<details><summary>Boş pozisyonun kaybı 12 ayı aşabilir mi?</summary>
+<p>Formül doğrusal olduğu için M &gt; 12'de L, bireysel yıllık etkiyi aşar. Şartname bunu sınırlamaz; uzun vadeli etkiler olan durumlar için daha karmaşık bir hesaba izin verir. Bu sayfa hesaplayıcıda M'yi sınırlamaz ve değeri yıllık etkinin yüzdesi olarak da gösterir.</p></details>
+
+<details><summary>Ölçeğim doğrusal değilse ne yapmalıyım?</summary>
+<p>Şartname, bazı kurumların doğrusal olmayan ölçekler kullandığını ve hedeften sapmanın etkisinin sonuçlarla doğrudan orantılı olmayabileceğini kabul eder. Derecelendirme sistemi yoksa performans beklentilerini belirleyip sonuçlarla karşılaştırabilirsiniz. D'yi bir yaklaşım olarak okuyun ve ölçeği raporda belirtin.</p></details>
+
+<details><summary>Kritik olmayan pozisyonlar için kullanılabilir mi?</summary>
+<p>Şartname işe alımın etkisini yalnızca kurumun stratejisi için en kritik pozisyonlara uygular. Diğer pozisyonlar için iş değeri payını anlamlı biçimde belirlemek zordur; işe alımın kalitesi gibi başka metrikler daha uygundur.</p></details>
+
+<details><summary>Ek A'daki akış şeması ne anlatır?</summary>
+<p>İşgücü planlamasından iki adımın (işgücü segmentasyonu ve kritik pozisyonların belirlenmesi) çıktığını, bunların işe alımın etkisi ölçülerini beslediğini ve bu ölçülerin üçe ayrıldığını gösterir: kritik pozisyonların etkisi, performans değişiminin etkisi ve boş pozisyonların etkisi. Hepsi iç bağlam, dış alt bağlam ve dış çevresel bağlamın içinde yer alır.</p></details>
+
+<footer>
+  ISO/TS 30410:2018 çerçevesinden üretilmiş çalışma aracı. Metrik adları, sınıflandırma ve formüller şartnameye dayanır; açıklamalar, örnek değerler ve kod özgün olarak yazılmıştır. Örneklerdeki sayılar şartnameden alınmıştır.
+  Şartnamenin kendisi telif korumalıdır ve bu sayfa onun yerine geçmez.
+</footer>
+
+</div>
+
+<script type="text/x-python" id="pysrc">
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+iso30410_metrikler.py
+=====================
+ISO/TS 30410:2018 (Human resource management — Impact of hire metric)
+çerçevesindeki işe alımın etkisi metriklerinin Python karşılığı.
+
+Teknik şartname, kritik pozisyonların kurumun iş değerine etkisini üç formülle ölçer:
+  5) kritik pozisyonların etkisi:      IR = SR × B       ve   II = IR / NR
+  6) performans değişiminin etkisi:    D  = II × (R − T) / T
+  7) boş kritik pozisyonların etkisi:  L  = II × M / 12
+Modül üç bölüme ayrılmıştır:
+
+    1) Etki         — pozisyon etkisi (IR), bireysel etki (II), pay (SR)
+    2) Değişim ve boşluk — performans farkı (D), boş pozisyon kaybı (L)
+    3) Yardımcı yapılar — kritik pozisyon tablosu, denetim, dağıtıcı
+
+Kullanım:
+    from iso30410_metrikler import pozisyon_etkisi, birey_etkisi
+    pozisyon_etkisi(40, 10)    ->  4.0      (SR = %40, B = 10 milyon)
+    birey_etkisi(4, 5)         ->  0.8
+
+Doğrudan çalıştırıldığında (python3 iso30410_metrikler.py) tüm fonksiyonlar
+örnek verilerle çalıştırılır ve sonuçlar tablo hâlinde yazdırılır.
+
+Not: Metrik adları, sınıflandırma ve formüller ISO/TS 30410:2018'e dayanır.
+Pay (SR) hesabının tersine çevrilmesi ve aylık etki şartnamede yoktur; bu
+modülde türetilmiş hesaplardır. Kod ve açıklamalar özgün olarak yazılmıştır;
+şartnamenin kendisi telif korumalıdır.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+__all__ = [
+    "GecersizGirdi",
+    # etki
+    "pozisyon_etkisi", "birey_etkisi", "pay_yuzde",
+    # değişim ve boşluk
+    "performans_farki", "bosluk_kaybi",
+    # yardımcı
+    "Pozisyon", "PozisyonTablosu", "ornek_tablo", "etki_denetimi",
+    "hesapla", "METRIK_LISTESI",
+]
+
+
+class GecersizGirdi(ValueError):
+    """Girdiler tutarsız: payda sıfır, pay %100'ü aşıyor vb."""
+
+
+def _bol(pay: float, payda: float, ad: str = "payda") -> float:
+    if payda <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return pay / payda
+
+
+# ---------------------------------------------------------------------------
+# 1) Kritik pozisyonların etkisi (madde 5)
+# ---------------------------------------------------------------------------
+
+def pozisyon_etkisi(sr_yuzde: float, b: float) -> float:
+    """IR = SR × B: kritik pozisyonun yıllıklandırılmış iş değerine etkisi.
+
+    sr_yuzde: pozisyonun toplam iş değerindeki payı (0–100); b: yıllıklandırılmış iş değeri.
+    """
+    if sr_yuzde < 0 or sr_yuzde > 100:
+        raise GecersizGirdi("pay 0 ile 100 arasında olmalı")
+    if b < 0:
+        raise GecersizGirdi("iş değeri negatif olamaz")
+    return sr_yuzde / 100 * b
+
+
+def birey_etkisi(ir: float, nr: float) -> float:
+    """II = IR / NR: kritik pozisyondaki bir bireyin yıllık etkisi."""
+    if ir < 0:
+        raise GecersizGirdi("pozisyon etkisi negatif olamaz")
+    return _bol(ir, nr, "pozisyondaki kişi sayısı")
+
+
+def pay_yuzde(ir: float, b: float) -> float:
+    """SR = IR / B × 100: formül (5.3)'ün tersi (türetilmiş)."""
+    if ir < 0 or ir > b:
+        raise GecersizGirdi("pozisyon etkisi 0 ile iş değeri arasında olmalı")
+    return 100 * _bol(ir, b, "iş değeri")
+
+
+# ---------------------------------------------------------------------------
+# 2) Performans değişimi (madde 6) ve boş pozisyon (madde 7)
+# ---------------------------------------------------------------------------
+
+def performans_farki(ii: float, r: float, t: float) -> float:
+    """D = II × (R − T) / T: performans puanı R'nin hedef T'den sapmasının değere etkisi.
+
+    Pozitif D, hedefin üstünde performansın ek değerini; negatif D kaybı gösterir.
+    """
+    if ii < 0:
+        raise GecersizGirdi("bireysel etki negatif olamaz")
+    if r < 0:
+        raise GecersizGirdi("performans puanı negatif olamaz")
+    return ii * (r - t) / _hedef(t)
+
+
+def _hedef(t: float) -> float:
+    if t <= 0:
+        raise GecersizGirdi("hedef puan sıfırdan büyük olmalı")
+    return t
+
+
+def bosluk_kaybi(ii: float, m: float) -> float:
+    """L = II × M / 12: pozisyon M ay boş kalırsa kaybedilen iş değeri."""
+    if ii < 0:
+        raise GecersizGirdi("bireysel etki negatif olamaz")
+    if m < 0:
+        raise GecersizGirdi("yedekleme süresi negatif olamaz")
+    return ii * m / 12
+
+
+# ---------------------------------------------------------------------------
+# 3) Yardımcı yapılar: kritik pozisyon tablosu
+# ---------------------------------------------------------------------------
+
+@dataclass
+class Pozisyon:
+    """Tek bir kritik pozisyon."""
+    ad: str
+    sr: float                    # toplam iş değerindeki pay (%)
+    nr: float                    # pozisyondaki kişi sayısı
+    r: float | None = None       # bir sahibin performans puanı
+    m: float | None = None       # yedekleme süresi (ay)
+
+    def ir(self, b: float) -> float:
+        return pozisyon_etkisi(self.sr, b)
+
+    def ii(self, b: float) -> float:
+        return birey_etkisi(self.ir(b), self.nr)
+
+
+@dataclass
+class PozisyonTablosu:
+    """Kritik pozisyonlar tablosu."""
+    b: float = 10
+    t: float = 4
+    pozisyonlar: list = field(default_factory=list)
+
+    def ekle(self, ad, sr, nr, r=None, m=None) -> "PozisyonTablosu":
+        self.pozisyonlar.append(Pozisyon(ad, sr, nr, r, m))
+        return self
+
+    def ozet(self) -> dict:
+        ir = sum(p.ir(self.b) for p in self.pozisyonlar)
+        d = sum(performans_farki(p.ii(self.b), p.r, self.t) for p in self.pozisyonlar if p.r is not None)
+        l = sum(bosluk_kaybi(p.ii(self.b), p.m) for p in self.pozisyonlar if p.m is not None)
+        sr = sum(p.sr for p in self.pozisyonlar)
+        return {
+            "pozisyon_sayisi": len(self.pozisyonlar),
+            "toplam_pay_yuzde": sr,
+            "toplam_ir": round(ir, 3),
+            "toplam_d": round(d, 3),
+            "toplam_l": round(l, 3),
+            "pay_uyarisi": "Payların toplamı %100'ü aşıyor: etkiler örtüşüyor olabilir" if sr > 100 else "yok",
+        }
+
+
+def ornek_tablo() -> PozisyonTablosu:
+    """Şartnamenin örneği: SR = %40, B = 10 milyon $, NR = 5; R = 5, T = 4; M = 6 ay."""
+    t = PozisyonTablosu(b=10, t=4)
+    t.ekle("Örnek kritik pozisyon", 40, 5, 5, 6)
+    return t
+
+
+def etki_denetimi(kritik_pozisyonlar_belirlendi: bool = False,
+                  segmentasyon_yazili: bool = False,
+                  is_degeri_tanimli: bool = False,
+                  pay_belirlendi: bool = False,
+                  olcek_ve_hedef_yazili: bool = False,
+                  yedekleme_suresi_olculuyor: bool = False,
+                  yetenek_hatti_var: bool = False,
+                  baglam_notlari: bool = False) -> list:
+    """Bir işe alımın etkisi raporunun eksiklerini listeler.
+
+    Maddeler ISO/TS 30410'un 4–7. maddelerindeki beklentilerden türetilmiştir;
+    bir uygunluk sınaması değil, hazırlık kontrol listesidir.
+    """
+    kontroller = [
+        (kritik_pozisyonlar_belirlendi, "Kritik pozisyonlar (kurumun sonuçlarına doğrudan ve önemli etkisi olan roller) belirlenmemiş."),
+        (segmentasyon_yazili, "İşgücü segmentasyonu yaklaşımı (rol temelli ya da çalışan temelli) yazılı değil."),
+        (is_degeri_tanimli, "Yıllıklandırılmış iş değeri (B) ve kapsamı (finansal ve finansal olmayan) tanımlanmamış."),
+        (pay_belirlendi, "Kritik pozisyonların toplam iş değerindeki yüzde payı (SR) belirlenmemiş."),
+        (olcek_ve_hedef_yazili, "Performans ölçeği ve hedef puan (T) yazılı değil; ölçek doğrusal değilse (D) yorumu yanıltır."),
+        (yedekleme_suresi_olculuyor, "Yedekleme süresi (bulma + işe başlatma + performansı hedefe çıkarma) ölçülmüyor."),
+        (yetenek_hatti_var, "Kritik pozisyonlar için iç yetenek hattı yok; özel bilgi ve beceri kıt ise dışarıdan bulmaya güvenilmemeli."),
+        (baglam_notlari, "Bağlam (kurum büyüklüğü, türü, sektörü, büyüme evresi; ticari açıdan hassas veri) yazılmamış."),
+    ]
+    return [metin for tamam, metin in kontroller if not tamam]
+
+
+# ---------------------------------------------------------------------------
+# 4) Dağıtıcı: hesaplayıcı arayüzünün kullandığı tek giriş noktası
+# ---------------------------------------------------------------------------
+
+METRIK_LISTESI = ["etki_pozisyon", "etki_birey", "pay", "fark", "bosluk"]
+
+
+def _g(x) -> str:
+    """Sayıyı, bilimsel gösterim kullanmadan en kısa biçimde yazar."""
+    return f"{x:.12g}"
+
+
+def hesapla(metrik: str, **g) -> dict:
+    """Metrik kimliği ve girdilerle hesabı yapar; sözlük döndürür.
+
+    Dönen anahtarlar: deger, ifade (formülün yerine konmuş hâli), ondalik,
+    birim, ayrinti (etiket–değer çiftleri).
+    """
+    if metrik == "etki_pozisyon":
+        d = pozisyon_etkisi(g["sr"], g["b"])
+        ii = birey_etkisi(d, g["nr"])
+        return {"deger": d, "ondalik": 2, "birim": "para birimi (girdi birimiyle, ör. milyon $)",
+                "ifade": f"{_g(g['sr'])} ÷ 100 × {_g(g['b'])}",
+                "ayrinti": [["Bireyin yıllık etkisi (II)", round(ii, 3)],
+                            ["Pozisyondaki kişi sayısı", g["nr"]],
+                            ["Toplam iş değerinden kalan pay (%)", round(100 - g["sr"], 1)]]}
+
+    if metrik == "etki_birey":
+        d = birey_etkisi(g["ir"], g["nr"])
+        return {"deger": d, "ondalik": 2, "birim": "para birimi (girdi birimiyle, ör. milyon $)",
+                "ifade": f"{_g(g['ir'])} ÷ {_g(g['nr'])}",
+                "ayrinti": [["Aylık bireysel etki (II ÷ 12)", round(d / 12, 3)],
+                            ["Pozisyonun toplam etkisi (IR)", g["ir"]]]}
+
+    if metrik == "pay":
+        d = pay_yuzde(g["ir"], g["b"])
+        return {"deger": d, "ondalik": 1, "birim": "% (SR: toplam iş değerindeki pay)",
+                "ifade": f"{_g(g['ir'])} ÷ {_g(g['b'])} × 100",
+                "ayrinti": [["Toplam iş değerinden kalan pay (%)", round(100 - d, 1)]]}
+
+    if metrik == "fark":
+        d = performans_farki(g["ii"], g["r"], g["t"])
+        return {"deger": d, "ondalik": 2, "birim": "para birimi (girdi birimiyle, ör. milyon $)",
+                "ifade": f"{_g(g['ii'])} × ({_g(g['r'])} − {_g(g['t'])}) ÷ {_g(g['t'])}",
+                "ayrinti": [["Göreli sapma (R − T) ÷ T (%)", round(100 * (g["r"] - g["t"]) / g["t"], 1)],
+                            ["Performansla ayarlı bireysel etki (II + D)", round(g["ii"] + d, 3)]]}
+
+    if metrik == "bosluk":
+        d = bosluk_kaybi(g["ii"], g["m"])
+        return {"deger": d, "ondalik": 2, "birim": "para birimi (girdi birimiyle, ör. milyon $)",
+                "ifade": f"{_g(g['ii'])} × {_g(g['m'])} ÷ 12",
+                "ayrinti": [["Aylık bireysel etki (II ÷ 12)", round(g["ii"] / 12, 3)],
+                            ["Yıllık bireysel etkinin yüzdesi (%)", round(100 * g["m"] / 12, 1)]]}
+
+    raise ValueError(f"Bilinmeyen metrik: {metrik}")
+
+
+# ---------------------------------------------------------------------------
+# 5) Doğrulama çıktısı
+# ---------------------------------------------------------------------------
+
+def _demo() -> None:
+    cizgi = "-" * 64
+    print("ISO/TS 30410 — doğrulama çıktısı")
+    print(cizgi)
+
+    ir = pozisyon_etkisi(40, 10)
+    ii = birey_etkisi(ir, 5)
+    print(f"IR = 0,4 × 10      : {ir} milyon $")
+    print(f"II = IR / 5        : {ii} milyon $")
+    for r in (5, 4, 3):
+        print(f"D (R={r}, T=4)      : {performans_farki(ii, r, 4):+.2f} milyon $")
+    print(f"L (M=6)            : {bosluk_kaybi(ii, 6):.2f} milyon $")
+    print(f"SR (ters hesap)    : %{pay_yuzde(ir, 10):.0f}")
+    print(cizgi)
+
+    t = ornek_tablo()
+    for anahtar, deger in t.ozet().items():
+        print(f"{anahtar:<20}: {deger}")
+    print(cizgi)
+
+    print("Dağıtıcı örneği:")
+    print(hesapla("etki_pozisyon", sr=40, b=10, nr=5))
+    print(cizgi)
+
+    print("Rapor denetimi (hiçbir ön koşulu sağlamayan bir kurum için):")
+    for u in etki_denetimi():
+        print(" !", u)
+
+
+if __name__ == "__main__":
+    _demo()
+</script>
+<script>
+/* =========================================================
+   1) METRİK VERİ TABANI
+   u: kullanıcılar (hr İK ve yetenek yönetimi / exec üst yönetim ve yönetim kurulu / line hat yönetimi /
+      fin finans ve strateji / ext dış paydaş)
+   st: bölüm (seg madde 4, etki madde 5, perf madde 6, bos madde 7, baglam)
+   r: raporlama (ic, dis)
+   t: aile (r kritik pozisyon belirleme / p pozisyonların etkisi / c performans değişimi / s boş pozisyonlar / o bağlam ve kapsam)
+   calc: bu sayfadaki hesaplayıcı kimliği
+   k: ek etiket (ctx bağlam etkeni, onk ön koşul, tur türetilmiş)
+   ========================================================= */
+var METRICS = [
+ {g:"Kritik pozisyon belirleme (işgücü segmentasyonu)", t:"r", items:[
+  {n:"Kritik pozisyon", st:"seg", r:["ic","dis"], d:"Kurumun sonuçlarına doğrudan ve önemli etkisi olan iş rolü (3.1, 4.4)", u:["hr","exec","line","fin","ext"]},
+  {n:"İşgücü segmentasyonu", st:"seg", r:["ic"], k:"onk", d:"İş ailelerini, işlevleri, rolleri ve yetkinlikleri sınıflar; stratejik işgücü planlamasının temeli (4.1)", u:["hr","exec"]},
+  {n:"Rol temelli segmentasyon", st:"seg", r:["ic"], d:"İşler değere ya da yapılan iş türüne göre ayrılır (4.1, 4.2)", u:["hr","exec"]},
+  {n:"Çalışan temelli segmentasyon", st:"seg", r:["ic"], d:"İşler demografi, konum ya da diğer özelliklere göre ayrılır; arz tahmini (4.1, 4.3)", u:["hr","exec"]},
+  {n:"Dış çevrenin geleceğe dönük taranması", st:"seg", r:["ic"], k:"onk", d:"Mevcut ve gelecekteki rollerin KSA gereksinimini belirleyen planlama (4.2)", u:["hr","exec","fin"]},
+  {n:"Paydaşları etkileyen faktörlerin değerlendirilmesi", st:"seg", r:["ic"], d:"Paydaşların ürün/hizmetten yararlanma kararını etkileyen etkenler (4.4)", u:["hr","exec","fin"]},
+  {n:"Teslimat sistem ve süreçleri ile riskleri", st:"seg", r:["ic"], d:"Değer yaratma, sağlama ve ekleme biçimi ve riskler (4.4)", u:["hr","exec","line"]},
+  {n:"Değer yaratan ya da zedeleyen pozisyonlar", st:"seg", r:["ic"], d:"En büyük etki ve nüfuza sahip pozisyonlar (4.4)", u:["hr","exec","fin"]},
+  {n:"Üst düzey olmayan kritik pozisyonlar", st:"seg", r:["ic"], k:"ctx", d:"Kritik pozisyonlar her zaman üst düzey değildir (3.1, not 1)", u:["hr","exec","line"]},
+  {n:"Güvenlik, emniyet, büyüme ve sürdürülebilirlik boyutları", st:"seg", r:["ic","dis"], k:"ctx", d:"Kritik yönler kurum stratejisiyle belirlenir (3.1, not 1)", u:["hr","exec","ext"]}
+ ]},
+ {g:"Kritik pozisyonların etkisi (madde 5)", t:"p", items:[
+  {n:"Kritik pozisyonun yıllık etkisi (IR)", st:"etki", r:["ic","dis"], calc:"etki_pozisyon", d:"IR = SR × B; örnek %40 × 10 milyon $ = 4 milyon $ (5.2, 5.3)", u:["hr","exec","line","fin","ext"]},
+  {n:"Bireyin yıllık etkisi (II)", st:"etki", r:["ic"], calc:"etki_birey", d:"II = IR ÷ NR; örnek 4 ÷ 5 = 0,8 milyon $ (5.3)", u:["hr","exec","line","fin"]},
+  {n:"Yıllıklandırılmış iş değeri (B)", st:"etki", r:["ic"], k:"onk", d:"Kurumun/alt grubun/iş biriminin değeri; finansal ve finansal olmayan boyutlar (3.3, 5.3)", u:["hr","exec","fin"]},
+  {n:"Pozisyonun toplam iş değerindeki payı (SR)", st:"etki", r:["ic"], k:"onk", d:"Kritik pozisyonun B içindeki yüzde payı (5.3)", u:["hr","exec","fin"]},
+  {n:"Pozisyondaki kişi sayısı (NR)", st:"etki", r:["ic"], k:"onk", d:"Aynı kritik pozisyonda çalışan kişi sayısı (5.3)", u:["hr","line"]},
+  {n:"Pay (SR) tersine hesabı", st:"etki", r:["ic"], k:"tur", calc:"pay", d:"SR = IR ÷ B; şartnamede yok, türetilmiştir", u:["hr","fin"]},
+  {n:"Kritik pozisyonlar toplamının iş değerindeki payı", st:"etki", r:["ic"], k:"tur", d:"Payların toplamı %100'ü aşıyorsa etkiler örtüşüyor olabilir; şartnamede yok", u:["hr","exec","fin"]},
+  {n:"Katkı yüzdesi hedefleri", st:"etki", r:["ic"], d:"Kurum, kritik pozisyonların etkisini sayısallaştırmak için hedefler belirler (5.4.2)", u:["exec","fin","hr"]},
+  {n:"Risk ve fırsat parametreleri", st:"etki", r:["ic"], d:"Etkiyle ilgili risk ve fırsat parametreleri belirlenir (5.4.2)", u:["exec","fin"]},
+  {n:"Kötü performans riskinin azaltılması", st:"etki", r:["ic"], d:"Dördüncü adım: riski ve iş değerine etkisini azaltma yolunu değerlendirme (5.4.1)", u:["hr","exec","line"]},
+  {n:"Kritik pozisyonlar için ticari açıdan hassas veri", st:"etki", r:["ic"], k:"ctx", d:"Rekabet etkenleri ticari olarak hassas veri içerebilir (5.4.3)", u:["exec","fin"]}
+ ]},
+ {g:"Performans değişiminin etkisi (madde 6)", t:"c", items:[
+  {n:"Performans değişiminin etkisi (D)", st:"perf", r:["ic","dis"], calc:"fark", d:"D = II × (R − T) ÷ T; örnek +0,2 · 0 · −0,2 milyon $ (6.3, 6.4.1)", u:["hr","exec","line","fin","ext"]},
+  {n:"Bireyin performans puanı (R)", st:"perf", r:["ic"], k:"onk", d:"Pozisyon gereksinimine göre derecelendirme; 1–5, 1–7 ya da 1–10 (6.3)", u:["hr","line"]},
+  {n:"Hedef performans puanı (T)", st:"perf", r:["ic"], k:"onk", d:"Örgütçe tanımlı ölçekte hedef; 4/5, 5/7 ya da 7/10 (6.3)", u:["hr","line","exec"]},
+  {n:"Hedefin üstünde performansın ek değeri", st:"perf", r:["ic"], d:"R > T: örnek +0,2 milyon $ (6.4.1)", u:["hr","exec","line"]},
+  {n:"Hedefte performans (fark sıfır)", st:"perf", r:["ic"], d:"R = T: örnek 0 (6.4.1)", u:["hr","line"]},
+  {n:"Hedefin altında performansın kaybı", st:"perf", r:["ic"], d:"R < T: örnek −0,2 milyon $ (6.4.1)", u:["hr","exec","line"]},
+  {n:"Yeni atanan ya da yerleşik sahibin etkililiği", st:"perf", r:["ic"], d:"Etkililiğin etkisi hem yeni hem yerleşik sahipler için belirlenebilir (6.4.1)", u:["hr","line"]},
+  {n:"Önceki ve yedek pozisyon sahiplerinin karşılaştırması", st:"perf", r:["ic"], d:"Sahibin değişimi öncesi ve sonrası performans (6.4.1)", u:["hr","exec","line"]},
+  {n:"Göreli sapma (R − T) ÷ T", st:"perf", r:["ic"], k:"tur", calc:"fark", d:"Sapmanın hedefe oranı; örnek %25", u:["hr","line"]},
+  {n:"Derecelendirme sistemi yoksa beklenti–sonuç karşılaştırması", st:"perf", r:["ic"], d:"Performans beklentilerini belirleyip sonuçlarla karşılaştırma (6.4.3)", u:["hr","line"]},
+  {n:"Doğrusal olmayan performans ölçekleri", st:"perf", r:["ic"], k:"ctx", d:"Hedeften sapmanın etkisi sonuçlarla orantılı olmayabilir (6.4.3)", u:["hr","exec"]},
+  {n:"Altyapının performansa etkisi", st:"perf", r:["ic"], k:"ctx", d:"Altyapı sahibin performansını mümkün kılıyor mu, engelliyor mu? (6.4.3)", u:["hr","exec","line"]},
+  {n:"Özel KSA ve rekabet avantajı", st:"perf", r:["ic"], k:"ctx", d:"Kritik sahiplerin kilit bilgi ve becerileri (6.4.3)", u:["hr","exec"]}
+ ]},
+ {g:"Boş kritik pozisyonların etkisi (madde 7)", t:"s", items:[
+  {n:"Boş pozisyonun yıllık iş performansı kaybı (L)", st:"bos", r:["ic","dis"], calc:"bosluk", d:"L = II × M ÷ 12; örnek 0,8 × 6 ÷ 12 = 0,4 milyon $ (7.3, 7.4.1)", u:["hr","exec","line","fin","ext"]},
+  {n:"Yedekleme süresi (M, ay)", st:"bos", r:["ic"], k:"onk", d:"Eşdeğer yetkinlikte yedek bulma ve işe başlatma + performansı hedefe çıkarma (7.3)", u:["hr","line"]},
+  {n:"Yedek bulma ve işe başlatma süresi", st:"bos", r:["ic"], d:"M'nin birinci bileşeni (7.3)", u:["hr","line"]},
+  {n:"Performansı hedefe çıkarma süresi", st:"bos", r:["ic"], d:"M'nin ikinci bileşeni (7.3)", u:["hr","line"]},
+  {n:"Aylık bireysel etki", st:"bos", r:["ic"], k:"tur", calc:"bosluk", d:"II ÷ 12; şartnamede yok, türetilmiştir", u:["hr","fin"]},
+  {n:"Ayrılış sonrası dolmayan pozisyon", st:"bos", r:["ic"], d:"Pozisyon hiç doldurulmamışsa hesaplanan kaybın bir yüzdesi söz konusu olur (7.4.1)", u:["hr","exec"]},
+  {n:"Uzun vadeli etkiler: kilit müşteri ve itibar kaybı", st:"bos", r:["ic"], k:"ctx", d:"Daha karmaşık bir hesap benimsenebilir (7.4.1)", u:["hr","exec","fin"]},
+  {n:"Ortalama yedekleme süresi ve maliyeti", st:"bos", r:["ic"], d:"Ölçmek metriğin amaçlarından biridir (7.4.2)", u:["hr","fin"]},
+  {n:"İç yetenek hattı", st:"bos", r:["ic"], k:"ctx", d:"KSA kıt ise dışarıdan bulmaya güvenmek yerine iç yetenek hattı geliştirilir (3.1, 7.4.2, 7.4.3)", u:["hr","exec","line"]},
+  {n:"İş sürekliliği riski", st:"bos", r:["ic","dis"], k:"ctx", d:"Çekirdek operasyon, finansal sürdürülebilirlik ve itibar üzerinde anında sonuçlar (7.4.3)", u:["exec","fin","ext"]}
+ ]},
+ {g:"Bağlam ve kapsam", t:"o", items:[
+  {n:"Kurum büyüklüğü, türü, sektörü ve büyüme evresi", st:"baglam", r:["ic","dis"], k:"ctx", d:"Bağlam etkenleri bunlara göre değişir (5.4.3, 6.4.3)", u:["hr","exec","ext"]},
+  {n:"İç bağlam: strateji, yönetişim, amaç, performans", st:"baglam", r:["ic"], k:"ctx", d:"Ek A akış şemasındaki iç bağlam", u:["hr","exec"]},
+  {n:"Dış çevresel bağlam ve alt bağlam", st:"baglam", r:["ic"], k:"ctx", d:"Kurum dışı bağlam; sektör, büyüklük, büyüme evresi (Ek A)", u:["hr","exec","fin"]},
+  {n:"İşgücü planlaması ile bağlantı", st:"baglam", r:["ic"], k:"onk", d:"Kritik pozisyonlar işgücü planlamasından beslenir (Ek A, ISO 30409)", u:["hr","exec"]},
+  {n:"Tanımlı ölçüm dönemi (yıllıklandırma)", st:"baglam", r:["ic"], k:"onk", d:"Tüm değerler yıllıklandırılmış iş değerine dayanır (5.1, 5.3)", u:["hr","fin"]},
+  {n:"Kapsam: yalnızca stratejik açıdan en kritik pozisyonlar", st:"baglam", r:["ic"], k:"onk", d:"İşe alımın etkisi yalnızca kurumun stratejisi için en kritik pozisyonlara uygulanır (Giriş)", u:["hr","exec"]}
+ ]}
+];
+
+var USERS = ["hr","exec","line","fin","ext"];
+var AILE_AD = {r:"kritik pozisyon", p:"pozisyon etkisi", c:"performans değişimi", s:"boş pozisyon", o:"bağlam ve kapsam"};
+var EK_AD = {ctx:"bağlam etkeni", onk:"ön koşul", tur:"türetilmiş", ilke:"ilke"};
+
+/* --- matris çizimi --- */
+function renderMatrix(){
+  var fu = document.getElementById("fUser").value;
+  var fs = document.getElementById("fStage").value;
+  var ft = document.getElementById("fType").value;
+  var fr = document.getElementById("fRep").value;
+  var fq = document.getElementById("fQ").value.toLocaleLowerCase("tr");
+  var body = document.getElementById("mBody");
+  var html = "", shown = 0;
+
+  METRICS.forEach(function(grp){
+    if(ft && grp.t !== ft) return;
+    var rows = "";
+    grp.items.forEach(function(m){
+      if(fu && m.u.indexOf(fu) === -1) return;
+      if(fs && m.st !== fs) return;
+      if(fr && m.r.indexOf(fr) === -1) return;
+      if(fq && m.n.toLocaleLowerCase("tr").indexOf(fq) === -1) return;
+      shown++;
+      var cells = USERS.map(function(u){
+        if(m.u.indexOf(u) === -1) return '<td class="num"></td>';
+        var mark = '<span class="dot ' + grp.t + '"></span>';
+        return '<td class="num" title="' + m.n + '">' + (m.calc ? '<b>' + mark + '</b>' : mark) + '</td>';
+      }).join("");
+      var tags = '<span class="tag ' + grp.t + '">' + AILE_AD[grp.t] + '</span>' +
+                 (m.k ? ' <span class="tag lvl">' + EK_AD[m.k] + '</span>' : "") +
+                 (m.iso ? ' <span class="tag iso">30414</span>' : "") +
+                 (m.calc ? ' <span class="tag lvl">hesaplayıcı</span>' : "") +
+                 (m.r.indexOf("dis") !== -1 ? ' <span class="tag iso">dış rapor</span>' : "");
+      rows += '<tr><td class="name">' + (m.calc ? '<b>' + m.n + '</b>' : m.n) + ' ' + tags +
+              '<em>' + m.d + '</em></td>' + cells + '</tr>';
+    });
+    if(rows){
+      html += '<tr class="group"><td colspan="6">' + grp.g + '</td></tr>' + rows;
+    }
+  });
+
+  body.innerHTML = html || '<tr><td colspan="6">Bu filtre birleşimiyle eşleşen metrik yok.</td></tr>';
+  document.getElementById("mCount").textContent = shown + " metrik ve etken gösteriliyor.";
+}
+["fUser","fStage","fType","fRep","fQ"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", renderMatrix);
+});
+renderMatrix();
+
+/* =========================================================
+   2) KRİTİK POZİSYON TABLOSU
+   ========================================================= */
+var SATIR = 8;
+/* pozisyon, SR (%), NR, R, M (ay) — şartnamenin örneği (B = 10 milyon $, T = 4) */
+var ORNEK_TBL = [
+  ["Örnek kritik pozisyon", 40, 5, 5, 6]
+];
+var ALANLAR = ["sr","nr","r","m"];
+
+function buildTbl(){
+  var html = "";
+  for(var i=0;i<SATIR;i++){
+    html += '<tr><td><input type="text" id="p_ad_' + i + '" placeholder="Pozisyon ' + (i+1) + '"></td>';
+    ALANLAR.forEach(function(k){ html += '<td><input type="number" min="0" step="any" id="p_' + k + '_' + i + '"></td>'; });
+    ["ir","ii","d","l"].forEach(function(k){ html += '<td class="calc" id="p_' + k + '_' + i + '">—</td>'; });
+    html += '</tr>';
+  }
+  document.getElementById("pBody").innerHTML = html;
+  document.getElementById("pBody").querySelectorAll("input").forEach(function(el){ el.addEventListener("input", computeTbl); });
+  ["isDegeri","hedef"].forEach(function(id){ document.getElementById(id).addEventListener("input", computeTbl); });
+}
+
+function pVal(k, i){
+  var v = parseFloat(document.getElementById("p_" + k + "_" + i).value);
+  return isNaN(v) ? null : v;
+}
+
+var TBL = {n:0, ok:false, b:10, t:4, ilk:null};
+
+function computeTbl(){
+  var f2 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:2, maximumFractionDigits:2}); };
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var f0 = function(x){ return x.toLocaleString("tr-TR", {maximumFractionDigits:2}); };
+  var b = parseFloat(document.getElementById("isDegeri").value);
+  var t = parseFloat(document.getElementById("hedef").value);
+  var bOk = !isNaN(b) && b >= 0, tOk = !isNaN(t) && t > 0;
+  var n = 0, hatali = 0, sumSr = 0, sumNr = 0, sumIr = 0, sumD = 0, sumL = 0, nD = 0, nL = 0, ilk = null, enBuyuk = null;
+
+  for(var i=0;i<SATIR;i++){
+    var sr = pVal("sr", i), nr = pVal("nr", i), r = pVal("r", i), m = pVal("m", i);
+    var c = {};
+    ["ir","ii","d","l"].forEach(function(k){ c[k] = document.getElementById("p_" + k + "_" + i); c[k].textContent = "—"; });
+    if(sr === null && nr === null && r === null && m === null) continue;
+    var ad = document.getElementById("p_ad_" + i).value.trim() || ("Pozisyon " + (i+1));
+    if(!bOk || sr === null || nr === null || sr < 0 || sr > 100 || nr <= 0 || (r !== null && r < 0) || (m !== null && m < 0)){
+      hatali++; c.ir.textContent = "tutarsız"; continue;
+    }
+    var ir = sr / 100 * b, ii = ir / nr;
+    n++; sumSr += sr; sumNr += nr; sumIr += ir;
+    c.ir.textContent = f2(ir); c.ii.textContent = f2(ii);
+    if(r !== null && tOk){ var d = ii * (r - t) / t; c.d.textContent = (d > 0 ? "+" : "") + f2(d); sumD += d; nD++; }
+    if(m !== null){ var l = ii * m / 12; c.l.textContent = f2(l); sumL += l; nL++; }
+    if(ilk === null) ilk = {sr:sr, nr:nr, b:b};
+    if(enBuyuk === null || ir > enBuyuk.v) enBuyuk = {ad:ad, v:ir};
+  }
+
+  document.getElementById("tSr").textContent = n ? f1(sumSr) : "—";
+  document.getElementById("tNr").textContent = n ? f0(sumNr) : "—";
+  document.getElementById("tIr").textContent = n ? f2(sumIr) : "—";
+  document.getElementById("tD").textContent = nD ? (sumD > 0 ? "+" : "") + f2(sumD) : "—";
+  document.getElementById("tL").textContent = nL ? f2(sumL) : "—";
+
+  var kart = document.getElementById("pCards");
+  var ok = n > 0 && bOk;
+  TBL = {n:n, ok:ok, b:bOk ? b : 10, t:tOk ? t : 4, ilk:ilk};
+  if(!ok){
+    kart.innerHTML = "";
+    document.getElementById("pNot").textContent = !bOk ? "Yıllıklandırılmış iş değeri (B) negatif olamaz." :
+      (hatali ? "Tutarsız satır var: pay 0–100 arasında, kişi sayısı sıfırdan büyük, puan ve süre negatif olmamalı." : "Tabloya kritik pozisyonları girin ya da örnek veriyi yükleyin.");
+    return;
+  }
+  var kartlar = '';
+  kartlar += '<div class="card"><b>' + f2(sumIr) + '</b><span>Toplam pozisyon etkisi (I<sub>R</sub>)</span></div>';
+  kartlar += '<div class="card"><b>' + f1(sumSr) + ' %</b><span>Payların toplamı</span></div>';
+  kartlar += '<div class="card alt"><b>' + (nD ? (sumD > 0 ? "+" : "") + f2(sumD) : "—") + '</b><span>Performans farkı toplamı (D)</span></div>';
+  kartlar += '<div class="card alt"><b>' + (nL ? f2(sumL) : "—") + '</b><span>Boşluk kaybı toplamı (L)</span></div>';
+  kartlar += '<div class="card warn"><b>' + n + '</b><span>Kritik pozisyon sayısı</span></div>';
+  kartlar += '<div class="card warn"><b>' + (enBuyuk ? f2(enBuyuk.v) : "—") + '</b><span>En büyük etki: ' + (enBuyuk ? enBuyuk.ad : "—") + '</span></div>';
+  kart.innerHTML = kartlar;
+
+  var not = "I<sub>R</sub> = S<sub>R</sub> × B (B = " + f0(b) + "); I<sub>I</sub> = I<sub>R</sub> ÷ N<sub>R</sub>; D = I<sub>I</sub> × (R − T) ÷ T (T = " + f0(tOk ? t : 0) + "); L = I<sub>I</sub> × M ÷ 12. ";
+  if(sumSr > 100) not += "<b>Uyarı:</b> payların toplamı %100'ü aşıyor; pozisyonların etkileri örtüşüyor olabilir, toplam I<sub>R</sub> iş değerini aşabilir (şartname bu konuyu ele almaz). ";
+  if(!tOk) not += "Hedef puan (T) sıfırdan büyük değil; D hesaplanmadı. ";
+  if(hatali) not += hatali + " tutarsız satır hesaba katılmadı. ";
+  not += "Toplam D ve L, her satırdaki tek bir kişi içindir (R ve M tek bir sahibe aittir); pozisyondaki tüm kişilere ölçeklenmemiştir.";
+  document.getElementById("pNot").innerHTML = not;
+}
+
+function loadTblExample(){
+  for(var i=0;i<SATIR;i++){
+    var s = ORNEK_TBL[i];
+    document.getElementById("p_ad_" + i).value = s ? s[0] : "";
+    ALANLAR.forEach(function(k, j){ document.getElementById("p_" + k + "_" + i).value = s ? s[j+1] : ""; });
+  }
+  document.getElementById("isDegeri").value = 10;
+  document.getElementById("hedef").value = 4;
+  computeTbl();
+}
+
+document.getElementById("btnOrnek").addEventListener("click", loadTblExample);
+document.getElementById("btnTemizle").addEventListener("click", function(){
+  for(var i=0;i<SATIR;i++){
+    document.getElementById("p_ad_" + i).value = "";
+    ALANLAR.forEach(function(k){ document.getElementById("p_" + k + "_" + i).value = ""; });
+  }
+  computeTbl();
+});
+document.getElementById("btnCsv").addEventListener("click", function(){
+  var b = parseFloat(document.getElementById("isDegeri").value), t = parseFloat(document.getElementById("hedef").value);
+  var satir = ["Pozisyon;SR %;NR;R;M ay;IR;II;D;L"];
+  for(var i=0;i<SATIR;i++){
+    var sr = pVal("sr", i), nr = pVal("nr", i), r = pVal("r", i), m = pVal("m", i);
+    if(sr === null || nr === null || !(nr > 0) || sr < 0 || sr > 100 || isNaN(b)) continue;
+    var ad = document.getElementById("p_ad_" + i).value.trim() || ("Pozisyon " + (i+1));
+    var ir = sr / 100 * b, ii = ir / nr;
+    satir.push([ad, sr, nr, r === null ? "" : r, m === null ? "" : m, ir.toFixed(3), ii.toFixed(3),
+      (r !== null && t > 0) ? (ii * (r - t) / t).toFixed(3) : "", m !== null ? (ii * m / 12).toFixed(3) : ""].join(";"));
+  }
+  var blob = new Blob(["\ufeff" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "iso30410_kritik_pozisyonlar.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* =========================================================
+   3) FORMÜL TABLOSU + HESAPLAYICI
+   Alan adları gömülü Python modülünün hesapla() imzasıyla birebir aynıdır.
+   ========================================================= */
+function gerek(kosul, mesaj){ if(!kosul) throw new Error("GecersizGirdi: " + mesaj); }
+function bolOk(pay, payda, ad){ gerek(payda > 0, ad + " sıfırdan büyük olmalı"); return pay / payda; }
+/* Python round() ile aynı davranış: tam yarım değerlerde en yakın çifte yuvarlar */
+function pyround(x, n){
+  var m = Math.pow(10, n), y = x * m, f = Math.floor(y);
+  if(y - f === 0.5) return (f % 2 === 0 ? f : f + 1) / m;
+  return Math.round(y) / m;
+}
+function r1(x){ return pyround(x, 1); }
+function r2(x){ return pyround(x, 2); }
+function r3(x){ return pyround(x, 3); }
+function pozEtki(sr, b){
+  gerek(sr >= 0 && sr <= 100, "pay 0 ile 100 arasında olmalı");
+  gerek(b >= 0, "iş değeri negatif olamaz");
+  return sr / 100 * b;
+}
+function bireyEtki(ir, nr){
+  gerek(ir >= 0, "pozisyon etkisi negatif olamaz");
+  return bolOk(ir, nr, "pozisyondaki kişi sayısı");
+}
+
+var BIRIM = "para birimi (girdi birimiyle, ör. milyon $)";
+var CALC = [
+ {id:"etki_pozisyon", name:"Kritik pozisyonun yıllık etkisi (IR)", grp:"Pozisyonların etkisi", noHeur:true,
+  formula:"I<sub>R</sub> = S<sub>R</sub> &times; B",
+  note:"Şartname madde 5.3: kritik pozisyonun yıllıklandırılmış etkisi = pozisyonun toplam iş değerindeki yüzde payı × yıllıklandırılmış iş değeri. Örnek: %40 ve B = 10 milyon $ → 4 milyon $; pozisyonda 5 kişi varsa bireysel etki 0,8 milyon $. Pay (S<sub>R</sub>) yüzde olarak (0–100) girilir.",
+  fields:[{k:"sr",l:"Pozisyonun toplam iş değerindeki payı SR (%)",v:40},{k:"b",l:"Yıllıklandırılmış iş değeri B",v:10},{k:"nr",l:"Pozisyondaki kişi sayısı NR",v:5}],
+  unit:BIRIM,
+  py:"pozisyon_etkisi(sr_yuzde=40, b=10)",
+  calc:function(v){
+    var d = pozEtki(v.sr, v.b);
+    var ii = bireyEtki(d, v.nr);
+    return {value:d, dec:2, expl:v.sr + " ÷ 100 × " + v.b,
+      detail:[["Bireyin yıllık etkisi (II)", r3(ii)],
+              ["Pozisyondaki kişi sayısı", v.nr],
+              ["Toplam iş değerinden kalan pay (%)", r1(100 - v.sr)]]}; },
+  bands:[[0,"ok","Pay (SR) kurumca belirlenen bir tahmindir: dayanağını yazın ve duyarlılığı gösterin; pozisyonların payları örtüşüyorsa toplamlar iş değerini aşabilir (madde 5.2)."]]},
+
+ {id:"etki_birey", name:"Bireyin yıllık etkisi (II)", grp:"Pozisyonların etkisi", noHeur:true,
+  formula:"I<sub>I</sub> = I<sub>R</sub> &divide; N<sub>R</sub>",
+  note:"Şartname madde 5.3: bireyin yıllık iş etkisi = pozisyonun etkisi ÷ pozisyondaki kişi sayısı. Örnek: 4 ÷ 5 = 0,8 milyon $. Formül, pozisyondaki herkesin eşit etkisi olduğunu varsayar. Aylık bireysel etki türetilmiştir.",
+  fields:[{k:"ir",l:"Pozisyonun yıllık etkisi IR",v:4,step:0.1},{k:"nr",l:"Pozisyondaki kişi sayısı NR",v:5}],
+  unit:BIRIM,
+  py:"birey_etkisi(ir=4, nr=5)",
+  calc:function(v){
+    var d = bireyEtki(v.ir, v.nr);
+    return {value:d, dec:2, expl:v.ir + " ÷ " + v.nr,
+      detail:[["Aylık bireysel etki (II ÷ 12)", r3(d / 12)],
+              ["Pozisyonun toplam etkisi (IR)", v.ir]]}; },
+  bands:[[0,"ok","Tek kişilik bir pozisyonda II = IR'dir; çok kişili pozisyonlarda deneyim ve yetkinlik farkları D'de yansıtılır (madde 5.3, 6.3)."]]},
+
+ {id:"pay", name:"Pozisyonun iş değerindeki payı (SR, tersine hesap)", grp:"Pozisyonların etkisi", noHeur:true,
+  formula:"S<sub>R</sub> = (I<sub>R</sub> &divide; B) &times; 100",
+  note:"Şartname S<sub>R</sub>'yi girdi olarak alır; bu hesap formül 5.3'ün tersidir ve türetilmiştir. Pozisyonun etkisini başka bir yöntemle (ör. gelir analizi) tahmin ettiyseniz, B içindeki karşılık gelen payı görmek için kullanılır.",
+  fields:[{k:"ir",l:"Pozisyonun yıllık etkisi IR",v:4,step:0.1},{k:"b",l:"Yıllıklandırılmış iş değeri B",v:10}],
+  unit:"% (SR: toplam iş değerindeki pay)",
+  py:"pay_yuzde(ir=4, b=10)",
+  calc:function(v){
+    gerek(v.ir >= 0 && v.ir <= v.b, "pozisyon etkisi 0 ile iş değeri arasında olmalı");
+    var d = 100 * bolOk(v.ir, v.b, "iş değeri");
+    return {value:d, dec:1, expl:v.ir + " ÷ " + v.b + " × 100",
+      detail:[["Toplam iş değerinden kalan pay (%)", r1(100 - d)]]}; },
+  bands:[[0,"ok","Pay ve kişi sayısını birlikte yazın; payın dayanağı raporda görünmelidir."]]},
+
+ {id:"fark", name:"Performans değişiminin etkisi (D)", grp:"Performans değişimi", noHeur:true,
+  formula:"D = I<sub>I</sub> &times; (R &minus; T) &divide; T",
+  note:"Şartname madde 6.3: pozisyon sahibinin performans puanı R'nin hedef T'ye göre farkının bireysel etkiye oranlanmış değer etkisi. Örnekler (II = 0,8 milyon $, T = 4): R = 5 → +0,2; R = 4 → 0; R = 3 → −0,2 milyon $. R ve T aynı ölçekte olmalıdır (1–5, 1–7, 1–10). Ölçek doğrusal değilse sonuç bir yaklaşımdır (6.4.3).",
+  fields:[{k:"ii",l:"Bireyin yıllık etkisi II",v:0.8,step:0.01},{k:"r",l:"Bireyin performans puanı R",v:5,step:0.1},{k:"t",l:"Hedef performans puanı T",v:4,step:0.1}],
+  unit:BIRIM,
+  py:"performans_farki(ii=0.8, r=5, t=4)",
+  calc:function(v){
+    gerek(v.ii >= 0, "bireysel etki negatif olamaz");
+    gerek(v.r >= 0, "performans puanı negatif olamaz");
+    gerek(v.t > 0, "hedef puan sıfırdan büyük olmalı");
+    var d = v.ii * (v.r - v.t) / v.t;
+    return {value:d, dec:2, expl:v.ii + " × (" + v.r + " − " + v.t + ") ÷ " + v.t,
+      detail:[["Göreli sapma (R − T) ÷ T (%)", r1(100 * (v.r - v.t) / v.t)],
+              ["Performansla ayarlı bireysel etki (II + D)", r3(v.ii + d)]]}; },
+  bands:[[0.0000001,"ok","Hedefin üstünde performans ek değer sağlar (şartname örneği: +0,2 milyon $); ölçek doğrusal değilse bu bir yaklaşımdır."],
+         [-0.0000001,"ok","Performans hedefte: fark yok (şartname örneği: 0)."],
+         [-1e9,"bad","Hedefin altında performans kayıp demektir (şartname örneği: −0,2 milyon $); riski azaltma planı ve yetenek hattı değerlendirilmelidir (madde 5.4.1)."]]},
+
+ {id:"bosluk", name:"Boş kritik pozisyonun etkisi (L)", grp:"Boş pozisyonlar", noHeur:true,
+  formula:"L = I<sub>I</sub> &times; M &divide; 12",
+  note:"Şartname madde 7.3: boş pozisyonun yıllık iş performansına etkisi = bireysel etki × yedekleme süresi (ay) ÷ 12. M, eşdeğer yetkinlikte bir kişiyi bulma ve işe başlatma süresi artı performansı hedefe çıkarma süresidir. Örnek: 0,8 × 6 ÷ 12 = 0,4 milyon $. Formül doğrusaldır; M > 12 ise L bireysel yıllık etkiyi aşar. Aylık etki türetilmiştir.",
+  fields:[{k:"ii",l:"Bireyin yıllık etkisi II",v:0.8,step:0.01},{k:"m",l:"Yedekleme süresi M (ay)",v:6,step:0.5}],
+  unit:BIRIM,
+  py:"bosluk_kaybi(ii=0.8, m=6)",
+  calc:function(v){
+    gerek(v.ii >= 0, "bireysel etki negatif olamaz");
+    gerek(v.m >= 0, "yedekleme süresi negatif olamaz");
+    var d = v.ii * v.m / 12;
+    return {value:d, dec:2, expl:v.ii + " × " + v.m + " ÷ 12",
+      detail:[["Aylık bireysel etki (II ÷ 12)", r3(v.ii / 12)],
+              ["Yıllık bireysel etkinin yüzdesi (%)", r1(100 * v.m / 12)]]}; },
+  bands:[[0,"ok","Eşik yok: yedekleme süresinin üç parçasını (bulma, işe başlatma, hedefe çıkarma) ayrı izleyin; iç yetenek hattı riski azaltır (madde 7.4.2, 7.4.3)."]]}
+];
+
+/* --- formül tablosu --- */
+(function(){
+  var rows = CALC.map(function(c){
+    return '<tr><td><b>' + c.name + '</b></td><td><span style="font-family:var(--serif)">' +
+           c.formula + '</span></td><td>' + c.note + '</td></tr>';
+  }).join("");
+  document.getElementById("fBody").innerHTML = rows;
+})();
+
+/* --- hesaplayıcı --- */
+var sel = document.getElementById("cMetric");
+CALC.forEach(function(c, i){
+  var o = document.createElement("option");
+  o.value = i; o.textContent = c.grp + " — " + c.name;
+  sel.appendChild(o);
+});
+
+function buildFields(){
+  var c = CALC[+sel.value];
+  document.getElementById("cFields").innerHTML = c.fields.map(function(f){
+    return '<div class="field"><label for="in_' + f.k + '">' + f.l + '</label>' +
+      '<input type="number" id="in_' + f.k + '" value="" step="' + (f.step || "any") + '" placeholder="' + f.v + '"></div>';
+  }).join("");
+  document.getElementById("cFields").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", run);
+  });
+}
+
+function readVals(){
+  var c = CALC[+sel.value], v = {}, missing = false;
+  c.fields.forEach(function(f){
+    var el = document.getElementById("in_" + f.k);
+    var raw = el && el.value !== "" ? parseFloat(el.value) : NaN;
+    if(isNaN(raw)){ missing = true; v[f.k] = f.v; } else { v[f.k] = raw; }
+  });
+  return {v:v, missing:missing};
+}
+
+function fmt(x, dec){
+  if(!isFinite(x)) return "—";
+  return x.toLocaleString("tr-TR", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+
+/* Hesaplama motoru: Python hazırsa gömülü modül, değilse JS yedeği */
+function compute(c, v){
+  if(PY.ready){
+    try{
+      PY.pyodide.globals.set("_metrik", c.id);
+      PY.pyodide.globals.set("_girdi", JSON.stringify(v));
+      var raw = PY.pyodide.runPython(
+        "import json\n" +
+        "json.dumps(hesapla(_metrik, **json.loads(_girdi)))");
+      var r = JSON.parse(raw);
+      return {value:r.deger, expl:r.ifade, dec:r.ondalik, detail:r.ayrinti,
+              unit:r.birim, durum:r.durum, engine:"python"};
+    }catch(err){
+      var msg = String(err);
+      /* Kullanıcı girdisi kaynaklı hata: motor sorunu değil, yedeğe geçme */
+      if(msg.indexOf("GecersizGirdi") !== -1 || msg.indexOf("ZeroDivisionError") !== -1) throw err;
+      setEngine("off", "Motor: JS yedeği — Python hatası");
+    }
+  }
+  var out = c.calc(v);
+  out.engine = "js";
+  return out;
+}
+
+function run(){
+  var c = CALC[+sel.value];
+  var r = readVals();
+  var out;
+  try { out = compute(c, r.v); } catch(e){ out = null; }
+  var box = document.getElementById("cResult");
+  if(!out || !isFinite(out.value)){
+    box.innerHTML = '<div class="result"><b>Hesaplanamadı.</b> Payda sıfır olamaz, parça bütünden büyük olamaz ve değerler geçerli aralıkta olmalı; alanları kontrol edin.</div>';
+    return;
+  }
+  var dec = (out.dec === undefined) ? 1 : out.dec;
+  var unit = out.unit || c.unit;
+  var html = '<div class="result">';
+  html += '<div class="big">' + fmt(out.value, dec) + ' <span>' + unit + '</span></div>';
+  html += '<div style="font-size:13px;color:var(--ink-soft);margin-top:6px">' + c.name +
+          ' · ' + (out.engine === "python" ? 'Python (Pyodide) ile hesaplandı' : 'JavaScript ile hesaplandı') +
+          (r.missing ? ' · <i>boş alanlar için örnek değer kullanıldı</i>' : '') + '</div>';
+
+  if(document.getElementById("oFormula").checked){
+    html += '<div class="formula">' + c.formula + '<br><span style="color:var(--ink-soft);font-size:15px">= ' +
+            out.expl + ' = <b>' + fmt(out.value, dec) + '</b> ' + unit + '</span></div>';
+  }
+  if(out.detail && out.detail.length){
+    html += '<dl>' + out.detail.map(function(d){
+      var val = (typeof d[1] === "number") ? d[1].toLocaleString("tr-TR") : d[1];
+      return '<dt>' + d[0] + '</dt><dd>' + val + '</dd>';
+    }).join("") + '</dl>';
+  }
+  if(document.getElementById("oInterp").checked){
+    if(c.durumMetin && out.durum){
+      html += '<div class="verdict ' + out.durum + '">' + c.durumMetin[out.durum] + '</div>';
+    } else if(c.bands){
+      var band = c.bands[c.bands.length-1];
+      for(var i=0;i<c.bands.length;i++){ if(out.value >= c.bands[i][0]){ band = c.bands[i]; break; } }
+      html += '<div class="verdict ' + band[1] + '">' + band[2] + '</div>';
+      if(c.bands.length > 1 && !c.noHeur){
+        html += '<div class="note" style="margin-top:12px">Yorum eşikleri standarttan değil, başlangıç varsayımlarından gelir; kendi hedeflerinizle değiştirin.</div>';
+      }
+    }
+    html += '<div class="note" style="margin-top:12px">' + c.note + '</div>';
+  }
+  if(document.getElementById("oPy").checked){
+    var args = c.fields.map(function(f){ return f.k + "=" + r.v[f.k]; }).join(", ");
+    var call = 'hesapla("' + c.id + '", ' + args + ')';
+    html += '<pre style="margin-top:16px"><i>&gt;&gt;&gt; from iso30410_metrikler import hesapla</i>\n' +
+            '&gt;&gt;&gt; ' + call + '["deger"]\n' + out.value + '\n\n' +
+            '<i># eşdeğer doğrudan çağrı</i>\n&gt;&gt;&gt; ' + c.py + '</pre>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+sel.addEventListener("change", function(){ buildFields(); run(); });
+document.getElementById("btnRun").addEventListener("click", run);
+document.getElementById("btnExample").addEventListener("click", function(){
+  var c = CALC[+sel.value];
+  c.fields.forEach(function(f){ document.getElementById("in_" + f.k).value = f.v; });
+  run();
+});
+["oFormula","oInterp","oPy"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", function(){
+    var all = document.getElementById("oFormula").checked &&
+              document.getElementById("oInterp").checked &&
+              document.getElementById("oPy").checked;
+    document.getElementById("oAll").checked = all;
+    run();
+  });
+});
+document.getElementById("oAll").addEventListener("change", function(){
+  var s = this.checked;
+  ["oFormula","oInterp","oPy"].forEach(function(id){ document.getElementById(id).checked = s; });
+  run();
+});
+
+/* --- tablodan hesaplayıcıya aktarma --- */
+document.getElementById("btnAktar").addEventListener("click", function(){
+  if(!TBL.ok){ loadTblExample(); }
+  var idx = CALC.map(function(c){ return c.id; }).indexOf("etki_pozisyon");
+  sel.value = idx; buildFields();
+  document.getElementById("in_sr").value = TBL.ilk.sr;
+  document.getElementById("in_b").value = TBL.ilk.b;
+  document.getElementById("in_nr").value = TBL.ilk.nr;
+  run();
+  document.getElementById("hesaplayici").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* =========================================================
+   4) PYTHON MOTORU (Pyodide / WebAssembly)
+   Gömülü iso30410_metrikler.py modülü tarayıcı içinde
+   gerçek CPython ile çalıştırılır. Erişim yoksa JS yedeği
+   devrede kalır ve sonuçlar değişmez.
+   ========================================================= */
+var PY = {ready:false, busy:false, pyodide:null};
+
+var PYODIDE_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+  "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"
+];
+
+function setEngine(state, text){
+  var chip = document.getElementById("engStatus");
+  chip.className = "chip" + (state ? " " + state : "");
+  chip.textContent = text;
+}
+
+function loadScript(src){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function(){ resolve(src); };
+    s.onerror = function(){ reject(new Error(src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function pySource(){
+  return document.getElementById("pysrc").textContent;
+}
+
+async function initPython(){
+  if(PY.ready) return true;
+  if(PY.busy) return false;
+  PY.busy = true;
+  document.getElementById("btnPy").disabled = true;
+  setEngine("busy", "Motor: Pyodide indiriliyor…");
+  try{
+    if(typeof loadPyodide === "undefined"){
+      try { await loadScript(PYODIDE_URLS[0]); }
+      catch(e){ await loadScript(PYODIDE_URLS[1]); }
+    }
+    setEngine("busy", "Motor: Python başlatılıyor…");
+    PY.pyodide = await loadPyodide();
+
+    /* Modülü sanal dosya sistemine yazmadan, gerçek bir modül nesnesi olarak kur:
+       böylece __name__ != "__main__" olur ve _demo() kendiliğinden çalışmaz.
+       Kayıt exec'ten ÖNCE yapılır; @dataclass işlenirken modülü sys.modules'te arar. */
+    PY.pyodide.globals.set("_kaynak", pySource());
+    PY.pyodide.runPython(
+      "import sys, types\n" +
+      "_m = types.ModuleType('iso30410_metrikler')\n" +
+      "_m.__file__ = 'iso30410_metrikler.py'\n" +
+      "sys.modules['iso30410_metrikler'] = _m\n" +
+      "exec(compile(_kaynak, 'iso30410_metrikler.py', 'exec'), _m.__dict__)\n" +
+      "from iso30410_metrikler import *\n" +
+      "import iso30410_metrikler as m\n"
+    );
+    var sur = PY.pyodide.runPython(
+      "import sys\n'.'.join(str(x) for x in sys.version_info[:3])");
+    PY.ready = true;
+    setEngine("on", "Motor: Python " + sur + " (Pyodide)");
+    run();
+    return true;
+  }catch(e){
+    setEngine("off", "Motor: tarayıcı (JS) — Pyodide yüklenemedi");
+    document.getElementById("pyOut").textContent =
+      "Python motoru yüklenemedi. Bu genellikle çevrimdışı olmaktan ya da ağ kısıtından kaynaklanır.\n" +
+      "Sayfa çalışmaya devam eder; hesaplamalar JavaScript yedeğiyle aynı sonuçları verir.\n\n" + e;
+    return false;
+  }finally{
+    PY.busy = false;
+    document.getElementById("btnPy").disabled = false;
+  }
+}
+
+document.getElementById("btnPy").addEventListener("click", initPython);
+
+/* --- konsol --- */
+var VARSAYILAN_KOD =
+  'from iso30410_metrikler import *\n' +
+  'import iso30410_metrikler as m\n\n' +
+  '# Şartnamenin zinciri: SR = %40, B = 10 milyon $, NR = 5\n' +
+  'ir = pozisyon_etkisi(40, 10)\n' +
+  'ii = birey_etkisi(ir, 5)\n' +
+  'print("IR               :", ir)\n' +
+  'print("II               :", ii)\n\n' +
+  '# Performans değişimi (T = 4)\n' +
+  'for r in (5, 4, 3):\n' +
+  '    print(f"D (R={r})         :", round(performans_farki(ii, r, 4), 2))\n\n' +
+  '# Boş pozisyon (M = 6 ay)\n' +
+  'print("L               :", bosluk_kaybi(ii, 6))\n' +
+  'print("SR (ters hesap) :", pay_yuzde(ir, 10), "%")\n\n' +
+  '# Kritik pozisyon tablosu\n' +
+  't = ornek_tablo()\n' +
+  'for anahtar, deger in t.ozet().items():\n' +
+  '    print(f"{anahtar:<18}: {deger}")\n\n' +
+  '# Dağıtıcı, hesaplayıcının kullandığı arayüzdür:\n' +
+  'print(hesapla("fark", ii=0.8, r=5, t=4))\n\n' +
+  '# Rapor denetimi: hangi ön koşullar eksik?\n' +
+  'for uyari in etki_denetimi(kritik_pozisyonlar_belirlendi=True, is_degeri_tanimli=True):\n' +
+  '    print("!", uyari)\n';
+
+document.getElementById("pyCode").value = VARSAYILAN_KOD;
+
+async function runConsole(){
+  var out = document.getElementById("pyOut");
+  if(!PY.ready){
+    out.textContent = "Python motoru hazırlanıyor, ilk çalıştırma biraz sürebilir…";
+    var ok = await initPython();
+    if(!ok) return;
+  }
+  out.textContent = "çalışıyor…";
+  try{
+    PY.pyodide.globals.set("_kod", document.getElementById("pyCode").value);
+    var cikti = PY.pyodide.runPython(
+      "import io, contextlib, traceback\n" +
+      "_tampon = io.StringIO()\n" +
+      "with contextlib.redirect_stdout(_tampon), contextlib.redirect_stderr(_tampon):\n" +
+      "    try:\n" +
+      "        exec(_kod, globals())\n" +
+      "    except Exception:\n" +
+      "        traceback.print_exc()\n" +
+      "_tampon.getvalue()"
+    );
+    out.textContent = cikti && cikti.trim() ? cikti : "(çıktı yok)";
+  }catch(e){
+    out.textContent = "Hata: " + e;
+  }
+}
+
+document.getElementById("btnRunPy").addEventListener("click", runConsole);
+document.getElementById("btnReset").addEventListener("click", function(){
+  document.getElementById("pyCode").value = VARSAYILAN_KOD;
+  document.getElementById("pyOut").textContent = "Kod sıfırlandı.";
+});
+document.getElementById("btnDemo").addEventListener("click", function(){
+  document.getElementById("pyCode").value =
+    "import iso30410_metrikler as m\n\n" +
+    "# Modülün kendi doğrulama çıktısı (komut satırındaki\n" +
+    "# python3 iso30410_metrikler.py ile aynı sonucu verir)\n" +
+    "m._demo()\n";
+  runConsole();
+});
+
+/* modül kaynağını sayfada okunur kıl */
+document.getElementById("srcView").textContent = pySource().trim();
+
+buildTbl();
+loadTblExample();
+buildFields();
+run();
+</script>
+</body>
+</html>
