@@ -1,0 +1,2199 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO 30422 Öğrenme ve Gelişim Rehberi ve Metrikleri — Sınıflandırma ve Hesaplayıcı</title>
+<style>
+  :root{
+    --ink:#101418;
+    --ink-soft:#59636f;
+    --ink-faint:#8b95a1;
+    --line:#dde3ea;
+    --line-soft:#eef1f5;
+    --bg:#ffffff;
+    --canvas:#f6f8fa;
+    --accent:#0b5c8a;
+    --accent-soft:#e7f0f6;
+    --panel:#0e1520;
+    --panel-2:#16202e;
+    --panel-line:#28394f;
+    --out-ink:#8a3b12;  --out-bg:#fbeee6;
+    --eff-ink:#14615c;  --eff-bg:#e6f2f1;
+    --efc-ink:#33478c;  --efc-bg:#eaedf8;
+    --rea-ink:#7a5c00;  --rea-bg:#f8f1d9;
+    --cos-ink:#8c2f4b;  --cos-bg:#f9e8ee;
+    --ok:#1d6f42; --warn:#8a6100; --bad:#992121;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--canvas);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.62;
+  }
+  .sheet{max-width:1000px;margin:0 auto;background:var(--bg);padding:56px 60px 80px;
+    box-shadow:0 0 0 1px var(--line);}
+  @media(max-width:760px){ .sheet{padding:28px 20px 56px} }
+
+  h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:25px;margin:52px 0 4px;padding-bottom:8px;
+     border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  h3{font-size:17px;margin:32px 0 6px;letter-spacing:.01em}
+  h4{font-size:15px;margin:22px 0 4px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:12px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  small{color:var(--ink-soft)}
+  .lede{font-size:17px;color:var(--ink-soft)}
+
+  .srcbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 0;margin:0 0 26px;font-size:13.5px;color:var(--ink-soft)}
+  .srcbar b{color:var(--ink);font-weight:600}
+
+  .toc{background:var(--canvas);border:1px solid var(--line);padding:16px 20px;margin:26px 0 0;
+    font-size:14px;columns:2;column-gap:34px}
+  @media(max-width:640px){.toc{columns:1}}
+  .toc a{display:block;padding:3px 0;text-decoration:none;color:var(--ink)}
+  .toc a:hover{color:var(--accent);text-decoration:underline}
+  .toc b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 4px}
+
+  .keypoints li{margin:10px 0}
+  .keypoints b{font-weight:650}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink-soft);padding-bottom:6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:var(--canvas);font-weight:650;font-size:13px}
+  tbody tr:nth-child(even){background:#fcfdfe}
+  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;width:66px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink)}
+  .dot.o{background:var(--out-ink)} .dot.s{background:var(--eff-ink)} .dot.p{background:var(--efc-ink)}
+  .dot.r{background:var(--rea-ink)} .dot.c{background:var(--cos-ink)}
+
+  .tag{display:inline-block;font-size:11px;line-height:1.5;padding:1px 7px;border-radius:3px;
+    letter-spacing:.03em;white-space:nowrap;font-weight:600}
+  .tag.o{color:var(--out-ink);background:var(--out-bg)}
+  .tag.s{color:var(--eff-ink);background:var(--eff-bg)}
+  .tag.p{color:var(--efc-ink);background:var(--efc-bg)}
+  .tag.r{color:var(--rea-ink);background:var(--rea-bg)}
+  .tag.c{color:var(--cos-ink);background:var(--cos-bg)}
+  .tag.iso{color:#4a4a4a;background:#eeeeee}
+  .tag.lvl{color:#5a3a86;background:#f0eaf8}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--line-soft);padding:1px 5px;border-radius:3px}
+  pre{background:var(--panel);color:#e7eef6;border-radius:6px;padding:18px 20px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:14px 0}
+  pre b{color:#f0b866;font-weight:400}      /* anahtar kelime */
+  pre i{color:#7f8ea1;font-style:normal}    /* yorum */
+  pre u{color:#9fd28a;text-decoration:none} /* dize/sayı */
+  pre .fn{color:#79c0e8}
+  .filename{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin:14px 0 -8px}
+
+  .formula{font-family:var(--serif);font-size:16.5px;background:var(--canvas);
+    border-left:3px solid var(--accent);padding:12px 16px;margin:12px 0;overflow-x:auto}
+  .formula em{font-style:italic}
+
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 14px;color:var(--ink-soft);font-size:14px;margin:14px 0}
+
+  /* --- panel --- */
+  .panel{background:var(--panel);color:#dbe5f0;border-radius:8px;padding:22px 24px;margin:20px 0}
+  .panel h3{color:#fff;margin:0 0 4px;font-size:16px}
+  .panel .hint{color:#8fa2b8;font-size:13px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#8fa2b8;margin-bottom:5px}
+  .field label .req{color:#e08a5a}
+  select,input[type=number],input[type=text]{
+    width:100%;background:var(--panel-2);border:1px solid var(--panel-line);color:#eef4fb;
+    border-radius:5px;padding:9px 10px;font-family:var(--sans);font-size:14px}
+  input[type=number]{font-family:var(--mono)}
+  select:focus,input:focus{outline:2px solid #4a8fc0;outline-offset:1px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13.5px;color:#b9c7d6}
+  .checks label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .panel-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:5px;cursor:pointer;
+    border:1px solid transparent;padding:9px 18px}
+  .btn-run{background:#1c74ab;color:#fff}
+  .btn-run:hover{background:#2385c2}
+  .btn-ghost{background:transparent;color:#9fb3c9;border-color:var(--panel-line)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9fb3c9;
+    border:1px solid var(--panel-line);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7c8ea3}
+  .chip.busy::before{background:#e0a13c}
+  .chip.on::before{background:#4ec07a}
+  .chip.off::before{background:#c05a5a}
+
+  .console{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+  .console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+    background:var(--canvas);border-bottom:1px solid var(--line);padding:8px 12px;font-size:12.5px;color:var(--ink-soft)}
+  .console textarea{width:100%;border:0;display:block;background:var(--panel);color:#e7eef6;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:16px 20px;resize:vertical;min-height:190px}
+  .console textarea:focus{outline:2px solid #4a8fc0;outline-offset:-2px}
+  .console pre{margin:0;border-radius:0;background:#0a1017;border-top:1px solid var(--panel-line);min-height:64px}
+  .btn-sm{padding:6px 14px;font-size:13px}
+  details.src pre{max-height:420px;overflow:auto}
+  .btn-ghost:hover{color:#fff;border-color:#47607d}
+
+  .result{border:1px solid var(--line);border-top:3px solid var(--accent);padding:18px 20px;margin:18px 0}
+  .result .big{font-family:var(--serif);font-size:32px;line-height:1.1}
+  .result .big span{font-size:16px;color:var(--ink-soft);font-family:var(--sans)}
+  .result dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:14px 0 0;font-size:14px}
+  .result dt{color:var(--ink-soft)}
+  .result dd{margin:0;font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px;padding:10px 12px;font-size:14px;border-radius:4px;background:var(--canvas)}
+  .verdict.ok{color:var(--ok);background:#eef6f1}
+  .verdict.warn{color:var(--warn);background:#fbf5e7}
+  .verdict.bad{color:var(--bad);background:#faeeee}
+
+  /* --- matris --- */
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;
+    background:var(--canvas);border:1px solid var(--line);padding:14px 16px;margin:16px 0}
+  .filters label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .filters select,.filters input{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .matrix{font-size:13.5px}
+  .matrix th.rot{width:72px;text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom}
+  .matrix td.name{font-weight:500}
+  .matrix td.name em{display:block;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .matrix tr.group td{background:#f2f5f8;font-weight:650;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+  .count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+
+  /* --- pozisyon tablosu --- */
+  .postbl{font-size:13.5px}
+  .postbl input[type=text],.postbl input[type=date],.postbl input[type=number]{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .postbl input[type=text]{font-family:var(--sans)}
+  .postbl input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .postbl td.chk{text-align:center}
+  .postbl input[type=number]{text-align:right}
+  .postbl td:first-child{min-width:150px}
+  .postbl th.num,.postbl td.num{width:auto}
+  @media(max-width:760px){table{display:block;overflow-x:auto}}
+  .postbl td.calc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap}
+  .postbl tfoot td{background:var(--canvas);font-weight:650}
+  .tblbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+  .tblbar button{border-color:var(--line);color:var(--ink-soft);background:#fff}
+  .tblbar button:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tblbar .inline{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft)}
+  .tblbar .inline input{width:78px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .card{border:1px solid var(--line);border-top:3px solid var(--eff-ink);padding:12px 14px}
+  .card b{display:block;font-family:var(--serif);font-size:24px;line-height:1.2}
+  .card span{font-size:12px;color:var(--ink-soft)}
+  .card.alt{border-top-color:var(--efc-ink)}
+  .card.warn{border-top-color:var(--out-ink)}
+
+  details{border-bottom:1px solid var(--line);padding:12px 0}
+  summary{cursor:pointer;font-weight:600;font-size:15px}
+  summary::marker{color:var(--accent)}
+  details p{margin:10px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  @media (prefers-reduced-motion:no-preference){
+    .result{transition:border-color .2s}
+  }
+  @media print{
+    body{background:#fff} .sheet{box-shadow:none;max-width:none;padding:0}
+    .panel{background:#fff;color:#000;border:1px solid #000}
+    pre{background:#f4f4f4;color:#000}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>ISO 30422 Öğrenme ve Gelişim Rehberi ve Metrikleri</h1>
+<div class="srcbar">
+  <span><b>Kaynak:</b> BS ISO 30422:2022 — <i>Human resource management — Learning and development</i></span>
+  <span><b>Kapsam:</b> 5 kullanıcı · 5 metrik ailesi · 42 metrik ve etken</span>
+  <span><b>Hesaplama:</b> gömülü Python modülü (Pyodide/WebAssembly)</span>
+  <span><b>Sürüm:</b> Ekim 2026</span>
+</div>
+
+<h2 id="genel">Genel Bakış</h2>
+<p>ISO 30422:2022, işyerindeki <b>planlı öğrenme ve gelişim (L&amp;D)</b> faaliyetlerinin nasıl yönetileceğini ve
+değerlendirileceğini anlatan bir rehberdir. ISO 30414 ailesindeki ölçüm şartnamelerinden (ISO/TS 30428 gibi)
+farklı olarak metrik tanımlamaz; <b>dört aşamalı bir süreç</b> tanımlar: öğrenme ihtiyacını belirlemek,
+planlamak, uygulamak, etkililiğini ve çıktılarını değerlendirmek. Ek B'de dört aile için (tepki, katılım,
+maliyet, sonuç) <b>örnek metrikler</b> sıralar; formül ve eşik vermez. Bu sayfa, standardın sürecini
+filtrelenebilir bir matrise; örnek metrikleri de formül + canlı hesaplayıcı + Python koduna dönüştürür.
+Birleşik Krallık sürümü olan BS ISO 30422:2022, PD 76006:2017'nin yerini almıştır; o belgenin geri çekilme tarihi
+1 Haziran 2024 olarak duyurulmuştu. İlişkili belgeler: beş ana metrik için ISO/TS 30428, insan sermayesi raporlaması için
+ISO 30414, terimler için ISO 30400, çeşitlilik ve kapsayıcılık için ISO 30415.</p>
+
+<h3>Önemli Noktalar</h3>
+<ul class="keypoints">
+  <li><b>Bu bir süreç rehberidir, ölçüm şartnamesi değildir.</b> Standart "neyi, nasıl yapmalı" sorusuna cevap
+  verir; metrik formülleri ve eşikleri standartta yoktur. Bu sayfadaki formüller yaygın uygulama
+  tanımlarıdır ve kurumunuzun yazılı tanımına göre uyarlanmalıdır.</li>
+  <li><b>Kapsam geniştir.</b> Resmi ve gayriresmi öğrenmeyi, kısa dönem operasyonel ihtiyaçları ve uzun
+  dönem beceri ihtiyaçlarını, bireyin kariyer ve yaşam boyu öğrenmesini kapsar. Yüklenici, alt yüklenici,
+  stajyer ve gönüllüler gibi kurum adına çalışan herkes "çalışan" sayılır. Eğitimin idari işlemleri kapsam
+  dışıdır.</li>
+  <li><b>Hiçbir öğrenme yöntemi diğerinden üstün değildir.</b> Koçluk, grup eğitimi, iş başı öğrenme,
+  mentorluk ve e-öğrenme bağlama göre seçilir; karma (blended) kurgu esneklik sağlar.</li>
+  <li><b>Öğrenme üç noktada ölçülür.</b> Faaliyetten önce, hemen sonra ve bir süre geçtikten sonra. Uygulanmayan
+  öğrenme zamanla sönebilir; yalnızca "eğitim bitti" anındaki ölçüm kalıcılığı göstermez.</li>
+  <li><b>Ölçme geçerli, güvenilir ve adil olmalıdır.</b> Geçerlilik ölçülmesi gerekeni ölçmeyi, güvenilirlik
+  tutarlı ve düşük hatalı sonuç vermeyi, adillik tarafsız ve önyargısız olmayı anlatır.</li>
+  <li><b>Kanıt nicel ve nitel olmalıdır.</b> Öğrenen geri bildirimi, kurs sonrası testler, görüşme, doğrudan
+  gözlem ve sosyal medya paylaşımları değerlendirme kanıtıdır. Maliyet ve çıktı bilgisi tutarlı ve şeffaf
+  sunulduğunda sürekli iyileştirmenin sağlam bir tabanı olur.</li>
+</ul>
+
+<div class="toc">
+  <b>İçindekiler</b>
+  <a href="#genel">Genel bakış ve önemli noktalar</a>
+  <a href="#nezaman">Ne zaman kullanılır</a>
+  <a href="#cerceve">Çerçeve: dört aşamalı süreç</a>
+  <a href="#yontemler">Öğrenme yöntemleri ve değerlendirme</a>
+  <a href="#adimlar">Uygulama adımları</a>
+  <a href="#kavramlar">Temel kavramlar</a>
+  <a href="#matris">Metrik matrisi</a>
+  <a href="#tablo">Katılım ve maliyet tablosu</a>
+  <a href="#formuller">Formüller ve tanımlar</a>
+  <a href="#hesaplayici">Hesaplayıcı</a>
+  <a href="#python">Python kod örnekleri</a>
+  <a href="#yorum">Sonuçların yorumlanması</a>
+  <a href="#sinirlamalar">Sınırlamalar</a>
+  <a href="#raporlama">Metriklerin raporlanması</a>
+  <a href="#ilgili">İlgili standartlar</a>
+  <a href="#sss">Sıkça sorulan sorular</a>
+</div>
+
+<h2 id="nezaman">Ne Zaman Kullanılır</h2>
+<ul>
+  <li><b>Öğrenme ihtiyacı kurum stratejisiyle hizalanırken:</b> ihtiyaçlar kurum, takım ve birey düzeyinde
+  belirlenir ve kurumsal öncelikleriyle ilişkilendirilir.</li>
+  <li><b>Beceri açıkları kapatılırken:</b> kurumsal hedeflere ulaşmak için hangi becerilerin eksik olduğu ve
+  L&amp;D'nin doğru çözüm olup olmadığı sınanır.</li>
+  <li><b>Etkili bir plan kurulurken:</b> kimin, hangi çıktıyı, hangi yöntemle, hangi kaynakla ve hangi sürede
+  edineceği tanımlanır.</li>
+  <li><b>Öğrenme süreçleri tutarlı yürütülürken:</b> uygulamanın zamanı, ortamı ve amir desteği güvence altına
+  alınır.</li>
+  <li><b>Sürekli iyileştirme için değerlendirme yapılırken:</b> bireysel yetkinlik, süreç verimliliği ve
+  çıktılar ölçülür.</li>
+  <li><b>L&amp;D yatırımının etkisi gösterilirken:</b> uygun ölçüler ve metrikler üzerinden finansal ve
+  finansal olmayan çıktılara katkı ortaya konur.</li>
+</ul>
+<div class="note">Bu belge bir <b>rehber</b> ve ölçme çalışma aracıdır. Standardın kendi ifadesiyle metrikler
+yalnızca örnektir; kurum kendi bağlamına uygun olanları seçer ve tanımlarını yazılı hâle getirir.</div>
+
+<h2 id="cerceve">Çerçeve: Dört Aşamalı Süreç</h2>
+
+<h3>Planla–Uygula–Kontrol et–Önlem al döngüsü</h3>
+<p>Standart, L&amp;D'yi bir PDCA döngüsü olarak düşünür. Şekil 1'de P harfi ihtiyaç belirlemeye, D planlamaya,
+C uygulamaya, A değerlendirmeye karşılık gelir. Kurumsal bağlam (strateji, işgücü planı, politikalar)
+döngüyü besler; kurumsal çıktılar (kapasite, bağlılık, değişime hazırlık, elde tutma) ve sürekli
+iyileştirme bağlama geri döner.</p>
+<table>
+  <thead><tr><th>Aşama</th><th>Madde</th><th>Ne yapılır</th><th>Ürettiği çıktı</th></tr></thead>
+  <tbody>
+    <tr><td><b>Kurum bağlamı</b></td><td>4</td>
+      <td>Üst yönetim L&amp;D'nin en çok değer katacağı alanları belirler, işbirlikçi ve danışmacı süreçleri
+      destekler, bilgi paylaşımını teşvik eder, kendi öğrenmesini de gösterir.</td>
+      <td>Strateji ile L&amp;D önceliklerinin hizası</td></tr>
+    <tr><td><b>İhtiyaç belirleme (P)</b></td><td>5</td>
+      <td>Çalışan ve amir diyaloğuyla mevcut yetkinlik ile görev gereklilikleri arasındaki açık bulunur; L&amp;D'nin
+      uygun çözüm olup olmadığı sınanır; talep kaynağı aşıyorsa öncelik sırası konur.</td>
+      <td>Öğrenme çıktıları, süre, gereken kaynaklar</td></tr>
+    <tr><td><b>Planlama (D)</b></td><td>6</td>
+      <td>Öğrenen kitle ve beklenen çıktılar belirlenir, kaynaklar tanımlanır, öğrenme yöntemleri seçilir.</td>
+      <td>Öğrenme planı ve yöntem karması</td></tr>
+    <tr><td><b>Uygulama (C)</b></td><td>7</td>
+      <td>Plan yürütülür, öğrenme değerlendirilir, öğrenme süreçleri izlenir ve yönetilir.</td>
+      <td>Öğrenme kayıtları ve değerlendirme sonuçları</td></tr>
+    <tr><td><b>Değerlendirme (A)</b></td><td>8</td>
+      <td>Bireysel yetkinlik, L&amp;D süreç verimliliği ve L&amp;D çıktıları değerlendirilir.</td>
+      <td>İyileştirme önlemleri, yeni öncelikler</td></tr>
+  </tbody>
+</table>
+
+<h3>Üst yönetimin görevleri (madde 4)</h3>
+<ul>
+  <li>L&amp;D'nin kurumsal öncelikler ve hedefler açısından en alakalı olduğu yerleri belirlemek; bunu yaparken
+  doğrudan çalışanlar, geçici çalışanlar ve çalışan temsilcileri gibi ilgili tarafların girdisini dikkate
+  almak.</li>
+  <li>Çalışan genelinde öğrenmeyi teşvik eden, işbirlikçi ve danışmacı süreçleri desteklemek.</li>
+  <li>İletilen değer ve öncelikler ile çalışanların işyeri deneyimi arasında tutarlılık sağlamak.</li>
+  <li>Kurum içinde bilgi paylaşımını yaygınlaştırmak.</li>
+  <li>Amirlerin, öğrenenlerin öğrendiklerini işte uygulamalarına yardım etmesini teşvik etmek.</li>
+  <li>Resmi öğrenme süreçlerinin yetkin sağlayıcılar (iç ya da dış) tarafından sunulmasını ya da
+  kolaylaştırılmasını sağlamak.</li>
+  <li>Kendi sürekli öğrenme ve gelişimini göstermek.</li>
+</ul>
+
+<h3>Bireyin ve amirin rolü (madde 6.1)</h3>
+<ul>
+  <li>Birey kendi öğrenme önceliklerini belirler, resmi ve gayriresmi faaliyetlere açık olur, kısa ve uzun
+  dönemli gelişim planını kurumsal hedeflerle hizalar.</li>
+  <li>Kendi kendine yönlendirilen öğrenme, kurum insanları şunlara teşvik ettiğinde daha olasıdır: anlamadıkları
+  zaman yardım istemek, deneyimli çalışanları izlemek ya da yanında çalışmak, yeni yöntemler denemek, yeni
+  beceri ve teknikleri uygulamak. Çalışanların psikolojik ve zihinsel iyi oluşunu destekleyen bir ortam,
+  bu tür öğrenmeyi kolaylaştırır.</li>
+  <li>Amirler çalışanlara görevlerini yapmak ve yasal ile mevzuat gerekliliklerini karşılamak için gereken
+  bilgi ve becerileri edinme fırsatı verir.</li>
+</ul>
+
+<h3>İyi bir L&amp;D planının özellikleri (madde 6.1)</h3>
+<ul>
+  <li>Öğrenme materyali belirlenen çıktıları karşılama potansiyeline sahip ve günceldir.</li>
+  <li>Güvenilir yöntemler ve uygulamalar kullanılır.</li>
+  <li>Çalışanın bağlamı dikkate alınır; öğrenme erişilebilir ve kapsayıcıdır.</li>
+  <li>Öğrenmenin işyerinde uygulanması için fırsat planın parçasıdır.</li>
+  <li>Beklenen çıktıların ne ölçüde elde edildiğini belirleyecek süreçler vardır.</li>
+  <li>Zamana yayılmış öğrenme, yöntem çeşitliliği, öz yansıtma, destekleyici geri bildirim ve işyerinde yansıtma
+  fırsatları planlara eklenebilir.</li>
+</ul>
+
+<h3>Değerlendirmenin ne söylediği (madde 8)</h3>
+<table>
+  <thead><tr><th>Değerlendirme bilgisi</th><th>Kurumsal çıktı ölçüleri</th></tr></thead>
+  <tbody>
+    <tr><td>Öğrenme sürecinin sonucunda oluşan değişiklikler (yeni veya mevcut yetkinliklere katkı)</td>
+      <td>Verimlilik, satış veya hizmet düzeyi hedeflerine ulaşma</td></tr>
+    <tr><td>Kullanılan yöntem, kaynak ve olanakların verimliliği ve etkililiği</td>
+      <td>İş sağlığı ve güvenliği hedefleri</td></tr>
+    <tr><td>Kurumun sunduğu L&amp;D kapsamında gereken değişiklikler</td><td>Kaza oranları</td></tr>
+    <tr><td>Yönetim ve öğrenen beklentilerinin karşılanma düzeyi</td>
+      <td>Mevzuat (yasal ve düzenleyici) hedeflerine uyum</td></tr>
+    <tr><td>Bireysel performans düzeyindeki değişiklikler</td><td>Çalışan bağlılığı düzeyi</td></tr>
+    <tr><td>Belirli öğrenme faaliyetleri için yatırım getirisi</td><td>Çalışanı elde tutma oranı</td></tr>
+    <tr><td>Kurumsal veya sektörel performans ölçütlerine ve iyi uygulama standartlarına katkı</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<h2 id="yontemler">Öğrenme Yöntemleri ve Değerlendirme</h2>
+
+<h3>Yaygın öğrenme yöntemleri (Ek A)</h3>
+<p>Standart, hiçbir yöntemin diğerinden üstün olmadığını söyler. Bazı yöntemler iş dışında ve gruplarla
+(sınıf, grup eğitimi), bazıları bireysel (mentorluk), bazıları iş ortamında birebir (koçluk, gayriresmi
+öğrenme) yürür. Aşağıdaki tablo Ek A'nın özetidir.</p>
+<table>
+  <thead><tr><th style="width:190px">Yöntem</th><th>Nedir</th><th>Ne zaman uygun</th></tr></thead>
+  <tbody>
+    <tr><td><b>Koçluk</b></td>
+      <td>Performans ve öğrenme mekanizmasıdır; bireyin kendi çözümlerini bulmasına rehberlik eder, süreyle
+      sınırlıdır. İç veya dış akredite koç ya da hat yöneticisi yürütebilir.</td>
+      <td>Yeni sorumluluk veya fırsata hazırlanırken, belirli bir performans sorununda ya da takım gelişimi
+      öncelik olduğunda.</td></tr>
+    <tr><td><b>Resmi veya grup eğitimi</b></td>
+      <td>Fiziksel veya çevrim içi sınıf eğitimidir; konuya yeni olanlar için uygundur, güvenli bir ortamda
+      beceri uygulamaya ve tartışmaya imkân verir.</td>
+      <td>Nispeten geniş bir grubun bilgi ve becerileri yapılandırılmış biçimde edinmesi veya yasal ve
+      düzenleyici uyum sağlanması gerektiğinde.</td></tr>
+    <tr><td><b>Lider rol modelliği</b></td>
+      <td>Başkalarına örnek olan kişinin davranışı taklit edilir; liderler deneyimlerini ve bilgilerini örtük
+      olarak paylaşır.</td>
+      <td>Kurumun sosyal öğrenme altyapısının parçasıdır; yönetici ve amirler için önemlidir, uygunsuz
+      davranışlar da taklit edilebileceği için ayrıca izlenir.</td></tr>
+    <tr><td><b>İş başında / iş temelli öğrenme</b></td>
+      <td>Amaçlı ve planlı, ancak normal iş bağlamında gerçekleşen öğrenmedir.</td>
+      <td>İnsanların yeni becerileri deneyimli bir meslektaşın yanında çalışarak ya da yeni görevleri üstlenerek
+      öğrenmesi gerektiğinde; staj ve çıraklık özellikleridir.</td></tr>
+    <tr><td><b>Takım ve ağlar yoluyla öğrenme</b></td>
+      <td>Grupların iç ve dış (uygulama toplulukları, müşteri ve tedarikçi ilişkileri) paylaşımlarıyla gerçekleşir;
+      yüz yüze ya da dijital olabilir.</td>
+      <td>Deneyimi daha az olanlar, daha deneyimli insanların bilgi ve becerilerinden yararlanırken; el
+      kitaplarında yazmayan örtük bilginin paylaşımında.</td></tr>
+    <tr><td><b>Mentorluk</b></td>
+      <td>Deneyimli kişinin bilgi ve uzmanlığını geleceğe dönük, birebir ve çift yönlü konuşmalarla paylaşmasıdır.
+      Mentor, öğrenenden genç bile olabilir.</td>
+      <td>Kariyer gelişimi, belirli rol veya düzeylerde az temsil edilen grupların ağ kurması, yeni teknolojik
+      becerilerin geliştirilmesi.</td></tr>
+    <tr><td><b>Yeni başlayan, uyum ve buddy sistemleri</b></td>
+      <td>Yeni gelenlerin kuruma ve role alışmasını sağlayan sosyalleşme ve bütünleşme süreçleridir.</td>
+      <td>Tüm yeni gelenler için; resmi uyum programı kısa sürebilir, sosyalleşme ve bütünleşme daha uzun
+      sürebilir.</td></tr>
+    <tr><td><b>Yansıtıcı öğrenme</b></td>
+      <td>Bireylerin ne ve nasıl öğrendiklerini geri çekilip çözümlemesidir; öz inceleme, akran veya meslektaş
+      incelemesiyle desteklenir.</td>
+      <td>Performans yönetimi ve değerlendirme sistemlerinin parçası olarak, proje kilometre taşlarından sonra,
+      kişisel gelişim planlamasında.</td></tr>
+    <tr><td><b>E-öğrenme</b></td>
+      <td>Bilgi ve iletişim teknolojileriyle (web tabanlı eğitim, tele ve video konferans, forum ve e-posta)
+      öğrenmedir. Öğrenmenin yerinde ve hızında daha fazla esneklik sağlar.</td>
+      <td>Kaynak sorunu olan, çok sayıda öğrenenin ihtiyacını karşılayan; veri koruma, iş sağlığı ve güvenliği gibi
+      uyum süreçlerinde yaygın.</td></tr>
+  </tbody>
+</table>
+
+<h3>Yöntem seçiminde dikkate alınacaklar (madde 6.2)</h3>
+<ul>
+  <li>Öğrenenin geçmişi ve durumu: ilgili eğitim, iş rolü, önceki öğrenme, mesleki deneyim, dil ve kültür.</li>
+  <li>Az temsil edilen grupların özel koşulları.</li>
+  <li>Konu.</li>
+  <li>Mevcut öğrenme araç ve yöntemleri.</li>
+  <li>Bütçe ve diğer kaynaklar.</li>
+  <li>Öğrenme ortamı.</li>
+</ul>
+<div class="note">Teknoloji ve çevrim içi öğrenme kullanılıyorsa, kurum bunların amaca uygun olup olmadığını ve
+beklenen öğrenme çıktılarına ulaşmak için yeterli olup olmadığını değerlendirmelidir.</div>
+
+<h3>Öğrenmenin değerlendirilmesi (madde 7.2)</h3>
+<table>
+  <thead><tr><th>Değerlendirme biçimi</th><th>Zamanlama</th></tr></thead>
+  <tbody>
+    <tr><td>Eğitim sırasında veya sonrasında yapılan test, sınav ve sınavcıklar (örn. iş başında öğretim)</td>
+      <td rowspan="5">Mümkünse öğrenme faaliyetinden <b>önce</b>, <b>hemen sonra</b> ve <b>bir süre geçtikten sonra</b>.
+      Öğrenme düzenli uygulanmazsa kalıcılığı azalabilir.</td></tr>
+    <tr><td>Simülasyon veya rol oynama</td></tr>
+    <tr><td>İş başı performansın incelenmesi</td></tr>
+    <tr><td>Uygulamalı görevleri yapan katılımcının gözlemlenmesi</td></tr>
+    <tr><td>Performans inceleme ve değerlendirme gibi kurumsal süreçler</td></tr>
+  </tbody>
+</table>
+<ul>
+  <li><b>Geçerlilik:</b> ölçme, ölçmesi gerekeni ölçüyor mu?</li>
+  <li><b>Güvenilirlik:</b> ölçme puanları tutarlı ve az hatayla mı üretiliyor?</li>
+  <li><b>Adillik:</b> ölçme tarafsız ve öznellik ile yanlılıktan arınmış mı?</li>
+</ul>
+
+<h2 id="adimlar">Uygulama Adımları</h2>
+<ol>
+  <li><b>Kurumsal bağlamı yazın.</b> Strateji, değerler, hedefler, faaliyet ortamı, işgücü planı, politika ve
+  süreçler.</li>
+  <li><b>İhtiyacı üç düzeyde çıkarın.</b> Kurum, takım ve birey; çalışan ve amir diyaloğuyla. L&amp;D'nin sorunun
+  doğru çözümü olup olmadığını sınayın.</li>
+  <li><b>Öğrenme çıktısını ve süresini tanımlayın.</b> Gerekirse sektörel, ulusal veya uluslararası bir ölçütle
+  hizalayın.</li>
+  <li><b>Öncelik sırası koyun ve kaynakları belirleyin.</b> Talep kaynağı aşıyorsa kurumsal hedeflere göre
+  sıralayın.</li>
+  <li><b>Yöntemi seçin.</b> Öğrenenin bağlamı, konu, araçlar, bütçe ve ortam; gerekirse karma kurgu.</li>
+  <li><b>Uygulama koşullarını güvence altına alın.</b> Zaman, sakin ve donanımlı ortam, amir desteği, yeni
+  öğrenileni deneme fırsatı.</li>
+  <li><b>Öğrenmeyi üç noktada ölçün.</b> Önce, hemen sonra ve zaman geçtikten sonra; ölçmenin geçerli, güvenilir
+  ve adil olmasını sağlayın.</li>
+  <li><b>Metrik tanımlarını yazın.</b> "Katılım", "çalışan" ve "maliyet"in kapsamı; kırılımlar; karşılaştırma
+  tabanı.</li>
+  <li><b>Kurumsal çıktılara bağlayın ve iyileştirin.</b> Verimlilik, güvenlik, uyum, bağlılık ve elde tutma
+  ölçülerini ekleyin; bulguları bir sonraki ihtiyaç belirlemeye taşıyın.</li>
+</ol>
+
+<h2 id="kavramlar">Temel Kavramlar</h2>
+<p>Standardın 3. maddesindeki terimlerin kısa özetleri aşağıdadır. Tanımlar özgün biçimde Türkçeleştirilmiştir;
+bağlayıcı olan standardın kendi metnidir.</p>
+<table>
+  <thead><tr><th style="width:60px">Madde</th><th style="width:210px">Terim</th><th>Tanım</th></tr></thead>
+  <tbody>
+    <tr><td><b>3.1</b></td><td>Yetenek <small>(ability)</small></td>
+      <td>İnsanın bir şeyi yapabilme özelliği; yürümek, konuşmak, anlamak gibi.</td></tr>
+    <tr><td><b>3.2</b></td><td>Değerlendirme, ölçme <small>(assessment)</small></td>
+      <td>İnsanların iş ile ilgili bilgi, beceri, yetenek ya da diğer özelliklerinin veya performanslarının
+      sistematik bir yöntemle belirlenmesi. Tanı koyucu, biçimlendirici veya toplamsal olabilir.</td></tr>
+    <tr><td><b>3.3</b></td><td>Davranış <small>(behaviour)</small></td>
+      <td>İnsanlar ile kurumun diğer unsurları arasındaki etkileşim; örneğin işbirliği yapmak, bilgi paylaşmak.</td></tr>
+    <tr><td><b>3.4</b></td><td>Kapasite <small>(capability)</small></td>
+      <td>Arzulanan bir sonuca ulaşabilme gücü.</td></tr>
+    <tr><td><b>3.5</b></td><td>Kariyer <small>(career)</small></td>
+      <td>Kişinin çalışma hayatı boyunca yaşadığı iş ile ilgili deneyimler.</td></tr>
+    <tr><td><b>3.6</b></td><td>Koçluk <small>(coaching)</small></td>
+      <td>Bir bireyin veya belirli bir grubun performansını geliştirmeye yönelik uzmanca eğitim ya da destek;
+      yönlendirici veya yönlendirici olmayan olabilir.</td></tr>
+    <tr><td><b>3.7</b></td><td>Yetkinlik <small>(competence)</small></td>
+      <td>Arzulanan sonuca ulaşmak için bilgi ve becerileri uygulama gücü.</td></tr>
+    <tr><td><b>3.8</b></td><td>Gelişim <small>(development)</small></td>
+      <td>Bir kişinin, grubun veya kurumun performans eşiğini yükselten öğrenme faaliyetleri bütünü; hem resmi hem
+      gayriresmi yöntem ve süreçleri içerebilir.</td></tr>
+    <tr><td><b>3.9</b></td><td>Öğretim, akademik eğitim <small>(education)</small></td>
+      <td>Bir birey veya grubun bir konu ya da kavram hakkında bilgi aktardığı veya edindiği süreç. Genellikle
+      öğrenmenin akademik biçimini anlatır ve işe ilişkin öğrenme süreçlerini anlatan "training"den ayrılır.</td></tr>
+    <tr><td><b>3.10</b></td><td>Değerlendirme, etki değerlendirme <small>(evaluation)</small></td>
+      <td>Kurumsal öğrenme ve gelişim sunumunun kalitesini, etkililiğini ve etkisini belirleyen sistematik
+      süreç; birey, grup ve kurum düzeyinde yapılabilir.</td></tr>
+    <tr><td><b>3.11</b></td><td>Kolaylaştırıcı <small>(facilitator)</small></td>
+      <td>Öğrenme sürecini destekleyen kişi; öğretmen, eğitmen, koç veya mentor rolünü üstlenebilir.</td></tr>
+    <tr><td><b>3.12</b></td><td>Bilgi <small>(knowledge)</small></td>
+      <td>Bağlam içinde etkili karar ve eylemi mümkün kılan, insani veya kurumsal varlık; kavrayış, bilgi birikimi
+      ve kodlanmış bilgi.</td></tr>
+    <tr><td><b>3.13</b></td><td>Öğrenme çıktısı <small>(learner outcome)</small></td>
+      <td>Bir öğrenme faaliyetinin sonunda kişinin bilmesi, anlaması veya yapabilmesi beklenen şeyin belirlenmiş
+      beklentisi.</td></tr>
+    <tr><td><b>3.14</b></td><td>Öğrenme <small>(learning)</small></td>
+      <td>Bilgi, beceri ve yetenekler yoluyla birey ve kurum performansını iyileştirmeye odaklı, geniş ve çok yönlü
+      faaliyetler kümesi. Yansıtıcı, takım, işyeri, karma ve çevrim içi öğrenmeyi içerebilir.</td></tr>
+    <tr><td><b>3.15</b></td><td>Öğrenme ortamı <small>(learning environment)</small></td>
+      <td>Öğrenene destek olan fiziksel veya sanal ortam.</td></tr>
+    <tr><td><b>3.16</b></td><td>Mentorluk <small>(mentoring)</small></td>
+      <td>Deneyimli bir kişinin rol model olarak bilgi ve uzmanlığını birebir, geleceğe dönük ve çift yönlü
+      konuşmalarla paylaşarak başkalarının gelişimini desteklemesi.</td></tr>
+    <tr><td><b>3.17</b></td><td>Performans <small>(performance)</small></td>
+      <td>Ölçülebilir sonuç; nicel veya nitel bulgulara dayanabilir.</td></tr>
+    <tr><td><b>3.18</b></td><td>Beceri <small>(skill)</small></td>
+      <td>Bir görevi belirli bir beklentiye göre yerine getirmek için öğrenilmiş kapasite.</td></tr>
+    <tr><td><b>3.19</b></td><td>Mesleki eğitim, yetiştirme <small>(training)</small></td>
+      <td>Bir birey veya grubun bilgi, beceri ve yetenek edindiği süreç.</td></tr>
+    <tr><td><b>3.20</b></td><td>Çalışan <small>(worker)</small></td>
+      <td>İş yapan kişi: ister çalışan, ister serbest çalışan, ister kurum adına sözleşmeli veya sözleşmesiz
+      faaliyet yürüten kişi. Geçici çalışan, stajyer ve gönüllü de bu kapsama girer.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="matris">Metrik Matrisi</h2>
+<p>Aşağıdaki tablo, standardın örnek metriklerini ve süreç unsurlarını kullanıcı × süreç aşaması × raporlama
+sınıflandırmasıyla sunar. Kullanıcı ve raporlama sütunları bu sayfanın yazarlık sınıflandırmasıdır; standardın
+kendisi bunu yapmaz. Filtreleri değiştirdiğinizde tablo anında daralır.</p>
+
+<div class="filters">
+  <div><label for="fUser">Kullanıcı</label>
+    <select id="fUser">
+      <option value="">Tümü</option>
+      <option value="hr">İK / L&amp;D birimi</option>
+      <option value="exec">Üst yönetim</option>
+      <option value="line">Hat yönetimi ve amirler</option>
+      <option value="wrk">Çalışanlar ve temsilcileri</option>
+      <option value="ext">Dış paydaş</option>
+    </select></div>
+  <div><label for="fStage">Süreç aşaması</label>
+    <select id="fStage">
+      <option value="">Tümü</option>
+      <option value="bag">Kurum bağlamı (madde 4)</option>
+      <option value="ihtiyac">İhtiyaç belirleme (madde 5)</option>
+      <option value="plan">Planlama (madde 6)</option>
+      <option value="uygula">Uygulama (madde 7)</option>
+      <option value="degerlen">Değerlendirme (madde 8)</option>
+    </select></div>
+  <div><label for="fType">Metrik ailesi</label>
+    <select id="fType">
+      <option value="">Tümü</option>
+      <option value="p">Katılım</option>
+      <option value="c">Maliyet</option>
+      <option value="r">Tepki</option>
+      <option value="s">Sonuç</option>
+      <option value="o">Kurumsal çıktı ve bağlam</option>
+    </select></div>
+  <div><label for="fRep">Raporlama</label>
+    <select id="fRep">
+      <option value="">Tümü</option>
+      <option value="ic">İç raporlama</option>
+      <option value="dis">Dış raporlama</option>
+    </select></div>
+  <div><label for="fQ">Metrik adında ara</label>
+    <input type="text" id="fQ" placeholder="ör. maliyet"></div>
+</div>
+
+<div class="count" id="mCount"></div>
+<table class="matrix">
+  <thead><tr>
+    <th>Metrik</th>
+    <th class="rot">İK / L&amp;D</th>
+    <th class="rot">Üst yönetim</th>
+    <th class="rot">Hat yönetimi</th>
+    <th class="rot">Çalışan / temsilci</th>
+    <th class="rot">Dış paydaş</th>
+  </tr></thead>
+  <tbody id="mBody"></tbody>
+</table>
+<div class="legend">
+  <span><span class="dot p"></span> katılım</span>
+  <span><span class="dot c"></span> maliyet</span>
+  <span><span class="dot r"></span> tepki</span>
+  <span><span class="dot s"></span> sonuç</span>
+  <span><span class="dot o"></span> kurumsal çıktı ve bağlam</span>
+  <span><span class="tag iso">30428</span> ISO/TS 30428'in ISO 30414 için önerdiği beş metrikten biri</span>
+  <span><span class="tag lvl">hesaplayıcı</span> bu sayfada hesaplanabilen metrik</span>
+  <span>Hesaplayıcıya bağlı metrikler <b>koyu</b> işaretlenmiştir.</span>
+</div>
+
+<h2 id="tablo">Katılım ve Maliyet Tablosu</h2>
+<p>Yıllık katılım, eğitim saati ve maliyet, kategori bazında tutulur. Aşağıdaki tabloya kendi verilerinizi girin;
+kategori katılım oranları, çalışan başına saat ve maliyet anında güncellenir. Tekil katılımcı sayısı,
+kategorilerin toplamı değildir: aynı kişi birden çok kategoride sayıldığı için ayrıca girilir.</p>
+
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnek">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizle">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsv">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktar">Hesaplayıcıya aktar</button>
+  <span class="inline"><label for="topCalisan">Toplam çalışan</label>
+    <input type="number" id="topCalisan" min="0" step="1" value="1200"></span>
+  <span class="inline"><label for="tekilKatilan">Tekil katılımcı</label>
+    <input type="number" id="tekilKatilan" min="0" step="1" value="1056"></span>
+</div>
+
+<table class="postbl">
+  <thead><tr>
+    <th>Kategori</th>
+    <th class="num">Hedef kitle</th><th class="num">Katılan</th>
+    <th class="num">Eğitim saati</th><th class="num">Maliyet (TL)</th>
+    <th class="num">Sertifika</th><th class="calc" style="width:90px">Katılım (%)</th>
+  </tr></thead>
+  <tbody id="pBody"></tbody>
+  <tfoot><tr>
+    <td>Toplam</td>
+    <td class="calc">—</td>
+    <td class="calc" id="tKatilan">—</td>
+    <td class="calc" id="tSaat">—</td>
+    <td class="calc" id="tMaliyet">—</td>
+    <td class="calc" id="tSertifika">—</td>
+    <td class="calc">—</td>
+  </tr></tfoot>
+</table>
+
+<div class="cards" id="pCards"></div>
+<div class="note" id="pNot"></div>
+
+<h2 id="formuller">Formüller ve Tanımlar</h2>
+<p>Standart formül vermez; Ek B örnek metrikleri adlandırır. Aşağıdakiler, bu örnek metriklerin yaygın uygulama
+tanımlarıdır (bir bölümü doğrudan Ek B'deki örnek metriklerden, bir bölümü ISO/TS 30428'in standartta anılan beş
+metriğinden, kalanı türetilmiştir). Kurumunuzun yazılı tanımı bunlardan farklıysa onu kullanın.</p>
+<table>
+  <thead><tr><th>Metrik</th><th>Formül</th><th>Not</th></tr></thead>
+  <tbody id="fBody"></tbody>
+</table>
+
+<h2 id="hesaplayici">Hesaplayıcı</h2>
+<p>Metriği seçin, alanları doldurun; sonuç, formülün yerine konmuş hâli ve yorum aşağıda görünür.
+Kurulum gerekmez, veriler tarayıcıdan çıkmaz.</p>
+
+<div class="panel">
+  <h3>L&amp;D Metrik Hesaplayıcısı</h3>
+  <p class="hint">Alanlar seçtiğiniz metriğe göre değişir. Süreler gün veya saat, oranlar yüzde, tutarlar TL olarak raporlanır.</p>
+  <div class="grid">
+    <div class="field" style="grid-column:1/-1">
+      <label for="cMetric">Metrik <span class="req">*</span></label>
+      <select id="cMetric"></select>
+    </div>
+  </div>
+  <div class="grid" id="cFields" style="margin-top:14px"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="oAll"> Tümünü seç</label>
+    <label><input type="checkbox" id="oFormula" checked> Formülün açık hâli</label>
+    <label><input type="checkbox" id="oInterp" checked> Yorum ve eşik</label>
+    <label><input type="checkbox" id="oPy"> Python karşılığı</label>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-run" id="btnRun">Hesapla</button>
+    <button class="btn-ghost" id="btnExample">Örnek veriyi yükle</button>
+    <button class="btn-ghost" id="btnPy">Python motorunu yükle</button>
+    <span class="chip" id="engStatus">Motor: tarayıcı (JavaScript)</span>
+  </div>
+  <p class="hint" style="margin:14px 0 0">Python motoru seçildiğinde hesaplama, bu sayfaya gömülü
+  <code style="background:#1c2836;color:#cfe0f0">iso30422_metrikler.py</code> modülünün
+  <code style="background:#1c2836;color:#cfe0f0">hesapla()</code> fonksiyonu tarafından, tarayıcı içinde
+  çalışan gerçek bir CPython yorumlayıcısında (Pyodide/WebAssembly) yapılır. İlk yüklemede yaklaşık
+  10–12 MB indirilir; sonrası önbellekten gelir. Çevrimdışıysanız sayfa JavaScript yedeğiyle
+  aynı sonuçları vermeye devam eder.</p>
+</div>
+
+<div id="cResult"></div>
+
+<h2 id="python">Python Kod Örnekleri</h2>
+<p>Bu sayfadaki hesaplamalar JavaScript'te taklit edilmez: modülün tamamı sayfaya gömülüdür ve
+Pyodide (WebAssembly üzerinde CPython) ile tarayıcı içinde çalıştırılır. Hesaplayıcıda Python motorunu
+seçtiğinizde her sonuç <code>hesapla()</code> fonksiyonundan gelir. Aynı dosya
+(<code>iso30422_metrikler.py</code>) komut satırında da bağımsız çalışır; doğrudan çalıştırıldığında
+örnek değerlerle doğrulama çıktısı üretir.</p>
+
+<div class="filename">iso30422_metrikler.py (özet)</div>
+<pre><i># --- Katılım ---</i>
+
+<b>def</b> <span class="fn">katilim_orani</span>(katilan, toplam_calisan):
+    <i>"""Yılda en az bir resmi öğrenmeye katılan TEKİL çalışan / toplam çalışan."""</i>
+    <b>return</b> <u>100</u> * katilan / toplam_calisan
+
+<b>def</b> <span class="fn">kategori_katilim</span>(katilan, hedef_kitle):
+    <i>"""Bir kategorideki katılım; payda kategorinin hedef kitlesidir."""</i>
+    <b>return</b> <u>100</u> * katilan / hedef_kitle
+
+<b>def</b> <span class="fn">kisi_basi_saat</span>(toplam_saat, calisan):
+    <i>"""Saat, maruz kalmanın ölçüsüdür; öğrenmenin değil."""</i>
+    <b>return</b> toplam_saat / calisan
+
+<i># --- Maliyet ---</i>
+
+<b>def</b> <span class="fn">kisi_basi_maliyet</span>(toplam_maliyet, calisan):
+    <b>return</b> toplam_maliyet / calisan
+
+<b>def</b> <span class="fn">yatirim_getirisi</span>(fayda, maliyet):
+    <i>"""Belirli bir faaliyet için: (fayda - maliyet) / maliyet × 100."""</i>
+    <b>return</b> <u>100</u> * (fayda - maliyet) / maliyet
+
+<i># --- Tepki ve sonuç ---</i>
+
+<b>def</b> <span class="fn">olumlu_orani</span>(olumlu, yanit):
+    <b>return</b> <u>100</u> * olumlu / yanit
+
+<b>def</b> <span class="fn">ogrenme_kazanci</span>(on_test, son_test, maks_puan):
+    <i>"""Normalleştirilmiş kazanç: mümkün gelişmenin ne kadarı gerçekleşti?"""</i>
+    <b>return</b> <u>100</u> * (son_test - on_test) / (maks_puan - on_test)
+
+<b>def</b> <span class="fn">kalicilik</span>(on_test, son_test, gecikmeli_test):
+    <i>"""Zaman geçtikten sonra korunan kazanç (madde 7.2)."""</i>
+    <b>return</b> <u>100</u> * (gecikmeli_test - on_test) / (son_test - on_test)
+
+<b>def</b> <span class="fn">ortalama_sure</span>(toplam_gun, vaka):
+    <i>"""Yeni başlayanın yetkinliğe ulaşma süresi."""</i>
+    <b>return</b> toplam_gun / vaka
+</pre>
+
+<h3>Çalıştırılabilir konsol</h3>
+<p>Aşağıdaki kod, sayfaya gömülü modüle karşı çalışır. <b>Kodu çalıştır</b> düğmesi Python motorunu
+(yüklü değilse) indirir, modülü içe aktarır ve çıktıyı altta gösterir. Kodu serbestçe değiştirebilir,
+kendi verinizi yazabilirsiniz; her şey tarayıcıda kalır.</p>
+
+<div class="console">
+  <div class="console-bar">
+    <span>iso30422_metrikler modülüne karşı çalışır · Python 3 (Pyodide)</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button class="btn-run btn-sm" id="btnRunPy">Kodu çalıştır</button>
+      <button class="btn-ghost btn-sm" id="btnDemo" style="border-color:var(--line);color:var(--ink-soft)">Tam demoyu yükle</button>
+      <button class="btn-ghost btn-sm" id="btnReset" style="border-color:var(--line);color:var(--ink-soft)">Sıfırla</button>
+    </span>
+  </div>
+  <textarea id="pyCode" spellcheck="false"></textarea>
+  <pre id="pyOut">Çıktı burada görünecek. İlk çalıştırmada Python motoru indirilir (10–12 MB).</pre>
+</div>
+
+<details class="src"><summary>Gömülü modülün tam kaynağı (iso30422_metrikler.py)</summary>
+  <pre id="srcView">yükleniyor…</pre>
+</details>
+
+<h2 id="yorum">Sonuçların Yorumlanması</h2>
+<ul>
+  <li><b>Katılım yüksek ama yetkinlik ya da performans değişmiyorsa</b> sorun çoğunlukla uygulamadadır:
+  amir desteği, yeni öğrenileni deneme fırsatı, zamanla yayılmış öğrenme ve yöntem seçimi (madde 6 ve 7).</li>
+  <li><b>Kategoriler arasında katılım farkı büyükse</b> erişim engellerine bakın: zaman ve iş yükü, konum,
+  dil, az temsil edilen grupların koşulları (madde 6.2 ve 7.1).</li>
+  <li><b>Tepki olumlu ama öğrenme kazancı düşükse</b> eğitim hoş bulunmuş ama öğretmemiş olabilir;
+  değerlendirmenin geçerliliğini ve yöntemi birlikte gözden geçirin.</li>
+  <li><b>Öğrenme kazancı yüksek ama kalıcılık düşükse</b> bilgi iş ortamında kullanılmıyordur. Aralıklı öğrenme,
+  uygulama fırsatı ve yansıtma planın parçası olmalıdır (madde 6.1 ve 7.2).</li>
+  <li><b>Çalışan başına maliyet düşerken yetkinlik de düşüyorsa</b> tasarruf etkili öğrenmeden alınmış olabilir;
+  maliyeti hiçbir zaman tek başına yorumlamayın.</li>
+  <li><b>Yatırım getirisi pozitifse ama atıf zayıfsa</b> sonucu temkinli sunun: faydanın öğrenmeye hangi
+  varsayımla yazıldığı raporda görünmelidir.</li>
+  <li><b>Yeni başlayanın yetkinliğe ulaşma süresi uzuyorsa</b> uyum programını, buddy sistemini, işe başlama
+  sürecini ve amir desteğini inceleyin (Ek A).</li>
+  <li><b>Kurumsal çıktıları (kaza oranı, bağlılık, elde tutma) yalnızca L&amp;D'ye yüklemeyin.</b> Standart
+  L&amp;D'nin bu çıktılara <i>katkı</i> yaptığını söyler; ekonomik koşullar, yeniden yapılanma ve yönetim
+  uygulamaları da etkilidir. Sayının yanına bağlam yazın.</li>
+  <li><b>Değerlendirme cezalandırmak için değil, iyileştirmek için yapılır.</b> Standardın amacı sürekli iyileştirme
+  ve gelecek L&amp;D önceliklerinin belirlenmesidir.</li>
+</ul>
+
+<h2 id="sinirlamalar">Sınırlamalar</h2>
+<ul>
+  <li><b>Standart formül ve eşik vermez.</b> Ek B yalnızca örnek metrik listesidir. Bu sayfadaki formüller yaygın
+  uygulama tanımlarıdır; hesaplayıcının "yorum ve eşik" satırındaki bantlar standarttan değil, başlangıç
+  varsayımlarından gelir. Kendi kurumunuzun hedefleriyle değiştirin.</li>
+  <li>ISO/TS 30428'in ISO 30414 için önerdiği beş metrik (toplam gelişim ve eğitim maliyeti, eğitime katılan çalışan
+  yüzdesi, kategoriye göre resmi eğitime katılan çalışan yüzdesi, çalışan başına ortalama resmi eğitim saati,
+  işgücü yetkinlik oranı) bu standartta yalnızca adıyla anılır. Kesin tanımları ISO/TS 30428'dedir; buradaki
+  karşılıkları <b>basitleştirilmiş</b> hâlleridir ve o belgenin yerine geçmez.</li>
+  <li>"Katılım" ve "çalışan" tanımı kurumdan kuruma değişir: sözleşmeli, stajyer ve gönüllü dahil mi? Payda
+  tüm çalışanlar mı, hedef kitle mi? Standardın çalışan tanımı geniştir; kurum kendi seçimini yazılı hâle
+  getirmeli ve seriler boyunca değiştirmemelidir.</li>
+  <li>Kategori katılımlarını toplayıp "toplam katılım" olarak sunmayın: aynı kişi birden çok kategoride sayılır.
+  Genel katılım oranı için tekil kişi sayısı gerekir.</li>
+  <li>Maliyetin kapsamı standartta tanımlı değildir. Öğrenenlerin eğitimde geçirdiği sürenin ücret karşılığını
+  katmak ya da katmamak sonucu kökten değiştirir; seçimi yazın.</li>
+  <li>Yatırım getirisi standartta "belirli öğrenme faaliyetleri için" bir kestirim olarak anılır, formülü yoktur.
+  Parasal faydanın öğrenmeye atfedilmesi kurum varsayımıdır; sonuç bu varsayıma bağlıdır.</li>
+  <li>Eğitim saati ve tepki, öğrenmenin gerçekleştiğini göstermez; yetkinlik ve öğrenme kazancı ayrı ölçülmelidir.</li>
+  <li>Öğrenme kazancı ve yetkinlik puanı, değerlendirme aracının geçerliliğine, güvenilirliğine ve adilliğine bağlıdır
+  (madde 7.2); araç zayıfsa puan yanıltır.</li>
+  <li>Küçük gruplarda oranlar oynaktır: 12 kişilik bir kategoride bir kişi yüzde sekiz puan yaratır. Az sayıda
+  vakada mutlak sayıları da verin.</li>
+  <li>Bu sayfadaki örnek veriler uydurmadır; gerçek bir kuruma ait değildir.</li>
+</ul>
+
+<h2 id="raporlama">Metriklerin Raporlanması</h2>
+<table>
+  <thead><tr><th>Alıcı</th><th>Ne görmek ister</th><th>Rapor biçimi</th></tr></thead>
+  <tbody>
+    <tr><td>İK / L&amp;D birimleri</td>
+      <td>Tüm metrikler, kategori ve yöntem kırılımı, geri bildirim verisi, değerlendirme kalitesi</td>
+      <td>Analitik rapor, aylık veya çeyreklik</td></tr>
+    <tr><td>Üst yönetim</td>
+      <td>Katılım, çalışan başına maliyet, yetkinlik eğilimi, kurumsal çıktı ölçülerine bağlantı</td>
+      <td>Skor kartı, dönemsel</td></tr>
+    <tr><td>Hat yönetimi ve amirler</td>
+      <td>Kendi ekibinin katılımı, uygulama fırsatı, sponsor memnuniyeti, yetkinlik değişimi</td>
+      <td>Birim panosu, aylık</td></tr>
+    <tr><td>Çalışanlar ve temsilcileri</td>
+      <td>Öğrenme olanaklarına erişim, kategori bazında katılım, kapsayıcılık göstergeleri</td>
+      <td>Bilgilendirme ve görüşme, yıllık</td></tr>
+    <tr><td>Dış paydaş (yatırımcı, analist, sektör grubu, medya)</td>
+      <td>ISO 30414 ve ISO/TS 30428 ile uyumlu karşılaştırılabilir toplam göstergeler ve yöntem dipnotu</td>
+      <td>Faaliyet ve sürdürülebilirlik raporu, yıllık</td></tr>
+  </tbody>
+</table>
+<p><b>Her raporda bulunması gerekenler:</b> katılım ve çalışan tanımı, maliyet kapsamı, dönem, kırılım düzeyi,
+öğrenmenin ölçüldüğü zamanlar ve karşılaştırma tabanı. Standart, uygun olduğunda çalışan temsilcilerinin L&amp;D
+önceliklerinin belirlenmesine ve uygulama planlarına katılabileceğini belirtir; veri paylaşımı kurum içi
+mutabakatın parçasıdır.</p>
+
+<h2 id="ilgili">İlgili Standartlar</h2>
+<ul>
+  <li><b>ISO/TS 30428</b> — beceri ve yetkinlik metrikleri kümesi; ISO 30414'ün önerdiği beş L&amp;D metriğinin
+  rehberi.</li>
+  <li><b>ISO 30414</b> — iç ve dış insan sermayesi raporlaması.</li>
+  <li><b>ISO 30400</b> — insan kaynakları yönetimi terimler sözlüğü.</li>
+  <li><b>ISO 30415</b> — çeşitlilik ve kapsayıcılık; erişilebilir ve kapsayıcı öğrenme planlarıyla ilişkilidir.</li>
+  <li><b>ISO/TR 30406</b> — kurumlar için sürdürülebilir istihdam edilebilirlik yönetimi.</li>
+  <li><b>ISO 10667-1 ve ISO 10667-2</b> — işyerinde insanları değerlendirme prosedürleri ve yöntemleri; müşteri ve
+  hizmet sağlayıcı gereklilikleri.</li>
+  <li><b>ISO 10015</b> — yetkinlik yönetimi ve insan gelişimi için kalite yönetimi kılavuzu.</li>
+  <li><b>ISO 30401</b> — bilgi yönetim sistemleri; bilgi paylaşımını teşvik eden uygulamalarla ilişkilidir.</li>
+  <li><b>ISO 29993</b> ve <b>ISO 21001</b> — örgün eğitim dışı öğrenme hizmetleri ve eğitim kuruluşları için yönetim
+  sistemleri.</li>
+  <li><b>ISO 45001</b> — iş sağlığı ve güvenliği yönetim sistemleri; güvenlik hedeflerine katkı ölçülürken
+  başvurulabilir.</li>
+  <li><b>BSI PD 76006:2017</b> — Öğrenme ve gelişim rehberi; BS ISO 30422:2022'nin öncülüdür ve 1 Haziran 2024'te
+  geri çekilmek üzere duyurulmuştur.</li>
+  <li><b>BM Sürdürülebilir Kalkınma Amaçları 4, 8, 9 ve 10</b> — nitelikli eğitim, insana yakışır iş ve ekonomik
+  büyüme, sanayi ve yenilik, eşitsizliklerin azaltılması.</li>
+</ul>
+
+<h2 id="sss">Sıkça Sorulan Sorular</h2>
+<details><summary>Gayriresmi öğrenme ölçüme nasıl girer?</summary>
+<p>Standart hem resmi hem gayriresmi öğrenmeyi kapsar. Resmi öğrenme kayıt altındadır ve katılım, saat, maliyet gibi
+sayısal metriklere girer. Gayriresmi öğrenme için nitel kanıt kullanılır: görüşme, doğrudan gözlem, geri bildirim
+ve sosyal medya paylaşımları. Standart ikisinin birlikte değerlendirilmesini ister.</p></details>
+
+<details><summary>Hangi öğrenme yöntemi en iyisidir?</summary>
+<p>Hiçbiri. Standart, hiçbir yöntemin diğerinden üstün olmadığını söyler. Seçim öğrenenin geçmişine, konuya,
+mevcut araçlara, bütçeye ve ortama bağlıdır. Yöntemleri birleştirmek (karma öğrenme) maliyet, zaman ve konum
+bakımından esneklik sağlar.</p></details>
+
+<details><summary>Dış raporlamaya hangi metrikler girer?</summary>
+<p>Standardın notuna göre ISO/TS 30428, ISO 30414'te önerilen beş metrik için rehberlik sağlar: toplam gelişim ve
+eğitim maliyeti, eğitime katılan çalışan yüzdesi, kategoriye göre resmi eğitime katılan çalışan yüzdesi, çalışan
+başına ortalama resmi eğitim saati ve işgücü yetkinlik oranı. Kesin tanımlar ISO/TS 30428'dedir; bu sayfadaki
+karşılıkları basitleştirilmiştir. Dış raporda tanımları dipnotla verin.</p></details>
+
+<details><summary>Öğrenmeyi ne zaman ölçmeliyim?</summary>
+<p>Mümkünse üç noktada: faaliyetten önce (başlangıç), hemen sonra (kazanç) ve bir süre geçtikten sonra (kalıcılık).
+Standart, öğrenmenin düzenli uygulanmaması hâlinde kalıcılığın azalabileceğini belirtir; bu yüzden yalnızca anlık
+ölçüm yeterli değildir.</p></details>
+
+<details><summary>"Geçerli, güvenilir ve adil" ölçme ne demek?</summary>
+<p>Geçerlilik, ölçmenin ölçmesi gerekeni ölçüp ölçmediğidir. Güvenilirlik, puanların tutarlı ve az hatayla üretilip
+üretilmediğidir. Adillik, ölçmenin tarafsız, öznellikten ve yanlılıktan arınmış olmasıdır. Ölçme çoğu zaman sertifika
+ve yeterlilik vermenin de temelidir; bu üçü zayıfsa sonuç kararlara yanlış girdi olur.</p></details>
+
+<details><summary>Her eğitim için yatırım getirisi hesaplamalı mıyım?</summary>
+<p>Hayır. Standart, değerlendirmenin belirli öğrenme faaliyetleri için yatırım getirisini tahmin etmeye de yardım
+edebileceğini söyler; bunu zorunlu kılmaz. Yatırım getirisi çoğunlukla büyük ya da stratejik programlarda anlamlıdır
+ve faydanın öğrenmeye atfı kurum varsayımıdır. Çoğu programda katılım, yetkinlik ve çıktı metrikleri yeterlidir.</p></details>
+
+<details><summary>Küçük bir kurum bu standardı nasıl uygular?</summary>
+<p>Standart her tür ve büyüklükteki kurum için uygundur. Küçük bir kurum seti kısaltabilir: bir katılım oranı,
+çalışan başına maliyet, bir yetkinlik göstergesi ve yeni başlayanın yetkinliğe ulaşma süresi çoğunlukla yeterli
+başlangıçtır. Önemli olan tanımların yazılı olması ve seriler boyunca değişmemesidir.</p></details>
+
+<details><summary>Çevrim içi öğrenme her zaman uygun mudur?</summary>
+<p>Standart teknolojinin erişimi ve esnekliği artırdığını kabul eder; ancak çevrim içi biçimin amaca uygun ve beklenen
+öğrenme çıktısına ulaşmaya elverişli olup olmadığının kurumca değerlendirilmesini ister. Kaynak sorunu olan, çok
+sayıda öğrenene ulaşılması gereken ve uyum süreçleri (veri koruma, iş sağlığı ve güvenliği) için yaygın ve uygun
+bir yoldur.</p></details>
+
+<footer>
+  ISO 30422:2022 çerçevesinden üretilmiş çalışma aracı. Terim adları, süreç yapısı ve örnek metrik sınıflandırması
+  standarda dayanır; açıklamalar, formüller, örnek değerler ve kod özgün olarak yazılmıştır. Standardın kendisi
+  telif korumalıdır ve bu sayfa onun yerine geçmez.
+</footer>
+
+</div>
+<script type="text/x-python" id="pysrc">
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+iso30422_metrikler.py
+=====================
+ISO 30422:2022 (Human resource management — Learning and development)
+rehberindeki öğrenme ve gelişim (L&D) ölçümlerinin Python karşılığı.
+
+Standart bir metrik şartnamesi değil, süreç rehberidir: ihtiyaç belirleme,
+planlama, uygulama ve değerlendirme aşamalarını tanımlar; Ek B'de dört
+metrik ailesi için ÖRNEK metrikler sıralar (tepki, katılım, maliyet, sonuç)
+ve formül vermez. Bu modüldeki formüller, o örnek metriklerin yaygın
+uygulama tanımlarıdır; kurumunuzun kendi tanımıyla uyarlanmalıdır.
+Modül dört bölümden oluşur:
+
+    1) Katılım — resmi öğrenmeye katılım, kategori, sertifika, eğitim saati
+    2) Maliyet — toplam ve çalışan başına maliyet, yatırım getirisi
+    3) Tepki ve sonuç — memnuniyet, yetkinlik, yetkinliğe ulaşma süresi,
+                        öğrenme kazancı ve kalıcılığı
+    4) Yardımcı yapılar — eğitim tablosu, rapor denetimi, dağıtıcı
+
+Kullanım:
+    from iso30422_metrikler import katilim_orani, kisi_basi_saat
+    katilim_orani(1056, 1200)     ->  88.0
+    kisi_basi_saat(28928, 1200)   ->  24.106666...
+
+Doğrudan çalıştırıldığında (python3 iso30422_metrikler.py) tüm fonksiyonlar
+örnek verilerle çalıştırılır ve sonuçlar tablo hâlinde yazdırılır.
+
+Not: Metrik adları ve sınıflandırma ISO 30422:2022'ye dayanır. Kod,
+açıklamalar ve örnek değerler özgün olarak yazılmıştır; standardın kendisi
+telif korumalıdır.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+__all__ = [
+    "GecersizGirdi",
+    # katılım
+    "katilim_orani", "kategori_katilim", "sertifika_orani", "kisi_basi_saat",
+    # maliyet
+    "toplam_ld_maliyeti", "kisi_basi_maliyet", "saat_basi_maliyet",
+    "yatirim_getirisi", "fayda_maliyet_orani", "geri_odeme_ayi",
+    # tepki ve sonuç
+    "olumlu_orani", "yanit_orani", "ortalama_puan", "hedefe_ulasma",
+    "ortalama_sure", "ogrenme_kazanci", "kalicilik",
+    # yardımcı
+    "Kategori", "EgitimTablosu", "ornek_tablo", "ld_denetimi",
+    "hesapla", "METRIK_LISTESI",
+]
+
+
+class GecersizGirdi(ValueError):
+    """Girdiler tutarsız: payda sıfır, parça bütünden büyük vb."""
+
+
+def _bol(pay: float, payda: float, ad: str = "payda") -> float:
+    if payda <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return pay / payda
+
+
+def _oran(parca: float, butun: float, ad: str = "parça") -> float:
+    """Yüzde olarak parça / bütün; parça bütünden büyük olamaz."""
+    if butun <= 0:
+        raise GecersizGirdi("bütün sıfırdan büyük olmalı")
+    if parca < 0 or parca > butun:
+        raise GecersizGirdi(f"{ad} 0 ile bütün arasında olmalı")
+    return 100 * parca / butun
+
+
+# ---------------------------------------------------------------------------
+# 1) Katılım metrikleri (Ek B: participation metrics)
+# ---------------------------------------------------------------------------
+
+def katilim_orani(katilan: float, toplam_calisan: float) -> float:
+    """Yılda en az bir resmi öğrenme sürecine katılan çalışan oranı (%).
+
+    Katılan = ölçüm döneminde en az bir resmi öğrenme faaliyetine katılan
+    TEKİL çalışan sayısı; aynı kişi birden çok eğitime katılsa da bir kez
+    sayılır. Çalışan tanımının (sözleşmeli, stajyer, gönüllü dahil mi?)
+    kurum içinde yazılı olması gerekir.
+    """
+    return _oran(katilan, toplam_calisan, "katılan")
+
+
+def kategori_katilim(katilan: float, hedef_kitle: float) -> float:
+    """Bir kategorideki (liderlik gelişimi, mevzuat eğitimi vb.) katılım (%).
+
+    Payda kategorinin hedef kitlesidir. Toplam çalışana oranı için
+    katilim_orani(katilan, toplam_calisan) de kullanılabilir; hangisinin
+    raporlandığı yazılı olmalıdır.
+    """
+    return _oran(katilan, hedef_kitle, "katılan")
+
+
+def sertifika_orani(sertifikali: float, hedef_kitle: float) -> float:
+    """Belirli bir alanda sertifika almış çalışanların hedef kitleye oranı (%)."""
+    return _oran(sertifikali, hedef_kitle, "sertifikalı")
+
+
+def kisi_basi_saat(toplam_saat: float, calisan: float) -> float:
+    """Çalışan başına ortalama resmi eğitim saati = toplam saat / çalışan.
+
+    Saat maruz kalmanın ölçüsüdür, öğrenmenin değil; yetkinlik ve öğrenme
+    kazancı metrikleriyle birlikte okunur.
+    """
+    return _bol(toplam_saat, calisan, "çalışan sayısı")
+
+
+# ---------------------------------------------------------------------------
+# 2) Maliyet metrikleri (Ek B: cost metrics)
+# ---------------------------------------------------------------------------
+
+def toplam_ld_maliyeti(dis_saglayici: float, ic_kaynak: float,
+                       teknoloji: float, diger: float,
+                       zaman_maliyeti: float = 0) -> float:
+    """Toplam öğrenme ve gelişim maliyeti.
+
+    Kalemler kurumun kendi tanımıdır: dış sağlayıcı ve eğitmen ücreti, iç
+    eğitmen ile içerik geliştirme emeği, teknoloji ve platform, materyal ile
+    mekân. Öğrenenlerin eğitimde geçirdiği sürenin ücret karşılığı
+    (zaman_maliyeti) kapsama dahil edilip edilmeyeceği yazılı karar gerektirir.
+    """
+    kalemler = (dis_saglayici, ic_kaynak, teknoloji, diger, zaman_maliyeti)
+    if any(k < 0 for k in kalemler):
+        raise GecersizGirdi("maliyet kalemleri negatif olamaz")
+    toplam = sum(kalemler)
+    if toplam <= 0:
+        raise GecersizGirdi("toplam maliyet sıfırdan büyük olmalı")
+    return toplam
+
+
+def kisi_basi_maliyet(toplam_maliyet: float, calisan: float) -> float:
+    """Çalışan başına öğrenme ve gelişim maliyeti = toplam maliyet / çalışan."""
+    return _bol(toplam_maliyet, calisan, "çalışan sayısı")
+
+
+def saat_basi_maliyet(toplam_maliyet: float, toplam_saat: float) -> float:
+    """Eğitim saati başına maliyet = toplam maliyet / toplam saat."""
+    return _bol(toplam_maliyet, toplam_saat, "toplam saat")
+
+
+def yatirim_getirisi(fayda: float, maliyet: float) -> float:
+    """Belirli bir öğrenme faaliyeti için yatırım getirisi (%).
+
+    ROI = (parasal fayda − maliyet) / maliyet × 100. Standart bu formülü
+    vermez; belirli faaliyetler için yatırım getirisinin kestirilebileceğini
+    söyler. Faydanın öğrenmeye atfedilmesi kurum varsayımıdır.
+    """
+    if maliyet <= 0:
+        raise GecersizGirdi("maliyet sıfırdan büyük olmalı")
+    return 100 * (fayda - maliyet) / maliyet
+
+
+def fayda_maliyet_orani(fayda: float, maliyet: float) -> float:
+    """Fayda / maliyet oranı."""
+    return _bol(fayda, maliyet, "maliyet")
+
+
+def geri_odeme_ayi(fayda: float, maliyet: float, fayda_donemi_ay: float) -> float:
+    """Maliyetin geri kazanılma süresi (ay).
+
+    Faydanın fayda_donemi_ay boyunca eşit aktığı varsayılır.
+    """
+    if fayda <= 0 or fayda_donemi_ay <= 0:
+        raise GecersizGirdi("fayda ve fayda dönemi sıfırdan büyük olmalı")
+    return maliyet / (fayda / fayda_donemi_ay)
+
+
+# ---------------------------------------------------------------------------
+# 3) Tepki ve sonuç metrikleri (Ek B: reaction, outcome metrics)
+# ---------------------------------------------------------------------------
+
+def olumlu_orani(olumlu: float, yanit: float) -> float:
+    """Öğrenen tepkisi: olumlu yanıtların tüm yanıtlara oranı (%)."""
+    return _oran(olumlu, yanit, "olumlu yanıt")
+
+
+def yanit_orani(yanit: float, katilan: float) -> float:
+    """Geri bildirim anketinin yanıt oranı (%). Düşük oranda tepki temsil etmez."""
+    return _oran(yanit, katilan, "yanıt")
+
+
+def ortalama_puan(toplam_puan: float, degerlendirilen: float) -> float:
+    """Çalışan grubu için ortalama yetkinlik derecesi = toplam puan / kişi."""
+    return _bol(toplam_puan, degerlendirilen, "değerlendirilen kişi sayısı")
+
+
+def hedefe_ulasma(deger: float, hedef: float) -> float:
+    """Değerin kurumun belirlediği hedefe oranı (%)."""
+    return 100 * _bol(deger, hedef, "hedef")
+
+
+def ortalama_sure(toplam_gun: float, vaka: float) -> float:
+    """Yeni başlayanın yetkinliğe ulaşma süresi = toplam gün / yeni başlayan.
+
+    Gün tanımı (takvim ya da iş günü) ve "yetkin" sayılma ölçütü yazılı
+    olmalıdır; seriler arasında değiştirilmez.
+    """
+    return _bol(toplam_gun, vaka, "vaka sayısı")
+
+
+def ogrenme_kazanci(on_test: float, son_test: float, maks_puan: float) -> float:
+    """Normalleştirilmiş öğrenme kazancı (%) = (son − ön) / (maks − ön) × 100.
+
+    Standart (madde 7.2) öğrenmenin faaliyetten önce, hemen sonra ve bir süre
+    geçtikten sonra ölçülmesini önerir. Bu kazanç, mümkün olan en yüksek
+    gelişmenin ne kadarının gerçekleştiğini gösterir.
+    """
+    if maks_puan <= on_test:
+        raise GecersizGirdi("en yüksek puan ön testten büyük olmalı")
+    return 100 * (son_test - on_test) / (maks_puan - on_test)
+
+
+def kalicilik(on_test: float, son_test: float, gecikmeli_test: float):
+    """Zaman geçtikten sonra korunan kazanç (%). Kazanç yoksa tanımsızdır."""
+    if son_test <= on_test:
+        return None
+    return 100 * (gecikmeli_test - on_test) / (son_test - on_test)
+
+
+# ---------------------------------------------------------------------------
+# 4) Yardımcı yapılar
+# ---------------------------------------------------------------------------
+
+@dataclass
+class Kategori:
+    """Tek bir öğrenme kategorisinin yıllık kaydı."""
+    ad: str
+    hedef: float = 0      # kategorideki hedef kitle (çalışan)
+    katilan: float = 0    # kategoriye katılan tekil çalışan
+    saat: float = 0       # kategoride harcanan toplam eğitim saati
+    maliyet: float = 0    # kategorinin toplam maliyeti (TL)
+    sertifika: float = 0  # sertifika alan çalışan
+
+    @property
+    def katilim(self):
+        return round(100 * self.katilan / self.hedef, 1) if self.hedef > 0 else None
+
+
+@dataclass
+class EgitimTablosu:
+    """Dönemin kategori bazlı eğitim kayıtları ve kurum geneli bilgileri."""
+    kategoriler: list = field(default_factory=list)
+    toplam_calisan: float = 0
+    tekil_katilan: float = 0
+
+    def ekle(self, ad, hedef, katilan, saat, maliyet, sertifika=0):
+        self.kategoriler.append(Kategori(ad, hedef, katilan, saat, maliyet, sertifika))
+        return self
+
+    def tutarlilik(self) -> list:
+        """Tekil katılımcı sayısı ile kategori kayıtları arasındaki çelişkiler."""
+        u = []
+        kat = [k.katilan for k in self.kategoriler]
+        if self.tekil_katilan > self.toplam_calisan:
+            u.append("Tekil katılımcı sayısı toplam çalışandan büyük olamaz.")
+        if kat and self.tekil_katilan < max(kat):
+            u.append("Tekil katılımcı sayısı en kalabalık kategorinin katılımcısından az olamaz.")
+        if kat and self.tekil_katilan > sum(kat):
+            u.append("Tekil katılımcı sayısı kategori katılımcıları toplamından büyük olamaz.")
+        for k in self.kategoriler:
+            if k.katilan > k.hedef:
+                u.append(f"{k.ad}: katılan, hedef kitleden büyük.")
+        return u
+
+    def ozet(self) -> dict:
+        saat = sum(k.saat for k in self.kategoriler)
+        maliyet = sum(k.maliyet for k in self.kategoriler)
+        oranli = [(k.ad, k.katilim) for k in self.kategoriler if k.katilim is not None]
+        return {
+            "kategori_sayisi": len(self.kategoriler),
+            "toplam_calisan": self.toplam_calisan,
+            "tekil_katilan": self.tekil_katilan,
+            "katilim_orani": round(katilim_orani(self.tekil_katilan, self.toplam_calisan), 1),
+            "toplam_saat": saat,
+            "toplam_maliyet": maliyet,
+            "kisi_basi_saat": round(kisi_basi_saat(saat, self.toplam_calisan), 2),
+            "kisi_basi_maliyet": round(kisi_basi_maliyet(maliyet, self.toplam_calisan)),
+            "saat_basi_maliyet": round(saat_basi_maliyet(maliyet, saat), 2),
+            "en_yuksek_katilim": max(oranli, key=lambda x: x[1]) if oranli else None,
+            "en_dusuk_katilim": min(oranli, key=lambda x: x[1]) if oranli else None,
+        }
+
+
+def ornek_tablo() -> EgitimTablosu:
+    """Altı kategorilik örnek yıl (uydurma veri)."""
+    t = EgitimTablosu(toplam_calisan=1200, tekil_katilan=1056)
+    veri = [
+        ("Liderlik gelişimi",        120,   84,  1680,  420000,   0),
+        ("Mevzuat ve uyum",         1200, 1008,  2016,  151200, 960),
+        ("İş sağlığı ve güvenliği",  640,  602,  4816,  361200, 590),
+        ("Teknik ve mesleki",        520,  364, 14560, 1092000, 210),
+        ("Dijital beceriler",        900,  540,  4320,  324000,   0),
+        ("Yeni başlayan uyum",        96,   96,  1536,  115200,   0),
+    ]
+    for satir in veri:
+        t.ekle(*satir)
+    return t
+
+
+def ld_denetimi(ihtiyac_analizi: bool = False,
+                ogrenme_ciktisi_tanimli: bool = False,
+                uc_noktada_olcum: bool = False,
+                gecerli_guvenilir_adil: bool = False,
+                maliyet_kapsami_yazili: bool = False,
+                kurumsal_sonuca_bagli: bool = False) -> list:
+    """Bir L&D raporunun standardın beklentilerine göre eksiklerini listeler.
+
+    Maddeler ISO 30422'nin 5, 7.2 ve 8. maddelerindeki beklentilerden türetilmiştir;
+    bir uygunluk sınaması değil, hazırlık kontrol listesidir.
+    """
+    uyarilar = []
+    if not ihtiyac_analizi:
+        uyarilar.append("Öğrenme ihtiyacı kurum, takım ve birey düzeyinde belirlenmemiş: "
+                        "L&D'nin uygun çözüm olup olmadığı sınanmamış (madde 5).")
+    if not ogrenme_ciktisi_tanimli:
+        uyarilar.append("Öğrenme çıktısı ve süresi tanımlı değil: başarı neyle "
+                        "ölçüleceği belli değil (madde 5).")
+    if not uc_noktada_olcum:
+        uyarilar.append("Öğrenme faaliyetten önce, hemen sonra ve bir süre sonra "
+                        "ölçülmüyor: kalıcılık görünmez (madde 7.2).")
+    if not gecerli_guvenilir_adil:
+        uyarilar.append("Ölçmenin geçerliliği, güvenilirliği ve adilliği gözden "
+                        "geçirilmemiş (madde 7.2).")
+    if not maliyet_kapsami_yazili:
+        uyarilar.append("Maliyet ve katılım tanımları yazılı değil: bilgi tutarlı "
+                        "ve şeffaf sunulamaz (madde 8).")
+    if not kurumsal_sonuca_bagli:
+        uyarilar.append("Öğrenmenin kurumsal çıktılara (verimlilik, güvenlik, "
+                        "bağlılık, elde tutma) katkısı izlenmiyor (madde 8).")
+    return uyarilar
+
+
+# ---------------------------------------------------------------------------
+# 5) Dağıtıcı: hesaplayıcı arayüzünün kullandığı tek giriş noktası
+# ---------------------------------------------------------------------------
+
+METRIK_LISTESI = [
+    "katilim", "kategori_katilim", "sertifika", "kisi_basi_saat",
+    "toplam_maliyet", "kisi_basi_maliyet", "roi", "memnuniyet",
+    "yetkinlik", "yetkinlige_sure", "ogrenme_kazanci",
+]
+
+
+def _g(x) -> str:
+    """Sayıyı, bilimsel gösterim kullanmadan en kısa biçimde yazar."""
+    return f"{x:.12g}"
+
+
+def hesapla(metrik: str, **g) -> dict:
+    """Metrik kimliği ve girdilerle hesabı yapar; sözlük döndürür.
+
+    Dönen anahtarlar: deger, ifade (formülün yerine konmuş hâli), ondalik,
+    birim, ayrinti (etiket–değer çiftleri).
+    """
+    if metrik == "katilim":
+        d = katilim_orani(g["katilan"], g["toplam_calisan"])
+        return {"deger": d, "ondalik": 1, "birim": "% katılım",
+                "ifade": f"({_g(g['katilan'])} ÷ {_g(g['toplam_calisan'])}) × 100",
+                "ayrinti": [["Katılmayan çalışan", g["toplam_calisan"] - g["katilan"]],
+                            ["Katılmayan payı (%)", round(100 - d, 1)]]}
+
+    if metrik == "kategori_katilim":
+        d = kategori_katilim(g["katilan"], g["hedef_kitle"])
+        return {"deger": d, "ondalik": 1, "birim": "% katılım (kategori)",
+                "ifade": f"({_g(g['katilan'])} ÷ {_g(g['hedef_kitle'])}) × 100",
+                "ayrinti": [["Hedef kitleden katılmayan", g["hedef_kitle"] - g["katilan"]],
+                            ["Toplam çalışana oranı (%)",
+                             round(katilim_orani(g["katilan"], g["toplam_calisan"]), 1)],
+                            ["Hedef kitlenin toplam çalışana oranı (%)",
+                             round(katilim_orani(g["hedef_kitle"], g["toplam_calisan"]), 1)]]}
+
+    if metrik == "sertifika":
+        d = sertifika_orani(g["sertifikali"], g["hedef_kitle"])
+        return {"deger": d, "ondalik": 1, "birim": "% sertifikalı",
+                "ifade": f"({_g(g['sertifikali'])} ÷ {_g(g['hedef_kitle'])}) × 100",
+                "ayrinti": [["Sertifikasız çalışan", g["hedef_kitle"] - g["sertifikali"]],
+                            ["Önceki döneme göre değişim (puan)", round(d - g["onceki_oran"], 1)]]}
+
+    if metrik == "kisi_basi_saat":
+        d = kisi_basi_saat(g["toplam_saat"], g["toplam_calisan"])
+        katilim_orani(g["katilan"], g["toplam_calisan"])  # tutarlılık denetimi
+        return {"deger": d, "ondalik": 1, "birim": "saat / çalışan",
+                "ifade": f"{_g(g['toplam_saat'])} ÷ {_g(g['toplam_calisan'])}",
+                "ayrinti": [["Katılan başına saat", round(_bol(g["toplam_saat"], g["katilan"], "katılan"), 1)],
+                            ["Katılmayan çalışan", g["toplam_calisan"] - g["katilan"]],
+                            ["Çalışan başına iş günü karşılığı (8 saat)", round(d / 8, 1)]]}
+
+    if metrik == "toplam_maliyet":
+        d = toplam_ld_maliyeti(g["dis_saglayici"], g["ic_kaynak"], g["teknoloji"],
+                               g["diger"], g["zaman_maliyeti"])
+        kalemler = [g["dis_saglayici"], g["ic_kaynak"], g["teknoloji"], g["diger"],
+                    g["zaman_maliyeti"]]
+        return {"deger": d, "ondalik": 0, "birim": "TL",
+                "ifade": " + ".join(_g(k) for k in kalemler),
+                "ayrinti": [["Dış sağlayıcı payı (%)", round(100 * g["dis_saglayici"] / d, 1)],
+                            ["İç kaynak payı (%)", round(100 * g["ic_kaynak"] / d, 1)],
+                            ["Teknoloji payı (%)", round(100 * g["teknoloji"] / d, 1)]]}
+
+    if metrik == "kisi_basi_maliyet":
+        d = kisi_basi_maliyet(g["toplam_maliyet"], g["toplam_calisan"])
+        katilim_orani(g["katilan"], g["toplam_calisan"])  # tutarlılık denetimi
+        return {"deger": d, "ondalik": 0, "birim": "TL / çalışan",
+                "ifade": f"{_g(g['toplam_maliyet'])} ÷ {_g(g['toplam_calisan'])}",
+                "ayrinti": [["Katılan başına maliyet (TL)",
+                             round(_bol(g["toplam_maliyet"], g["katilan"], "katılan"))],
+                            ["Eğitim saati başına maliyet (TL)",
+                             round(saat_basi_maliyet(g["toplam_maliyet"], g["toplam_saat"]), 2)],
+                            ["Katılmayan çalışan", g["toplam_calisan"] - g["katilan"]]]}
+
+    if metrik == "roi":
+        d = yatirim_getirisi(g["fayda"], g["maliyet"])
+        return {"deger": d, "ondalik": 1, "birim": "% yatırım getirisi",
+                "ifade": f"(({_g(g['fayda'])} − {_g(g['maliyet'])}) ÷ {_g(g['maliyet'])}) × 100",
+                "ayrinti": [["Net fayda (TL)", g["fayda"] - g["maliyet"]],
+                            ["Fayda / maliyet oranı",
+                             round(fayda_maliyet_orani(g["fayda"], g["maliyet"]), 2)],
+                            ["Geri ödeme süresi (ay)",
+                             round(geri_odeme_ayi(g["fayda"], g["maliyet"], g["fayda_donemi_ay"]), 1)]]}
+
+    if metrik == "memnuniyet":
+        d = olumlu_orani(g["olumlu"], g["yanit"])
+        if g["olcek_max"] <= 0 or g["ortalama_puan"] < 0 or g["ortalama_puan"] > g["olcek_max"]:
+            raise GecersizGirdi("ortalama puan ölçek içinde olmalı")
+        return {"deger": d, "ondalik": 1, "birim": "% olumlu",
+                "ifade": f"({_g(g['olumlu'])} ÷ {_g(g['yanit'])}) × 100",
+                "ayrinti": [["Yanıt oranı (%)", round(yanit_orani(g["yanit"], g["katilan"]), 1)],
+                            ["Ortalama puan (ölçek yüzdesi)",
+                             round(100 * g["ortalama_puan"] / g["olcek_max"], 1)],
+                            ["Olumlu olmayan yanıt", g["yanit"] - g["olumlu"]]]}
+
+    if metrik == "yetkinlik":
+        d = ortalama_puan(g["toplam_puan"], g["degerlendirilen"])
+        if g["olcek_max"] <= 0 or d > g["olcek_max"]:
+            raise GecersizGirdi("ortalama puan ölçek içinde olmalı")
+        return {"deger": d, "ondalik": 2, "birim": "puan",
+                "ifade": f"{_g(g['toplam_puan'])} ÷ {_g(g['degerlendirilen'])}",
+                "ayrinti": [["Önceki döneme göre değişim (puan)", round(d - g["onceki_ort"], 2)],
+                            ["Hedefe ulaşma (%)", round(hedefe_ulasma(d, g["hedef_ort"]), 1)],
+                            ["Ölçek yüzdesi (%)", round(100 * d / g["olcek_max"], 1)]]}
+
+    if metrik == "yetkinlige_sure":
+        d = ortalama_sure(g["toplam_gun"], g["yeni_baslayan"])
+        return {"deger": d, "ondalik": 1, "birim": "gün",
+                "ifade": f"{_g(g['toplam_gun'])} ÷ {_g(g['yeni_baslayan'])}",
+                "ayrinti": [["Hafta karşılığı", round(d / 7, 1)],
+                            ["Önceki döneme göre değişim (gün)", round(d - g["onceki_ort"], 1)],
+                            ["Değişim (%)",
+                             round(100 * (d - g["onceki_ort"]) / _bol(g["onceki_ort"], 1, "önceki"), 1)]]}
+
+    if metrik == "ogrenme_kazanci":
+        d = ogrenme_kazanci(g["on_test"], g["son_test"], g["maks_puan"])
+        if min(g["on_test"], g["son_test"], g["gecikmeli_test"]) < 0 or \
+           max(g["on_test"], g["son_test"], g["gecikmeli_test"]) > g["maks_puan"]:
+            raise GecersizGirdi("puanlar 0 ile en yüksek puan arasında olmalı")
+        k = kalicilik(g["on_test"], g["son_test"], g["gecikmeli_test"])
+        return {"deger": d, "ondalik": 1, "birim": "% normalleştirilmiş kazanç",
+                "ifade": f"(({_g(g['son_test'])} − {_g(g['on_test'])}) ÷ "
+                         f"({_g(g['maks_puan'])} − {_g(g['on_test'])})) × 100",
+                "ayrinti": [["Mutlak kazanç (puan)", g["son_test"] - g["on_test"]],
+                            ["Zaman sonra korunan kazanç (%)", "—" if k is None else round(k, 1)],
+                            ["Zamanla kaybedilen (puan)", g["son_test"] - g["gecikmeli_test"]]]}
+
+    raise ValueError(f"Bilinmeyen metrik: {metrik}")
+
+
+# ---------------------------------------------------------------------------
+# 6) Doğrulama çıktısı
+# ---------------------------------------------------------------------------
+
+def _tl(x: float) -> str:
+    return f"{x:,.0f}".replace(",", ".")
+
+
+def _demo() -> None:
+    cizgi = "-" * 64
+    print("ISO 30422 — doğrulama çıktısı")
+    print(cizgi)
+
+    t = ornek_tablo()
+    print("Kategori bazlı yıllık kayıt (uydurma örnek veri)")
+    print(f"{'Kategori':<26}{'Hedef':>7}{'Katılan':>9}{'%':>7}{'Saat':>8}{'Maliyet TL':>12}")
+    for k in t.kategoriler:
+        print(f"{k.ad:<26}{k.hedef:>7}{k.katilan:>9}{k.katilim:>7.1f}"
+              f"{k.saat:>8}{_tl(k.maliyet):>12}")
+    print(cizgi)
+    for anahtar, deger in t.ozet().items():
+        print(f"{anahtar:<20}: {deger}")
+    for u in t.tutarlilik():
+        print(" !", u)
+    print(cizgi)
+
+    print(f"Sertifika oranı (İSG)    : {sertifika_orani(590, 640):.1f} %")
+    print(f"Olumlu tepki             : {olumlu_orani(412, 480):.1f} %")
+    print(f"Ortalama yetkinlik       : {ortalama_puan(432, 120):.2f} / 5")
+    print(f"Yetkinliğe ulaşma süresi : {ortalama_sure(1350, 18):.1f} gün")
+    print(f"Öğrenme kazancı          : {ogrenme_kazanci(52, 78, 100):.1f} %"
+          f" (kalıcılık {kalicilik(52, 78, 71):.1f} %)")
+    print(f"İSG programı ROI         : {yatirim_getirisi(540000, 361200):.1f} %"
+          f" (geri ödeme {geri_odeme_ayi(540000, 361200, 12):.1f} ay)")
+    print(f"Toplam maliyet kalemleri : {_tl(toplam_ld_maliyeti(1470000, 520000, 290000, 183600))} TL")
+    print(cizgi)
+
+    print("Dağıtıcı örneği:")
+    print(hesapla("katilim", katilan=1056, toplam_calisan=1200))
+    print(cizgi)
+
+    print("Rapor denetimi (hiçbir ön koşulu sağlamayan bir kurum için):")
+    for u in ld_denetimi():
+        print(" !", u)
+
+
+if __name__ == "__main__":
+    _demo()
+</script>
+<script>
+/* =========================================================
+   1) METRİK VERİ TABANI
+   u: kullanıcılar (hr İK/L&D birimi / exec üst yönetim / line hat yönetimi ve amirler /
+      wrk çalışanlar ve temsilcileri / ext dış paydaş)
+   st: süreç aşaması (bag kurum bağlamı, ihtiyac, plan, uygula, degerlen)
+   r: raporlama (ic, dis)
+   t: aile (p katılım / c maliyet / r tepki / s sonuç / o kurumsal çıktı ve bağlam)
+   calc: bu sayfadaki hesaplayıcı kimliği
+   iso: ISO/TS 30428'in ISO 30414 için önerdiği beş metrikten biri
+   k: ek etiket (ctx bağlam etkeni, onk ön koşul, tur türetilmiş)
+   ========================================================= */
+var METRICS = [
+ {g:"Katılım", t:"p", items:[
+  {n:"Yılda en az bir resmi öğrenmeye katılan çalışan oranı", st:"uygula", r:["ic","dis"], iso:1, calc:"katilim", d:"Tekil katılımcı ÷ toplam çalışan; Ek B katılım metriği", u:["hr","exec","line","wrk","ext"]},
+  {n:"Kategoriye göre resmi öğrenmeye katılım", st:"uygula", r:["ic","dis"], iso:1, calc:"kategori_katilim", d:"Liderlik gelişimi, mevzuat ve uyum gibi kategoriler; Ek B katılım metriği", u:["hr","exec","line","wrk","ext"]},
+  {n:"Belirli alanlarda sertifika alan çalışan oranı", st:"degerlen", r:["ic"], calc:"sertifika", d:"Kategori bazında sertifikalı çalışan; Ek B katılım metriği", u:["hr","exec","line","wrk"]},
+  {n:"Çalışan başına ortalama resmi eğitim saati", st:"uygula", r:["ic","dis"], iso:1, calc:"kisi_basi_saat", d:"Toplam resmi eğitim saati ÷ çalışan; maruz kalmayı ölçer, öğrenmeyi değil", u:["hr","exec","line","ext"]},
+  {n:"İş ailesi ve kategori kırılımında katılım", st:"degerlen", r:["ic"], k:"tur", d:"Hangi grubun öğrenmeye ulaşamadığını gösterir", u:["hr","exec","line","wrk"]},
+  {n:"Az temsil edilen grupların katılımı", st:"degerlen", r:["ic"], k:"tur", d:"Erişim ve kapsayıcılık göstergesi; madde 6.2'deki gruplar", u:["hr","exec","wrk","ext"]}
+ ]},
+ {g:"Maliyet", t:"c", items:[
+  {n:"Toplam öğrenme ve gelişim maliyeti", st:"degerlen", r:["ic","dis"], iso:1, calc:"toplam_maliyet", d:"Dış sağlayıcı, iç kaynak, teknoloji ve diğer kalemler; kapsamı kurum tanımlar", u:["hr","exec","line","ext"]},
+  {n:"Çalışan başına öğrenme ve gelişim maliyeti", st:"degerlen", r:["ic","dis"], calc:"kisi_basi_maliyet", d:"Toplam maliyet ÷ çalışan; Ek B maliyet metriği", u:["hr","exec","line","ext"]},
+  {n:"Yönteme göre maliyet dağılımı", st:"degerlen", r:["ic"], k:"tur", d:"Koçluk, sınıf eğitimi, e-öğrenme gibi yöntemlerin maliyeti", u:["hr","exec"]},
+  {n:"Belirli bir faaliyetin yatırım getirisi", st:"degerlen", r:["ic"], k:"tur", calc:"roi", d:"Standart, belirli faaliyetler için yatırım getirisi kestirimini anar; formül vermez", u:["hr","exec"]}
+ ]},
+ {g:"Tepki", t:"r", items:[
+  {n:"Öğrenenin L&D süreçlerine tepkisi", st:"degerlen", r:["ic"], calc:"memnuniyet", d:"Olumlu yanıt oranı ve ortalama puan; Ek B tepki metriği", u:["hr","line","wrk"]},
+  {n:"Hat yöneticisi veya sponsor memnuniyeti", st:"degerlen", r:["ic"], d:"Öğrenme müdahalesinin sponsoru olan amirin görüşü; Ek B tepki metriği", u:["hr","exec","line"]}
+ ]},
+ {g:"Sonuç", t:"s", items:[
+  {n:"Çalışan grupları için ortalama yetkinlik derecesi", st:"degerlen", r:["ic","dis"], iso:1, calc:"yetkinlik", d:"Yetkinlik değerlendirmesi ortalaması; Ek B sonuç metriği", u:["hr","exec","line","ext"]},
+  {n:"Yeni başlayanın yetkinliğe ulaşma süresi", st:"degerlen", r:["ic"], calc:"yetkinlige_sure", d:"İşe başlamadan yetkin sayılmaya geçen süre; Ek B sonuç metriği", u:["hr","exec","line"]},
+  {n:"İyileşen iş performansı", st:"degerlen", r:["ic"], d:"İş başı gözlem, performans değerlendirme ve amir görüşü; Ek B sonuç metriği", u:["hr","exec","line"]},
+  {n:"Öğrenme kazancı ve kalıcılığı", st:"uygula", r:["ic"], k:"tur", calc:"ogrenme_kazanci", d:"Öncesi, hemen sonrası ve zaman geçtikten sonra ölçüm (madde 7.2)", u:["hr","line"]},
+  {n:"Ölçmenin geçerli, güvenilir ve adil olması", st:"uygula", r:["ic"], k:"onk", d:"Değerlendirme sonuçlarının güvenilir olabilmesi için ön koşul (madde 7.2)", u:["hr","line","wrk"]}
+ ]},
+ {g:"Kurumsal çıktı ölçüleri (madde 8)", t:"o", items:[
+  {n:"Verimlilik, satış veya hizmet düzeyi hedeflerine ulaşma", st:"degerlen", r:["ic","dis"], d:"Öğrenmenin kurumsal çıktılara katkısını tahmin etmekte kullanılır", u:["hr","exec","line","ext"]},
+  {n:"İş sağlığı ve güvenliği hedefleri", st:"degerlen", r:["ic","dis"], d:"Güvenlik eğitiminin hedeflere katkısı", u:["hr","exec","line","wrk","ext"]},
+  {n:"Kaza oranları", st:"degerlen", r:["ic","dis"], d:"Kaza sıklığı ve ağırlığı; L&D tek neden değildir", u:["hr","exec","line","wrk","ext"]},
+  {n:"Mevzuat ve düzenleyici hedeflere uyum", st:"degerlen", r:["ic","dis"], d:"Zorunlu eğitim ve sertifika kapsamı", u:["hr","exec","line","ext"]},
+  {n:"Çalışan bağlılığı düzeyi", st:"degerlen", r:["ic","dis"], d:"Öğrenme olanaklarının bağlılığa yansıması", u:["hr","exec","line","wrk","ext"]},
+  {n:"Çalışanı elde tutma oranı", st:"degerlen", r:["ic","dis"], d:"Gelişim fırsatlarının elde tutmaya katkısı", u:["hr","exec","ext"]}
+ ]},
+ {g:"Bağlam, ihtiyaç ve uygulama etkenleri", t:"o", items:[
+  {n:"Kurum stratejisi, değerler ve hedefler", st:"bag", r:["ic"], k:"ctx", d:"L&D önceliklerinin kaynağı (madde 4 ve Şekil 1)", u:["hr","exec"]},
+  {n:"Faaliyet ortamı", st:"bag", r:["ic","dis"], k:"ctx", d:"Sektördeki değişimler, mevzuat çerçevesi ve mevcut kaynaklar", u:["hr","exec","ext"]},
+  {n:"İşgücü planlaması", st:"bag", r:["ic"], k:"ctx", d:"Gelecekte hangi becerilere ihtiyaç duyulacağını gösterir", u:["hr","exec"]},
+  {n:"Politikalar, süreçler ve uygulamalar", st:"bag", r:["ic"], k:"ctx", d:"Öğrenmeyi destekleyen ya da engelleyen kurum içi düzenler", u:["hr","exec","line","wrk"]},
+  {n:"Mevcut yetkinlik ile görev gereklilikleri arasındaki açık", st:"ihtiyac", r:["ic"], k:"onk", d:"Çalışan ve amir diyaloğuyla belirlenir (madde 5)", u:["hr","line","wrk"]},
+  {n:"L&D'nin uygun çözüm olup olmadığı kararı", st:"ihtiyac", r:["ic"], k:"onk", d:"Sorunun nedeni öğrenme değil süreç ya da araç olabilir", u:["hr","exec","line"]},
+  {n:"Talep kaynağı aştığında öncelik sırası", st:"ihtiyac", r:["ic"], k:"onk", d:"Kurumsal hedeflere göre sıralama", u:["hr","exec","line"]},
+  {n:"Öğrenme çıktısı ve ulaşılacağı süre", st:"ihtiyac", r:["ic"], k:"onk", d:"Gerekirse sektörel, ulusal ya da uluslararası ölçütle hizalanır", u:["hr","line","wrk"]},
+  {n:"Gereken kaynakların belirlenmesi", st:"ihtiyac", r:["ic"], k:"onk", d:"Bütçe, zaman, eğitmen, teknoloji", u:["hr","exec","line"]},
+  {n:"Öğrenenin geçmişi ve bağlamı", st:"plan", r:["ic"], k:"ctx", d:"Eğitim, iş rolü, önceki öğrenme, mesleki deneyim, dil, kültür", u:["hr","line","wrk"]},
+  {n:"Az temsil edilen grupların koşulları", st:"plan", r:["ic"], k:"ctx", d:"Erişilebilir ve kapsayıcı öğrenme için", u:["hr","exec","wrk"]},
+  {n:"Konu ve mevcut öğrenme araçları", st:"plan", r:["ic"], k:"ctx", d:"Konu yöntemi belirler; araç ve yöntem envanteri sınırlayıcıdır", u:["hr","line"]},
+  {n:"Bütçe ve diğer kaynaklar", st:"plan", r:["ic"], k:"ctx", d:"Yöntem karmasının maliyet sınırı", u:["hr","exec"]},
+  {n:"Öğrenme ortamı", st:"plan", r:["ic"], k:"ctx", d:"Fiziksel ya da sanal; amaca uygunluğu değerlendirilir", u:["hr","line","wrk"]},
+  {n:"Karma (blended) öğrenme kurgusu", st:"plan", r:["ic"], k:"ctx", d:"Maliyet, zaman ve konum esnekliği sağlar", u:["hr","line","wrk"]},
+  {n:"Zaman ve iş yükü baskısı", st:"uygula", r:["ic"], k:"ctx", d:"Öğrenmenin gerçekleşmesini engelleyen yaygın etken (madde 7.1)", u:["hr","line","wrk"]},
+  {n:"Öğrenme ortamının koşulları", st:"uygula", r:["ic"], k:"ctx", d:"Gürültü ve dikkat dağınıklığından korunma; yeterli büyüklükte, donanımlı mekân", u:["hr","line","wrk"]},
+  {n:"Amir desteği ve uygulama fırsatı", st:"uygula", r:["ic"], k:"ctx", d:"Öğrenilenin işte denenmesini teşvik eder", u:["hr","exec","line","wrk"]},
+  {n:"Psikolojik ve zihinsel iyi oluş ortamı", st:"uygula", r:["ic"], k:"ctx", d:"Kendi kendine yönlendirilen öğrenmeyi kolaylaştırır (madde 6.1)", u:["hr","exec","line","wrk"]}
+ ]}
+];
+
+var USERS = ["hr","exec","line","wrk","ext"];
+var AILE_AD = {p:"katılım", c:"maliyet", r:"tepki", s:"sonuç", o:"kurumsal çıktı ve bağlam"};
+var EK_AD = {ctx:"bağlam etkeni", onk:"ön koşul", tur:"türetilmiş"};
+
+/* --- matris çizimi --- */
+function renderMatrix(){
+  var fu = document.getElementById("fUser").value;
+  var fs = document.getElementById("fStage").value;
+  var ft = document.getElementById("fType").value;
+  var fr = document.getElementById("fRep").value;
+  var fq = document.getElementById("fQ").value.toLocaleLowerCase("tr");
+  var body = document.getElementById("mBody");
+  var html = "", shown = 0;
+
+  METRICS.forEach(function(grp){
+    if(ft && grp.t !== ft) return;
+    var rows = "";
+    grp.items.forEach(function(m){
+      if(fu && m.u.indexOf(fu) === -1) return;
+      if(fs && m.st !== fs) return;
+      if(fr && m.r.indexOf(fr) === -1) return;
+      if(fq && m.n.toLocaleLowerCase("tr").indexOf(fq) === -1) return;
+      shown++;
+      var cells = USERS.map(function(u){
+        if(m.u.indexOf(u) === -1) return '<td class="num"></td>';
+        var mark = '<span class="dot ' + grp.t + '"></span>';
+        return '<td class="num" title="' + m.n + '">' + (m.calc ? '<b>' + mark + '</b>' : mark) + '</td>';
+      }).join("");
+      var tags = '<span class="tag ' + grp.t + '">' + AILE_AD[grp.t] + '</span>' +
+                 (m.k ? ' <span class="tag lvl">' + EK_AD[m.k] + '</span>' : "") +
+                 (m.iso ? ' <span class="tag iso">30428</span>' : "") +
+                 (m.calc ? ' <span class="tag lvl">hesaplayıcı</span>' : "") +
+                 (m.r.indexOf("dis") !== -1 ? ' <span class="tag iso">dış rapor</span>' : "");
+      rows += '<tr><td class="name">' + (m.calc ? '<b>' + m.n + '</b>' : m.n) + ' ' + tags +
+              '<em>' + m.d + '</em></td>' + cells + '</tr>';
+    });
+    if(rows){
+      html += '<tr class="group"><td colspan="6">' + grp.g + '</td></tr>' + rows;
+    }
+  });
+
+  body.innerHTML = html || '<tr><td colspan="6">Bu filtre birleşimiyle eşleşen metrik yok.</td></tr>';
+  document.getElementById("mCount").textContent = shown + " metrik ve etken gösteriliyor.";
+}
+["fUser","fStage","fType","fRep","fQ"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", renderMatrix);
+});
+renderMatrix();
+
+/* =========================================================
+   2) KATILIM VE MALİYET TABLOSU
+   ========================================================= */
+var SATIR = 8;
+/* kategori, hedef kitle, katılan, saat, maliyet (TL), sertifika */
+var ORNEK_TBL = [
+  ["Liderlik gelişimi",         120,   84,  1680,  420000,   0],
+  ["Mevzuat ve uyum",          1200, 1008,  2016,  151200, 960],
+  ["İş sağlığı ve güvenliği",   640,  602,  4816,  361200, 590],
+  ["Teknik ve mesleki",         520,  364, 14560, 1092000, 210],
+  ["Dijital beceriler",         900,  540,  4320,  324000,   0],
+  ["Yeni başlayan uyum",         96,   96,  1536,  115200,   0],
+  ["",0,0,0,0,0],
+  ["",0,0,0,0,0]
+];
+var KOLON = ["ad","hedef","kat","saat","mal","ser"];
+
+function buildTbl(){
+  var html = "";
+  for(var i=0;i<SATIR;i++){
+    html += '<tr>' +
+      '<td><input type="text" id="p_ad_' + i + '" placeholder="Kategori ' + (i+1) + '"></td>' +
+      '<td><input type="number" min="0" step="1" id="p_hedef_' + i + '"></td>' +
+      '<td><input type="number" min="0" step="1" id="p_kat_' + i + '"></td>' +
+      '<td><input type="number" min="0" step="any" id="p_saat_' + i + '"></td>' +
+      '<td><input type="number" min="0" step="any" id="p_mal_' + i + '"></td>' +
+      '<td><input type="number" min="0" step="1" id="p_ser_' + i + '"></td>' +
+      '<td class="calc" id="p_oran_' + i + '">—</td></tr>';
+  }
+  document.getElementById("pBody").innerHTML = html;
+  document.getElementById("pBody").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", computeTbl);
+  });
+  document.getElementById("topCalisan").addEventListener("input", computeTbl);
+  document.getElementById("tekilKatilan").addEventListener("input", computeTbl);
+}
+
+function pNum(k, i){
+  var v = parseFloat(document.getElementById("p_" + k + "_" + i).value);
+  return isNaN(v) || v < 0 ? 0 : v;
+}
+
+var TBL = {n:0, saat:0, maliyet:0, kayit:0, tekil:0, toplam:0, ok:false};
+
+function computeTbl(){
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var f0 = function(x){ return x.toLocaleString("tr-TR", {maximumFractionDigits:0}); };
+  var f2 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:2, maximumFractionDigits:2}); };
+
+  var toplam = parseFloat(document.getElementById("topCalisan").value);
+  var tekil = parseFloat(document.getElementById("tekilKatilan").value);
+  if(isNaN(toplam) || toplam < 0) toplam = 0;
+  if(isNaN(tekil) || tekil < 0) tekil = 0;
+
+  var n = 0, saat = 0, mal = 0, kayit = 0, ser = 0, uyar = [];
+  var maxKat = 0, enYuksek = null, enDusuk = null;
+
+  for(var i=0;i<SATIR;i++){
+    var ad = document.getElementById("p_ad_" + i).value.trim() || ("Kategori " + (i+1));
+    var h = pNum("hedef", i), k = pNum("kat", i), s = pNum("saat", i), m = pNum("mal", i), c = pNum("ser", i);
+    var hucre = document.getElementById("p_oran_" + i);
+    var aktif = h > 0 || k > 0 || s > 0 || m > 0 || c > 0;
+    if(!aktif){ hucre.textContent = "—"; continue; }
+    n++; saat += s; mal += m; kayit += k; ser += c;
+    if(k > maxKat) maxKat = k;
+    if(h <= 0){ hucre.textContent = "—"; continue; }
+    if(k > h){ hucre.textContent = "Katılan > hedef"; uyar.push(ad + ": katılan, hedef kitleden büyük."); continue; }
+    var oran = 100 * k / h;
+    hucre.textContent = f1(oran);
+    if(enYuksek === null || oran > enYuksek.oran) enYuksek = {ad:ad, oran:oran};
+    if(enDusuk === null || oran < enDusuk.oran) enDusuk = {ad:ad, oran:oran};
+  }
+
+  document.getElementById("tKatilan").textContent = n ? f0(kayit) + " kayıt" : "—";
+  document.getElementById("tSaat").textContent = n ? f0(saat) : "—";
+  document.getElementById("tMaliyet").textContent = n ? f0(mal) : "—";
+  document.getElementById("tSertifika").textContent = n ? f0(ser) : "—";
+
+  var kart = document.getElementById("pCards");
+  var ok = n > 0 && toplam > 0;
+  TBL = {n:n, saat:saat, maliyet:mal, kayit:kayit, tekil:tekil, toplam:toplam, ok:ok};
+  if(!ok){
+    kart.innerHTML = "";
+    document.getElementById("pNot").textContent =
+      "Tabloya kategori verilerini ve toplam çalışan sayısını girin ya da örnek veriyi yükleyin.";
+    return;
+  }
+
+  if(tekil > toplam) uyar.push("Tekil katılımcı sayısı toplam çalışandan büyük olamaz.");
+  if(tekil < maxKat) uyar.push("Tekil katılımcı sayısı en kalabalık kategorinin katılımcısından az olamaz.");
+  if(tekil > kayit) uyar.push("Tekil katılımcı sayısı kategori katılımcıları toplamından büyük olamaz.");
+
+  var gecerli = tekil <= toplam;
+  var katilimOrani = gecerli ? 100 * tekil / toplam : null;
+  var kartlar = '';
+  kartlar += '<div class="card"><b>' + (katilimOrani === null ? "—" : f1(katilimOrani) + " %") + '</b><span>Resmi öğrenmeye katılım (tekil)</span></div>';
+  kartlar += '<div class="card"><b>' + f2(saat / toplam) + '</b><span>Çalışan başına eğitim saati</span></div>';
+  kartlar += '<div class="card alt"><b>' + f0(mal / toplam) + ' TL</b><span>Çalışan başına maliyet</span></div>';
+  kartlar += '<div class="card alt"><b>' + (saat > 0 ? f2(mal / saat) + ' TL' : "—") + '</b><span>Eğitim saati başına maliyet</span></div>';
+  kartlar += '<div class="card warn"><b>' + (enYuksek ? f1(enYuksek.oran) + ' %' : "—") + '</b><span>En yüksek: ' + (enYuksek ? enYuksek.ad : "—") + '</span></div>';
+  kartlar += '<div class="card warn"><b>' + (enDusuk ? f1(enDusuk.oran) + ' %' : "—") + '</b><span>En düşük: ' + (enDusuk ? enDusuk.ad : "—") + '</span></div>';
+  kart.innerHTML = kartlar;
+
+  var not = "Toplam saat = " + f0(saat) + ", toplam çalışan = " + f0(toplam) + " → saat/çalışan = " + f2(saat / toplam) +
+            ". Toplam maliyet = " + f0(mal) + " TL → maliyet/çalışan = " + f0(mal / toplam) + " TL. ";
+  if(enYuksek && enDusuk && enYuksek.oran - enDusuk.oran >= 20){
+    not += "Kategoriler arasında " + f1(enYuksek.oran - enDusuk.oran) + " puanlık katılım farkı var; erişim engellerine bakın. ";
+  }
+  if(uyar.length) not += "Kontrol edin: " + uyar.join(" ");
+  document.getElementById("pNot").textContent = not;
+}
+
+function loadTblExample(){
+  for(var i=0;i<SATIR;i++){
+    var s = ORNEK_TBL[i];
+    document.getElementById("p_ad_" + i).value = s[0];
+    for(var j=1;j<KOLON.length;j++){
+      document.getElementById("p_" + KOLON[j] + "_" + i).value = s[j] ? s[j] : "";
+    }
+  }
+  document.getElementById("topCalisan").value = 1200;
+  document.getElementById("tekilKatilan").value = 1056;
+  computeTbl();
+}
+
+document.getElementById("btnOrnek").addEventListener("click", loadTblExample);
+document.getElementById("btnTemizle").addEventListener("click", function(){
+  for(var i=0;i<SATIR;i++){
+    KOLON.forEach(function(k){ document.getElementById("p_" + k + "_" + i).value = ""; });
+  }
+  document.getElementById("topCalisan").value = "";
+  document.getElementById("tekilKatilan").value = "";
+  computeTbl();
+});
+document.getElementById("btnCsv").addEventListener("click", function(){
+  var satir = ["Kategori;Hedef kitle;Katilan;Saat;Maliyet TL;Sertifika;Katilim %"];
+  for(var i=0;i<SATIR;i++){
+    var h = pNum("hedef", i), k = pNum("kat", i), s = pNum("saat", i), m = pNum("mal", i), c = pNum("ser", i);
+    if(!(h > 0 || k > 0 || s > 0 || m > 0 || c > 0)) continue;
+    var ad = document.getElementById("p_ad_" + i).value.trim() || ("Kategori " + (i+1));
+    satir.push([ad, h, k, s, m, c, h > 0 ? (100 * k / h).toFixed(1) : ""].join(";"));
+  }
+  if(TBL.ok){
+    satir.push(["Toplam calisan", TBL.toplam, "", "", "", "", ""].join(";"));
+    satir.push(["Tekil katilimci", TBL.tekil, "", "", "", "", ""].join(";"));
+    satir.push(["Toplam", "", TBL.kayit, TBL.saat, TBL.maliyet, "", ""].join(";"));
+    satir.push(["Calisan basina saat", (TBL.saat / TBL.toplam).toFixed(2), "", "", "", "", ""].join(";"));
+    satir.push(["Calisan basina maliyet TL", (TBL.maliyet / TBL.toplam).toFixed(0), "", "", "", "", ""].join(";"));
+  }
+  var blob = new Blob(["\ufeff" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "iso30422_katilim_maliyet.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* =========================================================
+   3) FORMÜL TABLOSU + HESAPLAYICI
+   Alan adları gömülü Python modülünün hesapla() imzasıyla birebir aynıdır.
+   ========================================================= */
+function gerek(kosul, mesaj){ if(!kosul) throw new Error("GecersizGirdi: " + mesaj); }
+function oranOk(parca, butun, ad){
+  gerek(butun > 0, "bütün sıfırdan büyük olmalı");
+  gerek(parca >= 0 && parca <= butun, ad + " 0 ile bütün arasında olmalı");
+  return 100 * parca / butun;
+}
+function bolOk(pay, payda, ad){ gerek(payda > 0, ad + " sıfırdan büyük olmalı"); return pay / payda; }
+function r1(x){ return +x.toFixed(1); }
+function r2(x){ return +x.toFixed(2); }
+
+var CALC = [
+ {id:"katilim", name:"Yılda en az bir resmi öğrenmeye katılan çalışan oranı", grp:"Katılım",
+  formula:"Katılım = (Tekil katılımcı &divide; Toplam çalışan) &times; 100",
+  note:"Katılan, dönemde en az bir resmi öğrenme faaliyetine katılan tekil çalışandır; aynı kişi birden çok eğitime katılsa da bir kez sayılır. Çalışan tanımı (sözleşmeli, stajyer, gönüllü dahil mi?) kurum içinde yazılı olmalıdır.",
+  fields:[{k:"katilan",l:"Tekil katılımcı",v:1056},{k:"toplam_calisan",l:"Toplam çalışan",v:1200}],
+  unit:"% katılım",
+  py:"katilim_orani(katilan=1056, toplam_calisan=1200)",
+  calc:function(v){ var d = oranOk(v.katilan, v.toplam_calisan, "katılan");
+    return {value:d, dec:1, expl:"(" + v.katilan + " ÷ " + v.toplam_calisan + ") × 100",
+      detail:[["Katılmayan çalışan", v.toplam_calisan-v.katilan],
+              ["Katılmayan payı (%)", r1(100-d)]]}; },
+  bands:[[80,"ok","Katılım yaygın; asıl soru kimlerin dışarıda kaldığıdır, kategori ve grup kırılımına bakın."],
+         [50,"warn","Çalışanların önemli bölümü resmi öğrenmeye katılmıyor; erişim engellerini (zaman, iş yükü, konum) gözden geçirin."],
+         [0,"bad","Katılım düşük; ihtiyaç belirleme ile plan arasında kopukluk olabilir."]]},
+
+ {id:"kategori_katilim", name:"Kategoriye göre resmi öğrenmeye katılım", grp:"Katılım",
+  formula:"Kategori katılımı = (Kategoriye katılan &divide; Kategorinin hedef kitlesi) &times; 100",
+  note:"Payda olarak kategorinin hedef kitlesi kullanılır; toplam çalışana oranı ayrıca gösterilir. Hangisinin raporlandığını yazın; zorunlu (mevzuat) kategorilerde hedef kitle payda olmalıdır.",
+  fields:[{k:"katilan",l:"Kategoriye katılan",v:84},{k:"hedef_kitle",l:"Kategorinin hedef kitlesi",v:120},
+          {k:"toplam_calisan",l:"Toplam çalışan",v:1200}],
+  unit:"% katılım (kategori)",
+  py:"kategori_katilim(katilan=84, hedef_kitle=120)",
+  calc:function(v){ var d = oranOk(v.katilan, v.hedef_kitle, "katılan");
+    return {value:d, dec:1, expl:"(" + v.katilan + " ÷ " + v.hedef_kitle + ") × 100",
+      detail:[["Hedef kitleden katılmayan", v.hedef_kitle-v.katilan],
+              ["Toplam çalışana oranı (%)", r1(oranOk(v.katilan, v.toplam_calisan, "katılan"))],
+              ["Hedef kitlenin toplam çalışana oranı (%)", r1(oranOk(v.hedef_kitle, v.toplam_calisan, "hedef kitle"))]]}; },
+  bands:[[80,"ok","Hedef kitlenin çoğu eğitime ulaşmış; kalanların neden dışarıda olduğunu kaydedin."],
+         [50,"warn","Hedef kitlenin önemli bölümü dışarıda; zorunlu ya da regüle alanlarda bu doğrudan uyum riskidir."],
+         [0,"bad","Hedef kitlenin yarıdan fazlası eğitime ulaşamamış; takvim, kapasite ve amir desteğini gözden geçirin."]]},
+
+ {id:"sertifika", name:"Belirli alanlarda sertifika alan çalışan oranı", grp:"Katılım",
+  formula:"Sertifikalı oranı = (Sertifika alan çalışan &divide; Alandaki çalışan) &times; 100",
+  note:"Ek B, farklı kategorilerde belirli alanlarda sertifika almış çalışanların yüzdesini örnek metrik olarak verir. Sertifikanın geçerlilik süresi ve yenileme takvimi ayrıca izlenmelidir.",
+  fields:[{k:"sertifikali",l:"Sertifika alan çalışan",v:590},{k:"hedef_kitle",l:"Alandaki çalışan (hedef kitle)",v:640},
+          {k:"onceki_oran",l:"Önceki dönem sertifikalı oranı (%)",v:88,step:0.1}],
+  unit:"% sertifikalı",
+  py:"sertifika_orani(sertifikali=590, hedef_kitle=640)",
+  calc:function(v){ var d = oranOk(v.sertifikali, v.hedef_kitle, "sertifikalı");
+    return {value:d, dec:1, expl:"(" + v.sertifikali + " ÷ " + v.hedef_kitle + ") × 100",
+      detail:[["Sertifikasız çalışan", v.hedef_kitle-v.sertifikali],
+              ["Önceki döneme göre değişim (puan)", r1(d-v.onceki_oran)]]}; },
+  bands:[[90,"ok","Sertifika hedefi büyük ölçüde tutmuş; geçerlilik süresi dolacakları izleyin."],
+         [70,"warn","Sertifikasız çalışan payı kayda değer; süre ve yenileme takvimini izleyin."],
+         [0,"bad","Sertifikasız çalışan çok; zorunlu alanlarda göreve uygunluk riski doğar."]]},
+
+ {id:"kisi_basi_saat", name:"Çalışan başına ortalama resmi eğitim saati", grp:"Katılım",
+  formula:"Saat/çalışan = Toplam resmi eğitim saati &divide; Toplam çalışan",
+  note:"Toplam saat, dönemde tüm katılımcıların harcadığı resmi eğitim saatlerinin toplamıdır (kişi-saat). Saat maruz kalmanın ölçüsüdür, öğrenmenin değil.",
+  fields:[{k:"toplam_saat",l:"Toplam resmi eğitim saati (kişi-saat)",v:28928},{k:"toplam_calisan",l:"Toplam çalışan",v:1200},
+          {k:"katilan",l:"Tekil katılımcı",v:1056}],
+  unit:"saat / çalışan",
+  py:"kisi_basi_saat(toplam_saat=28928, calisan=1200)",
+  calc:function(v){ var d = bolOk(v.toplam_saat, v.toplam_calisan, "çalışan sayısı");
+    oranOk(v.katilan, v.toplam_calisan, "katılan");
+    return {value:d, dec:1, expl:v.toplam_saat + " ÷ " + v.toplam_calisan,
+      detail:[["Katılan başına saat", r1(bolOk(v.toplam_saat, v.katilan, "katılan"))],
+              ["Katılmayan çalışan", v.toplam_calisan-v.katilan],
+              ["Çalışan başına iş günü karşılığı (8 saat)", r1(d/8)]]}; },
+  bands:[[0,"ok","Saat tek başına kaliteyi göstermez; kategori kırılımı, yetkinlik ve öğrenme kazancı metrikleriyle birlikte okuyun."]]},
+
+ {id:"toplam_maliyet", name:"Toplam öğrenme ve gelişim maliyeti", grp:"Maliyet",
+  formula:"Toplam maliyet = Dış sağlayıcı + İç kaynak + Teknoloji + Diğer + Öğrenen zamanı",
+  note:"Kalemler kurumun kendi tanımıdır. Öğrenenlerin eğitimde geçirdiği sürenin ücret karşılığını (son kalem) kapsama katıp katmamak yazılı karar gerektirir; katmıyorsanız 0 bırakın.",
+  fields:[{k:"dis_saglayici",l:"Dış sağlayıcı ve eğitmen ücreti (TL)",v:1470000},{k:"ic_kaynak",l:"İç eğitmen ve içerik emeği (TL)",v:520000},
+          {k:"teknoloji",l:"Teknoloji ve platform (TL)",v:290000},{k:"diger",l:"Materyal, mekân ve diğer (TL)",v:183600},
+          {k:"zaman_maliyeti",l:"Öğrenen zamanının ücret karşılığı (TL, varsa)",v:0}],
+  unit:"TL",
+  py:"toplam_ld_maliyeti(dis_saglayici=1470000, ic_kaynak=520000, teknoloji=290000, diger=183600)",
+  calc:function(v){
+    var kal = [v.dis_saglayici, v.ic_kaynak, v.teknoloji, v.diger, v.zaman_maliyeti];
+    gerek(kal.every(function(k){ return k >= 0; }), "maliyet kalemleri negatif olamaz");
+    var t = kal.reduce(function(a,b){ return a+b; }, 0);
+    gerek(t > 0, "toplam maliyet sıfırdan büyük olmalı");
+    return {value:t, dec:0, expl:kal.join(" + "),
+      detail:[["Dış sağlayıcı payı (%)", r1(100*v.dis_saglayici/t)],
+              ["İç kaynak payı (%)", r1(100*v.ic_kaynak/t)],
+              ["Teknoloji payı (%)", r1(100*v.teknoloji/t)]]}; },
+  bands:[[0,"ok","Toplam tutar tek başına yorumlanmaz; çalışan başına maliyet, katılım ve sonuç metrikleriyle birlikte sunun. Kapsamı yazılı tutun."]]},
+
+ {id:"kisi_basi_maliyet", name:"Çalışan başına öğrenme ve gelişim maliyeti", grp:"Maliyet",
+  formula:"Maliyet/çalışan = Toplam maliyet &divide; Toplam çalışan",
+  note:"Ek B'de örnek maliyet metriği olarak yer alır. Payda tüm çalışanlardır; katılan başına maliyet ve saat başına maliyet ayrı satırlarda verilir.",
+  fields:[{k:"toplam_maliyet",l:"Toplam maliyet (TL)",v:2463600},{k:"toplam_calisan",l:"Toplam çalışan",v:1200},
+          {k:"katilan",l:"Tekil katılımcı",v:1056},{k:"toplam_saat",l:"Toplam eğitim saati",v:28928}],
+  unit:"TL / çalışan",
+  py:"kisi_basi_maliyet(toplam_maliyet=2463600, calisan=1200)",
+  calc:function(v){ var d = bolOk(v.toplam_maliyet, v.toplam_calisan, "çalışan sayısı");
+    oranOk(v.katilan, v.toplam_calisan, "katılan");
+    return {value:d, dec:0, expl:v.toplam_maliyet + " ÷ " + v.toplam_calisan,
+      detail:[["Katılan başına maliyet (TL)", Math.round(bolOk(v.toplam_maliyet, v.katilan, "katılan"))],
+              ["Eğitim saati başına maliyet (TL)", r2(bolOk(v.toplam_maliyet, v.toplam_saat, "toplam saat"))],
+              ["Katılmayan çalışan", v.toplam_calisan-v.katilan]]}; },
+  bands:[[0,"ok","Maliyetin düşmesi tek başına iyi, artması tek başına kötü değildir; yetkinlik ve kurumsal sonuçlarla birlikte okuyun."]]},
+
+ {id:"roi", name:"Belirli bir faaliyetin yatırım getirisi", grp:"Maliyet",
+  formula:"Yatırım getirisi = ((Parasal fayda &minus; Maliyet) &divide; Maliyet) &times; 100",
+  note:"Standart, değerlendirmenin belirli öğrenme faaliyetleri için yatırım getirisinin kestirilmesine yardım edebileceğini söyler; formül vermez. Burada yaygın kullanılan biçim türetilmiştir ve faydanın öğrenmeye atfı kurum varsayımıdır.",
+  fields:[{k:"fayda",l:"Parasal fayda (TL)",v:540000},{k:"maliyet",l:"Faaliyetin maliyeti (TL)",v:361200},
+          {k:"fayda_donemi_ay",l:"Faydanın aktığı dönem (ay)",v:12}],
+  unit:"% yatırım getirisi",
+  py:"yatirim_getirisi(fayda=540000, maliyet=361200)",
+  calc:function(v){ gerek(v.maliyet > 0, "maliyet sıfırdan büyük olmalı");
+    var d = 100*(v.fayda-v.maliyet)/v.maliyet;
+    gerek(v.fayda > 0 && v.fayda_donemi_ay > 0, "fayda ve fayda dönemi sıfırdan büyük olmalı");
+    return {value:d, dec:1, expl:"((" + v.fayda + " − " + v.maliyet + ") ÷ " + v.maliyet + ") × 100",
+      detail:[["Net fayda (TL)", v.fayda-v.maliyet],
+              ["Fayda / maliyet oranı", r2(v.fayda/v.maliyet)],
+              ["Geri ödeme süresi (ay)", r1(v.maliyet/(v.fayda/v.fayda_donemi_ay))]]}; },
+  bands:[[0,"ok","Faaliyet maliyetini geri kazandırıyor görünüyor; faydanın öğrenmeye nasıl atfedildiğini raporda açıkça yazın."],
+         [-1e9,"bad","Parasal fayda maliyetin altında; parasallaştırılamayan faydalar (uyum, güvenlik, bağlılık) ayrıca değerlendirilmeli."]]},
+
+ {id:"memnuniyet", name:"Öğrenenin L&D süreçlerine tepkisi", grp:"Tepki",
+  formula:"Olumlu tepki = (Olumlu yanıt &divide; Toplam yanıt) &times; 100",
+  note:"Ek B'de örnek tepki metriği olarak yer alır. Tepki öğrenmenin gerçekleştiğini göstermez; yanıt oranı düşükse tepki katılımcıları temsil etmez.",
+  fields:[{k:"olumlu",l:"Olumlu yanıt",v:412},{k:"yanit",l:"Toplam yanıt",v:480},
+          {k:"katilan",l:"Ankete davet edilen katılımcı",v:560},
+          {k:"ortalama_puan",l:"Ortalama puan",v:4.3,step:0.1},{k:"olcek_max",l:"Ölçeğin en yüksek puanı",v:5}],
+  unit:"% olumlu",
+  py:"olumlu_orani(olumlu=412, yanit=480)",
+  calc:function(v){ var d = oranOk(v.olumlu, v.yanit, "olumlu yanıt");
+    gerek(v.olcek_max > 0 && v.ortalama_puan >= 0 && v.ortalama_puan <= v.olcek_max, "ortalama puan ölçek içinde olmalı");
+    return {value:d, dec:1, expl:"(" + v.olumlu + " ÷ " + v.yanit + ") × 100",
+      detail:[["Yanıt oranı (%)", r1(oranOk(v.yanit, v.katilan, "yanıt"))],
+              ["Ortalama puan (ölçek yüzdesi)", r1(100*v.ortalama_puan/v.olcek_max)],
+              ["Olumlu olmayan yanıt", v.yanit-v.olumlu]]}; },
+  bands:[[80,"ok","Tepki olumlu; ancak tepki öğrenme demek değildir, öğrenme kazancı ve iş performansıyla doğrulayın."],
+         [60,"warn","Olumlu tepki payı orta; açık uçlu yanıtlardan nedenleri çıkarın."],
+         [0,"bad","Tepki zayıf; yöntem, eğitmen ve öğrenme ortamı gözden geçirilmeli."]]},
+
+ {id:"yetkinlik", name:"Çalışan grupları için ortalama yetkinlik derecesi", grp:"Sonuç",
+  formula:"Ortalama yetkinlik = Toplam puan &divide; Değerlendirilen çalışan",
+  note:"Ek B'de örnek sonuç metriği olarak yer alır. Puan, kurumun yetkinlik çerçevesine ve değerlendirmenin geçerliliğine, güvenilirliğine ve adilliğine (madde 7.2) bağlıdır.",
+  fields:[{k:"toplam_puan",l:"Toplam yetkinlik puanı",v:432},{k:"degerlendirilen",l:"Değerlendirilen çalışan",v:120},
+          {k:"onceki_ort",l:"Önceki dönem ortalaması",v:2.9,step:0.1},{k:"hedef_ort",l:"Hedef ortalama",v:4,step:0.1},
+          {k:"olcek_max",l:"Ölçeğin en yüksek puanı",v:5}],
+  unit:"puan",
+  py:"ortalama_puan(toplam_puan=432, degerlendirilen=120)",
+  calc:function(v){ var d = bolOk(v.toplam_puan, v.degerlendirilen, "değerlendirilen kişi sayısı");
+    gerek(v.olcek_max > 0 && d <= v.olcek_max, "ortalama puan ölçek içinde olmalı");
+    return {value:d, dec:2, expl:v.toplam_puan + " ÷ " + v.degerlendirilen,
+      detail:[["Önceki döneme göre değişim (puan)", r2(d-v.onceki_ort)],
+              ["Hedefe ulaşma (%)", r1(100*bolOk(d, v.hedef_ort, "hedef"))],
+              ["Ölçek yüzdesi (%)", r1(100*d/v.olcek_max)]]}; },
+  bands:[[0,"ok","Puanı kurumun yetkinlik çerçevesindeki hedef düzey ve önceki ölçümle birlikte okuyun; ölçme geçerli, güvenilir ve adil olmalıdır."]]},
+
+ {id:"yetkinlige_sure", name:"Yeni başlayanın yetkinliğe ulaşma süresi", grp:"Sonuç",
+  formula:"Süre = Toplam gün &divide; Yetkinliğe ulaşan yeni başlayan",
+  note:"Ek B'de örnek sonuç metriği olarak yer alır. \"Yetkin\" sayılma ölçütü yazılı olmalı; günün takvim mi iş günü mü olduğu seriler boyunca sabit kalmalıdır.",
+  fields:[{k:"toplam_gun",l:"Toplam gün",v:1350},{k:"yeni_baslayan",l:"Yetkinliğe ulaşan yeni başlayan",v:18},
+          {k:"onceki_ort",l:"Önceki dönem ortalaması (gün)",v:82,step:0.5}],
+  unit:"gün",
+  py:"ortalama_sure(toplam_gun=1350, vaka=18)",
+  calc:function(v){ var d = bolOk(v.toplam_gun, v.yeni_baslayan, "vaka sayısı");
+    return {value:d, dec:1, expl:v.toplam_gun + " ÷ " + v.yeni_baslayan,
+      detail:[["Hafta karşılığı", r1(d/7)],
+              ["Önceki döneme göre değişim (gün)", r1(d-v.onceki_ort)],
+              ["Değişim (%)", r1(100*(d-v.onceki_ort)/bolOk(v.onceki_ort, 1, "önceki"))]]}; },
+  bands:[[0,"ok","Süre uzuyorsa uyum programını, buddy sistemini ve amir desteğini inceleyin; gün tanımını sabit tutun."]]},
+
+ {id:"ogrenme_kazanci", name:"Öğrenme kazancı ve kalıcılığı", grp:"Sonuç",
+  formula:"Normalleştirilmiş kazanç = ((Son test &minus; Ön test) &divide; (En yüksek puan &minus; Ön test)) &times; 100",
+  note:"Standart (madde 7.2) öğrenmenin faaliyetten önce, hemen sonra ve bir süre geçtikten sonra ölçülmesini önerir. Bu kazanç, mümkün gelişmenin ne kadarının gerçekleştiğini gösterir; türetilmiş bir hesaptır.",
+  fields:[{k:"on_test",l:"Ön test puanı",v:52},{k:"son_test",l:"Hemen sonraki test puanı",v:78},
+          {k:"gecikmeli_test",l:"Bir süre sonraki test puanı",v:71},{k:"maks_puan",l:"En yüksek puan",v:100}],
+  unit:"% normalleştirilmiş kazanç",
+  py:"ogrenme_kazanci(on_test=52, son_test=78, maks_puan=100)",
+  calc:function(v){ gerek(v.maks_puan > v.on_test, "en yüksek puan ön testten büyük olmalı");
+    var d = 100*(v.son_test-v.on_test)/(v.maks_puan-v.on_test);
+    var mn = Math.min(v.on_test, v.son_test, v.gecikmeli_test), mx = Math.max(v.on_test, v.son_test, v.gecikmeli_test);
+    gerek(mn >= 0 && mx <= v.maks_puan, "puanlar 0 ile en yüksek puan arasında olmalı");
+    var k = v.son_test > v.on_test ? r1(100*(v.gecikmeli_test-v.on_test)/(v.son_test-v.on_test)) : "—";
+    return {value:d, dec:1,
+      expl:"((" + v.son_test + " − " + v.on_test + ") ÷ (" + v.maks_puan + " − " + v.on_test + ")) × 100",
+      detail:[["Mutlak kazanç (puan)", v.son_test-v.on_test],
+              ["Zaman sonra korunan kazanç (%)", k],
+              ["Zamanla kaybedilen (puan)", v.son_test-v.gecikmeli_test]]}; },
+  bands:[[0,"ok","Kazancı korunan kazanç satırıyla birlikte okuyun; uygulanmayan öğrenme zamanla sönebileceği için gecikmeli ölçüm önemlidir."]]}
+];
+
+/* --- formül tablosu --- */
+(function(){
+  var rows = CALC.map(function(c){
+    return '<tr><td><b>' + c.name + '</b></td><td><span style="font-family:var(--serif)">' +
+           c.formula + '</span></td><td>' + c.note + '</td></tr>';
+  }).join("");
+  document.getElementById("fBody").innerHTML = rows;
+})();
+
+/* --- hesaplayıcı --- */
+var sel = document.getElementById("cMetric");
+CALC.forEach(function(c, i){
+  var o = document.createElement("option");
+  o.value = i; o.textContent = c.grp + " — " + c.name;
+  sel.appendChild(o);
+});
+
+function buildFields(){
+  var c = CALC[+sel.value];
+  document.getElementById("cFields").innerHTML = c.fields.map(function(f){
+    return '<div class="field"><label for="in_' + f.k + '">' + f.l + '</label>' +
+      '<input type="number" id="in_' + f.k + '" value="" step="' + (f.step || "any") + '" placeholder="' + f.v + '"></div>';
+  }).join("");
+  document.getElementById("cFields").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", run);
+  });
+}
+
+function readVals(){
+  var c = CALC[+sel.value], v = {}, missing = false;
+  c.fields.forEach(function(f){
+    var el = document.getElementById("in_" + f.k);
+    var raw = el && el.value !== "" ? parseFloat(el.value) : NaN;
+    if(isNaN(raw)){ missing = true; v[f.k] = f.v; } else { v[f.k] = raw; }
+  });
+  return {v:v, missing:missing};
+}
+
+function fmt(x, dec){
+  if(!isFinite(x)) return "—";
+  return x.toLocaleString("tr-TR", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+
+/* Hesaplama motoru: Python hazırsa gömülü modül, değilse JS yedeği */
+function compute(c, v){
+  if(PY.ready){
+    try{
+      PY.pyodide.globals.set("_metrik", c.id);
+      PY.pyodide.globals.set("_girdi", JSON.stringify(v));
+      var raw = PY.pyodide.runPython(
+        "import json\n" +
+        "json.dumps(hesapla(_metrik, **json.loads(_girdi)))");
+      var r = JSON.parse(raw);
+      return {value:r.deger, expl:r.ifade, dec:r.ondalik, detail:r.ayrinti,
+              unit:r.birim, engine:"python"};
+    }catch(err){
+      var msg = String(err);
+      /* Kullanıcı girdisi kaynaklı hata: motor sorunu değil, yedeğe geçme */
+      if(msg.indexOf("GecersizGirdi") !== -1 || msg.indexOf("ZeroDivisionError") !== -1) throw err;
+      setEngine("off", "Motor: JS yedeği — Python hatası");
+    }
+  }
+  var out = c.calc(v);
+  out.engine = "js";
+  return out;
+}
+
+function run(){
+  var c = CALC[+sel.value];
+  var r = readVals();
+  var out;
+  try { out = compute(c, r.v); } catch(e){ out = null; }
+  var box = document.getElementById("cResult");
+  if(!out || !isFinite(out.value)){
+    box.innerHTML = '<div class="result"><b>Hesaplanamadı.</b> Payda sıfır olamaz ve parça bütünden büyük olamaz; alanları kontrol edin.</div>';
+    return;
+  }
+  var dec = (out.dec === undefined) ? 1 : out.dec;
+  var unit = out.unit || c.unit;
+  var html = '<div class="result">';
+  html += '<div class="big">' + fmt(out.value, dec) + ' <span>' + unit + '</span></div>';
+  html += '<div style="font-size:13px;color:var(--ink-soft);margin-top:6px">' + c.name +
+          ' · ' + (out.engine === "python" ? 'Python (Pyodide) ile hesaplandı' : 'JavaScript ile hesaplandı') +
+          (r.missing ? ' · <i>boş alanlar için örnek değer kullanıldı</i>' : '') + '</div>';
+
+  if(document.getElementById("oFormula").checked){
+    html += '<div class="formula">' + c.formula + '<br><span style="color:var(--ink-soft);font-size:15px">= ' +
+            out.expl + ' = <b>' + fmt(out.value, dec) + '</b> ' + unit + '</span></div>';
+  }
+  if(out.detail && out.detail.length){
+    html += '<dl>' + out.detail.map(function(d){
+      var val = (typeof d[1] === "number") ? d[1].toLocaleString("tr-TR") : d[1];
+      return '<dt>' + d[0] + '</dt><dd>' + val + '</dd>';
+    }).join("") + '</dl>';
+  }
+  if(document.getElementById("oInterp").checked && c.bands){
+    var band = c.bands[c.bands.length-1];
+    for(var i=0;i<c.bands.length;i++){ if(out.value >= c.bands[i][0]){ band = c.bands[i]; break; } }
+    html += '<div class="verdict ' + band[1] + '">' + band[2] + '</div>';
+    if(c.bands.length > 1){
+      html += '<div class="note" style="margin-top:12px">Yorum eşikleri standarttan değil, başlangıç varsayımlarından gelir; kendi hedeflerinizle değiştirin.</div>';
+    }
+    html += '<div class="note" style="margin-top:12px">' + c.note + '</div>';
+  }
+  if(document.getElementById("oPy").checked){
+    var args = c.fields.map(function(f){ return f.k + "=" + r.v[f.k]; }).join(", ");
+    var call = 'hesapla("' + c.id + '", ' + args + ')';
+    html += '<pre style="margin-top:16px"><i>&gt;&gt;&gt; from iso30422_metrikler import hesapla</i>\n' +
+            '&gt;&gt;&gt; ' + call + '["deger"]\n' + out.value + '\n\n' +
+            '<i># eşdeğer doğrudan çağrı</i>\n&gt;&gt;&gt; ' + c.py + '</pre>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+sel.addEventListener("change", function(){ buildFields(); run(); });
+document.getElementById("btnRun").addEventListener("click", run);
+document.getElementById("btnExample").addEventListener("click", function(){
+  var c = CALC[+sel.value];
+  c.fields.forEach(function(f){ document.getElementById("in_" + f.k).value = f.v; });
+  run();
+});
+["oFormula","oInterp","oPy"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", function(){
+    var all = document.getElementById("oFormula").checked &&
+              document.getElementById("oInterp").checked &&
+              document.getElementById("oPy").checked;
+    document.getElementById("oAll").checked = all;
+    run();
+  });
+});
+document.getElementById("oAll").addEventListener("change", function(){
+  var s = this.checked;
+  ["oFormula","oInterp","oPy"].forEach(function(id){ document.getElementById(id).checked = s; });
+  run();
+});
+
+/* --- tablodan hesaplayıcıya aktarma --- */
+document.getElementById("btnAktar").addEventListener("click", function(){
+  if(!TBL.ok){ loadTblExample(); }
+  var idx = CALC.map(function(c){ return c.id; }).indexOf("kisi_basi_maliyet");
+  sel.value = idx; buildFields();
+  document.getElementById("in_toplam_maliyet").value = TBL.maliyet;
+  document.getElementById("in_toplam_calisan").value = TBL.toplam;
+  document.getElementById("in_katilan").value = Math.min(TBL.tekil, TBL.toplam);
+  document.getElementById("in_toplam_saat").value = TBL.saat;
+  run();
+  document.getElementById("hesaplayici").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* =========================================================
+   4) PYTHON MOTORU (Pyodide / WebAssembly)
+   Gömülü iso30422_metrikler.py modülü tarayıcı içinde
+   gerçek CPython ile çalıştırılır. Erişim yoksa JS yedeği
+   devrede kalır ve sonuçlar değişmez.
+   ========================================================= */
+var PY = {ready:false, busy:false, pyodide:null};
+
+var PYODIDE_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+  "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"
+];
+
+function setEngine(state, text){
+  var chip = document.getElementById("engStatus");
+  chip.className = "chip" + (state ? " " + state : "");
+  chip.textContent = text;
+}
+
+function loadScript(src){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function(){ resolve(src); };
+    s.onerror = function(){ reject(new Error(src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function pySource(){
+  return document.getElementById("pysrc").textContent;
+}
+
+async function initPython(){
+  if(PY.ready) return true;
+  if(PY.busy) return false;
+  PY.busy = true;
+  document.getElementById("btnPy").disabled = true;
+  setEngine("busy", "Motor: Pyodide indiriliyor…");
+  try{
+    if(typeof loadPyodide === "undefined"){
+      try { await loadScript(PYODIDE_URLS[0]); }
+      catch(e){ await loadScript(PYODIDE_URLS[1]); }
+    }
+    setEngine("busy", "Motor: Python başlatılıyor…");
+    PY.pyodide = await loadPyodide();
+
+    /* Modülü sanal dosya sistemine yazmadan, gerçek bir modül nesnesi olarak kur:
+       böylece __name__ != "__main__" olur ve _demo() kendiliğinden çalışmaz.
+       Kayıt exec'ten ÖNCE yapılır; @dataclass işlenirken modülü sys.modules'te arar. */
+    PY.pyodide.globals.set("_kaynak", pySource());
+    PY.pyodide.runPython(
+      "import sys, types\n" +
+      "_m = types.ModuleType('iso30422_metrikler')\n" +
+      "_m.__file__ = 'iso30422_metrikler.py'\n" +
+      "sys.modules['iso30422_metrikler'] = _m\n" +
+      "exec(compile(_kaynak, 'iso30422_metrikler.py', 'exec'), _m.__dict__)\n" +
+      "from iso30422_metrikler import *\n" +
+      "import iso30422_metrikler as m\n"
+    );
+    var sur = PY.pyodide.runPython(
+      "import sys\n'.'.join(str(x) for x in sys.version_info[:3])");
+    PY.ready = true;
+    setEngine("on", "Motor: Python " + sur + " (Pyodide)");
+    run();
+    return true;
+  }catch(e){
+    setEngine("off", "Motor: tarayıcı (JS) — Pyodide yüklenemedi");
+    document.getElementById("pyOut").textContent =
+      "Python motoru yüklenemedi. Bu genellikle çevrimdışı olmaktan ya da ağ kısıtından kaynaklanır.\n" +
+      "Sayfa çalışmaya devam eder; hesaplamalar JavaScript yedeğiyle aynı sonuçları verir.\n\n" + e;
+    return false;
+  }finally{
+    PY.busy = false;
+    document.getElementById("btnPy").disabled = false;
+  }
+}
+
+document.getElementById("btnPy").addEventListener("click", initPython);
+
+/* --- konsol --- */
+var VARSAYILAN_KOD =
+  'from iso30422_metrikler import *\n' +
+  'import iso30422_metrikler as m\n\n' +
+  '# Katılım\n' +
+  'print("Katılım oranı     :", round(katilim_orani(1056, 1200), 1), "%")\n' +
+  'print("Kategori katılımı :", round(kategori_katilim(84, 120), 1), "%")\n' +
+  'print("Kişi başı saat    :", round(kisi_basi_saat(28928, 1200), 2))\n\n' +
+  '# Maliyet\n' +
+  'print("Kişi başı maliyet :", round(kisi_basi_maliyet(2463600, 1200)), "TL")\n' +
+  'print("Faaliyet ROI      :", round(yatirim_getirisi(540000, 361200), 1), "%")\n\n' +
+  '# Tablo: kategori kayıtlarından özet\n' +
+  't = ornek_tablo()\n' +
+  'for anahtar, deger in t.ozet().items():\n' +
+  '    print(f"{anahtar:<20}: {deger}")\n\n' +
+  '# Öğrenme: önce, hemen sonra, zaman sonra\n' +
+  'print("Öğrenme kazancı   :", round(ogrenme_kazanci(52, 78, 100), 1), "%")\n' +
+  'print("Kalıcılık         :", round(kalicilik(52, 78, 71), 1), "%")\n\n' +
+  '# Dağıtıcı, hesaplayıcının kullandığı arayüzdür:\n' +
+  'print(hesapla("katilim", katilan=1056, toplam_calisan=1200))\n\n' +
+  '# Rapor denetimi: hangi ön koşullar eksik?\n' +
+  'for uyari in ld_denetimi(ihtiyac_analizi=True, ogrenme_ciktisi_tanimli=True):\n' +
+  '    print("!", uyari)\n';
+
+document.getElementById("pyCode").value = VARSAYILAN_KOD;
+
+async function runConsole(){
+  var out = document.getElementById("pyOut");
+  if(!PY.ready){
+    out.textContent = "Python motoru hazırlanıyor, ilk çalıştırma biraz sürebilir…";
+    var ok = await initPython();
+    if(!ok) return;
+  }
+  out.textContent = "çalışıyor…";
+  try{
+    PY.pyodide.globals.set("_kod", document.getElementById("pyCode").value);
+    var cikti = PY.pyodide.runPython(
+      "import io, contextlib, traceback\n" +
+      "_tampon = io.StringIO()\n" +
+      "with contextlib.redirect_stdout(_tampon), contextlib.redirect_stderr(_tampon):\n" +
+      "    try:\n" +
+      "        exec(_kod, globals())\n" +
+      "    except Exception:\n" +
+      "        traceback.print_exc()\n" +
+      "_tampon.getvalue()"
+    );
+    out.textContent = cikti && cikti.trim() ? cikti : "(çıktı yok)";
+  }catch(e){
+    out.textContent = "Hata: " + e;
+  }
+}
+
+document.getElementById("btnRunPy").addEventListener("click", runConsole);
+document.getElementById("btnReset").addEventListener("click", function(){
+  document.getElementById("pyCode").value = VARSAYILAN_KOD;
+  document.getElementById("pyOut").textContent = "Kod sıfırlandı.";
+});
+document.getElementById("btnDemo").addEventListener("click", function(){
+  document.getElementById("pyCode").value =
+    "import iso30422_metrikler as m\n\n" +
+    "# Modülün kendi doğrulama çıktısı (komut satırındaki\n" +
+    "# python3 iso30422_metrikler.py ile aynı sonucu verir)\n" +
+    "m._demo()\n";
+  runConsole();
+});
+
+/* modül kaynağını sayfada okunur kıl */
+document.getElementById("srcView").textContent = pySource().trim();
+
+buildTbl();
+loadTblExample();
+buildFields();
+run();
+</script>
+</body>
+</html>
