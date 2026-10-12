@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO/TS 30407 İşe Alım Başına Maliyet — Sınıflandırma ve Hesaplayıcı</title>
+<style>
+  :root{
+    --ink:#101418;
+    --ink-soft:#59636f;
+    --ink-faint:#8b95a1;
+    --line:#dde3ea;
+    --line-soft:#eef1f5;
+    --bg:#ffffff;
+    --canvas:#f6f8fa;
+    --accent:#0b5c8a;
+    --accent-soft:#e7f0f6;
+    --panel:#0e1520;
+    --panel-2:#16202e;
+    --panel-line:#28394f;
+    --out-ink:#8a3b12;  --out-bg:#fbeee6;
+    --eff-ink:#14615c;  --eff-bg:#e6f2f1;
+    --efc-ink:#33478c;  --efc-bg:#eaedf8;
+    --rea-ink:#7a5c00;  --rea-bg:#f8f1d9;
+    --cos-ink:#8c2f4b;  --cos-bg:#f9e8ee;
+    --ok:#1d6f42; --warn:#8a6100; --bad:#992121;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--canvas);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.62;
+  }
+  .sheet{max-width:1000px;margin:0 auto;background:var(--bg);padding:56px 60px 80px;
+    box-shadow:0 0 0 1px var(--line);}
+  @media(max-width:760px){ .sheet{padding:28px 20px 56px} }
+
+  h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:25px;margin:52px 0 4px;padding-bottom:8px;
+     border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  h3{font-size:17px;margin:32px 0 6px;letter-spacing:.01em}
+  h4{font-size:15px;margin:22px 0 4px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:12px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  small{color:var(--ink-soft)}
+  .lede{font-size:17px;color:var(--ink-soft)}
+
+  .srcbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 0;margin:0 0 26px;font-size:13.5px;color:var(--ink-soft)}
+  .srcbar b{color:var(--ink);font-weight:600}
+
+  .toc{background:var(--canvas);border:1px solid var(--line);padding:16px 20px;margin:26px 0 0;
+    font-size:14px;columns:2;column-gap:34px}
+  @media(max-width:640px){.toc{columns:1}}
+  .toc a{display:block;padding:3px 0;text-decoration:none;color:var(--ink)}
+  .toc a:hover{color:var(--accent);text-decoration:underline}
+  .toc b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 4px}
+
+  .keypoints li{margin:10px 0}
+  .keypoints b{font-weight:650}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink-soft);padding-bottom:6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:var(--canvas);font-weight:650;font-size:13px}
+  tbody tr:nth-child(even){background:#fcfdfe}
+  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;width:66px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink)}
+  .dot.o{background:var(--out-ink)} .dot.s{background:var(--eff-ink)} .dot.p{background:var(--efc-ink)}
+  .dot.r{background:var(--rea-ink)} .dot.c{background:var(--cos-ink)}
+
+  .tag{display:inline-block;font-size:11px;line-height:1.5;padding:1px 7px;border-radius:3px;
+    letter-spacing:.03em;white-space:nowrap;font-weight:600}
+  .tag.o{color:var(--out-ink);background:var(--out-bg)}
+  .tag.s{color:var(--eff-ink);background:var(--eff-bg)}
+  .tag.p{color:var(--efc-ink);background:var(--efc-bg)}
+  .tag.r{color:var(--rea-ink);background:var(--rea-bg)}
+  .tag.c{color:var(--cos-ink);background:var(--cos-bg)}
+  .tag.iso{color:#4a4a4a;background:#eeeeee}
+  .tag.lvl{color:#5a3a86;background:#f0eaf8}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--line-soft);padding:1px 5px;border-radius:3px}
+  pre{background:var(--panel);color:#e7eef6;border-radius:6px;padding:18px 20px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:14px 0}
+  pre b{color:#f0b866;font-weight:400}      /* anahtar kelime */
+  pre i{color:#7f8ea1;font-style:normal}    /* yorum */
+  pre u{color:#9fd28a;text-decoration:none} /* dize/sayı */
+  pre .fn{color:#79c0e8}
+  .filename{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin:14px 0 -8px}
+
+  .formula{font-family:var(--serif);font-size:16.5px;background:var(--canvas);
+    border-left:3px solid var(--accent);padding:12px 16px;margin:12px 0;overflow-x:auto}
+  .formula em{font-style:italic}
+
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 14px;color:var(--ink-soft);font-size:14px;margin:14px 0}
+
+  /* --- panel --- */
+  .panel{background:var(--panel);color:#dbe5f0;border-radius:8px;padding:22px 24px;margin:20px 0}
+  .panel h3{color:#fff;margin:0 0 4px;font-size:16px}
+  .panel .hint{color:#8fa2b8;font-size:13px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#8fa2b8;margin-bottom:5px}
+  .field label .req{color:#e08a5a}
+  select,input[type=number],input[type=text]{
+    width:100%;background:var(--panel-2);border:1px solid var(--panel-line);color:#eef4fb;
+    border-radius:5px;padding:9px 10px;font-family:var(--sans);font-size:14px}
+  input[type=number]{font-family:var(--mono)}
+  select:focus,input:focus{outline:2px solid #4a8fc0;outline-offset:1px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13.5px;color:#b9c7d6}
+  .checks label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .panel-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:5px;cursor:pointer;
+    border:1px solid transparent;padding:9px 18px}
+  .btn-run{background:#1c74ab;color:#fff}
+  .btn-run:hover{background:#2385c2}
+  .btn-ghost{background:transparent;color:#9fb3c9;border-color:var(--panel-line)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9fb3c9;
+    border:1px solid var(--panel-line);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7c8ea3}
+  .chip.busy::before{background:#e0a13c}
+  .chip.on::before{background:#4ec07a}
+  .chip.off::before{background:#c05a5a}
+
+  .console{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+  .console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+    background:var(--canvas);border-bottom:1px solid var(--line);padding:8px 12px;font-size:12.5px;color:var(--ink-soft)}
+  .console textarea{width:100%;border:0;display:block;background:var(--panel);color:#e7eef6;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:16px 20px;resize:vertical;min-height:190px}
+  .console textarea:focus{outline:2px solid #4a8fc0;outline-offset:-2px}
+  .console pre{margin:0;border-radius:0;background:#0a1017;border-top:1px solid var(--panel-line);min-height:64px}
+  .btn-sm{padding:6px 14px;font-size:13px}
+  details.src pre{max-height:420px;overflow:auto}
+  .btn-ghost:hover{color:#fff;border-color:#47607d}
+
+  .result{border:1px solid var(--line);border-top:3px solid var(--accent);padding:18px 20px;margin:18px 0}
+  .result .big{font-family:var(--serif);font-size:32px;line-height:1.1}
+  .result .big span{font-size:16px;color:var(--ink-soft);font-family:var(--sans)}
+  .result dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:14px 0 0;font-size:14px}
+  .result dt{color:var(--ink-soft)}
+  .result dd{margin:0;font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px;padding:10px 12px;font-size:14px;border-radius:4px;background:var(--canvas)}
+  .verdict.ok{color:var(--ok);background:#eef6f1}
+  .verdict.warn{color:var(--warn);background:#fbf5e7}
+  .verdict.bad{color:var(--bad);background:#faeeee}
+
+  /* --- matris --- */
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;
+    background:var(--canvas);border:1px solid var(--line);padding:14px 16px;margin:16px 0}
+  .filters label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .filters select,.filters input{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .matrix{font-size:13.5px}
+  .matrix th.rot{width:72px;text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom}
+  .matrix td.name{font-weight:500}
+  .matrix td.name em{display:block;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .matrix tr.group td{background:#f2f5f8;font-weight:650;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+  .count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+
+  /* --- pozisyon tablosu --- */
+  .postbl{font-size:13.5px}
+  .postbl input[type=text],.postbl input[type=date],.postbl input[type=number]{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .postbl input[type=text]{font-family:var(--sans)}
+  .postbl input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .postbl td.chk{text-align:center}
+  .postbl input[type=number]{text-align:right}
+  .postbl td:first-child{min-width:150px}
+  .postbl th.num,.postbl td.num{width:auto}
+  @media(max-width:760px){table{display:block;overflow-x:auto}}
+  .postbl td.calc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap}
+  .postbl tfoot td{background:var(--canvas);font-weight:650}
+  .tblbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+  .tblbar button{border-color:var(--line);color:var(--ink-soft);background:#fff}
+  .tblbar button:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tblbar .inline{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft)}
+  .tblbar .inline input{width:78px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .card{border:1px solid var(--line);border-top:3px solid var(--eff-ink);padding:12px 14px}
+  .card b{display:block;font-family:var(--serif);font-size:24px;line-height:1.2}
+  .card span{font-size:12px;color:var(--ink-soft)}
+  .card.alt{border-top-color:var(--efc-ink)}
+  .card.warn{border-top-color:var(--out-ink)}
+
+  details{border-bottom:1px solid var(--line);padding:12px 0}
+  summary{cursor:pointer;font-weight:600;font-size:15px}
+  summary::marker{color:var(--accent)}
+  details p{margin:10px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  @media (prefers-reduced-motion:no-preference){
+    .result{transition:border-color .2s}
+  }
+  @media print{
+    body{background:#fff} .sheet{box-shadow:none;max-width:none;padding:0}
+    .panel{background:#fff;color:#000;border:1px solid #000}
+    pre{background:#f4f4f4;color:#000}
+  }
+.postbl input[type=number]{min-width:96px}
+.tblbar .inline input{width:130px}
+.postbl input[type=checkbox]{width:16px;height:16px}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>ISO/TS 30407 İşe Alım Başına Maliyet (Cost-Per-Hire)</h1>
+<div class="srcbar">
+  <span><b>Kaynak:</b> PD ISO/TS 30407:2017 — <i>Human resource management — Cost-Per-Hire</i></span>
+  <span><b>Kapsam:</b> 5 kullanıcı · 5 metrik ailesi · 71 metrik ve etken</span>
+  <span><b>Hesaplama:</b> gömülü Python modülü (Pyodide/WebAssembly)</span>
+  <span><b>Sürüm:</b> Ekim 2026</span>
+</div>
+
+<h2 id="genel">Genel Bakış</h2>
+<p>ISO/TS 30407:2017, <b>işe alım başına maliyet</b> (Cost-Per-Hire, CPH) metriğini tanımlayan bir teknik şartnamedir. Giriş bölümüne göre CPH, işe alımda boş bir pozisyonu doldurmanın verimliliğini (finansal terimlerle) ölçmek için yaygın kullanılan bir metriktir; işe alım işlevinin
+bütçelemesine ve işe alım maliyetlerinin kıyaslanmasına yardım eder. Şartname, CPH'yi üretmek için gereken tanım, toplama ve belgeleme tekniklerini kapsar ve uygulayıcılara CPH'yi hesaplamak için standart bir araç sunmayı amaçlar. Üç formül ailesi tanımlar:
+<b>CPHI</b> (kuruma özgü, kurumlar arası karşılaştırma için tasarlanmamış), <b>CPHC</b> (kurumlar arası karşılaştırmaya uygun, daha dar bir veri kümesiyle) ve <b>HCR</b> (işe alım maliyetinin yeni işe alınanların ilk yıl toplam ücretine oranı). Ayrıca bölümlenmiş (segment) CPH ve
+zorunlu ile zorunlu sonrası eğitim kurumlarından işe alımlar için özel bir formül içerir. Şartname veri kalitesi, şeffaflık ve düzenli denetim üzerinde durur. Bu sayfa, şartnamenin metriklerini filtrelenebilir bir matrise; hesaplanabilir ölçüleri de formül + canlı hesaplayıcı + Python koduna dönüştürür.
+PD ISO/TS 30407:2017, ISO/TS 30407'nin İngiltere uyarlamasıdır (yayımlanmış belge; ISO ilk baskısı Mart 2017) ve BSI tarafından 30 Nisan 2017'de yayımlanmıştır. İlişkili belgeler: işe alım kılavuzu ISO 30405, terimler ISO 30400, işe alım kalitesi ISO/TS 30411, işe alımın etkisi ISO/TS 30410.</p>
+
+<h3>Önemli Noktalar</h3>
+<ul class="keypoints">
+  <li><b>Üç formül, aynı yapı.</b> CPHI ve CPHC = (Σ dış maliyet + Σ iç maliyet) ÷ belirli dönemdeki toplam işe alım sayısı. HCR = (Σ dış + Σ iç) ÷ ilk yıl toplam ücret × 100. Üçü yalnızca pay/payda kapsamıyla ayrışır: CPHI tüm kurumsal kalemleri alabilir, CPHC daha dar bir kalem kümesi kullanır, HCR paydada işe alım sayısı yerine ilk yıl ücretini kullanır.</li>
+  <li><b>CPHI kuruma özgüdür.</b> Kurumlar arası karşılaştırma için tasarlanmamıştır; tek bir kurumun CPH verisinin kapsamlı yansımasıdır. Tablo 2 ve 3'teki tüm kalemlerin kullanılması en iyisidir; ancak bunlardan herhangi birini kullanmak da kabul edilebilir.</li>
+  <li><b>CPHC kıyaslama içindir.</b> Formül aynı kalır ama maliyet kapsamı belirgin biçimde dardır (Tablo 5 ve 6); payda yalnızca fiilen işe başlamış çalışanları sayar, kesirli işe alım ve ek işgücü (yüklenici, ajans, danışman) dahil değildir.</li>
+  <li><b>HCR işe alım türlerini normalize eder.</b> 10 yöneticiyi yılda 175 000 € ücretle işe alan bir ekip ile 200 saatlik çalışan alan ekibin maliyeti aynı olabilir ama CPH'leri çok farklıdır; bu yüzden işe alım ekibini değerlendirirken HCR ve CPH birlikte okunmalıdır. Örnek: (100 000 + 100 000) ÷ 2 000 000 × 100 = %10.</li>
+  <li><b>Kayıt sistemi seçilir.</b> Maliyet ve işe alım sayısı için tutarlı biçimde kullanılan bir kayıt sistemi (genel muhasebe, yetenek kazanım sistemi) seçilir; kaynak maliyet verisi mümkünse bunlardan alınır. %100 doğruluk gerekmez ama verinin makul bir sorgulamadan geçmesi gerekir; CPH için veri kalitesi, finansal raporlamadakinden düşük bir düzeydir.</li>
+  <li><b>CPH tek başına yeterli değildir.</b> İşe alım çabasının yeterliliğini tam anlatmaz: pozisyon türü ve düzeyi, dış pazar talebi ve coğrafya maliyeti değiştirir; ayrıca doldurma süresi, işe alım kalitesi ve müşteri (işe alan yönetici ve aday) memnuniyetini, işe alım sonrası maliyetleri ve pozisyonun boş kalmasının zararını ölçmez.</li>
+  <li><b>Bölümleme esnektir.</b> CPH coğrafya, eğitim düzeyi, liderlik düzeyi gibi herhangi bir kesitte ifade edilebilir; segment formülü yalnızca ilgili alt kümenin satırlarını kullanır. Şartnamedeki Tablo 10'da "Toplam/Ortalama" CPH'si segment CPH'lerinin basit ortalamasıdır (3 838,35), toplam maliyetin toplam işe alıma bölümü ise 3 828,43'tür.</li>
+</ul>
+
+<div class="toc">
+  <b>İçindekiler</b>
+  <a href="#genel">Genel bakış ve önemli noktalar</a>
+  <a href="#nezaman">Ne zaman kullanılır</a>
+  <a href="#cerceve">Çerçeve ve metodoloji</a>
+  <a href="#ornekler">Şartnamenin rapor örnekleri</a>
+  <a href="#adimlar">Metrik seçim adımları</a>
+  <a href="#kavramlar">Temel kavramlar</a>
+  <a href="#matris">Metrik matrisi</a>
+  <a href="#tablo">Maliyet kalemleri tablosu</a>
+  <a href="#formuller">Formüller ve tanımlar</a>
+  <a href="#hesaplayici">Hesaplayıcı</a>
+  <a href="#python">Python kod örnekleri</a>
+  <a href="#yorum">Sonuçların yorumlanması</a>
+  <a href="#sinirlamalar">Sınırlamalar</a>
+  <a href="#raporlama">Metriklerin raporlanması</a>
+  <a href="#ilgili">İlgili standartlar</a>
+  <a href="#sss">Sıkça sorulan sorular</a>
+</div>
+
+<h2 id="nezaman">Ne Zaman Kullanılır</h2>
+<p>Şartnamenin Tablo 1'i bilinen kullanım alanlarını iki gruba ayırır. Aşağıdaki liste özeti verir.</p>
+<table>
+  <thead><tr><th style="width:200px">Kim</th><th>Kullanım (Tablo 1)</th></tr></thead>
+  <tbody>
+    <tr><td><b>Kurumlar</b></td><td>
+      Diğer şirketler, rakipler, başka bölümler ile karşılaştırılacak <b>kıyaslama verisi</b> olarak; çeyreklik ve yıllık <b>bütçe planlama aracı</b> olarak; <b>işe alım süreci dış kaynak kullanımı</b> (RPO) kararlarında karşılaştırıcı olarak; stratejik planlama ve bütçelemede <b>gelecekteki maliyetleri</b> belirlemek için; toplam
+      <b>işgücü devri maliyetini</b> izleme ve değerlendirmenin bir bileşeni olarak; işe alım işlevinin genel performansının sürekli ölçüsü olarak.</td></tr>
+    <tr><td><b>İşe alım maliyetini yürüten, yöneten ya da değerlendiren bölümler ve kişiler</b></td><td>
+      Kaynak bulma bütçesi ve stratejisini belirlerken; kaynak maliyet-etkinliğini değerlendirirken; süreç iyileştirme başarısının ölçüsü olarak; işe alım süreci verimliliğinin bileşeni olarak; alt grup performansını ölçerken ve karşılaştırırken; işe alım performansını çalışan segmentlerine (ör. profesyonel ve saatlik) göre karşılaştırırken;
+      bireysel işe alım uzmanı performansının ölçüsü olarak; işe alım uzmanı seçiminde eleme ölçütü olarak; işe alım uzmanı eğitiminde yeterlilik kıyası olarak; işgücü planlaması senaryolarında girdi olarak.</td></tr>
+  </tbody>
+</table>
+<div class="note">Bu belge bir <b>ölçme</b> belgesidir ve işe alımın <i>maliyetini</i> ölçer. Doldurma süresi, işe alım kalitesi (ISO/TS 30411), işe alımın etkisi (ISO/TS 30410) ve müşteri memnuniyeti kapsam dışıdır. Şartname hangi CPH'nin "iyi" olduğuna eşik koymaz.</div>
+
+<h2 id="cerceve">Çerçeve ve Metodoloji</h2>
+
+<h3>Üç formül ailesi</h3>
+<table>
+  <thead><tr><th>Ölçü</th><th>Madde</th><th>Formül</th><th>Tasarım amacı ve payda</th></tr></thead>
+  <tbody>
+    <tr><td><b>CPHI</b> (Cost-Per-Hire Internal)</td><td>4</td>
+      <td style="font-family:var(--serif)">(&Sigma;X<sub>dış</sub> + &Sigma;X<sub>iç</sub>) &divide; Y<sub>tot</sub></td>
+      <td>İşverenin boş pozisyonu doldurmak için üstlendiği işe alım faaliyeti maliyetlerini ölçer. Payda: dönemdeki toplam işe alım sayısı; hangi işe alımların sayılacağı ve işe alımın hangi noktada sayılacağı (başlama ya da teklif kabulü) kurumun takdirindedir.</td></tr>
+    <tr><td><b>CPHC</b> (Cost-Per-Hire Comparable)</td><td>5</td>
+      <td style="font-family:var(--serif)">(&Sigma;X<sub>dış</sub> + &Sigma;X<sub>iç</sub>) &divide; Y<sub>tot</sub></td>
+      <td>Kurumlar arası karşılaştırma için; daha kısıtlı veri girdileri. Payda: yalnızca fiilen işe başlamış çalışanlar; derleyen kişi hangi işe alımların sayılacağında takdir kullanamaz.</td></tr>
+    <tr><td><b>HCR</b> (Hire-Cost-Ratio)</td><td>6</td>
+      <td style="font-family:var(--serif)">(&Sigma;X<sub>dış</sub> + &Sigma;X<sub>iç</sub>) &divide; Y<sub>tot,FYC</sub> &times; 100</td>
+      <td>Maliyeti işe alım sayısına değil, yeni işe alınanların ilk yıl toplam ücretine oranlar; ücreti, yeni işe alımın kuruma göreli değerinin bir vekili olarak kullanır. Sonuç yüzde olarak ifade edilir.</td></tr>
+    <tr><td><b>Segment CPH</b></td><td>7.3.3</td>
+      <td style="font-family:var(--serif)">(&Sigma;X<sub>dış,alt</sub> + &Sigma;X<sub>iç,alt</sub>) &divide; Y<sub>tot,alt</sub></td>
+      <td>Formül (4): yalnızca belirtilen segmentin (alt kümenin) satırları hesaba katılır.</td></tr>
+    <tr><td><b>Kampüs CPH</b></td><td>7.3.6.7</td>
+      <td style="font-family:var(--serif)">(&Sigma;X<sub>dış,kampüs</sub> + &Sigma;X<sub>iç,zorunlu</sub>) &divide; Y<sub>tot,zorunlu</sub></td>
+      <td>Formül (5): zorunlu ve zorunlu sonrası eğitimden işe alımlar (tam zamanlı, stajyer ve co-op); payda bu kaynaktan işe alım sayısıdır.</td></tr>
+  </tbody>
+</table>
+
+<h3>Maliyet kapsamı: dış ve iç maliyet kalemleri (madde 4.2, 5.2)</h3>
+<p>CPH verisi, boş bir pozisyona çalışan olarak aday işe almak için yapılan kaynak bulma, işe alım ve istihdam maliyetleriyle sınırlıdır. Aşağıdaki iki tablo CPHI'nin kapsamındaki kalemleri (Tablo 2 ve 3) ve her kalemin CPHC kapsamında (Tablo 5 ve 6) olup olmadığını gösterir. Açıklamalar özgün özetlerdir.</p>
+<table>
+  <thead><tr><th>Dış maliyet kalemi (Tablo 2)</th><th>Özet</th><th style="width:80px">CPHC</th></tr></thead>
+  <tbody>
+    <tr><td>Reklam ve pazarlama</td><td>İş ilanı siteleri, sosyal ağlar, arama motoru pazarlaması, broşür ve web sitesi yapımı, gazete.</td><td>✓</td></tr>
+    <tr><td>Sabıka, eğitim, kredi, referans kontrolleri</td><td>Yerel yasa ve geleneklere uygun kontroller.</td><td>✓</td></tr>
+    <tr><td>Zorunlu ve zorunlu sonrası eğitimden işe alım</td><td>Stajyer, co-op ve tam zamanlı pozisyona alınan mezunlar için kaynak bulma giderleri.</td><td>✓</td></tr>
+    <tr><td>Danışmanlık hizmetleri</td><td>İşe alım sürecinde danışmanlık ve (işe alımı destekleyen) dış hukuk danışmanı.</td><td>—</td></tr>
+    <tr><td>Koşullu işçinin kadroya geçiş ücretleri</td><td>Koşullu işçinin düzenli çalışana dönüşümünde tedarikçiye ödenen bedeller.</td><td>—</td></tr>
+    <tr><td>Tıbbi ya da sağlık testleri</td><td>İşe başlamadan önce ya da işe alım sürecinde yapılan sağlık testleri.</td><td>✓</td></tr>
+    <tr><td>Çalışan tavsiye ödülleri</td><td>Tavsiye ettiği aday işe alınan çalışana tanımlı ödeme.</td><td>✓</td></tr>
+    <tr><td>Göç ve çalışma izni giderleri</td><td>Hukuki ücretler, danışmanlık, başvuru ücretleri.</td><td>—</td></tr>
+    <tr><td>İş fuarı ve işe alım etkinliği</td><td>Organizatöre ödenen ücret, stant tasarımı ve kurulumu, nakliye, kiralama.</td><td>✓</td></tr>
+    <tr><td>Ön eleme ücretleri</td><td>Test hizmetleri, geçerli değerlendirmeler, standart ölçümler.</td><td>—</td></tr>
+    <tr><td>İşe alım süreci dış kaynak (RPO) ücretleri</td><td>RPO kullanılıyorsa ödenen ücretlerin toplamı.</td><td>✓</td></tr>
+    <tr><td>Yer değiştirme ücretleri</td><td>Taşınma giderleri, seyahat, yer değiştirme tedarikçileri.</td><td>—</td></tr>
+    <tr><td>Kaynak bulma maliyetleri</td><td>Liste satın alma, veri tabanı lisansı, ağ oluşturma üyelikleri.</td><td>✓</td></tr>
+    <tr><td>Seyahat ve giderler, aday</td><td>Adayın yaptığı ve kurumun karşıladığı giderler.</td><td>✓</td></tr>
+    <tr><td>Seyahat ve giderler, işe alım uzmanı</td><td>İşe alım sırasında yapılan ve kurumun karşıladığı giderler.</td><td>✓</td></tr>
+    <tr><td>Teknoloji maliyetleri</td><td>Yetenek kazanım sistemi, aday ilişki yönetimi, raporlama sistemleri.</td><td>✓</td></tr>
+    <tr><td>Üçüncü taraf ajans ücretleri</td><td>Dış ajanslara ödenen (şarta bağlı ya da sabit) ücretler.</td><td>✓</td></tr>
+  </tbody>
+</table>
+<table>
+  <thead><tr><th>İç maliyet kalemi (Tablo 3)</th><th>Özet</th><th style="width:80px">CPHC</th></tr></thead>
+  <tbody>
+    <tr><td>İşe alım personeli maliyeti</td><td>Temel ücret, yan haklar ve ikramiye dahil tam yüklü maliyet; düzenli (tam/yarı zamanlı) ve sözleşmeli işe alım uzmanları.</td><td>✓</td></tr>
+    <tr><td>Kaynak bulma personeli maliyeti</td><td>Aynı tam yüklü maliyet tanımı (kaynak bulma personeli).</td><td>belirsiz*</td></tr>
+    <tr><td>Hükümet uyumu için iç yük</td><td>Mevzuata uyum için malzeme oluşturma, sunma, izleme ve işleme ek iç emek giderleri.</td><td>—</td></tr>
+    <tr><td>Emek dışı ofis maliyetleri</td><td>Kira, sermaye giderleri ve arızi masrafların temsili payı; tam veri yoksa işe alım kadrosuna göre genel ofis maliyetinin yüzdesi.</td><td>✓</td></tr>
+    <tr><td>İşe alım öğrenme ve gelişim</td><td>İşe alım ekibinin yeteneklerini geliştiren resmî ve resmî olmayan öğrenme giderleri.</td><td>✓</td></tr>
+    <tr><td>Tavsiye ücretleri</td><td>Belirli bir kıdem sonrası ödenen tavsiye ücretleri (aşağıdaki tahakkuk notuna bakın).</td><td>✓ (Tablo 6'da)</td></tr>
+    <tr><td>İkincil yönetim süresi: etkinlikler</td><td>Etkinlik saati × uygun iç ücret oranı.</td><td>—</td></tr>
+    <tr><td>İkincil yönetim süresi: işe alım görüşmeleri</td><td>Görüşme sayısı × uygun iç ücret oranı (işe alan yönetici süresi).</td><td>—</td></tr>
+  </tbody>
+</table>
+<p>*Tablo 6'da "işe alım personeli" iki kez, aynı açıklamayla yazılmıştır; ikinci satırın kaynak bulma personeli olması muhtemeldir, ama şartnamenin kendisi bunu söylemez ve "açıkça tanımlanmayan her kategori kapsam dışıdır" der (bkz. Sınırlamalar). Tablo 6'da ayrıca emek dışı ofis maliyetleri, işe alım öğrenme ve gelişim ile çalışan tavsiye ödülleri vardır.</p>
+<div class="note"><b>Tavsiye ödülleri ve tahakkuk:</b> birçok kurum çalışanlara tavsiye ödülünü yeni çalışanın belirli bir kıdemi sonrasında öder; bu yüzden gerçek gider CPH ölçülen dönemde oluşmayabilir. Derleyen kişi dönemde ödenen gerçek parayı kullanabilir ya da beklenen gideri tahakkuk olarak sayabilir (ör. tavsiyeyle işe alınan 10 aday, işe alım başına €X ise 10 × €X, ödeme o dönemde yapılmasa da). Hangi tekniğin kullanıldığı CPH istatistiğinde belirtilir.</div>
+
+<h3>Payda: hangi işe alımlar sayılır? (madde 4.3, 5.3)</h3>
+<table>
+  <thead><tr><th>Ölçü</th><th>Dahil</th><th>Hariç</th></tr></thead>
+  <tbody>
+    <tr><td><b>CPHI (Tablo 4)</b></td>
+      <td>İşe alan yöneticinin talebinin (ya da muadil sürecin) tamamlandığı her işe alım (dış ya da iç). Bordroda olup tam zamanlı pozisyona alınan geçici personel.</td>
+      <td>İç yeniden yapılanma maliyetleri; sözleşmesi otomatik yenilenen çalışanlar; geçici rotasyon ya da görevlendirme; birleşme ve satın alma maliyetleri; iş rolü yeniden sınıflandırılan çalışanlar.</td></tr>
+    <tr><td><b>CPHC (Tablo 7)</b></td>
+      <td>Aynı dahil kuralı; ancak <b>kesirli işe alım kullanılmaz</b> (kurumlar arası FTE kıyası zordur; yalnızca çalışanlar sayılır) ve yalnızca <b>fiilen işe başlamış</b> çalışanlar paydadadır. Bordroda olup tam zamanlı pozisyona alınan geçici personel.</td>
+      <td>Ek işçiler (bordroda olmayan yükleniciler, ajans personeli, danışmanlar); üçüncü tarafça ödenen işçiler; iç yeniden yapılanma; otomatik yenilenen sözleşmeler; birleşme ve satın alma; geçici rotasyon; yeniden sınıflandırma.</td></tr>
+  </tbody>
+</table>
+<p>CPHI'de derleyen kişi "işe alım"ın sayıldığı noktayı kendisi belirleyebilir: fiilen işe başlamak ya da teklifi kabul etmek. "Başlama" seçilirse CPHI, işe alım çabasının başarılı sonuçlarının ortalama maliyetini; "kabul edilen teklif" seçilirse işe alım verimliliğini ölçer. CPHC'de yalnızca başlayanlar sayılır.</p>
+
+<h3>HCR: ilk yıl toplam ücret (madde 6.3)</h3>
+<ul>
+  <li><b>Pay:</b> HCR'nin payı CPHI'daki ile aynı tanımlanır (6.2).</li>
+  <li><b>Payda:</b> dönemdeki işe alımların ilk yıl (12 aylık yuvarlanan) tahmini finansal ücretinin toplamı; yeni çalışanlara sunulan ve kabul edilen ücrettir. Payda kuruma beklenen değeri temsil eder; yeni çalışanların ilk yılını gerçekten tamamlaması şart değildir.</li>
+  <li><b>İçerik:</b> ilk teklif mektubunda bulunan geleneksel ve makul biçimde tanınan ücret unsurları: maaş, yan haklar, ikramiye, teşvikler, hisse ödüllerinin adil değeri, araç kullanımı ve ek tıbbi.</li>
+  <li><b>Sayım serbestliği:</b> işe alımların sayılması konusunda CPHI'daki serbestlik burada da geçerlidir (6.3.2).</li>
+</ul>
+
+<h3>CPH'yi derlemek: veri toplama ve değerlendirme (madde 7.1, 7.2)</h3>
+<ul>
+  <li><b>Kaynak sistem:</b> kaynak maliyet verisinin mümkünse kayıt sistemlerinden (genel muhasebe, yetenek kazanım sistemi) alınması, maliyetlerin mantıklı maliyet kodlarına ayrılması ve son kullanıcıların uygun kodları kullanmaları için eğitilmesi tercih edilir.</li>
+  <li><b>Temsilî veri kümesi (7.2.1):</b> veri, ölçülen her alandaki gerçekleşen maliyetleri makul biçimde temsil etmelidir: kapsam (dönemdeki tüm işe alımlar için maliyetler dahil mi?) ve derinlik (maliyetlerin temsil gücü makul biçimde sorgulandı mı?). Önerilen işlemler: maliyetlerin ve maliyet merkezlerinin (kodlarının) düzenli gözden geçirilmesi (ör. yeni iki maliyet merkezinin kullanılmaya başlanması); belirli maliyetlerin raporlama dönemleri arasındaki varyansının düzenli sınanması (ör. teknoloji maliyetlerinin önceki döneme göre %50 düşük çıkması incelemeye değer).</li>
+  <li><b>Süreçlerin düzenli incelemesi (7.2.2):</b> CPH verisini üreten süreçler, süreç dışı olayları yakalamak ve sürece katmak için düzenli incelenir; veri toplama süreçlerinin kusursuz olması şart değildir, ama sürekli iyileştirme taahhüdü olmalıdır.</li>
+  <li><b>Tarih aralıkları (7.2.3):</b> belirtilen tarih aralığı, aralıktaki tüm finansal faaliyeti kapsamalıdır (ör. 31 Mart 23.59'da oluşan gider, 1 Ocak–31 Mart raporuna girer). Tedarikçi faturaları işe alıma göre eş zamansız gelebilir; derleyen kişi giderleri fatura tarihine göre ya da işe alıma tahakkuk ettirerek sayabilir; bu karar bir kez verilir ve raporlar arasında tutarlı olur (ör. arka plan kontrolü faturası 1 Nisan'da gelirse ve kayıt fatura tarihine göre yapılıyorsa 1. çeyrek raporu yeniden düzenlenmez).</li>
+</ul>
+
+<h3>Veri bölümleme (madde 7.3)</h3>
+<ul>
+  <li><b>Amaç:</b> CPH verisinin bir alt kümesini görmek ve karşılaştırmak (ör. bir bölümün işe alım maliyetlerini zaman içinde izlemek). Kriter örnekleri: coğrafya ya da konum; eğitim düzeyi; liderlik düzeyi (bireysel katkıcı, yönetici, üst düzey lider, zorunlu ve zorunlu sonrası eğitim mezunu).</li>
+  <li><b>Belgeleme (Tablo 8):</b> bölümleme yöntemi, amaç, bölümlenecek değişkenler ve zaman çerçevesiyle belgelenir.</li>
+  <li><b>Hesap (7.3.2, 7.3.3):</b> ham veriye istenen bölümlemeyi gösteren yeni sütunlar eklenir (Tablo 9); segment formülünde yalnızca ilgili alt kümenin satırları kullanılır.</li>
+  <li><b>Şeffaflık ve gösterim (7.3.4, 7.3.5):</b> bölümlenmiş CPH'de aynı şeffaflık, veri kalitesi ve temsil kriterleri ile kapsam içi/kapsam dışı ölçütler kullanılır; görsel gösterimde ilgili segment sütun başlığı ya da yazılı bir göstergeyle belirtilir.</li>
+</ul>
+
+<h3>Özel durum: zorunlu ve zorunlu sonrası eğitim kurumlarından işe alım (madde 7.3.6)</h3>
+<p>Birçok kurum bu işe alımları işe alım maliyeti olarak değil, pazarlama ya da toplum ilişkileri olarak sınıflar; kimin bu gruba girdiği de kurumdan kuruma farklıdır. Şartnamenin tanımları aşağıdadır.</p>
+<table>
+  <thead><tr><th>Konu</th><th>Madde</th><th>Kural</th></tr></thead>
+  <tbody>
+    <tr><td><b>Tam zamanlı mezun işe alımı</b></td><td>7.3.6.2</td>
+      <td>İşe başlamadan önceki 12 ay içinde zorunlu ya da zorunlu sonrası eğitim diplomasını almış olan ya da mezuniyetten sonra seçtiği meslekte bir aydan uzun tam zamanlı çalışmamış çalışanlar. Örnek: Scott haziranda mezun olur, alanında iş bulamaz, başka işte çalışır; 11 ay sonra alanında bir işe alınır → mezun işe alımı sayılır (mezuniyetin 12 ay içinde). Sayılmayanlar: Jane (mühendislikten mezun, teknik rolde 6 ay çalışıp ayrılır; alanında bir aydan uzun çalıştığı için deneyimli işe alım), Brad (13 ay dünya gezisi; 12 ayı aşıyor), Michael (askerlik; iki yıl sonra, deneyimli işe alım olarak girer).</td></tr>
+    <tr><td><b>Stajyer ve co-op</b></td><td>7.3.6.3</td>
+      <td>Okurken ücretli ya da ücretsiz çalışırlar; çoğu kurum onları tam zamanlıya dönüştürmeyi hedefler. Maliyetleri, <b>ilk işe alındıkları yılın</b> kategorilerine eklenir. Örnek: Willie 2007'de yaz stajyeri olur, 2009'da tam zamanlı teklifi kabul eder; 2009'da işe alım maliyeti ihmal edilebilir olduğundan "bedava işe alım"dır, gerçek maliyet 2007'dedir.</td></tr>
+    <tr><td><b>Kampüs işe alım uzmanları</b></td><td>7.3.6.4</td>
+      <td>CPH'ye yalnızca birincil rolü yetenek edinmek olanların ücreti girer (işe alım, yetenek kazanımı ya da İK'da zorunlu/zorunlu sonrası eğitim kurumlarından aday çekmekten sorumlu kişi). Örnek: bir okulu ziyaret eden mühendis Fred'in seyahat giderleri doğrudan CPH'ye girer, ama günlük/saatlik ücreti girmez.</td></tr>
+    <tr><td><b>Karma uzmanlar ve koordinatörler</b></td><td>7.3.6.5</td>
+      <td>Hem deneyimli hem yeni mezun işe alan kişilerin maliyetleri, kampüs faaliyetine ayrılan tahmini zaman yüzdesine ya da kampüs işe alımlarının toplam işe alımdaki yüzdesine göre paylaştırılır. Örnek: Carol zamanının %80'ini deneyimli, %20'sini kampüs işe alımına ayırıyor → ücretinin %20'si kampüs CPH hesabına girer.</td></tr>
+    <tr><td><b>Kampüs işe alımı doğrudan maliyetleri</b></td><td>7.3.6.6</td>
+      <td>İşe alım uzmanı ve çalışan seyahati (görüşme, kariyer fuarı, ilişki kurma); görüşmeci ve aday seyahat giderleri; broşür ve ürünler gibi tanıtım malzemeleri (hem deneyimli hem mezun için kullanılıyorsa yaklaşık olarak paylaştırılır); özgeçmiş kitapları ve okullara özel iş sitelerine ilan; kampüs işe alımına özel web siteleri; ilgili sosyal medya.</td></tr>
+    <tr><td><b>Dahil / hariç (Tablo 11)</b></td><td>7.3.6.6</td>
+      <td><b>Dahil:</b> mevcut öğrencilere yönelik kampüs işe alım etkinliklerine katılımın yıllık giderleri (bilgi oturumları, kariyer fuarları, işe alım bütçesi kapsamındaki kulüp hediyeleri). <b>Hariç:</b> üniversitelerdeki araştırma harcamaları (araştırma projelerinden öğrenci işe alınsa bile); eğitim kurumlarına yapılan çoğu mali katkı ve hayırseverlik.</td></tr>
+    <tr><td><b>Kapsam içi maliyetler (Formül 5)</b></td><td>7.3.6.7</td>
+      <td>CPHI ve CPHC'deki maliyet tanımları geçerlidir; ancak daha ayrıntılı veri gerekebilir (ör. işe alan yönetici görüşme süresi tahmini CPHI'da isteğe bağlı olsa da kampüs işe alımında önemli bir bileşen olabilir). İş fuarı kategorisi çoğu kampüs maliyetini yakalar, ancak stajyer etkinlikleri ve özel programlar ayrıca yakalanmalıdır.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="ornekler">Şartnamenin Rapor Örnekleri</h2>
+<p>Şartname birkaç örnek verir. Sayılar şartnamedeki örneklerdir; gerçek bir kuruma ait değildir.</p>
+
+<h3>HCR örneği (madde 6.1)</h3>
+<table>
+  <thead><tr><th>Kalem</th><th class="num">Tutar (€)</th></tr></thead>
+  <tbody>
+    <tr><td>Dış maliyetlerin toplamı</td><td class="num">100 000</td></tr>
+    <tr><td>İç maliyetlerin toplamı</td><td class="num">100 000</td></tr>
+    <tr><td>İlk yıl toplam ücret</td><td class="num">2 000 000</td></tr>
+    <tr><td><b>HCR = (100 000 + 100 000) ÷ 2 000 000 × 100</b></td><td class="num"><b>%10</b></td></tr>
+  </tbody>
+</table>
+
+<h3>Tablo 8 — Bölümleme yönteminin belgelenmesi (örnek)</h3>
+<table>
+  <thead><tr><th style="width:180px">Madde</th><th>Tanım</th></tr></thead>
+  <tbody>
+    <tr><td>Amaç</td><td>Coğrafi iş alanına göre CPH'yi belirlemek.</td></tr>
+    <tr><td>Bölümlenecek değişkenler</td><td>Bölge adları (ör. Amerika, EMEA, APAC); para birimi türleri (ör. USD, EUR); CPH bilgisinin bulunabilirliği ve doğruluğundaki bölgesel farklar; CPH üzerindeki bölgesel örgütsel etki.</td></tr>
+    <tr><td>Zaman çerçevesi</td><td>Zaman dilimi Haziran 2010 ayı olarak tanımlanır.</td></tr>
+  </tbody>
+</table>
+
+<h3>Tablo 9 — Değişken maliyet ham verisi (örnek: bir işe alım)</h3>
+<table>
+  <thead><tr><th>Unvan</th><th>İş birimi</th><th>Talep no</th><th>Başlangıç</th><th class="num">Tedarikçi giderleri €</th><th class="num">Reklam €</th><th class="num">Aday seyahati €</th><th class="num">Yer değiştirme €</th><th class="num">Beklenen yer değiştirme €</th><th class="num">İşe alım ikramiyesi €</th><th class="num">Tavsiye ikramiyesi €</th><th class="num">Toplam gider €</th></tr></thead>
+  <tbody>
+    <tr><td>Pazarlama araştırma yöneticisi</td><td>Pazarlama</td><td>MR29–10</td><td>2011-02-22</td><td class="num">12 899</td><td class="num">725</td><td class="num">1 090</td><td class="num">622</td><td class="num">—</td><td class="num">15 000</td><td class="num">4 800</td><td class="num"><b>35 136</b></td></tr>
+  </tbody>
+</table>
+<p>Şartname notu: bu örnekte derleyen kişi bölümlemede kullanılacak "iş birimi" sütununu eklemiştir. Sütun toplamı doğrudur (12 899 + 725 + 1 090 + 622 + 15 000 + 4 800 = 35 136).</p>
+
+<h3>Tablo 10 — Bölümleme sonuçlarının beyanı (örnek)</h3>
+<table>
+  <thead><tr><th>Bölge</th><th class="num">İşe alım sayısı</th><th class="num">Dış maliyet €</th><th class="num">İç maliyet €</th><th class="num">Toplam maliyet €</th><th class="num">Bölgesel CPH €</th></tr></thead>
+  <tbody>
+    <tr><td>Americas</td><td class="num">84</td><td class="num">201 600,00</td><td class="num">127 432,00</td><td class="num">329 032,00</td><td class="num">3 917,05</td></tr>
+    <tr><td>EMEA</td><td class="num">47</td><td class="num">154 794,50</td><td class="num">66 340,50</td><td class="num">221 135,00</td><td class="num">4 705,00</td></tr>
+    <tr><td>APAC</td><td class="num">52</td><td class="num">111 322,64</td><td class="num">39 113,36</td><td class="num">150 436,00</td><td class="num">2 893,00</td></tr>
+    <tr><td><b>Toplam/Ortalama (şartnamede)</b></td><td class="num"><b>183</b></td><td class="num"><b>467 717,14</b></td><td class="num"><b>232 885,86</b></td><td class="num"><b>700 603,00</b></td><td class="num"><b>3 838,35</b></td></tr>
+    <tr><td><b>Toplam maliyet ÷ toplam işe alım (bu sayfa)</b></td><td class="num">183</td><td class="num">467 717,14</td><td class="num">232 885,86</td><td class="num">700 603,00</td><td class="num"><b>3 828,43</b></td></tr>
+  </tbody>
+</table>
+<p>Şartnamedeki 3 838,35, üç bölgesel CPH'nin basit ortalamasıdır ((3 917,05 + 4 705,00 + 2 893,00) ÷ 3). Aynı satırdaki toplam maliyetin toplam işe alıma bölünmesi 3 828,43 verir; iki sayı arasındaki fark bölgelerin işe alım sayıları farklı olmasından gelir (bkz. Sınırlamalar). Satır toplamları (dış + iç = toplam; bölgesel CPH = toplam ÷ işe alım) şartnamede doğrudur.</p>
+
+<h2 id="adimlar">Metrik Seçim Adımları</h2>
+<ol>
+  <li><b>Amacı seçin.</b> Kuruma özgü yönetim aracı (CPHI), kurumlar arası kıyaslama (CPHC) ya da işe alım türlerini normalize eden bir oran (HCR); gerekirse hepsini birlikte hesaplayın.</li>
+  <li><b>Kayıt sistemini belirleyin.</b> Maliyet ve işe alım sayısı için tutarlı kullanılacak sistemi (genel muhasebe, yetenek kazanım sistemi) seçin; maliyet kodlarını mantıklı biçimde düzenleyin.</li>
+  <li><b>Maliyet kapsamını yazın.</b> CPHI için Tablo 2 ve 3'ten uygulanabilir kalemler; CPHC için yalnızca Tablo 5 ve 6'daki kalemler. Dahil/hariç kararlarını belgeleyin.</li>
+  <li><b>İşe alım tanımını belirleyin.</b> CPHI'da başlama mı, teklif kabulü mü; CPHC'de yalnızca işe başlayanlar; dahil ve hariç tutulan işe alım türleri (Tablo 4 ve 7).</li>
+  <li><b>Tarih ve gider zamanlamasını sabitleyin.</b> Dönem aralığı tüm finansal faaliyeti kapsasın; faturaya göre mi işe alıma tahakkuk mu olduğuna bir kez karar verin; tavsiye ödüllerinde gerçek ödeme ya da tahakkuk.</li>
+  <li><b>Veriyi sorgulayın.</b> Maliyet merkezlerini ve dönemler arası varyansı düzenli gözden geçirin; süreç iyileştirme taahhüdü verin.</li>
+  <li><b>Bölümlemeyi seçin.</b> Coğrafya, eğitim düzeyi, liderlik düzeyi; yöntemi (Tablo 8) belgeleyin; kampüs işe alımı için özel kuralları uygulayın.</li>
+  <li><b>HCR ile birlikte okuyun.</b> İşe alım türlerinin ücret düzeyi çok farklıysa CPH tek başına yanıltabilir.</li>
+</ol>
+
+<h2 id="kavramlar">Temel Kavramlar</h2>
+<p>Şartname 3. maddesinde ISO 30400'e ek olarak dokuz terim verir. Aşağıdaki tablo bu terimlerin ve metinde geçen diğer kavramların kısa özetleridir. Açıklamalar özgün olarak yazılmıştır; bağlayıcı olan şartnamenin kendi metnidir.</p>
+<table>
+  <thead><tr><th style="width:90px">Madde</th><th style="width:250px">Kavram</th><th>Açıklama</th></tr></thead>
+  <tbody>
+    <tr><td><b>3.1</b></td><td>İşe alım başına maliyet <small>(Cost-Per-Hire, CPH)</small></td>
+      <td>İşe alımla ilgili maliyetleri belirleyen ölçü; toplam işe alım maliyetinin işe alım sayısına bölünmesiyle ortalama olarak hesaplanır. CPHI ve CPHC CPH'nin alt kümeleridir.</td></tr>
+    <tr><td><b>3.2</b></td><td>CPHC <small>(Cost-Per-Hire Comparable)</small></td>
+      <td>İşe alımla ilgili maliyetleri kurumlar arasında belirleyen ölçü.</td></tr>
+    <tr><td><b>3.3</b></td><td>CPHI <small>(Cost-Per-Hire Internal)</small></td>
+      <td>İşe alımla ilgili kuruma özgü maliyetler.</td></tr>
+    <tr><td><b>3.4</b></td><td>Dış maliyet etkeni <small>(external cost)</small></td>
+      <td>İşe alım sırasında dış tedarikçilere ya da kişilere yapılan harcama.</td></tr>
+    <tr><td><b>3.5</b></td><td>İşe alım maliyet oranı <small>(Hire-Cost-Ratio, HCR)</small></td>
+      <td>CPH'yi yeni işe alınanların toplam ücretiyle karşılaştıran formül ve yöntem; CPHI ve CPHC'den yalnızca paydada ayrılır.</td></tr>
+    <tr><td><b>3.6</b></td><td>İç maliyet etkeni <small>(internal cost)</small></td>
+      <td>İşe alım/işe alım işlevinin iç personeli, sermayesi ve örgütsel maliyetleriyle ilgili harcama.</td></tr>
+    <tr><td><b>3.7</b></td><td>Kayıt sistemi <small>(system of record)</small></td>
+      <td>Bir CPH metriğinde kullanılan belirli bir bilginin kaynağı kabul edilen bilgi sistemi.</td></tr>
+    <tr><td><b>3.8</b></td><td>Derleyen <small>(compiler)</small></td>
+      <td>CPH metriğini oluşturmaktan sorumlu kişi.</td></tr>
+    <tr><td><b>3.9</b></td><td>İşe alım <small>(recruitment)</small></td>
+      <td>Kurumdaki mevcut ya da yeni bir pozisyon için yetenek bulma, çekme, değerlendirme ve istihdam etme süreci.</td></tr>
+    <tr><td><b>7.2.1</b></td><td>Temsilî veri kümesi</td>
+      <td>Ölçülen alandaki gerçekleşen maliyetleri kapsam ve derinlik bakımından makul biçimde yansıtan veri.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="matris">Metrik Matrisi</h2>
+<p>Aşağıdaki tablo, şartnamenin tanımladığı ve türettiği ölçüler, maliyet kalemleri ve veri ilkelerinin kullanıcı × süreç aşaması × raporlama sınıflandırmasıdır. Kullanıcı sütunları şartnamenin Tablo 1'deki kullanım alanlarına dayanır;
+bölüm ve raporlama sınıflandırması bu sayfanın yazarlık sınıflandırmasıdır. Filtreleri değiştirdiğinizde tablo anında daralır.</p>
+
+<div class="filters">
+  <div><label for="fUser">Kullanıcı</label>
+    <select id="fUser">
+      <option value="">Tümü</option>
+      <option value="hr">İşe alım ve İK</option>
+      <option value="exec">Üst yönetim</option>
+      <option value="line">İşe alan yöneticiler</option>
+      <option value="fin">Finans ve planlama</option>
+      <option value="ext">Dış paydaş</option>
+    </select></div>
+  <div><label for="fStage">Metrik bölümü</label>
+    <select id="fStage">
+      <option value="">Tümü</option>
+      <option value="formul">Formüller ve oranlar (madde 4–6)</option>
+      <option value="dis">Dış maliyet kalemleri</option>
+      <option value="ic">İç maliyet kalemleri</option>
+      <option value="payda">Payda ve işe alım sayımı</option>
+      <option value="segment">Bölümleme ve özel durumlar (7.3)</option>
+      <option value="veri">Veri ve ölçüm ilkeleri (7.1, 7.2)</option>
+    </select></div>
+  <div><label for="fType">Metrik ailesi</label>
+    <select id="fType">
+      <option value="">Tümü</option>
+      <option value="p">Formüller ve oranlar</option>
+      <option value="c">Dış maliyet kalemleri</option>
+      <option value="s">İç maliyet kalemleri</option>
+      <option value="r">Payda ve işe alım sayımı</option>
+      <option value="o">Bölümleme, veri ve ölçüm</option>
+    </select></div>
+  <div><label for="fRep">Raporlama</label>
+    <select id="fRep">
+      <option value="">Tümü</option>
+      <option value="ic">İç raporlama</option>
+      <option value="dis">Dış raporlama (kıyaslama)</option>
+    </select></div>
+  <div><label for="fQ">Metrik adında ara</label>
+    <input type="text" id="fQ" placeholder="ör. reklam"></div>
+</div>
+
+<div class="count" id="mCount"></div>
+<table class="matrix">
+  <thead><tr>
+    <th>Metrik</th>
+    <th class="rot">İşe alım / İK</th>
+    <th class="rot">Üst yönetim</th>
+    <th class="rot">İşe alan yöneticiler</th>
+    <th class="rot">Finans / planlama</th>
+    <th class="rot">Dış paydaş</th>
+  </tr></thead>
+  <tbody id="mBody"></tbody>
+</table>
+<div class="legend">
+  <span><span class="dot p"></span> formüller ve oranlar</span>
+  <span><span class="dot c"></span> dış maliyet kalemleri</span>
+  <span><span class="dot s"></span> iç maliyet kalemleri</span>
+  <span><span class="dot r"></span> payda ve işe alım sayımı</span>
+  <span><span class="dot o"></span> bölümleme, veri ve ölçüm</span>
+  <span><span class="tag iso">CPHC</span> kıyaslama (CPHC) kapsamında</span>
+  <span><span class="tag lvl">hesaplayıcı</span> bu sayfada hesaplanabilen metrik</span>
+  <span>Hesaplayıcıya bağlı metrikler <b>koyu</b> işaretlenmiştir.</span>
+</div>
+
+<h2 id="tablo">Maliyet Kalemleri Tablosu</h2>
+<p>Şartnamenin Tablo 2 ve 3'ündeki 25 maliyet kaleminin tutarlarını girin. <b>CPHC</b> sütunundaki onay kutusu, kalemin Tablo 5 ve 6'ya göre CPHC kapsamında olup olmadığını gösterir (isterseniz değiştirebilirsiniz); CPHI tüm girdiğiniz kalemleri toplar, CPHC yalnızca işaretlileri.
+Dönemdeki başlayan işe alım sayısını (CPHC paydası ve CPHI varsayılan paydası), isterseniz CPHI için ayrı bir işe alım sayısını (ör. kabul edilen teklifler) ve HCR için ilk yıl toplam ücreti girin. Örnek veri <b>örnek amaçlıdır</b>: toplamlar şartnamenin HCR örneğiyle (dış 100 000, iç 100 000, ilk yıl ücret 2 000 000) uyumludur;
+kalem dağılımı ve 40 işe alım bu sayfaya aittir, şartnamede yoktur. Çalışan tavsiye ödülü (dış) ile tavsiye ücretleri (iç) aynı ödemeyi iki kez içermemelidir.</p>
+
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnek">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizle">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsv">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktar">Hesaplayıcıya aktar</button>
+  <span class="inline"><label for="basladi">Başlayan işe alım (Y<sub>tot</sub>)</label>
+    <input type="number" id="basladi" min="0" step="1" value="40"></span>
+  <span class="inline"><label for="teklif">CPHI için işe alım sayısı</label>
+    <input type="number" id="teklif" min="0" step="1" value="" placeholder="boşsa başlayanlar"></span>
+  <span class="inline"><label for="ucret">İlk yıl toplam ücret (HCR)</label>
+    <input type="number" id="ucret" min="0" step="any" value="2000000"></span>
+</div>
+
+<table class="postbl">
+  <thead><tr>
+    <th>Maliyet kalemi</th>
+    <th style="width:70px">Tür</th>
+    <th style="width:70px">CPHC</th>
+    <th class="num">Tutar</th>
+  </tr></thead>
+  <tbody id="pBody"></tbody>
+  <tfoot>
+    <tr><td>Dış maliyet toplamı</td><td class="calc">—</td><td class="calc" id="tDisC">—</td><td class="calc" id="tDis">—</td></tr>
+    <tr><td>İç maliyet toplamı</td><td class="calc">—</td><td class="calc" id="tIcC">—</td><td class="calc" id="tIc">—</td></tr>
+    <tr><td>Toplam maliyet</td><td class="calc">—</td><td class="calc" id="tTopC">—</td><td class="calc" id="tTop">—</td></tr>
+  </tfoot>
+</table>
+<p class="hint" style="margin:6px 0 0">Sol sütun CPHC kapsamındaki toplamları, sağ sütun tüm kalemlerin (CPHI) toplamlarını gösterir.</p>
+
+<div class="cards" id="pCards"></div>
+<div class="note" id="pNot"></div>
+
+<h2 id="formuller">Formüller ve Tanımlar</h2>
+<p>Şartname beş formül verir: CPHI ve CPHC (aynı biçimde), HCR, segment CPH ve kampüs CPH. Aşağıda şartnamenin formülleri ile onlardan türetilen yardımcı hesaplar bulunur; türetilmiş olanlar notlarında belirtilmiştir.</p>
+<table>
+  <thead><tr><th>Metrik</th><th>Formül</th><th>Not</th></tr></thead>
+  <tbody id="fBody"></tbody>
+</table>
+
+<h2 id="hesaplayici">Hesaplayıcı</h2>
+<p>Metriği seçin, alanları doldurun; sonuç, formülün yerine konmuş hâli ve yorum aşağıda görünür.
+Kurulum gerekmez, veriler tarayıcıdan çıkmaz.</p>
+
+<div class="panel">
+  <h3>İşe Alım Başına Maliyet Hesaplayıcısı</h3>
+  <p class="hint">Alanlar seçtiğiniz metriğe göre değişir. Maliyetler girdiğiniz para biriminde (ör. €) çıkar; HCR ve değişim yüzde olarak verilir.</p>
+  <div class="grid">
+    <div class="field" style="grid-column:1/-1">
+      <label for="cMetric">Metrik <span class="req">*</span></label>
+      <select id="cMetric"></select>
+    </div>
+  </div>
+  <div class="grid" id="cFields" style="margin-top:14px"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="oAll"> Tümünü seç</label>
+    <label><input type="checkbox" id="oFormula" checked> Formülün açık hâli</label>
+    <label><input type="checkbox" id="oInterp" checked> Yorum ve eşik</label>
+    <label><input type="checkbox" id="oPy"> Python karşılığı</label>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-run" id="btnRun">Hesapla</button>
+    <button class="btn-ghost" id="btnExample">Örnek veriyi yükle</button>
+    <button class="btn-ghost" id="btnPy">Python motorunu yükle</button>
+    <span class="chip" id="engStatus">Motor: tarayıcı (JavaScript)</span>
+  </div>
+  <p class="hint" style="margin:14px 0 0">Python motoru seçildiğinde hesaplama, bu sayfaya gömülü
+  <code style="background:#1c2836;color:#cfe0f0">iso30407_metrikler.py</code> modülünün
+  <code style="background:#1c2836;color:#cfe0f0">hesapla()</code> fonksiyonu tarafından, tarayıcı içinde
+  çalışan gerçek bir CPython yorumlayıcısında (Pyodide/WebAssembly) yapılır. İlk yüklemede yaklaşık
+  10–12 MB indirilir; sonrası önbellekten gelir. Çevrimdışıysanız sayfa JavaScript yedeğiyle
+  aynı sonuçları vermeye devam eder.</p>
+</div>
+
+<div id="cResult"></div>
+
+<h2 id="python">Python Kod Örnekleri</h2>
+<p>Bu sayfadaki hesaplamalar JavaScript'te taklit edilmez: modülün tamamı sayfaya gömülüdür ve
+Pyodide (WebAssembly üzerinde CPython) ile tarayıcı içinde çalıştırılır. Hesaplayıcıda Python motorunu
+seçtiğinizde her sonuç <code>hesapla()</code> fonksiyonundan gelir. Aynı dosya
+(<code>iso30407_metrikler.py</code>) komut satırında da bağımsız çalışır; doğrudan çalıştırıldığında
+örnek değerlerle doğrulama çıktısı üretir.</p>
+
+<div class="filename">iso30407_metrikler.py (özet)</div>
+<pre><i># --- Formüller ---</i>
+
+<b>def</b> <span class="fn">cph</span>(dis, ic, isealim):
+    <i>"""Formül (1) ve (2): CPHI ve CPHC."""</i>
+    <b>return</b> (dis + ic) / isealim
+
+<b>def</b> <span class="fn">hcr</span>(dis, ic, ilk_yil_ucret):
+    <i>"""Formül (3): işe alım maliyet oranı (yüzde)."""</i>
+    <b>return</b> <u>100</u> * (dis + ic) / ilk_yil_ucret
+
+<i># --- Yardımcılar ---</i>
+
+<b>def</b> <span class="fn">paylastir</span>(ucret, pay_yuzde):
+    <i>"""Karma işe alımcı: kampüs işe alımına ayrılan pay (7.3.6.5)."""</i>
+    <b>return</b> ucret * pay_yuzde / <u>100</u>
+
+<b>def</b> <span class="fn">donem_sapmasi</span>(onceki, cari):
+    <i>"""7.2.1: bir maliyet kaleminin dönemler arası değişimi (%)."""</i>
+    <b>return</b> <u>100</u> * (cari - onceki) / onceki
+</pre>
+
+<h3>Çalıştırılabilir konsol</h3>
+<p>Aşağıdaki kod, sayfaya gömülü modüle karşı çalışır. <b>Kodu çalıştır</b> düğmesi Python motorunu
+(yüklü değilse) indirir, modülü içe aktarır ve çıktıyı altta gösterir. Kodu serbestçe değiştirebilir,
+kendi verinizi yazabilirsiniz; her şey tarayıcıda kalır.</p>
+
+<div class="console">
+  <div class="console-bar">
+    <span>iso30407_metrikler modülüne karşı çalışır · Python 3 (Pyodide)</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button class="btn-run btn-sm" id="btnRunPy">Kodu çalıştır</button>
+      <button class="btn-ghost btn-sm" id="btnDemo" style="border-color:var(--line);color:var(--ink-soft)">Tam demoyu yükle</button>
+      <button class="btn-ghost btn-sm" id="btnReset" style="border-color:var(--line);color:var(--ink-soft)">Sıfırla</button>
+    </span>
+  </div>
+  <textarea id="pyCode" spellcheck="false"></textarea>
+  <pre id="pyOut">Çıktı burada görünecek. İlk çalıştırmada Python motoru indirilir (10–12 MB).</pre>
+</div>
+
+<details class="src"><summary>Gömülü modülün tam kaynağı (iso30407_metrikler.py)</summary>
+  <pre id="srcView">yükleniyor…</pre>
+</details>
+
+<h2 id="yorum">Sonuçların Yorumlanması</h2>
+<ul>
+  <li><b>CPHI ile CPHC'yi karıştırmayın.</b> CPHI kuruma özgü bir yönetim aracıdır ve kurumlar arası kıyaslama için tasarlanmamıştır; kıyaslamada yalnızca CPHC kullanılmalı ve kapsamın Tablo 5–7'ye uyduğu belgelenmelidir.</li>
+  <li><b>Payda tanımı sonucu değiştirir.</b> CPHI'da "başlayanlar" seçilirse ölçü, işe alım çabasının başarılı sonuçlarının ortalama maliyetidir; "kabul edilen teklifler" seçilirse işe alım verimliliğidir. Aynı maliyet için iki payda farklı CPH verir; hangisini kullandığınızı yazın.</li>
+  <li><b>CPH'yi HCR ile birlikte okuyun.</b> Yönetici işe alan bir ekip ile saatlik çalışan işe alan bir ekip aynı maliyeti yapıp çok farklı CPH üretebilir. HCR, maliyeti ücret düzeyine göre normalize eder: aynı maliyet daha yüksek ücretli işe alımlara dağıtılınca HCR düşer.</li>
+  <li><b>Segment toplamını doğru kurun.</b> Birden çok segmentin tek bir "toplam CPH"si, segment CPH'lerinin basit ortalaması ya da toplam maliyetin toplam işe alıma bölümü olabilir; ikisi farklı sonuç verir (Tablo 10: 3 838,35 ve 3 828,43). Toplam maliyet ÷ toplam işe alım, işe alım sayısı farklı segmentleri doğru ağırlıklandırır; hangisini kullandığınızı yazın.</li>
+  <li><b>Dönemler arası sapmaları sorgulayın.</b> Bir maliyet kaleminin bir önceki döneme göre %50 azalması gibi büyük değişim, gerçek bir değişimi ya da veri kaybını gösterebilir (örnek: teknoloji maliyetleri). Kalem varyansını düzenli sınayın.</li>
+  <li><b>Tahakkuk ve ödeme zamanlamasını sabit tutun.</b> Tavsiye ödülü ve fatura gibi gecikmeli giderlerde yöntem raporlar arasında değişirse CPH dönemden döneme karşılaştırılamaz.</li>
+  <li><b>CPH tek başına işe alım başarısı değildir.</b> Şartname, doldurma süresi, işe alım kalitesi ve müşteri memnuniyetinin hesaba girmediğini ve işe alım sonrası maliyetleri ve pozisyonun boş kalmasının zararını ölçmediğini belirtir; ucuz işe alım iyi işe alım demek değildir.</li>
+  <li><b>Stajyer ve co-op işe alımlarının maliyeti ilk yıla yazılır.</b> Stajı dönüştürülen çalışanın tam zamanlı işe alım yılında CPH'si düşük görünür; gerçek maliyet stajın yıllarında oluşmuştur.</li>
+</ul>
+
+<h2 id="sinirlamalar">Sınırlamalar</h2>
+<ul>
+  <li><b>Tablo 10'daki "Toplam/Ortalama" satırı iki farklı hesap karıştırır.</b> Toplam işe alım (183), dış, iç ve toplam maliyet sütunları doğru toplanmıştır (700 603), ancak bölgesel CPH sütunu 3 838,35 olarak segmentlerin basit ortalamasını verir; toplam maliyetin toplam işe alıma bölünmesi 700 603 ÷ 183 = 3 828,43'tür. Bu sayfa her ikisini de gösterir ve hesaplayıcı toplam maliyeti toplam işe alıma böler.</li>
+  <li><b>Tablo 6 hatalıdır.</b> Başlığın ilk sütunu "dış maliyetler" (External costs) yazar, oysa tablo CPHC iç maliyetlerini verir; ayrıca "işe alım personeli maliyeti" iki kez (ilkinde "…staff expenses" eki ile), aynı açıklamayla tekrarlanır ve kaynak bulma personeli satırı yoktur. Aynı tablodaki "çalışan tavsiye ödülleri" kalemi Tablo 5'te dış maliyet olarak da geçer. Bu sayfa kaynak bulma personeli kalemini CPHC dışında bırakır ve kullanıcı onay kutusuyla değiştirebilir.</li>
+  <li><b>Tavsiye ödülü hem dış hem iç listede geçer.</b> CPHI için Tablo 2'de "çalışan tavsiye ödülleri", Tablo 3'te "tavsiye ücretleri" ayrı satırlardır; CPHC için de Tablo 5 (dış) ve 6 (iç) ikisini sayar. Aynı ödemenin iki kez sayılmaması derleyen kişiye bırakılmıştır.</li>
+  <li><b>"Dış" ve "iç" sınıflaması bazı kalemlerde tartışmalıdır.</b> "Teknoloji maliyetleri" ve "çalışan tavsiye ödülleri" dış listede yer alır; oysa ilki iç işletim, ikincisi çalışanlara iç ödeme olarak da okunabilir. Şartname dış maliyeti "dış tedarikçilere ya da kişilere yapılan harcama" olarak tanımlar.</li>
+  <li><b>CPHC için "belirli kategori yoksa kapsam dışıdır" kuralı</b> (Tablo 6 notu) CPHI'daki serbestliğin tersidir: CPHC'nin kapsamı tam listedir. Listede açıkça olmayan bir maliyeti CPHC'ye eklemek yöntemi bozar.</li>
+  <li><b>Tavsiye ödülü zamanlaması derleyene bırakılır.</b> Gerçek ödeme ya da tahakkuk; kurumlar arası kıyasta iki yöntem farklı CPH üretir. Seçtiğiniz yöntemi CPH istatistiğinde belirtin.</li>
+  <li><b>CPH'nin kapsamı dardır.</b> Şartname doldurma süresini, işe alım kalitesini, müşteri memnuniyetini, işe alım sonrası maliyetleri ve pozisyonun boş kalma zararını ölçmediğini kendisi söyler.</li>
+  <li><b>Şartname eşik değer vermez.</b> "İyi" CPH ya da HCR için sayı yoktur; hesaplayıcıdaki yorum satırları standarttan değil, bu sayfanın yorumlarındandır. Pozisyon türü, düzeyi, pazar talebi ve coğrafya maliyeti değiştirir.</li>
+  <li><b>Kalem dağılımı örnek amaçlıdır.</b> Şartname HCR örneği için yalnızca toplamları verir (dış 100 000, iç 100 000, ilk yıl ücret 2 000 000); tablodaki kalem tutarları, işe alım sayısı (40), CPHC toplamı ve paylaştırma tutarı bu sayfaya aittir. Paylaştırma (karma işe alımcı) ve dönem sapması hesapları şartnamede formül olarak yoktur; yüzde kuralı ve örneklerden türetilmiştir.</li>
+  <li>Şartname para birimini sabitlemez (Tablo 9 ve 10 €; HCR örneği €; bazı örnekler $/USD anılır); farklı para birimlerinde toplanan maliyetleri birleştirmeden önce çevirin. Kampüs CPH formülünde (5) pay "dış kampüs" ve "iç zorunlu" etiketleriyle farklı adlandırılır; bu sayfada aynı kapsam olarak okunmuştur.</li>
+  <li>Bu sayfadaki tablolar şartnamenin örnek sayılarıdır; gerçek bir kuruma ait değildir.</li>
+</ul>
+
+<h2 id="raporlama">Metriklerin Raporlanması</h2>
+<table>
+  <thead><tr><th>Alıcı</th><th>Ne görmek ister</th><th>Rapor biçimi</th></tr></thead>
+  <tbody>
+    <tr><td>İşe alım ve İK</td>
+      <td>CPHI, CPHC ve HCR; kalem kalem maliyet; kaynak ve kanal etkinliği; segment ve işe alım uzmanı karşılaştırması; kampüs işe alımı</td>
+      <td>Analitik rapor, aylık ya da çeyreklik</td></tr>
+    <tr><td>Üst yönetim</td>
+      <td>CPH eğilimi, bütçeye göre sapma, RPO karşılaştırması, işgücü devri maliyetine katkısı</td>
+      <td>Skor kartı, dönemsel</td></tr>
+    <tr><td>İşe alan yöneticiler</td>
+      <td>Kendi birimlerinin CPH'si; işe alım ve ikincil yönetim süresi maliyeti</td>
+      <td>Birim raporu, çeyreklik</td></tr>
+    <tr><td>Finans ve planlama</td>
+      <td>Bütçe planlama girdileri, tahakkuk yöntemi, maliyet kodları ve dönemler arası varyans</td>
+      <td>Bütçe ekli rapor, çeyreklik ve yıllık</td></tr>
+    <tr><td>Dış paydaş (kıyaslama, RPO sağlayıcısı)</td>
+      <td>CPHC (yalnızca) ve kapsam dipnotu; HCR; işe alım türü karması</td>
+      <td>Kıyaslama anketi, yıllık</td></tr>
+  </tbody>
+</table>
+<p><b>Her raporda bulunması gerekenler:</b> kullanılan ölçü (CPHI, CPHC ya da HCR), dönem ve tarih/tahakkuk yöntemi, kayıt sistemi, maliyet kapsamı (hangi kalemler), işe alım tanımı (başlayan ya da kabul edilen teklif; dahil/hariç türler), tavsiye ödüllerinin sayım yöntemi, bölümleme yöntemi (Tablo 8) ve veri kalitesi notu; derleyen kişinin adı.</p>
+
+<h2 id="ilgili">İlgili Standartlar</h2>
+<ul>
+  <li><b>ISO 30400</b> — insan kaynakları yönetimi terimler sözlüğü; bu şartnamenin terim tanımları için atıf yaptığı belge.</li>
+  <li><b>ISO 30405</b> — işe alım kılavuzu; işe alım sürecinin ölçülmesi ve iyileştirilmesi.</li>
+  <li><b>ISO/TS 30411</b> — işe alım kalitesi metriği; CPH'nin ölçmediği kaliteyi ölçer.</li>
+  <li><b>ISO/TS 30410</b> — işe alımın etkisi metriği; işe alınanın kuruma katkısı.</li>
+  <li><b>ISO/TS 30427</b> — maliyet metrikleri kümesi; işe alım başına maliyet, ISO 30414 maliyetler kümesinin ayrı bir metriği olarak bu şartnamede ayrıntılandırılır.</li>
+  <li><b>ISO/TS 30421</b> — işe alım ve devir maliyetleri; devir ve elde tutma ölçüleri (CPH devir maliyetinin bir bileşenidir).</li>
+</ul>
+
+<h2 id="sss">Sıkça Sorulan Sorular</h2>
+<details><summary>CPH nasıl hesaplanır?</summary>
+<p>(Σ dış maliyet + Σ iç maliyet) ÷ belirli bir dönemdeki toplam işe alım sayısı. Dış maliyetler dış tedarikçilere yapılan harcamalar (reklam, ajans ücretleri, RPO, seyahat gibi), iç maliyetler iç personel ve örgütsel maliyetlerdir (işe alım personeli, ofis, öğrenme gibi).</p></details>
+
+<details><summary>CPHI ile CPHC arasındaki fark nedir?</summary>
+<p>Formül aynıdır; fark kapsamdadır. CPHI kuruma özgüdür ve kurumun işe alım ortamına göre seçilen kalemleri içerir; kurumlar arası kıyas için tasarlanmamıştır. CPHC, kurumlar arasında makul ölçüde ortak olan daha dar bir kalem kümesi kullanır ve yalnızca fiilen işe başlayanları sayar; kıyaslama içindir.</p></details>
+
+<details><summary>HCR nedir ve neden kullanılır?</summary>
+<p>Toplam işe alım maliyetinin yeni işe alınanların ilk yıl toplam ücretine oranıdır (yüzde olarak). Farklı ücret düzeylerindeki işe alımların maliyetini normalize eder: örneğin yılda 10 yöneticiyi 175 000 € ücretle işe alan ekip ile 200 saatlik çalışan alan ekip aynı maliyeti yapabilir, ama CPH'leri çok farklı olur. Örnekte (100 000 + 100 000) ÷ 2 000 000 × 100 = %10.</p></details>
+
+<details><summary>Hangi işe alımlar sayılır?</summary>
+<p>İşe alan yöneticinin talebinin tamamlandığı her işe alım (dış ya da iç) ve bordroda olup tam zamanlı pozisyona alınan geçici personel sayılır. İç yeniden yapılanma, otomatik yenilenen sözleşme, geçici rotasyon, birleşme ve satın alma maliyetleri ve yeniden sınıflandırılan roller hariçtir. CPHC'de ek olarak kesirli işe alım ve ek işçiler (yüklenici, ajans personeli) hariçtir ve yalnızca fiilen işe başlayanlar sayılır.</p></details>
+
+<details><summary>İşe alım ne zaman sayılır: başlayınca mı, teklif kabul edilince mi?</summary>
+<p>CPHI'da derleyen kişi karar verir. "Başlama" seçilirse CPH, başarılı işe alım sonuçlarının ortalama maliyetini; "kabul edilen teklif" seçilirse işe alım verimliliğini ölçer. CPHC'de yalnızca fiilen işe başlayanlar sayılır.</p></details>
+
+<details><summary>Çalışan tavsiye ödüllerini nasıl sayarım?</summary>
+<p>Ödeme genellikle yeni çalışanın belirli kıdemi sonrası yapıldığı için ölçülen dönemde gerçekleşmeyebilir. Derleyen kişi dönemde ödenen gerçek parayı kullanabilir ya da beklenen gideri tahakkuk olarak sayabilir (ör. 10 tavsiyeyle işe alım × işe alım başına €X); hangi tekniğin kullanıldığını CPH istatistiğinde belirtir.</p></details>
+
+<details><summary>Verinin ne kadar doğru olması gerekir?</summary>
+<p>%100 doğruluk gerekmez; ancak verinin makul bir sorgulamadan geçtiği gösterilmelidir. Kaynak maliyet verisinin mümkünse kayıt sistemlerinden alınması, maliyet kodlarının düzenlenmesi, maliyet merkezlerinin ve dönemler arası varyansın düzenli gözden geçirilmesi ve süreçlerin sürekli iyileştirilmesi beklenir. CPH için veri kalitesi, finansal raporlamadakinden düşük bir düzeydir.</p></details>
+
+<details><summary>Zorunlu ve zorunlu sonrası eğitimden işe alımlar nasıl sayılır?</summary>
+<p>İşe başlamadan önceki 12 ay içinde diplomasını almış ya da mezuniyetten sonra seçtiği meslekte bir aydan uzun tam zamanlı çalışmamış kişiler kampüs işe alımıdır. Stajyer ve co-op maliyetleri ilk işe alındıkları yıla yazılır. Yalnızca birincil rolü yetenek edinmek olanların ücreti girer; karma uzmanların ücreti zaman ya da işe alım yüzdesine göre paylaştırılır; kampüs CPH'si Formül (5) ile hesaplanır.</p></details>
+
+<footer>
+  ISO/TS 30407:2017 çerçevesinden üretilmiş çalışma aracı. Metrik adları, sınıflandırma ve formüller şartnameye dayanır; açıklamalar, örnek değerler ve kod özgün olarak yazılmıştır. Rapor örneklerindeki sayılar şartnameden alınmıştır.
+  Şartnamenin kendisi telif korumalıdır ve bu sayfa onun yerine geçmez.
+</footer>
+
+</div>
+
+<script type="text/x-python" id="pysrc">
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+iso30407_metrikler.py
+=====================
+ISO/TS 30407:2017 (Human resource management — Cost-Per-Hire) çerçevesindeki
+işe alım başına maliyet metriklerinin Python karşılığı.
+
+Teknik şartname üç formül ailesi tanımlar:
+  CPHI  — kuruma özgü işe alım başına maliyet:  (Σ dış + Σ iç maliyet) ÷ işe alım sayısı
+  CPHC  — kurumlar arası karşılaştırılabilir:    aynı formül, daha dar maliyet kapsamı
+  HCR   — işe alım maliyet oranı:                (Σ dış + Σ iç) ÷ ilk yıl toplam ücret × 100
+ayrıca bölümlenmiş (segment) CPH ve lise/üniversite (zorunlu ve zorunlu sonrası
+eğitim) işe alımları için özel bir CPH (Formül 5) içerir. Modül üç bölüme ayrılmıştır:
+
+    1) Formüller   — CPHI, CPHC, HCR, segment, kampüs
+    2) Yardımcılar — paylaştırma, dönem sapması, toplam ile ortalama farkı
+    3) Yapılar     — maliyet kalemleri tablosu, denetim, dağıtıcı
+
+Kullanım:
+    from iso30407_metrikler import cph, hcr
+    cph(100000, 100000, 40)           ->  5000.0
+    hcr(100000, 100000, 2000000)      ->  10.0
+
+Doğrudan çalıştırıldığında (python3 iso30407_metrikler.py) tüm fonksiyonlar
+örnek verilerle çalıştırılır ve sonuçlar tablo hâlinde yazdırılır.
+
+Not: Metrik adları, sınıflandırma ve formüller ISO/TS 30407:2017'ye dayanır.
+Paylaştırma ve dönem sapması hesapları ile kalem dağılımı örnek verisi bu
+modülde türetilmiş ya da örnek amaçlıdır. Kod ve açıklamalar özgün olarak
+yazılmıştır; şartnamenin kendisi telif korumalıdır.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+__all__ = [
+    "GecersizGirdi",
+    # formüller
+    "cph", "hcr", "segment_cph", "kampus_cph",
+    # yardımcılar
+    "toplam_ve_ortalama", "paylastir", "donem_sapmasi",
+    # yapılar
+    "Kalem", "MaliyetTablosu", "KALEMLER", "ornek_tablo", "cph_denetimi",
+    "hesapla", "METRIK_LISTESI",
+]
+
+
+class GecersizGirdi(ValueError):
+    """Girdiler tutarsız: payda sıfır, maliyet negatif vb."""
+
+
+def _bol(pay: float, payda: float, ad: str = "payda") -> float:
+    if payda <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return pay / payda
+
+
+def _negatif_yok(**degerler: float) -> None:
+    for ad, v in degerler.items():
+        if v < 0:
+            raise GecersizGirdi(f"{ad} negatif olamaz")
+
+
+# ---------------------------------------------------------------------------
+# 1) Formüller (madde 4–7)
+# ---------------------------------------------------------------------------
+
+def cph(dis: float, ic: float, isealim: float) -> float:
+    """Formül (1) ve (2): CPHI ve CPHC = (Σ dış maliyet + Σ iç maliyet) ÷ işe alım sayısı."""
+    _negatif_yok(dis=dis, ic=ic)
+    return _bol(dis + ic, isealim, "işe alım sayısı")
+
+
+def hcr(dis: float, ic: float, ilk_yil_ucret: float) -> float:
+    """Formül (3): HCR = (Σ dış + Σ iç) ÷ ilk yıl toplam ücret × 100 (yüzde)."""
+    _negatif_yok(dis=dis, ic=ic)
+    return 100 * _bol(dis + ic, ilk_yil_ucret, "ilk yıl toplam ücret")
+
+
+def segment_cph(dis_alt: float, ic_alt: float, isealim_alt: float) -> float:
+    """Formül (4): yalnızca ilgili alt kümenin maliyet ve işe alımları (aynı formül)."""
+    return cph(dis_alt, ic_alt, isealim_alt)
+
+
+def kampus_cph(dis_kampus: float, ic_zorunlu: float, isealim_zorunlu: float) -> float:
+    """Formül (5): zorunlu ve zorunlu sonrası eğitim işe alımları için CPH."""
+    return cph(dis_kampus, ic_zorunlu, isealim_zorunlu)
+
+
+# ---------------------------------------------------------------------------
+# 2) Yardımcılar
+# ---------------------------------------------------------------------------
+
+def toplam_ve_ortalama(segmentler: list) -> dict:
+    """Segmentlerin (dis, ic, isealim) toplamından CPH ile segment CPH'lerinin basit ortalaması.
+
+    Şartnamenin Tablo 10'u "Toplam/Ortalama" satırında segment CPH'lerinin basit
+    ortalamasını (3 838,35) verir; toplam maliyetin toplam işe alıma bölünmesi ise 3 828,43'tür.
+    """
+    if not segmentler:
+        raise GecersizGirdi("en az bir segment gerekir")
+    dis = sum(s[0] for s in segmentler)
+    ic = sum(s[1] for s in segmentler)
+    n = sum(s[2] for s in segmentler)
+    cphler = [cph(*s) for s in segmentler]
+    agirlikli = cph(dis, ic, n)
+    ortalama = sum(cphler) / len(cphler)
+    return {"agirlikli": agirlikli, "ortalama": ortalama, "fark": ortalama - agirlikli,
+            "maliyet": dis + ic, "isealim": n}
+
+
+def paylastir(ucret: float, pay_yuzde: float) -> float:
+    """Karma işe alımcının ücretinden kampüs işe alımına ayrılan pay (madde 7.3.6.5; yüzde olarak)."""
+    _negatif_yok(ucret=ucret)
+    if pay_yuzde < 0 or pay_yuzde > 100:
+        raise GecersizGirdi("pay 0 ile 100 arasında olmalı")
+    return ucret * pay_yuzde / 100
+
+
+def donem_sapmasi(onceki: float, cari: float) -> float:
+    """(cari − önceki) ÷ önceki × 100: bir maliyet kaleminin dönemler arası değişimi (madde 7.2.1)."""
+    if onceki <= 0:
+        raise GecersizGirdi("önceki değer sıfırdan büyük olmalı")
+    if cari < 0:
+        raise GecersizGirdi("cari değer negatif olamaz")
+    return 100 * (cari - onceki) / onceki
+
+
+# ---------------------------------------------------------------------------
+# 3) Yapılar: maliyet kalemleri tablosu (Tablo 2, 3, 5, 6)
+# ---------------------------------------------------------------------------
+
+# (ad, tür, CPHC kapsamında mı)  tür: "dis" ya da "ic"
+KALEMLER = [
+    ("Reklam ve pazarlama", "dis", True),
+    ("Sabıka, eğitim, kredi ve referans kontrolleri", "dis", True),
+    ("Zorunlu ve zorunlu sonrası eğitim kurumlarından işe alım", "dis", True),
+    ("Danışmanlık hizmetleri", "dis", False),
+    ("Koşullu işçinin kadroya geçiş ücretleri", "dis", False),
+    ("Tıbbi ya da sağlık testleri", "dis", True),
+    ("Çalışan tavsiye ödülleri (dış)", "dis", True),
+    ("Göç ve çalışma izni giderleri", "dis", False),
+    ("İş fuarı ve işe alım etkinliği", "dis", True),
+    ("Ön eleme ücretleri", "dis", False),
+    ("İşe alım süreci dış kaynak (RPO) ücretleri", "dis", True),
+    ("Yer değiştirme (taşınma) ücretleri", "dis", False),
+    ("Kaynak bulma maliyetleri", "dis", True),
+    ("Seyahat ve giderler, aday", "dis", True),
+    ("Seyahat ve giderler, işe alım uzmanı", "dis", True),
+    ("Teknoloji maliyetleri", "dis", True),
+    ("Üçüncü taraf ajans ücretleri", "dis", True),
+    ("İşe alım personeli maliyeti", "ic", True),
+    ("Kaynak bulma personeli maliyeti", "ic", False),
+    ("Hükümet uyumu için iç yük", "ic", False),
+    ("Emek dışı ofis maliyetleri", "ic", True),
+    ("İşe alım öğrenme ve gelişim", "ic", True),
+    ("Tavsiye ücretleri (iç)", "ic", True),
+    ("İkincil yönetim süresi: etkinlikler", "ic", False),
+    ("İkincil yönetim süresi: işe alım görüşmeleri", "ic", False),
+]
+
+
+@dataclass
+class Kalem:
+    """Tek bir maliyet kalemi; tur 'dis' ya da 'ic'."""
+    ad: str
+    tur: str
+    tutar: float = 0
+    cphc: bool = True
+
+
+@dataclass
+class MaliyetTablosu:
+    """Maliyet kalemleri tablosu: CPHI tüm kalemleri, CPHC yalnızca işaretlileri toplar."""
+    kalemler: list = field(default_factory=list)
+
+    def ekle(self, ad, tur, tutar, cphc=True) -> "MaliyetTablosu":
+        if tur not in ("dis", "ic"):
+            raise GecersizGirdi("tür 'dis' ya da 'ic' olmalı")
+        _negatif_yok(tutar=tutar)
+        self.kalemler.append(Kalem(ad, tur, tutar, cphc))
+        return self
+
+    def _topla(self, tur: str, yalniz_cphc: bool = False) -> float:
+        return sum(k.tutar for k in self.kalemler
+                   if k.tur == tur and (k.cphc or not yalniz_cphc))
+
+    def ozet(self, basladi: float, ilk_yil_ucret: float, cphi_isealim: float | None = None) -> dict:
+        dis, ic = self._topla("dis"), self._topla("ic")
+        dis_c, ic_c = self._topla("dis", True), self._topla("ic", True)
+        n_i = basladi if cphi_isealim is None else cphi_isealim
+        return {
+            "dis_cphi": dis, "ic_cphi": ic,
+            "cphi": round(cph(dis, ic, n_i), 2),
+            "dis_cphc": dis_c, "ic_cphc": ic_c,
+            "cphc": round(cph(dis_c, ic_c, basladi), 2),
+            "hcr_yuzde": round(hcr(dis, ic, ilk_yil_ucret), 2),
+        }
+
+
+def _ornek_dagilim() -> list:
+    """Örnek amaçlı kalem dağılımı: dış 100 000, iç 100 000 (HCR örneğinin toplamları)."""
+    dis = {"Reklam ve pazarlama": 20000,
+           "Sabıka, eğitim, kredi ve referans kontrolleri": 6000,
+           "İş fuarı ve işe alım etkinliği": 10000,
+           "Yer değiştirme (taşınma) ücretleri": 10000,
+           "Seyahat ve giderler, aday": 7000,
+           "Seyahat ve giderler, işe alım uzmanı": 5000,
+           "Teknoloji maliyetleri": 12000,
+           "Üçüncü taraf ajans ücretleri": 30000}
+    ic = {"İşe alım personeli maliyeti": 70000,
+          "Hükümet uyumu için iç yük": 5000,
+          "Emek dışı ofis maliyetleri": 12000,
+          "İşe alım öğrenme ve gelişim": 3000,
+          "İkincil yönetim süresi: işe alım görüşmeleri": 10000}
+    return [(ad, tur, dis.get(ad, 0) if tur == "dis" else ic.get(ad, 0), cphc)
+            for ad, tur, cphc in KALEMLER]
+
+
+def ornek_tablo() -> MaliyetTablosu:
+    """Örnek tablo. Toplamlar şartnamenin HCR örneğine uyar (dış 100 000, iç 100 000);
+    kalem dağılımı, işe alım sayısı (40) bu sayfaya aittir, şartnamede yoktur."""
+    t = MaliyetTablosu()
+    for ad, tur, tutar, cphc in _ornek_dagilim():
+        t.ekle(ad, tur, tutar, cphc)
+    return t
+
+
+def cph_denetimi(sistem_kaydi_secildi: bool = False,
+                 hire_tanimi_yazili: bool = False,
+                 tarih_yontemi_sabit: bool = False,
+                 kapsam_belgeli: bool = False,
+                 donemsel_varyans_testi: bool = False,
+                 surec_gozden_gecirme: bool = False,
+                 hcr_ile_birlikte: bool = False,
+                 tavsiye_yontemi_yazili: bool = False) -> list:
+    """Bir CPH raporunun eksiklerini listeler.
+
+    Maddeler ISO/TS 30407'nin 4–7. maddelerindeki beklentilerden türetilmiştir;
+    bir uygunluk sınaması değil, hazırlık kontrol listesidir.
+    """
+    kontroller = [
+        (sistem_kaydi_secildi, "Maliyet ve işe alım sayısı için tutarlı kullanılan bir kayıt sistemi (genel muhasebe, yetenek kazanım sistemi) seçilmemiş."),
+        (hire_tanimi_yazili, "Hangi işe alımların sayıldığı (başlayanlar mı, kabul edilen teklifler mi) ve dahil/dışlama kuralları yazılı değil."),
+        (tarih_yontemi_sabit, "Gider tarihi yöntemi (fatura tarihi mi, işe alıma tahakkuk mu) bir kez belirlenip tüm raporlarda tutarlı uygulanmamış."),
+        (kapsam_belgeli, "Maliyet kapsamı (CPHI/CPHC kalemleri) belgelenmemiş; hangi kalemlerin dahil olduğu görünmüyor."),
+        (donemsel_varyans_testi, "Maliyet kalemlerinin dönemler arası varyansı sınanmıyor; ani sapmalar gözden kaçabilir."),
+        (surec_gozden_gecirme, "Veriyi üreten süreçler düzenli gözden geçirilmiyor; sürekli iyileştirme taahhüdü yok."),
+        (hcr_ile_birlikte, "CPH tek başına değerlendiriliyor; farklı işe alım türleri için HCR ile birlikte okunmalı."),
+        (tavsiye_yontemi_yazili, "Çalışan tavsiye ödüllerinin gerçek ödeme mi, tahakkuk mu olarak sayıldığı yazılı değil."),
+    ]
+    return [metin for tamam, metin in kontroller if not tamam]
+
+
+# ---------------------------------------------------------------------------
+# 4) Dağıtıcı: hesaplayıcı arayüzünün kullandığı tek giriş noktası
+# ---------------------------------------------------------------------------
+
+METRIK_LISTESI = ["cphi", "cphc", "hcr", "segment", "kampus", "paylasim", "sapma"]
+
+
+def _g(x) -> str:
+    """Sayıyı, bilimsel gösterim kullanmadan en kısa biçimde yazar."""
+    return f"{x:.12g}"
+
+
+def hesapla(metrik: str, **g) -> dict:
+    """Metrik kimliği ve girdilerle hesabı yapar; sözlük döndürür.
+
+    Dönen anahtarlar: deger, ifade (formülün yerine konmuş hâli), ondalik,
+    birim, ayrinti (etiket–değer çiftleri).
+    """
+    if metrik in ("cphi", "cphc"):
+        n = g["isealim"] if metrik == "cphi" else g["basladi"]
+        d = cph(g["dis"], g["ic"], n)
+        toplam = g["dis"] + g["ic"]
+        return {"deger": d, "ondalik": 2, "birim": "para birimi / işe alım",
+                "ifade": f"({_g(g['dis'])} + {_g(g['ic'])}) ÷ {_g(n)}",
+                "ayrinti": [["Toplam maliyet", toplam],
+                            ["Dış maliyet payı (%)", round(100 * _bol(g["dis"], toplam, "toplam maliyet"), 1)],
+                            ["İç maliyet payı (%)", round(100 * g["ic"] / toplam, 1)]]}
+
+    if metrik == "hcr":
+        d = hcr(g["dis"], g["ic"], g["ilk_yil_ucret"])
+        return {"deger": d, "ondalik": 2, "birim": "% (maliyetin ilk yıl ücretine oranı)",
+                "ifade": f"({_g(g['dis'])} + {_g(g['ic'])}) ÷ {_g(g['ilk_yil_ucret'])} × 100",
+                "ayrinti": [["Toplam maliyet", g["dis"] + g["ic"]],
+                            ["Her 1 birim ilk yıl ücretine düşen maliyet", round((g["dis"] + g["ic"]) / g["ilk_yil_ucret"], 3)]]}
+
+    if metrik == "segment":
+        s = [(g["e1"], g["i1"], g["n1"]), (g["e2"], g["i2"], g["n2"]), (g["e3"], g["i3"], g["n3"])]
+        r = toplam_ve_ortalama(s)
+        return {"deger": r["agirlikli"], "ondalik": 2, "birim": "para birimi / işe alım (toplam maliyet ÷ toplam işe alım)",
+                "ifade": f"({_g(r['maliyet'])}) ÷ {_g(r['isealim'])}",
+                "ayrinti": [["Segment CPH'lerinin basit ortalaması (Tablo 10'daki 'Toplam/Ortalama')", round(r["ortalama"], 2)],
+                            ["Ortalama − ağırlıklı fark", round(r["fark"], 2)],
+                            ["Toplam maliyet", r["maliyet"]],
+                            ["Toplam işe alım", r["isealim"]]]}
+
+    if metrik == "kampus":
+        d = kampus_cph(g["dis_kampus"], g["ic_zorunlu"], g["isealim_zorunlu"])
+        return {"deger": d, "ondalik": 2, "birim": "para birimi / zorunlu ve zorunlu sonrası eğitim işe alımı",
+                "ifade": f"({_g(g['dis_kampus'])} + {_g(g['ic_zorunlu'])}) ÷ {_g(g['isealim_zorunlu'])}",
+                "ayrinti": [["Toplam kampüs maliyeti", g["dis_kampus"] + g["ic_zorunlu"]]]}
+
+    if metrik == "paylasim":
+        d = paylastir(g["ucret"], g["pay"])
+        return {"deger": d, "ondalik": 2, "birim": "para birimi (kampüs işe alımına ayrılan)",
+                "ifade": f"{_g(g['ucret'])} × {_g(g['pay'])} ÷ 100",
+                "ayrinti": [["Deneyimli işe alıma kalan pay (%)", round(100 - g["pay"], 1)],
+                            ["Deneyimli işe alıma kalan tutar", round(g["ucret"] - d, 2)]]}
+
+    if metrik == "sapma":
+        d = donem_sapmasi(g["onceki"], g["cari"])
+        return {"deger": d, "ondalik": 1, "birim": "% değişim",
+                "ifade": f"({_g(g['cari'])} − {_g(g['onceki'])}) ÷ {_g(g['onceki'])} × 100",
+                "ayrinti": [["Mutlak fark", g["cari"] - g["onceki"]],
+                            ["Cari değerin öncekine katı", round(g["cari"] / g["onceki"], 2)]]}
+
+    raise ValueError(f"Bilinmeyen metrik: {metrik}")
+
+
+# ---------------------------------------------------------------------------
+# 5) Doğrulama çıktısı
+# ---------------------------------------------------------------------------
+
+def _demo() -> None:
+    cizgi = "-" * 64
+    print("ISO/TS 30407 — doğrulama çıktısı")
+    print(cizgi)
+
+    print(f"HCR (şartname örneği)      : %{hcr(100000, 100000, 2000000):.0f}")
+    print(f"Tablo 10 bölgesel CPH      : Americas {cph(201600, 127432, 84):.2f}, "
+          f"EMEA {cph(154794.5, 66340.5, 47):.2f}, APAC {cph(111322.64, 39113.36, 52):.2f}")
+    r = toplam_ve_ortalama([(201600, 127432, 84), (154794.5, 66340.5, 47), (111322.64, 39113.36, 52)])
+    print(f"Toplam maliyet ÷ işe alım  : {r['agirlikli']:.2f}  (700 603 ÷ 183)")
+    print(f"Segment CPH ortalaması     : {r['ortalama']:.2f}  (şartnamedeki 'Toplam/Ortalama')")
+    print(f"Karma işe alımcı payı      : {paylastir(100000, 20):.0f} (ücret 100 000'in %20'si; tutar örnek)")
+    print(cizgi)
+
+    t = ornek_tablo()
+    for anahtar, deger in t.ozet(basladi=40, ilk_yil_ucret=2000000).items():
+        print(f"{anahtar:<12}: {deger}")
+    print(cizgi)
+
+    print("Dağıtıcı örneği:")
+    print(hesapla("hcr", dis=100000, ic=100000, ilk_yil_ucret=2000000))
+    print(cizgi)
+
+    print("Rapor denetimi (hiçbir ön koşulu sağlamayan bir kurum için):")
+    for u in cph_denetimi():
+        print(" !", u)
+
+
+if __name__ == "__main__":
+    _demo()
+</script>
+<script>
+/* =========================================================
+   1) METRİK VERİ TABANI
+   u: kullanıcılar (hr işe alım ve İK / exec üst yönetim / line işe alan yöneticiler /
+      fin finans ve planlama / ext dış paydaş)
+   st: bölüm (formul, dis, ic, payda, segment, veri)
+   r: raporlama (ic, dis)
+   t: aile (p formüller ve oranlar / c dış maliyet kalemleri / s iç maliyet kalemleri / r payda ve işe alım sayımı / o bölümleme, veri ve ölçüm)
+   calc: bu sayfadaki hesaplayıcı kimliği
+   iso: CPHC (kıyaslama) kapsamında
+   k: ek etiket (ctx bağlam, onk ön koşul, tur türetilmiş)
+   ========================================================= */
+var METRICS = [
+ {g:"Formüller ve oranlar", t:"p", items:[
+  {n:"CPHI: kuruma özgü işe alım başına maliyet", st:"formul", r:["ic"], calc:"cphi", d:"(Σ dış + Σ iç) ÷ işe alım sayısı; kurumlar arası karşılaştırma için tasarlanmamış (4.1, Formül 1)", u:["hr","exec","line","fin"]},
+  {n:"CPHC: karşılaştırılabilir işe alım başına maliyet", st:"formul", r:["ic","dis"], calc:"cphc", d:"Aynı formül, daha dar maliyet kapsamı; yalnızca işe başlayanlar (5.1, Formül 2)", u:["hr","exec","fin","ext"]},
+  {n:"HCR: işe alım maliyet oranı", st:"formul", r:["ic","dis"], calc:"hcr", d:"(Σ dış + Σ iç) ÷ ilk yıl toplam ücret × 100; örnek %10 (6.1, Formül 3)", u:["hr","exec","fin","ext"]},
+  {n:"Segment CPH", st:"formul", r:["ic"], calc:"segment", d:"Yalnızca ilgili alt kümenin maliyet ve işe alımları (7.3.3, Formül 4)", u:["hr","exec","fin"]},
+  {n:"Bölgesel CPH toplamı: toplam maliyet ÷ toplam işe alım", st:"formul", r:["ic"], k:"tur", calc:"segment", d:"Tablo 10: 700 603 ÷ 183 = 3 828,43; şartnamedeki 3 838,35 basit ortalamadır", u:["hr","exec","fin"]},
+  {n:"Kampüs CPH", st:"formul", r:["ic"], calc:"kampus", d:"(Σ dış kampüs + Σ iç zorunlu) ÷ zorunlu ve zorunlu sonrası eğitim işe alımları (7.3.6.7, Formül 5)", u:["hr","exec"]},
+  {n:"Karma işe alımcı ücretinin paylaştırılması", st:"formul", r:["ic"], k:"tur", calc:"paylasim", d:"Zaman ya da işe alım yüzdesine göre; örnek %20 (7.3.6.5)", u:["hr","fin"]},
+  {n:"Maliyet kaleminin dönemler arası sapması", st:"formul", r:["ic"], k:"tur", calc:"sapma", d:"Dönemler arası varyans testi; örnek teknoloji maliyetleri %50 düşük (7.2.1)", u:["hr","fin"]},
+  {n:"İşe alım maliyetinin devir maliyetine bileşeni", st:"formul", r:["ic"], d:"CPH, toplam işgücü devri maliyetini izlemenin bir bileşeni olarak kullanılır (Tablo 1)", u:["hr","exec","fin"]},
+  {n:"RPO kararlarında karşılaştırıcı", st:"formul", r:["ic"], d:"İşe alım süreci dış kaynak kullanımı kararlarında (Tablo 1)", u:["exec","fin","hr"]}
+ ]},
+ {g:"Dış maliyet kalemleri (Tablo 2 ve 5)", t:"c", items:[
+  {n:"Reklam ve pazarlama", st:"dis", r:["ic"], iso:1, d:"İş ilanı siteleri, sosyal ağlar, arama motoru pazarlaması, broşür ve web sitesi, gazete (Tablo 2, 5)", u:["hr","fin"]},
+  {n:"Sabıka, eğitim, kredi ve referans kontrolleri", st:"dis", r:["ic"], iso:1, d:"Yerel yasa ve geleneklere uygun kontroller (Tablo 2, 5)", u:["hr","fin"]},
+  {n:"Zorunlu ve zorunlu sonrası eğitimden işe alım giderleri", st:"dis", r:["ic"], iso:1, d:"Stajyer, co-op ve tam zamanlı mezun işe alımı kaynak bulma giderleri (Tablo 2, 5)", u:["hr","fin"]},
+  {n:"Danışmanlık hizmetleri", st:"dis", r:["ic"], d:"İşe alım sürecinde danışmanlık ve işe alımı destekleyen dış hukuk danışmanı (Tablo 2)", u:["hr","fin"]},
+  {n:"Koşullu işçinin kadroya geçiş ücretleri", st:"dis", r:["ic"], d:"Tedarikçiye ya da diğer taraflara ödenen bedeller (Tablo 2)", u:["hr","fin"]},
+  {n:"Tıbbi ya da sağlık testleri", st:"dis", r:["ic"], iso:1, d:"İşe başlamadan önce ya da işe alım sürecinde yapılan testler (Tablo 2, 5)", u:["hr","fin"]},
+  {n:"Çalışan tavsiye ödülleri / ödemeleri (dış)", st:"dis", r:["ic"], iso:1, d:"Tavsiye ettiği aday işe alınan çalışana tanımlı ödeme; gerçek ödeme ya da tahakkuk (Tablo 2, 5)", u:["hr","fin"]},
+  {n:"Göç ve çalışma izni giderleri", st:"dis", r:["ic"], d:"Hukuki ücretler, danışmanlık, başvuru ücretleri (Tablo 2)", u:["hr","fin"]},
+  {n:"İş fuarı ve işe alım etkinliği giderleri", st:"dis", r:["ic"], iso:1, d:"Organizatör ücreti, stant tasarımı ve kurulumu, nakliye, kiralama (Tablo 2, 5)", u:["hr","fin"]},
+  {n:"Ön eleme ücretleri", st:"dis", r:["ic"], d:"Test hizmetleri, geçerli değerlendirmeler, standart ölçümler (Tablo 2)", u:["hr","fin"]},
+  {n:"İşe alım süreci dış kaynak (RPO) ücretleri", st:"dis", r:["ic"], iso:1, d:"RPO kullanılıyorsa ödenen ücretlerin toplamı (Tablo 2, 5)", u:["hr","fin"]},
+  {n:"Yer değiştirme (taşınma) ücretleri", st:"dis", r:["ic"], d:"Taşınma, seyahat, yer değiştirme tedarikçileri (Tablo 2)", u:["hr","fin"]},
+  {n:"Kaynak bulma maliyetleri", st:"dis", r:["ic"], iso:1, d:"Liste satın alma, veri tabanı lisansı, ağ üyelikleri (Tablo 2, 5)", u:["hr","fin"]},
+  {n:"Seyahat ve giderler: aday", st:"dis", r:["ic"], iso:1, d:"Adayın yaptığı, kurumun karşıladığı giderler (Tablo 2, 5)", u:["hr","fin"]},
+  {n:"Seyahat ve giderler: işe alım uzmanı", st:"dis", r:["ic"], iso:1, d:"İşe alım sırasında yapılan ve karşılanan giderler (Tablo 2, 5)", u:["hr","fin"]},
+  {n:"Teknoloji maliyetleri", st:"dis", r:["ic"], iso:1, d:"Yetenek kazanım, aday ilişki yönetimi ve raporlama sistemleri (Tablo 2, 5)", u:["hr","fin"]},
+  {n:"Üçüncü taraf ajans ücretleri", st:"dis", r:["ic"], iso:1, d:"Şarta bağlı ya da sabit dış ajans ücretleri (Tablo 2, 5)", u:["hr","fin"]}
+ ]},
+ {g:"İç maliyet kalemleri (Tablo 3 ve 6)", t:"s", items:[
+  {n:"İşe alım personeli maliyeti", st:"ic", r:["ic"], iso:1, d:"Tam yüklü maliyet: temel ücret, yan haklar, ikramiye; düzenli ve sözleşmeli işe alım uzmanları (Tablo 3, 6)", u:["hr","fin"]},
+  {n:"Kaynak bulma personeli maliyeti", st:"ic", r:["ic"], d:"Aynı tam yüklü maliyet tanımı; CPHC'de Tablo 6'daki yinelenen satır nedeniyle belirsiz (Tablo 3)", u:["hr","fin"]},
+  {n:"Hükümet uyumu için iç yük", st:"ic", r:["ic"], d:"Mevzuata uyum için malzeme hazırlama, sunma, izleme ek iç emek (Tablo 3)", u:["hr","fin"]},
+  {n:"Emek dışı ofis maliyetleri", st:"ic", r:["ic"], iso:1, d:"Kira, sermaye giderleri ve arızi masrafların temsili payı (Tablo 3, 6)", u:["hr","fin"]},
+  {n:"İşe alım öğrenme ve gelişim", st:"ic", r:["ic"], iso:1, d:"İşe alım ekibinin yeteneklerini geliştiren öğrenme giderleri (Tablo 3, 6)", u:["hr","fin"]},
+  {n:"Tavsiye ücretleri (iç)", st:"ic", r:["ic"], iso:1, d:"Belirli kıdem sonrası ödenen tavsiye ücretleri; dış listedeki ödülle çift sayılmamalı (Tablo 3, 6)", u:["hr","fin"]},
+  {n:"İkincil yönetim süresi: etkinlikler", st:"ic", r:["ic"], d:"Etkinlik saati × uygun iç ücret oranı (Tablo 3)", u:["hr","fin","line"]},
+  {n:"İkincil yönetim süresi: işe alım görüşmeleri", st:"ic", r:["ic"], d:"Görüşme sayısı × uygun iç ücret oranı (Tablo 3)", u:["hr","fin","line"]}
+ ]},
+ {g:"Payda ve işe alım sayımı", t:"r", items:[
+  {n:"Toplam işe alım sayısı (Ytot)", st:"payda", r:["ic","dis"], k:"onk", d:"Dönemdeki işe alımların toplamı; maliyet verisiyle aynı toplama yöntemi (4.3.1, 5.3.1)", u:["hr","fin","line"]},
+  {n:"CPHI: işe alımın sayıldığı nokta (başlama / teklif kabulü)", st:"payda", r:["ic"], d:"Başlama başarılı sonuçların maliyetini, teklif kabulü işe alım verimliliğini ölçer (4.3.2)", u:["hr","exec"]},
+  {n:"CPHC: yalnızca fiilen işe başlayanlar", st:"payda", r:["dis"], iso:1, d:"Derleyen kişi takdir kullanamaz (5.3.2)", u:["hr","ext"]},
+  {n:"Kesirli işe alım kullanılmaz (CPHC)", st:"payda", r:["dis"], iso:1, d:"Kurumlar arası FTE kıyası zor; yalnızca çalışanlar sayılır (Tablo 7)", u:["hr","ext"]},
+  {n:"Bordroda olup tam zamanlıya alınan geçici personel", st:"payda", r:["ic","dis"], iso:1, d:"Dahil (Tablo 4, 7)", u:["hr"]},
+  {n:"Hariç: iç yeniden yapılanma, otomatik yenilenen sözleşmeler", st:"payda", r:["ic","dis"], d:"CPHI ve CPHC hariç tutma kuralı (Tablo 4, 7)", u:["hr","fin","line"]},
+  {n:"Hariç: geçici rotasyon, birleşme ve satın alma, yeniden sınıflandırma", st:"payda", r:["ic","dis"], d:"CPHI ve CPHC hariç tutma kuralı (Tablo 4, 7)", u:["hr","fin"]},
+  {n:"Hariç (CPHC): ek işçiler ve üçüncü tarafça ödenen işçiler", st:"payda", r:["dis"], iso:1, d:"Bordroda olmayan yükleniciler, ajans personeli, danışmanlar (Tablo 7)", u:["hr","ext"]},
+  {n:"İlk yıl toplam ücret (HCR paydası)", st:"payda", r:["ic","dis"], k:"onk", d:"Teklif edilen ve kabul edilen 12 aylık yuvarlanan finansal ücret (6.3.3)", u:["hr","fin"]},
+  {n:"İlk yıl ücretinin unsurları: maaş, yan haklar, ikramiye, teşvik", st:"payda", r:["ic"], d:"İlk teklif mektubunda bulunan geleneksel ücret unsurları (6.3.3)", u:["hr","fin"]},
+  {n:"Hisse ödüllerinin adil değeri, araç kullanımı ve ek tıbbi", st:"payda", r:["ic"], d:"İlk yıl toplam ücrete dahil olabilecek unsurlar (6.3.3)", u:["hr","fin"]},
+  {n:"İlk yılı fiilen tamamlama şartı yok", st:"payda", r:["ic"], k:"ctx", d:"Payda kuruma beklenen değeri temsil eder (6.3.3)", u:["hr","fin"]}
+ ]},
+ {g:"Bölümleme, veri ve ölçüm", t:"o", items:[
+  {n:"Bölümleme kriteri: coğrafya ya da konum", st:"segment", r:["ic"], d:"Bölümleme örneği (7.3.1)", u:["hr","exec","fin"]},
+  {n:"Bölümleme kriteri: eğitim düzeyi", st:"segment", r:["ic"], d:"Bölümleme örneği (7.3.1)", u:["hr","exec"]},
+  {n:"Bölümleme kriteri: liderlik düzeyi", st:"segment", r:["ic"], d:"Bireysel katkıcı, yönetici, üst düzey lider, zorunlu/zorunlu sonrası eğitim mezunu (7.3.1)", u:["hr","exec"]},
+  {n:"Bölümleme yönteminin belgelenmesi (Tablo 8)", st:"segment", r:["ic"], k:"onk", d:"Amaç, bölümlenecek değişkenler, zaman çerçevesi (7.3.1)", u:["hr","fin"]},
+  {n:"Ham veriye bölümleme sütunu ekleme (Tablo 9)", st:"segment", r:["ic"], d:"Örnek: iş birimi sütunu (7.3.2)", u:["hr","fin"]},
+  {n:"Bölümlenmiş CPH için aynı şeffaflık ve veri kalitesi", st:"segment", r:["ic"], d:"Aynı kapsam içi/dışı ölçütler (7.3.4)", u:["hr","fin"]},
+  {n:"Segmentin görsel gösterimde belirtilmesi", st:"segment", r:["ic"], d:"Sütun başlığı ya da yazılı gösterge (7.3.5)", u:["hr","exec"]},
+  {n:"Mezun işe alımı: 12 ay kuralı", st:"segment", r:["ic"], d:"Diplomadan sonraki 12 ay ve alanında bir aydan uzun tam zamanlı çalışmama (7.3.6.2)", u:["hr"]},
+  {n:"Stajyer ve co-op maliyetinin ilk işe alım yılına yazılması", st:"segment", r:["ic"], d:"Örnek: Willie 2007 stajı, 2009 işe alımı (7.3.6.3)", u:["hr","fin"]},
+  {n:"Kampüs işe alım uzmanları: yalnızca birincil rolü yetenek edinmek olanların ücreti", st:"segment", r:["ic"], d:"Örnek: Fred'in seyahat gideri girer, ücreti girmez (7.3.6.4)", u:["hr","fin"]},
+  {n:"Kampüs işe alımı doğrudan maliyetleri", st:"segment", r:["ic"], d:"Seyahat, tanıtım malzemesi, özgeçmiş kitapları, kampüse özel web sitesi ve sosyal medya (7.3.6.6)", u:["hr","fin"]},
+  {n:"Kampüs maliyetinde dahil / hariç (Tablo 11)", st:"segment", r:["ic"], d:"Kariyer fuarları dahil; araştırma harcamaları ve hayırseverlik hariç (7.3.6.6)", u:["hr","fin"]},
+  {n:"CPH'nin kapsamı dar: doldurma süresi, kalite, memnuniyet ölçülmez", st:"segment", r:["ic"], k:"ctx", d:"İşe alım sonrası maliyetler ve pozisyonun boş kalma zararı da dışarıda (Giriş)", u:["hr","exec"]},
+  {n:"Pozisyon türü, düzeyi, pazar talebi ve coğrafya etkisi", st:"segment", r:["ic","dis"], k:"ctx", d:"İşe alım maliyetlerinde varyans nedenleri (Giriş)", u:["hr","exec","ext"]},
+  {n:"Kayıt sistemi seçimi", st:"veri", r:["ic"], k:"onk", d:"Genel muhasebe, yetenek kazanım sistemi; tutarlı kullanım (7.1, 3.7)", u:["hr","fin"]},
+  {n:"%100 doğruluk gerekmez, makul sorgulama gerekir", st:"veri", r:["ic"], k:"ilke", d:"CPH veri kalitesi finansal raporlamadan düşük düzeydedir (4.2 notu, 7.1)", u:["hr","fin","exec"]},
+  {n:"Mantıklı maliyet kodları ve son kullanıcı eğitimi", st:"veri", r:["ic"], k:"onk", d:"Maliyetler maliyet kodlarına ayrılır (7.1)", u:["hr","fin"]},
+  {n:"Temsilî veri kümesi: kapsam ve derinlik", st:"veri", r:["ic"], k:"onk", d:"Tüm işe alımlar için maliyetler dahil mi, makul sorgulama yapıldı mı (7.2.1)", u:["hr","fin"]},
+  {n:"Maliyet merkezlerinin düzenli gözden geçirilmesi", st:"veri", r:["ic"], d:"Yeni maliyet merkezlerinin tespiti (7.2.1)", u:["hr","fin"]},
+  {n:"Dönemler arası maliyet varyansı testi", st:"veri", r:["ic"], d:"Örnek: teknoloji maliyetleri önceki döneme göre %50 düşük (7.2.1)", u:["hr","fin"]},
+  {n:"Veri üretim süreçlerinin düzenli incelemesi", st:"veri", r:["ic"], d:"Süreç dışı olayların yakalanması; sürekli iyileştirme (7.2.2)", u:["hr","fin"]},
+  {n:"Tarih aralığı: aralıktaki tüm finansal faaliyet", st:"veri", r:["ic"], k:"onk", d:"31 Mart 23.59 gideri 1 Ocak–31 Mart raporuna girer (7.2.3)", u:["hr","fin"]},
+  {n:"Gider zamanlaması: fatura tarihi ya da işe alıma tahakkuk", st:"veri", r:["ic"], k:"onk", d:"Karar bir kez verilir, raporlar arasında tutarlı olur (7.2.3)", u:["hr","fin"]},
+  {n:"Tavsiye ödülü: gerçek ödeme ya da tahakkuk", st:"veri", r:["ic"], k:"onk", d:"Derleyen kişi seçer ve belirtir (Tablo 2 notu)", u:["hr","fin"]}
+ ]}
+];
+
+var USERS = ["hr","exec","line","fin","ext"];
+var AILE_AD = {p:"formül ve oran", c:"dış maliyet", s:"iç maliyet", r:"payda", o:"bölümleme ve veri"};
+var EK_AD = {ctx:"bağlam etkeni", onk:"ön koşul", tur:"türetilmiş", ilke:"ilke"};
+
+/* --- matris çizimi --- */
+function renderMatrix(){
+  var fu = document.getElementById("fUser").value;
+  var fs = document.getElementById("fStage").value;
+  var ft = document.getElementById("fType").value;
+  var fr = document.getElementById("fRep").value;
+  var fq = document.getElementById("fQ").value.toLocaleLowerCase("tr");
+  var body = document.getElementById("mBody");
+  var html = "", shown = 0;
+
+  METRICS.forEach(function(grp){
+    if(ft && grp.t !== ft) return;
+    var rows = "";
+    grp.items.forEach(function(m){
+      if(fu && m.u.indexOf(fu) === -1) return;
+      if(fs && m.st !== fs) return;
+      if(fr && m.r.indexOf(fr) === -1) return;
+      if(fq && m.n.toLocaleLowerCase("tr").indexOf(fq) === -1) return;
+      shown++;
+      var cells = USERS.map(function(u){
+        if(m.u.indexOf(u) === -1) return '<td class="num"></td>';
+        var mark = '<span class="dot ' + grp.t + '"></span>';
+        return '<td class="num" title="' + m.n + '">' + (m.calc ? '<b>' + mark + '</b>' : mark) + '</td>';
+      }).join("");
+      var tags = '<span class="tag ' + grp.t + '">' + AILE_AD[grp.t] + '</span>' +
+                 (m.k ? ' <span class="tag lvl">' + EK_AD[m.k] + '</span>' : "") +
+                 (m.iso ? ' <span class="tag iso">CPHC</span>' : "") +
+                 (m.calc ? ' <span class="tag lvl">hesaplayıcı</span>' : "") +
+                 (m.r.indexOf("dis") !== -1 ? ' <span class="tag iso">dış rapor</span>' : "");
+      rows += '<tr><td class="name">' + (m.calc ? '<b>' + m.n + '</b>' : m.n) + ' ' + tags +
+              '<em>' + m.d + '</em></td>' + cells + '</tr>';
+    });
+    if(rows){
+      html += '<tr class="group"><td colspan="6">' + grp.g + '</td></tr>' + rows;
+    }
+  });
+
+  body.innerHTML = html || '<tr><td colspan="6">Bu filtre birleşimiyle eşleşen metrik yok.</td></tr>';
+  document.getElementById("mCount").textContent = shown + " metrik ve etken gösteriliyor.";
+}
+["fUser","fStage","fType","fRep","fQ"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", renderMatrix);
+});
+renderMatrix();
+
+/* =========================================================
+   2) MALİYET KALEMLERİ TABLOSU (Tablo 2, 3, 5, 6)
+   ========================================================= */
+/* ad, tür (dis | ic), CPHC kapsamında mı — gömülü Python modülündeki KALEMLER ile aynı sıra */
+var KALEMLER = [
+  ["Reklam ve pazarlama", "dis", true],
+  ["Sabıka, eğitim, kredi ve referans kontrolleri", "dis", true],
+  ["Zorunlu ve zorunlu sonrası eğitim kurumlarından işe alım", "dis", true],
+  ["Danışmanlık hizmetleri", "dis", false],
+  ["Koşullu işçinin kadroya geçiş ücretleri", "dis", false],
+  ["Tıbbi ya da sağlık testleri", "dis", true],
+  ["Çalışan tavsiye ödülleri (dış)", "dis", true],
+  ["Göç ve çalışma izni giderleri", "dis", false],
+  ["İş fuarı ve işe alım etkinliği", "dis", true],
+  ["Ön eleme ücretleri", "dis", false],
+  ["İşe alım süreci dış kaynak (RPO) ücretleri", "dis", true],
+  ["Yer değiştirme (taşınma) ücretleri", "dis", false],
+  ["Kaynak bulma maliyetleri", "dis", true],
+  ["Seyahat ve giderler, aday", "dis", true],
+  ["Seyahat ve giderler, işe alım uzmanı", "dis", true],
+  ["Teknoloji maliyetleri", "dis", true],
+  ["Üçüncü taraf ajans ücretleri", "dis", true],
+  ["İşe alım personeli maliyeti", "ic", true],
+  ["Kaynak bulma personeli maliyeti", "ic", false],
+  ["Hükümet uyumu için iç yük", "ic", false],
+  ["Emek dışı ofis maliyetleri", "ic", true],
+  ["İşe alım öğrenme ve gelişim", "ic", true],
+  ["Tavsiye ücretleri (iç)", "ic", true],
+  ["İkincil yönetim süresi: etkinlikler", "ic", false],
+  ["İkincil yönetim süresi: işe alım görüşmeleri", "ic", false]
+];
+/* örnek amaçlı kalem tutarları: dış 100 000, iç 100 000 (HCR örneğinin toplamları) */
+var ORNEK_TUTAR = {
+  "Reklam ve pazarlama":20000, "Sabıka, eğitim, kredi ve referans kontrolleri":6000, "İş fuarı ve işe alım etkinliği":10000,
+  "Yer değiştirme (taşınma) ücretleri":10000, "Seyahat ve giderler, aday":7000, "Seyahat ve giderler, işe alım uzmanı":5000,
+  "Teknoloji maliyetleri":12000, "Üçüncü taraf ajans ücretleri":30000,
+  "İşe alım personeli maliyeti":70000, "Hükümet uyumu için iç yük":5000, "Emek dışı ofis maliyetleri":12000,
+  "İşe alım öğrenme ve gelişim":3000, "İkincil yönetim süresi: işe alım görüşmeleri":10000
+};
+
+function buildTbl(){
+  var html = "";
+  KALEMLER.forEach(function(k, i){
+    html += '<tr><td>' + k[0] + '</td><td>' + (k[1] === "dis" ? "dış" : "iç") + '</td>' +
+      '<td style="text-align:center"><input type="checkbox" id="p_c_' + i + '"' + (k[2] ? " checked" : "") + '></td>' +
+      '<td><input type="number" min="0" step="any" id="p_t_' + i + '"></td></tr>';
+  });
+  document.getElementById("pBody").innerHTML = html;
+  document.getElementById("pBody").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", computeTbl); el.addEventListener("change", computeTbl);
+  });
+  ["basladi","teklif","ucret"].forEach(function(id){ document.getElementById(id).addEventListener("input", computeTbl); });
+}
+
+function pTutar(i){
+  var v = parseFloat(document.getElementById("p_t_" + i).value);
+  return isNaN(v) || v < 0 ? 0 : v;
+}
+function numOf(id){
+  var v = parseFloat(document.getElementById(id).value);
+  return isNaN(v) ? null : v;
+}
+
+var TBL = {n:0, dis:0, ic:0, dis_c:0, ic_c:0, basladi:0, teklif:0, ucret:0, ok:false};
+
+function computeTbl(){
+  var f2 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:2, maximumFractionDigits:2}); };
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var f0 = function(x){ return x.toLocaleString("tr-TR", {maximumFractionDigits:2}); };
+  var s = {dis:0, ic:0, dis_c:0, ic_c:0}, n = 0, enBuyuk = null;
+  KALEMLER.forEach(function(k, i){
+    var t = pTutar(i);
+    if(!(t > 0)) return;
+    n++;
+    s[k[1]] += t;
+    if(document.getElementById("p_c_" + i).checked) s[k[1] + "_c"] += t;
+    if(enBuyuk === null || t > enBuyuk.v) enBuyuk = {ad:k[0], v:t};
+  });
+  var basladi = numOf("basladi"), teklif = numOf("teklif"), ucret = numOf("ucret");
+  var nI = (teklif !== null && teklif > 0) ? teklif : basladi;
+  var topI = s.dis + s.ic, topC = s.dis_c + s.ic_c;
+
+  document.getElementById("tDis").textContent = n ? f0(s.dis) : "—";
+  document.getElementById("tIc").textContent = n ? f0(s.ic) : "—";
+  document.getElementById("tTop").textContent = n ? f0(topI) : "—";
+  document.getElementById("tDisC").textContent = n ? f0(s.dis_c) : "—";
+  document.getElementById("tIcC").textContent = n ? f0(s.ic_c) : "—";
+  document.getElementById("tTopC").textContent = n ? f0(topC) : "—";
+
+  var kart = document.getElementById("pCards");
+  var ok = n > 0 && basladi !== null && basladi > 0;
+  TBL = {n:n, dis:s.dis, ic:s.ic, dis_c:s.dis_c, ic_c:s.ic_c, basladi:basladi || 0, teklif:nI || 0, ucret:ucret || 0, ok:ok};
+  if(!ok){
+    kart.innerHTML = "";
+    document.getElementById("pNot").textContent = n === 0 ? "Tabloya maliyet kalemlerinin tutarlarını girin ya da örnek veriyi yükleyin." :
+      "İşe alım sayısı (Ytot) sıfırdan büyük olmalı.";
+    return;
+  }
+  var hcrOk = ucret !== null && ucret > 0;
+  var kartlar = '';
+  kartlar += '<div class="card"><b>' + f2(topI / nI) + '</b><span>CPHI (' + f0(topI) + ' ÷ ' + f0(nI) + ')</span></div>';
+  kartlar += '<div class="card"><b>' + f2(topC / basladi) + '</b><span>CPHC (' + f0(topC) + ' ÷ ' + f0(basladi) + ')</span></div>';
+  kartlar += '<div class="card alt"><b>' + (hcrOk ? f1(100 * topI / ucret) + ' %' : "—") + '</b><span>HCR (ilk yıl ücrete oran)</span></div>';
+  kartlar += '<div class="card alt"><b>' + f1(100 * s.dis / topI) + ' %</b><span>Dış maliyet payı (CPHI)</span></div>';
+  kartlar += '<div class="card warn"><b>' + n + '</b><span>Tutar girilen kalem</span></div>';
+  kartlar += '<div class="card warn"><b>' + (enBuyuk ? f0(enBuyuk.v) : "—") + '</b><span>En büyük kalem: ' + (enBuyuk ? enBuyuk.ad : "—") + '</span></div>';
+  kart.innerHTML = kartlar;
+
+  var not = "CPHI = (" + f0(s.dis) + " + " + f0(s.ic) + ") ÷ " + f0(nI) + ". CPHC yalnızca işaretli kalemleri toplar: (" + f0(s.dis_c) + " + " + f0(s.ic_c) + ") ÷ " + f0(basladi) + ". ";
+  if(teklif !== null && teklif > 0) not += "CPHI paydası olarak ayrı girilen işe alım sayısı kullanıldı. ";
+  if(!hcrOk) not += "HCR için ilk yıl toplam ücreti girin. ";
+  not += "CPHC paydası yalnızca fiilen işe başlayanlardır; kesirli işe alım ve ek işçiler dışarıda tutulur.";
+  document.getElementById("pNot").textContent = not;
+}
+
+function loadTblExample(){
+  KALEMLER.forEach(function(k, i){
+    document.getElementById("p_t_" + i).value = ORNEK_TUTAR[k[0]] || "";
+    document.getElementById("p_c_" + i).checked = k[2];
+  });
+  document.getElementById("basladi").value = 40;
+  document.getElementById("teklif").value = "";
+  document.getElementById("ucret").value = 2000000;
+  computeTbl();
+}
+
+document.getElementById("btnOrnek").addEventListener("click", loadTblExample);
+document.getElementById("btnTemizle").addEventListener("click", function(){
+  KALEMLER.forEach(function(k, i){
+    document.getElementById("p_t_" + i).value = "";
+    document.getElementById("p_c_" + i).checked = k[2];
+  });
+  document.getElementById("basladi").value = "";
+  document.getElementById("teklif").value = "";
+  document.getElementById("ucret").value = "";
+  computeTbl();
+});
+document.getElementById("btnCsv").addEventListener("click", function(){
+  var satir = ["Kalem;Tur;CPHC kapsaminda;Tutar"];
+  KALEMLER.forEach(function(k, i){
+    var t = pTutar(i);
+    if(!(t > 0)) return;
+    satir.push([k[0], k[1] === "dis" ? "dis" : "ic", document.getElementById("p_c_" + i).checked ? "evet" : "hayir", t].join(";"));
+  });
+  if(TBL.ok){
+    satir.push(["Dis maliyet toplami (CPHI)", "", "", TBL.dis].join(";"));
+    satir.push(["Ic maliyet toplami (CPHI)", "", "", TBL.ic].join(";"));
+    satir.push(["CPHI", "", "", ((TBL.dis + TBL.ic) / TBL.teklif).toFixed(2)].join(";"));
+    satir.push(["CPHC", "", "", ((TBL.dis_c + TBL.ic_c) / TBL.basladi).toFixed(2)].join(";"));
+    if(TBL.ucret > 0) satir.push(["HCR %", "", "", (100 * (TBL.dis + TBL.ic) / TBL.ucret).toFixed(2)].join(";"));
+  }
+  var blob = new Blob(["\ufeff" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "iso30407_maliyet_kalemleri.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* =========================================================
+   3) FORMÜL TABLOSU + HESAPLAYICI
+   Alan adları gömülü Python modülünün hesapla() imzasıyla birebir aynıdır.
+   ========================================================= */
+function gerek(kosul, mesaj){ if(!kosul) throw new Error("GecersizGirdi: " + mesaj); }
+function bolOk(pay, payda, ad){ gerek(payda > 0, ad + " sıfırdan büyük olmalı"); return pay / payda; }
+function negYok(v, ks){ ks.forEach(function(k){ gerek(v[k] >= 0, k + " negatif olamaz"); }); }
+/* Python round() ile aynı davranış: tam yarım değerlerde en yakın çifte yuvarlar */
+function pyround(x, n){
+  var m = Math.pow(10, n), y = x * m, f = Math.floor(y);
+  if(y - f === 0.5) return (f % 2 === 0 ? f : f + 1) / m;
+  return Math.round(y) / m;
+}
+function r1(x){ return pyround(x, 1); }
+function r2(x){ return pyround(x, 2); }
+function r3(x){ return pyround(x, 3); }
+function cphHesap(dis, ic, n){ negYok({dis:dis, ic:ic}, ["dis","ic"]); return bolOk(dis + ic, n, "işe alım sayısı"); }
+
+var BIRIM = "para birimi / işe alım";
+var CALC = [
+ {id:"cphi", name:"CPHI: kuruma özgü işe alım başına maliyet", grp:"CPH", noHeur:true,
+  formula:"CPHI = (&Sigma;X<sub>dış</sub> + &Sigma;X<sub>iç</sub>) &divide; Y<sub>tot</sub>",
+  note:"Şartname Formül (1): dış ve iç maliyetlerin toplamının, dönemdeki toplam işe alım sayısına bölünmesi. Kuruma özgüdür; kurumlar arası karşılaştırma için tasarlanmamıştır. Hangi işe alımların sayılacağı ve işe alımın hangi noktada (başlama ya da teklif kabulü) sayılacağı derleyenin takdirindedir. Varsayılan değerler şartnamenin Tablo 10'undaki Americas satırıdır (329 032 ÷ 84 = 3 917,05).",
+  fields:[{k:"dis",l:"Dış maliyetlerin toplamı",v:201600},{k:"ic",l:"İç maliyetlerin toplamı",v:127432},{k:"isealim",l:"Toplam işe alım sayısı (Ytot)",v:84}],
+  unit:BIRIM,
+  py:"cph(dis=201600, ic=127432, isealim=84)",
+  calc:function(v){
+    var d = cphHesap(v.dis, v.ic, v.isealim);
+    var top = v.dis + v.ic;
+    return {value:d, dec:2, expl:"(" + v.dis + " + " + v.ic + ") ÷ " + v.isealim,
+      detail:[["Toplam maliyet", top],
+              ["Dış maliyet payı (%)", r1(100 * bolOk(v.dis, top, "toplam maliyet"))],
+              ["İç maliyet payı (%)", r1(100 * v.ic / top)]]}; },
+  bands:[[0,"ok","Şartname eşik vermez: CPH'yi HCR ile birlikte ve pozisyon türü, düzeyi, pazar talebi ve coğrafya bağlamında okuyun; doldurma süresi ve işe alım kalitesini ölçmez."]]},
+
+ {id:"cphc", name:"CPHC: karşılaştırılabilir işe alım başına maliyet", grp:"CPH", noHeur:true,
+  formula:"CPHC = (&Sigma;X<sub>dış</sub> + &Sigma;X<sub>iç</sub>) &divide; Y<sub>tot</sub>",
+  note:"Şartname Formül (2): CPHI ile aynı biçimde, ancak maliyet kapsamı Tablo 5 ve 6'ya sınırlıdır ve payda yalnızca fiilen işe başlamış çalışanlardır (kesirli işe alım ve ek işçi dahil değildir). Girdiğiniz dış ve iç toplamların yalnızca CPHC kapsamındaki kalemleri içerdiğinden emin olun. Varsayılan değerler Tablo 10'daki EMEA satırıdır (221 135 ÷ 47 = 4 705,00).",
+  fields:[{k:"dis",l:"Dış maliyetlerin toplamı (CPHC kapsamında)",v:154794.5,step:0.01},{k:"ic",l:"İç maliyetlerin toplamı (CPHC kapsamında)",v:66340.5,step:0.01},{k:"basladi",l:"İşe başlayan çalışan sayısı (Ytot)",v:47}],
+  unit:BIRIM,
+  py:"cph(dis=154794.5, ic=66340.5, isealim=47)",
+  calc:function(v){
+    var d = cphHesap(v.dis, v.ic, v.basladi);
+    var top = v.dis + v.ic;
+    return {value:d, dec:2, expl:"(" + v.dis + " + " + v.ic + ") ÷ " + v.basladi,
+      detail:[["Toplam maliyet", top],
+              ["Dış maliyet payı (%)", r1(100 * bolOk(v.dis, top, "toplam maliyet"))],
+              ["İç maliyet payı (%)", r1(100 * v.ic / top)]]}; },
+  bands:[[0,"ok","Kıyaslama için kapsamı belgeleyin (Tablo 5–7); listede açıkça olmayan bir maliyet CPHC kapsamı dışındadır."]]},
+
+ {id:"hcr", name:"HCR: işe alım maliyet oranı", grp:"CPH", noHeur:true,
+  formula:"HCR = ((&Sigma;X<sub>dış</sub> + &Sigma;X<sub>iç</sub>) &divide; Y<sub>tot,FYC</sub>) &times; 100",
+  note:"Şartname Formül (3): işe alım maliyetinin, yeni işe alınanların ilk yıl (12 aylık) toplam ücretine yüzde oranı. Ücret, yeni işe alımın kuruma göreli değerinin vekilidir; yeni çalışanların ilk yılı fiilen tamamlaması gerekmez. Örnek: (100 000 + 100 000) ÷ 2 000 000 × 100 = %10.",
+  fields:[{k:"dis",l:"Dış maliyetlerin toplamı",v:100000},{k:"ic",l:"İç maliyetlerin toplamı",v:100000},{k:"ilk_yil_ucret",l:"İlk yıl toplam ücret (Ytot,FYC)",v:2000000}],
+  unit:"% (maliyetin ilk yıl ücretine oranı)",
+  py:"hcr(dis=100000, ic=100000, ilk_yil_ucret=2000000)",
+  calc:function(v){
+    negYok(v, ["dis","ic"]);
+    var d = 100 * bolOk(v.dis + v.ic, v.ilk_yil_ucret, "ilk yıl toplam ücret");
+    return {value:d, dec:2, expl:"(" + v.dis + " + " + v.ic + ") ÷ " + v.ilk_yil_ucret + " × 100",
+      detail:[["Toplam maliyet", v.dis + v.ic],
+              ["Her 1 birim ilk yıl ücretine düşen maliyet", r3((v.dis + v.ic) / v.ilk_yil_ucret)]]}; },
+  bands:[[0,"ok","HCR, farklı ücret düzeylerindeki işe alımları normalize eder; işe alım ekibini değerlendirirken CPH ile birlikte okuyun (madde 6.1)."]]},
+
+ {id:"segment", name:"Segmentlerin toplam CPH'si ve basit ortalaması", grp:"Bölümleme", noHeur:true,
+  formula:"CPH<sub>toplam</sub> = &Sigma;(dış<sub>s</sub> + iç<sub>s</sub>) &divide; &Sigma;işe alım<sub>s</sub>",
+  note:"Her segment için şartnamenin Formül (4)'ü aynı biçimdedir (alt kümenin dış + iç maliyeti ÷ alt kümenin işe alım sayısı). Bu hesaplayıcı üç segmentin toplam CPH'sini (toplam maliyet ÷ toplam işe alım) ve segment CPH'lerinin basit ortalamasını verir. Varsayılan değerler Tablo 10'dur: toplam 3 828,43; şartnamenin 'Toplam/Ortalama' satırındaki 3 838,35 basit ortalamadır.",
+  fields:[{k:"e1",l:"Segment 1 dış maliyet",v:201600,step:0.01},{k:"i1",l:"Segment 1 iç maliyet",v:127432,step:0.01},{k:"n1",l:"Segment 1 işe alım",v:84},
+          {k:"e2",l:"Segment 2 dış maliyet",v:154794.5,step:0.01},{k:"i2",l:"Segment 2 iç maliyet",v:66340.5,step:0.01},{k:"n2",l:"Segment 2 işe alım",v:47},
+          {k:"e3",l:"Segment 3 dış maliyet",v:111322.64,step:0.01},{k:"i3",l:"Segment 3 iç maliyet",v:39113.36,step:0.01},{k:"n3",l:"Segment 3 işe alım",v:52}],
+  unit:"para birimi / işe alım (toplam maliyet ÷ toplam işe alım)",
+  py:"toplam_ve_ortalama([(201600, 127432, 84), (154794.5, 66340.5, 47), (111322.64, 39113.36, 52)])",
+  calc:function(v){
+    var s = [[v.e1, v.i1, v.n1], [v.e2, v.i2, v.n2], [v.e3, v.i3, v.n3]];
+    var dis = 0, ic = 0, n = 0, toplamCph = 0;
+    s.forEach(function(x){ dis += x[0]; ic += x[1]; n += x[2]; });
+    s.forEach(function(x){ toplamCph += cphHesap(x[0], x[1], x[2]); });
+    var agirlikli = cphHesap(dis, ic, n);
+    var ort = toplamCph / s.length;
+    return {value:agirlikli, dec:2, expl:"(" + (dis + ic) + ") ÷ " + n,
+      detail:[["Segment CPH'lerinin basit ortalaması (Tablo 10'daki 'Toplam/Ortalama')", r2(ort)],
+              ["Ortalama − ağırlıklı fark", r2(ort - agirlikli)],
+              ["Toplam maliyet", dis + ic],
+              ["Toplam işe alım", n]]}; },
+  bands:[[0,"ok","Toplam CPH, işe alım sayısı farklı segmentleri doğru ağırlıklandırır; basit ortalama büyük ve küçük segmentleri eşit sayar. Hangisini kullandığınızı yazın."]]},
+
+ {id:"kampus", name:"Kampüs CPH: zorunlu ve zorunlu sonrası eğitimden işe alım", grp:"Bölümleme", noHeur:true,
+  formula:"CPH<sub>kampüs</sub> = (&Sigma;X<sub>dış,kampüs</sub> + &Sigma;X<sub>iç,zorunlu</sub>) &divide; Y<sub>tot,zorunlu</sub>",
+  note:"Şartname Formül (5): zorunlu ve zorunlu sonrası eğitim kurumlarından işe alımlar (tam zamanlı, stajyer ve co-op) için dış kampüs maliyetleri ile iç maliyetlerin, bu kaynaktan işe alım sayısına bölünmesi. Stajyer ve co-op maliyetleri ilk işe alındıkları yıla yazılır. Varsayılan değerler örnek amaçlıdır, şartnamede yoktur.",
+  fields:[{k:"dis_kampus",l:"Dış kampüs maliyetleri",v:60000},{k:"ic_zorunlu",l:"İç zorunlu ve zorunlu sonrası eğitim maliyetleri",v:40000},{k:"isealim_zorunlu",l:"Kampüs işe alımı sayısı (tam zamanlı, stajyer, co-op)",v:25}],
+  unit:BIRIM,
+  py:"kampus_cph(dis_kampus=60000, ic_zorunlu=40000, isealim_zorunlu=25)",
+  calc:function(v){
+    var d = cphHesap(v.dis_kampus, v.ic_zorunlu, v.isealim_zorunlu);
+    return {value:d, dec:2, expl:"(" + v.dis_kampus + " + " + v.ic_zorunlu + ") ÷ " + v.isealim_zorunlu,
+      detail:[["Toplam kampüs maliyeti", v.dis_kampus + v.ic_zorunlu]]}; },
+  bands:[[0,"ok","Araştırma harcamaları ve çoğu hayırseverlik katkısı hariç; kariyer fuarı gibi etkinlikler dahildir (Tablo 11). Karma işe alımcı ücretini paylaştırın (madde 7.3.6.5)."]]},
+
+ {id:"paylasim", name:"Karma işe alımcı ücretinin kampüse paylaştırılması", grp:"Bölümleme", noHeur:true,
+  formula:"Kampüse ayrılan = Ücret &times; Kampüs payı (%) &divide; 100",
+  note:"Şartname madde 7.3.6.5: hem deneyimli hem yeni mezun işe alan uzmanların maliyeti, kampüs faaliyetine ayrılan tahmini zaman yüzdesine ya da kampüs işe alımlarının toplam işe alımdaki yüzdesine göre paylaştırılır. Örnek: Carol zamanının %20'sini kampüse ayırıyor → ücretinin %20'si kampüs CPH'sine girer. Ücret tutarı örnek amaçlıdır; şartname yalnızca yüzdeyi verir.",
+  fields:[{k:"ucret",l:"İşe alımcının yıllık tam yüklü ücreti",v:100000},{k:"pay",l:"Kampüs faaliyetine ayrılan pay (%)",v:20,step:0.5}],
+  unit:"para birimi (kampüs işe alımına ayrılan)",
+  py:"paylastir(ucret=100000, pay_yuzde=20)",
+  calc:function(v){
+    negYok(v, ["ucret"]);
+    gerek(v.pay >= 0 && v.pay <= 100, "pay 0 ile 100 arasında olmalı");
+    var d = v.ucret * v.pay / 100;
+    return {value:d, dec:2, expl:v.ucret + " × " + v.pay + " ÷ 100",
+      detail:[["Deneyimli işe alıma kalan pay (%)", r1(100 - v.pay)],
+              ["Deneyimli işe alıma kalan tutar", r2(v.ucret - d)]]}; },
+  bands:[[0,"ok","Yalnızca birincil rolü yetenek edinmek olanların ücreti CPH'ye girer; kampüse giden başka bölüm çalışanlarının yalnızca seyahat gibi doğrudan giderleri girer (madde 7.3.6.4)."]]},
+
+ {id:"sapma", name:"Maliyet kaleminin dönemler arası sapması", grp:"Veri kalitesi", noHeur:true,
+  formula:"Sapma = ((Cari &minus; Önceki) &divide; Önceki) &times; 100",
+  note:"Şartname madde 7.2.1, belirli maliyetlerin raporlama dönemleri arasındaki varyansının düzenli sınanmasını önerir ve örnek olarak teknoloji maliyetlerinin önceki döneme göre %50 düşük çıkmasının incelemeye değer olduğunu söyler. Sapma formülü şartnamede yazılı değildir, türetilmiştir; eşik de verilmez. Varsayılan değerler örnek amaçlıdır.",
+  fields:[{k:"onceki",l:"Önceki dönem maliyeti",v:20000,step:0.01},{k:"cari",l:"Cari dönem maliyeti",v:10000,step:0.01}],
+  unit:"% değişim",
+  py:"donem_sapmasi(onceki=20000, cari=10000)",
+  calc:function(v){
+    gerek(v.onceki > 0, "önceki değer sıfırdan büyük olmalı");
+    gerek(v.cari >= 0, "cari değer negatif olamaz");
+    var d = 100 * (v.cari - v.onceki) / v.onceki;
+    return {value:d, dec:1, expl:"(" + v.cari + " − " + v.onceki + ") ÷ " + v.onceki + " × 100",
+      detail:[["Mutlak fark", v.cari - v.onceki],
+              ["Cari değerin öncekine katı", r2(v.cari / v.onceki)]]}; },
+  bands:[[0,"ok","Büyük bir sapma gerçek bir değişimi ya da veri kaybını (yeni maliyet merkezi, eksik kayıt) gösterebilir; kaynak veriyi ve maliyet kodlarını gözden geçirin."]]}
+];
+
+/* --- formül tablosu --- */
+(function(){
+  var rows = CALC.map(function(c){
+    return '<tr><td><b>' + c.name + '</b></td><td><span style="font-family:var(--serif)">' +
+           c.formula + '</span></td><td>' + c.note + '</td></tr>';
+  }).join("");
+  document.getElementById("fBody").innerHTML = rows;
+})();
+
+/* --- hesaplayıcı --- */
+var sel = document.getElementById("cMetric");
+CALC.forEach(function(c, i){
+  var o = document.createElement("option");
+  o.value = i; o.textContent = c.grp + " — " + c.name;
+  sel.appendChild(o);
+});
+
+function buildFields(){
+  var c = CALC[+sel.value];
+  document.getElementById("cFields").innerHTML = c.fields.map(function(f){
+    return '<div class="field"><label for="in_' + f.k + '">' + f.l + '</label>' +
+      '<input type="number" id="in_' + f.k + '" value="" step="' + (f.step || "any") + '" placeholder="' + f.v + '"></div>';
+  }).join("");
+  document.getElementById("cFields").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", run);
+  });
+}
+
+function readVals(){
+  var c = CALC[+sel.value], v = {}, missing = false;
+  c.fields.forEach(function(f){
+    var el = document.getElementById("in_" + f.k);
+    var raw = el && el.value !== "" ? parseFloat(el.value) : NaN;
+    if(isNaN(raw)){ missing = true; v[f.k] = f.v; } else { v[f.k] = raw; }
+  });
+  return {v:v, missing:missing};
+}
+
+function fmt(x, dec){
+  if(!isFinite(x)) return "—";
+  return x.toLocaleString("tr-TR", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+
+/* Hesaplama motoru: Python hazırsa gömülü modül, değilse JS yedeği */
+function compute(c, v){
+  if(PY.ready){
+    try{
+      PY.pyodide.globals.set("_metrik", c.id);
+      PY.pyodide.globals.set("_girdi", JSON.stringify(v));
+      var raw = PY.pyodide.runPython(
+        "import json\n" +
+        "json.dumps(hesapla(_metrik, **json.loads(_girdi)))");
+      var r = JSON.parse(raw);
+      return {value:r.deger, expl:r.ifade, dec:r.ondalik, detail:r.ayrinti,
+              unit:r.birim, durum:r.durum, engine:"python"};
+    }catch(err){
+      var msg = String(err);
+      /* Kullanıcı girdisi kaynaklı hata: motor sorunu değil, yedeğe geçme */
+      if(msg.indexOf("GecersizGirdi") !== -1 || msg.indexOf("ZeroDivisionError") !== -1) throw err;
+      setEngine("off", "Motor: JS yedeği — Python hatası");
+    }
+  }
+  var out = c.calc(v);
+  out.engine = "js";
+  return out;
+}
+
+function run(){
+  var c = CALC[+sel.value];
+  var r = readVals();
+  var out;
+  try { out = compute(c, r.v); } catch(e){ out = null; }
+  var box = document.getElementById("cResult");
+  if(!out || !isFinite(out.value)){
+    box.innerHTML = '<div class="result"><b>Hesaplanamadı.</b> Payda sıfır olamaz, parça bütünden büyük olamaz ve değerler geçerli aralıkta olmalı; alanları kontrol edin.</div>';
+    return;
+  }
+  var dec = (out.dec === undefined) ? 1 : out.dec;
+  var unit = out.unit || c.unit;
+  var html = '<div class="result">';
+  html += '<div class="big">' + fmt(out.value, dec) + ' <span>' + unit + '</span></div>';
+  html += '<div style="font-size:13px;color:var(--ink-soft);margin-top:6px">' + c.name +
+          ' · ' + (out.engine === "python" ? 'Python (Pyodide) ile hesaplandı' : 'JavaScript ile hesaplandı') +
+          (r.missing ? ' · <i>boş alanlar için örnek değer kullanıldı</i>' : '') + '</div>';
+
+  if(document.getElementById("oFormula").checked){
+    html += '<div class="formula">' + c.formula + '<br><span style="color:var(--ink-soft);font-size:15px">= ' +
+            out.expl + ' = <b>' + fmt(out.value, dec) + '</b> ' + unit + '</span></div>';
+  }
+  if(out.detail && out.detail.length){
+    html += '<dl>' + out.detail.map(function(d){
+      var val = (typeof d[1] === "number") ? d[1].toLocaleString("tr-TR") : d[1];
+      return '<dt>' + d[0] + '</dt><dd>' + val + '</dd>';
+    }).join("") + '</dl>';
+  }
+  if(document.getElementById("oInterp").checked){
+    if(c.durumMetin && out.durum){
+      html += '<div class="verdict ' + out.durum + '">' + c.durumMetin[out.durum] + '</div>';
+    } else if(c.bands){
+      var band = c.bands[c.bands.length-1];
+      for(var i=0;i<c.bands.length;i++){ if(out.value >= c.bands[i][0]){ band = c.bands[i]; break; } }
+      html += '<div class="verdict ' + band[1] + '">' + band[2] + '</div>';
+      if(c.bands.length > 1 && !c.noHeur){
+        html += '<div class="note" style="margin-top:12px">Yorum eşikleri standarttan değil, başlangıç varsayımlarından gelir; kendi hedeflerinizle değiştirin.</div>';
+      }
+    }
+    html += '<div class="note" style="margin-top:12px">' + c.note + '</div>';
+  }
+  if(document.getElementById("oPy").checked){
+    var args = c.fields.map(function(f){ return f.k + "=" + r.v[f.k]; }).join(", ");
+    var call = 'hesapla("' + c.id + '", ' + args + ')';
+    html += '<pre style="margin-top:16px"><i>&gt;&gt;&gt; from iso30407_metrikler import hesapla</i>\n' +
+            '&gt;&gt;&gt; ' + call + '["deger"]\n' + out.value + '\n\n' +
+            '<i># eşdeğer doğrudan çağrı</i>\n&gt;&gt;&gt; ' + c.py + '</pre>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+sel.addEventListener("change", function(){ buildFields(); run(); });
+document.getElementById("btnRun").addEventListener("click", run);
+document.getElementById("btnExample").addEventListener("click", function(){
+  var c = CALC[+sel.value];
+  c.fields.forEach(function(f){ document.getElementById("in_" + f.k).value = f.v; });
+  run();
+});
+["oFormula","oInterp","oPy"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", function(){
+    var all = document.getElementById("oFormula").checked &&
+              document.getElementById("oInterp").checked &&
+              document.getElementById("oPy").checked;
+    document.getElementById("oAll").checked = all;
+    run();
+  });
+});
+document.getElementById("oAll").addEventListener("change", function(){
+  var s = this.checked;
+  ["oFormula","oInterp","oPy"].forEach(function(id){ document.getElementById(id).checked = s; });
+  run();
+});
+
+/* --- tablodan hesaplayıcıya aktarma --- */
+document.getElementById("btnAktar").addEventListener("click", function(){
+  if(!TBL.ok){ loadTblExample(); }
+  var idx = CALC.map(function(c){ return c.id; }).indexOf("cphi");
+  sel.value = idx; buildFields();
+  document.getElementById("in_dis").value = TBL.dis;
+  document.getElementById("in_ic").value = TBL.ic;
+  document.getElementById("in_isealim").value = TBL.teklif;
+  run();
+  document.getElementById("hesaplayici").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* =========================================================
+   4) PYTHON MOTORU (Pyodide / WebAssembly)
+   Gömülü iso30407_metrikler.py modülü tarayıcı içinde
+   gerçek CPython ile çalıştırılır. Erişim yoksa JS yedeği
+   devrede kalır ve sonuçlar değişmez.
+   ========================================================= */
+var PY = {ready:false, busy:false, pyodide:null};
+
+var PYODIDE_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+  "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"
+];
+
+function setEngine(state, text){
+  var chip = document.getElementById("engStatus");
+  chip.className = "chip" + (state ? " " + state : "");
+  chip.textContent = text;
+}
+
+function loadScript(src){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function(){ resolve(src); };
+    s.onerror = function(){ reject(new Error(src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function pySource(){
+  return document.getElementById("pysrc").textContent;
+}
+
+async function initPython(){
+  if(PY.ready) return true;
+  if(PY.busy) return false;
+  PY.busy = true;
+  document.getElementById("btnPy").disabled = true;
+  setEngine("busy", "Motor: Pyodide indiriliyor…");
+  try{
+    if(typeof loadPyodide === "undefined"){
+      try { await loadScript(PYODIDE_URLS[0]); }
+      catch(e){ await loadScript(PYODIDE_URLS[1]); }
+    }
+    setEngine("busy", "Motor: Python başlatılıyor…");
+    PY.pyodide = await loadPyodide();
+
+    /* Modülü sanal dosya sistemine yazmadan, gerçek bir modül nesnesi olarak kur:
+       böylece __name__ != "__main__" olur ve _demo() kendiliğinden çalışmaz.
+       Kayıt exec'ten ÖNCE yapılır; @dataclass işlenirken modülü sys.modules'te arar. */
+    PY.pyodide.globals.set("_kaynak", pySource());
+    PY.pyodide.runPython(
+      "import sys, types\n" +
+      "_m = types.ModuleType('iso30407_metrikler')\n" +
+      "_m.__file__ = 'iso30407_metrikler.py'\n" +
+      "sys.modules['iso30407_metrikler'] = _m\n" +
+      "exec(compile(_kaynak, 'iso30407_metrikler.py', 'exec'), _m.__dict__)\n" +
+      "from iso30407_metrikler import *\n" +
+      "import iso30407_metrikler as m\n"
+    );
+    var sur = PY.pyodide.runPython(
+      "import sys\n'.'.join(str(x) for x in sys.version_info[:3])");
+    PY.ready = true;
+    setEngine("on", "Motor: Python " + sur + " (Pyodide)");
+    run();
+    return true;
+  }catch(e){
+    setEngine("off", "Motor: tarayıcı (JS) — Pyodide yüklenemedi");
+    document.getElementById("pyOut").textContent =
+      "Python motoru yüklenemedi. Bu genellikle çevrimdışı olmaktan ya da ağ kısıtından kaynaklanır.\n" +
+      "Sayfa çalışmaya devam eder; hesaplamalar JavaScript yedeğiyle aynı sonuçları verir.\n\n" + e;
+    return false;
+  }finally{
+    PY.busy = false;
+    document.getElementById("btnPy").disabled = false;
+  }
+}
+
+document.getElementById("btnPy").addEventListener("click", initPython);
+
+/* --- konsol --- */
+var VARSAYILAN_KOD =
+  'from iso30407_metrikler import *\n' +
+  'import iso30407_metrikler as m\n\n' +
+  '# HCR (şartname örneği)\n' +
+  'print("HCR              :", hcr(100000, 100000, 2000000), "%")\n\n' +
+  '# Tablo 10: bölgesel CPH ve toplam\n' +
+  'seg = [(201600, 127432, 84), (154794.5, 66340.5, 47), (111322.64, 39113.36, 52)]\n' +
+  'for s in seg:\n' +
+  '    print("Bölgesel CPH     :", round(cph(*s), 2))\n' +
+  'r = toplam_ve_ortalama(seg)\n' +
+  'print("Toplam ÷ işe alım:", round(r["agirlikli"], 2))\n' +
+  'print("Basit ortalama   :", round(r["ortalama"], 2), "(şartnamedeki 3 838,35)")\n\n' +
+  '# Karma işe alımcı (ücret tutarı örnek)\n' +
+  'print("Kampüse ayrılan  :", paylastir(100000, 20))\n\n' +
+  '# Kalem tablosu (örnek dağılım)\n' +
+  't = ornek_tablo()\n' +
+  'for anahtar, deger in t.ozet(basladi=40, ilk_yil_ucret=2000000).items():\n' +
+  '    print(f"{anahtar:<12}: {deger}")\n\n' +
+  '# Dağıtıcı, hesaplayıcının kullandığı arayüzdür:\n' +
+  'print(hesapla("cphi", dis=201600, ic=127432, isealim=84))\n\n' +
+  '# Rapor denetimi: hangi ön koşullar eksik?\n' +
+  'for uyari in cph_denetimi(sistem_kaydi_secildi=True, hire_tanimi_yazili=True):\n' +
+  '    print("!", uyari)\n';
+
+document.getElementById("pyCode").value = VARSAYILAN_KOD;
+
+async function runConsole(){
+  var out = document.getElementById("pyOut");
+  if(!PY.ready){
+    out.textContent = "Python motoru hazırlanıyor, ilk çalıştırma biraz sürebilir…";
+    var ok = await initPython();
+    if(!ok) return;
+  }
+  out.textContent = "çalışıyor…";
+  try{
+    PY.pyodide.globals.set("_kod", document.getElementById("pyCode").value);
+    var cikti = PY.pyodide.runPython(
+      "import io, contextlib, traceback\n" +
+      "_tampon = io.StringIO()\n" +
+      "with contextlib.redirect_stdout(_tampon), contextlib.redirect_stderr(_tampon):\n" +
+      "    try:\n" +
+      "        exec(_kod, globals())\n" +
+      "    except Exception:\n" +
+      "        traceback.print_exc()\n" +
+      "_tampon.getvalue()"
+    );
+    out.textContent = cikti && cikti.trim() ? cikti : "(çıktı yok)";
+  }catch(e){
+    out.textContent = "Hata: " + e;
+  }
+}
+
+document.getElementById("btnRunPy").addEventListener("click", runConsole);
+document.getElementById("btnReset").addEventListener("click", function(){
+  document.getElementById("pyCode").value = VARSAYILAN_KOD;
+  document.getElementById("pyOut").textContent = "Kod sıfırlandı.";
+});
+document.getElementById("btnDemo").addEventListener("click", function(){
+  document.getElementById("pyCode").value =
+    "import iso30407_metrikler as m\n\n" +
+    "# Modülün kendi doğrulama çıktısı (komut satırındaki\n" +
+    "# python3 iso30407_metrikler.py ile aynı sonucu verir)\n" +
+    "m._demo()\n";
+  runConsole();
+});
+
+/* modül kaynağını sayfada okunur kıl */
+document.getElementById("srcView").textContent = pySource().trim();
+
+buildTbl();
+loadTblExample();
+buildFields();
+run();
+</script>
+</body>
+</html>
