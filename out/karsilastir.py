@@ -2,6 +2,8 @@ import csv, os, re, shutil, sys
 
 # Kullanım: python3 karsilastir.py [csv_yolu] [pdf_klasoru]
 # Argüman verilmezse yollar sorulur (dosyayı Terminal'e sürükleyip bırakabilirsiniz).
+ONEK = "tasi_"
+
 def temiz(yol):
     return yol.strip().strip("'\"").replace("\\ ", " ")
 
@@ -29,7 +31,8 @@ csv_no = {r["Tez No"].strip() for r in satirlar}
 pdf_no = {}
 for ad in os.listdir(PDF_KLASOR):
     if ad.lower().endswith(".pdf") and not ad.startswith("."):
-        no = ad.split("_", 1)[0].strip()
+        # Daha önce "tasi_" eklenmiş dosyalar da aynı tez numarasıyla sayılır
+        no = (ad[len(ONEK):] if ad.startswith(ONEK) else ad).split("_", 1)[0].strip()
         if re.fullmatch(r"\d+", no):
             pdf_no.setdefault(no, []).append(ad)
 
@@ -52,20 +55,31 @@ with open("eksik_tez_no.txt", "w") as f:
     f.write("\n".join(sorted(yok)))
 print("Yazıldı: eksik_tezler.csv, eksik_tez_no.txt")
 
-# --- Eşleşen (var) PDF'leri başka klasöre taşı / kopyala ---
+# --- Eşleşen (var) PDF'leri taşı / kopyala / yeniden adlandır ---
 dosyalar = [ad for no in sorted(var) for ad in pdf_no[no]]
 print(f"\nEşleşen PDF dosyası sayısı: {len(dosyalar)}")
-hedef = temiz(input("Eşleşenlerin gideceği klasör (boş bırakırsanız işlem yapılmaz): "))
+hedef = temiz(input("Eşleşenlerin gideceği klasör (boş = taşıma/kopyalama yapma): "))
 if hedef:
     mod = input("[T]aşı mı [K]opyala mı? (t/k, varsayılan k): ").strip().lower() or "k"
-    os.makedirs(hedef, exist_ok=True)
-    islem = shutil.move if mod == "t" else shutil.copy2
-    atlanan = 0
+else:
+    mod = None
+onek_ekle = input(f"Dosya adlarının başına '{ONEK}' eklensin mi? (e/h, varsayılan h): ").strip().lower() == "e"
+if mod == "t" or mod == "k" or onek_ekle:
+    # Hedef yoksa dosyalar kaynak klasörde yeniden adlandırılır
+    hedef_klasor = hedef or PDF_KLASOR
+    os.makedirs(hedef_klasor, exist_ok=True)
+    islem = shutil.copy2 if mod == "k" else shutil.move   # mod None ise yeniden adlandırma
+    yapilan = atlanan = 0
     for ad in dosyalar:
-        hedef_yol = os.path.join(hedef, ad)
+        yeni_ad = ONEK + ad if onek_ekle and not ad.startswith(ONEK) else ad
+        kaynak = os.path.join(PDF_KLASOR, ad)
+        hedef_yol = os.path.join(hedef_klasor, yeni_ad)
+        if hedef_yol == kaynak:
+            continue
         if os.path.exists(hedef_yol):
             atlanan += 1
             continue
-        islem(os.path.join(PDF_KLASOR, ad), hedef_yol)
-    print(f"{len(dosyalar) - atlanan} dosya {'taşındı' if mod == 't' else 'kopyalandı'}, "
-          f"{atlanan} dosya hedefte zaten olduğu için atlandı. Hedef: {hedef}")
+        islem(kaynak, hedef_yol)
+        yapilan += 1
+    print(f"{yapilan} dosya işlendi, {atlanan} dosya hedefte aynı adla var olduğu için atlandı. "
+          f"Klasör: {hedef_klasor}")
