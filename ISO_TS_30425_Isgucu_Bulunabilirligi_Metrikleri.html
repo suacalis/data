@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO/TS 30425 İşgücü Bulunabilirliği Metrikleri Kümesi — Sınıflandırma ve Hesaplayıcı</title>
+<style>
+  :root{
+    --ink:#101418;
+    --ink-soft:#59636f;
+    --ink-faint:#8b95a1;
+    --line:#dde3ea;
+    --line-soft:#eef1f5;
+    --bg:#ffffff;
+    --canvas:#f6f8fa;
+    --accent:#0b5c8a;
+    --accent-soft:#e7f0f6;
+    --panel:#0e1520;
+    --panel-2:#16202e;
+    --panel-line:#28394f;
+    --out-ink:#8a3b12;  --out-bg:#fbeee6;
+    --eff-ink:#14615c;  --eff-bg:#e6f2f1;
+    --efc-ink:#33478c;  --efc-bg:#eaedf8;
+    --rea-ink:#7a5c00;  --rea-bg:#f8f1d9;
+    --cos-ink:#8c2f4b;  --cos-bg:#f9e8ee;
+    --ok:#1d6f42; --warn:#8a6100; --bad:#992121;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--canvas);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.62;
+  }
+  .sheet{max-width:1000px;margin:0 auto;background:var(--bg);padding:56px 60px 80px;
+    box-shadow:0 0 0 1px var(--line);}
+  @media(max-width:760px){ .sheet{padding:28px 20px 56px} }
+
+  h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:25px;margin:52px 0 4px;padding-bottom:8px;
+     border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  h3{font-size:17px;margin:32px 0 6px;letter-spacing:.01em}
+  h4{font-size:15px;margin:22px 0 4px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:12px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  small{color:var(--ink-soft)}
+  .lede{font-size:17px;color:var(--ink-soft)}
+
+  .srcbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 0;margin:0 0 26px;font-size:13.5px;color:var(--ink-soft)}
+  .srcbar b{color:var(--ink);font-weight:600}
+
+  .toc{background:var(--canvas);border:1px solid var(--line);padding:16px 20px;margin:26px 0 0;
+    font-size:14px;columns:2;column-gap:34px}
+  @media(max-width:640px){.toc{columns:1}}
+  .toc a{display:block;padding:3px 0;text-decoration:none;color:var(--ink)}
+  .toc a:hover{color:var(--accent);text-decoration:underline}
+  .toc b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 4px}
+
+  .keypoints li{margin:10px 0}
+  .keypoints b{font-weight:650}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink-soft);padding-bottom:6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:var(--canvas);font-weight:650;font-size:13px}
+  tbody tr:nth-child(even){background:#fcfdfe}
+  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;width:66px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink)}
+  .dot.o{background:var(--out-ink)} .dot.s{background:var(--eff-ink)} .dot.p{background:var(--efc-ink)}
+  .dot.r{background:var(--rea-ink)} .dot.c{background:var(--cos-ink)}
+
+  .tag{display:inline-block;font-size:11px;line-height:1.5;padding:1px 7px;border-radius:3px;
+    letter-spacing:.03em;white-space:nowrap;font-weight:600}
+  .tag.o{color:var(--out-ink);background:var(--out-bg)}
+  .tag.s{color:var(--eff-ink);background:var(--eff-bg)}
+  .tag.p{color:var(--efc-ink);background:var(--efc-bg)}
+  .tag.r{color:var(--rea-ink);background:var(--rea-bg)}
+  .tag.c{color:var(--cos-ink);background:var(--cos-bg)}
+  .tag.iso{color:#4a4a4a;background:#eeeeee}
+  .tag.lvl{color:#5a3a86;background:#f0eaf8}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--line-soft);padding:1px 5px;border-radius:3px}
+  pre{background:var(--panel);color:#e7eef6;border-radius:6px;padding:18px 20px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:14px 0}
+  pre b{color:#f0b866;font-weight:400}      /* anahtar kelime */
+  pre i{color:#7f8ea1;font-style:normal}    /* yorum */
+  pre u{color:#9fd28a;text-decoration:none} /* dize/sayı */
+  pre .fn{color:#79c0e8}
+  .filename{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin:14px 0 -8px}
+
+  .formula{font-family:var(--serif);font-size:16.5px;background:var(--canvas);
+    border-left:3px solid var(--accent);padding:12px 16px;margin:12px 0;overflow-x:auto}
+  .formula em{font-style:italic}
+
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 14px;color:var(--ink-soft);font-size:14px;margin:14px 0}
+
+  /* --- panel --- */
+  .panel{background:var(--panel);color:#dbe5f0;border-radius:8px;padding:22px 24px;margin:20px 0}
+  .panel h3{color:#fff;margin:0 0 4px;font-size:16px}
+  .panel .hint{color:#8fa2b8;font-size:13px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#8fa2b8;margin-bottom:5px}
+  .field label .req{color:#e08a5a}
+  select,input[type=number],input[type=text]{
+    width:100%;background:var(--panel-2);border:1px solid var(--panel-line);color:#eef4fb;
+    border-radius:5px;padding:9px 10px;font-family:var(--sans);font-size:14px}
+  input[type=number]{font-family:var(--mono)}
+  select:focus,input:focus{outline:2px solid #4a8fc0;outline-offset:1px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13.5px;color:#b9c7d6}
+  .checks label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .panel-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:5px;cursor:pointer;
+    border:1px solid transparent;padding:9px 18px}
+  .btn-run{background:#1c74ab;color:#fff}
+  .btn-run:hover{background:#2385c2}
+  .btn-ghost{background:transparent;color:#9fb3c9;border-color:var(--panel-line)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9fb3c9;
+    border:1px solid var(--panel-line);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7c8ea3}
+  .chip.busy::before{background:#e0a13c}
+  .chip.on::before{background:#4ec07a}
+  .chip.off::before{background:#c05a5a}
+
+  .console{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+  .console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+    background:var(--canvas);border-bottom:1px solid var(--line);padding:8px 12px;font-size:12.5px;color:var(--ink-soft)}
+  .console textarea{width:100%;border:0;display:block;background:var(--panel);color:#e7eef6;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:16px 20px;resize:vertical;min-height:190px}
+  .console textarea:focus{outline:2px solid #4a8fc0;outline-offset:-2px}
+  .console pre{margin:0;border-radius:0;background:#0a1017;border-top:1px solid var(--panel-line);min-height:64px}
+  .btn-sm{padding:6px 14px;font-size:13px}
+  details.src pre{max-height:420px;overflow:auto}
+  .btn-ghost:hover{color:#fff;border-color:#47607d}
+
+  .result{border:1px solid var(--line);border-top:3px solid var(--accent);padding:18px 20px;margin:18px 0}
+  .result .big{font-family:var(--serif);font-size:32px;line-height:1.1}
+  .result .big span{font-size:16px;color:var(--ink-soft);font-family:var(--sans)}
+  .result dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:14px 0 0;font-size:14px}
+  .result dt{color:var(--ink-soft)}
+  .result dd{margin:0;font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px;padding:10px 12px;font-size:14px;border-radius:4px;background:var(--canvas)}
+  .verdict.ok{color:var(--ok);background:#eef6f1}
+  .verdict.warn{color:var(--warn);background:#fbf5e7}
+  .verdict.bad{color:var(--bad);background:#faeeee}
+
+  /* --- matris --- */
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;
+    background:var(--canvas);border:1px solid var(--line);padding:14px 16px;margin:16px 0}
+  .filters label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .filters select,.filters input{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .matrix{font-size:13.5px}
+  .matrix th.rot{width:72px;text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom}
+  .matrix td.name{font-weight:500}
+  .matrix td.name em{display:block;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .matrix tr.group td{background:#f2f5f8;font-weight:650;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+  .count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+
+  /* --- pozisyon tablosu --- */
+  .postbl{font-size:13.5px}
+  .postbl input[type=text],.postbl input[type=date],.postbl input[type=number]{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .postbl input[type=text]{font-family:var(--sans)}
+  .postbl input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .postbl td.chk{text-align:center}
+  .postbl input[type=number]{text-align:right}
+  .postbl td:first-child{min-width:150px}
+  .postbl th.num,.postbl td.num{width:auto}
+  @media(max-width:760px){table{display:block;overflow-x:auto}}
+  .postbl td.calc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap}
+  .postbl tfoot td{background:var(--canvas);font-weight:650}
+  .tblbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+  .tblbar button{border-color:var(--line);color:var(--ink-soft);background:#fff}
+  .tblbar button:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tblbar .inline{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft)}
+  .tblbar .inline input{width:78px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .card{border:1px solid var(--line);border-top:3px solid var(--eff-ink);padding:12px 14px}
+  .card b{display:block;font-family:var(--serif);font-size:24px;line-height:1.2}
+  .card span{font-size:12px;color:var(--ink-soft)}
+  .card.alt{border-top-color:var(--efc-ink)}
+  .card.warn{border-top-color:var(--out-ink)}
+
+  details{border-bottom:1px solid var(--line);padding:12px 0}
+  summary{cursor:pointer;font-weight:600;font-size:15px}
+  summary::marker{color:var(--accent)}
+  details p{margin:10px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  @media (prefers-reduced-motion:no-preference){
+    .result{transition:border-color .2s}
+  }
+  @media print{
+    body{background:#fff} .sheet{box-shadow:none;max-width:none;padding:0}
+    .panel{background:#fff;color:#000;border:1px solid #000}
+    pre{background:#f4f4f4;color:#000}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>ISO/TS 30425 İşgücü Bulunabilirliği Metrikleri Kümesi</h1>
+<div class="srcbar">
+  <span><b>Kaynak:</b> PD ISO/TS 30425:2021 — <i>Human resource management — Workforce availability metrics cluster</i></span>
+  <span><b>Kapsam:</b> 5 kullanıcı · 5 metrik ailesi · 55 metrik ve etken</span>
+  <span><b>Hesaplama:</b> gömülü Python modülü (Pyodide/WebAssembly)</span>
+  <span><b>Sürüm:</b> Ekim 2026</span>
+</div>
+
+<h2 id="genel">Genel Bakış</h2>
+<p>ISO/TS 30425:2021, ISO 30414'ün <b>işgücü bulunabilirliği</b> kümesini ayrıntılandıran bir teknik şartnamedir. Kurumlar için işgücü bulunabilirliğinin ölçüm unsurlarını anlatır ve iç ve dış raporlama için karşılaştırılabilir
+ölçümlerin formülünü verir. Ayrıca uyum verisini yorumlarken, özellikle iç müdahalelere karar verirken ve bunları dış paydaşlara (düzenleyiciler, yatırımcılar) raporlarken dikkate alınacak konuları vurgular. Dört metriği ele alır:
+<b>çalışan sayısı (kadro)</b>, <b>tam zaman eşdeğeri (FTE)</b>, <b>koşullu işgücü</b> ve <b>devamsızlık</b>. Şartname, kalıcı ve geçici işgücünün <b>çalışma kapasitesi</b> ile ilgilidir; mevcut tahsisli işlerini, becerilerini ya da belirli işlere uygunluklarını
+ele almaz; bu konular ISO 30409'a (işgücü planlaması) bırakılmıştır. Bu sayfa, şartnamenin metrik kümesini filtrelenebilir bir matrise; hesaplanabilir metrikleri de formül + canlı hesaplayıcı + Python koduna dönüştürür. PD ISO/TS 30425:2021,
+ISO/TS 30425'in İngiltere uyarlamasıdır (yayımlanmış belge) ve BSI tarafından 31 Mart 2021'de yayımlanmıştır. İlişkili belgeler: insan sermayesi raporlaması için ISO 30414, işgücü planlaması için ISO 30409.</p>
+
+<h3>Önemli Noktalar</h3>
+<ul class="keypoints">
+  <li><b>Metrikler ayrıntılı hesaplanır, toplulaştırılarak raporlanır.</b> İşgücü bulunabilirliği metrikleri kurum içinde ayrıntılı düzeyde hesaplanmalı ve kurumlar, konumlar ya da ikisi arasında toplulaştırılmalıdır; böylece her düzeyde (ekip,
+  hat, bölüm, konum ve kurum) her metrik ve toplu işgücü bulunabilirliği konumu anlaşılır.</li>
+  <li><b>Kadro tek başına yanıltabilir.</b> Kadro, çalışma süresine bakmaksızın her çalışanı bir kişi olarak sayar; yarı zamanlı çalışan sayısı gereken toplam çalışan sayısını çarpıtabilir. Bu yüzden yarı zamanlı çalışanlar FTE'ye çevrilir ve kadro ile FTE birlikte okunur.</li>
+  <li><b>FTE formülü basittir: D = A + (B/C).</b> A tam zamanlı çalışan, B yarı zamanlıların toplam saati, C ortalama haftalık çalışma saatidir. Şartname örneği tam zamanlı haftalık süreyi 40 saat varsayar.</li>
+  <li><b>Devamsızlık, çalışılabilir günlerin ne kadarında çalışanların bulunamadığını gösterir.</b> Hastalık, yaralanma, tıbbi sorunlar, kişisel nedenler, grev ya da iş memnuniyetsizliği kaynaklı devamsızlıklar kaçınılabilir ya da kaçınılamaz olabilir;
+  tatil, resmî tatil ve yetkili izin hesaba dahil değildir.</li>
+  <li><b>Koşullu işgücü ayrı sayılır.</b> Bağımsız yükleniciler (serbest çalışanlar ve danışmanlar) ile geçici işgücü (kiralık, geçici ve gözetimli çalışanlar) kadrodan ayrı izlenir; amaç, bu emek kaynağının ürettiği çabayı ve çalışma saatlerini anlamaktır.</li>
+  <li><b>Ölçüm noktası sabittir.</b> Hesaplama, her tanımlı ölçüm döneminin sonunda (ay sonu, çeyrek sonu, yıl sonu) ve mali yıl ya da yıllık bütçe döngüsüyle hizalı yapılır. Farklı bir nokta seçilirse tercih tutarlı uygulanır ve yazılır.</li>
+  <li><b>Karşılaştırma aralığı üç ilâ beş yıldır.</b> Tek dönemden eğilim çıkmaz; önceki dönemle cari dönem ve geçmiş yıllarla cari yıl karşılaştırılır. Fiilin bütçeyle karşılaştırılması yöneticiler, üst yönetim, yönetim kurulu ve diğer paydaşlar için anlayışı derinleştirir.</li>
+</ul>
+
+<div class="toc">
+  <b>İçindekiler</b>
+  <a href="#genel">Genel bakış ve önemli noktalar</a>
+  <a href="#nezaman">Ne zaman kullanılır</a>
+  <a href="#cerceve">Çerçeve ve metodoloji</a>
+  <a href="#ornekler">Şartnamenin rapor örnekleri</a>
+  <a href="#adimlar">Metrik seçim adımları</a>
+  <a href="#kavramlar">Temel kavramlar</a>
+  <a href="#matris">Metrik matrisi</a>
+  <a href="#tablo">FTE hesap tablosu</a>
+  <a href="#formuller">Formüller ve tanımlar</a>
+  <a href="#hesaplayici">Hesaplayıcı</a>
+  <a href="#python">Python kod örnekleri</a>
+  <a href="#yorum">Sonuçların yorumlanması</a>
+  <a href="#sinirlamalar">Sınırlamalar</a>
+  <a href="#raporlama">Metriklerin raporlanması</a>
+  <a href="#ilgili">İlgili standartlar</a>
+  <a href="#sss">Sıkça sorulan sorular</a>
+</div>
+
+<h2 id="nezaman">Ne Zaman Kullanılır</h2>
+<ul>
+  <li><b>Kadronun büyüklüğü ve karması izlenirken:</b> kadro hem geçmiş hem öncü bir büyüme göstergesi olabilir; genişleme ya da daralma sorunlarına işaret edebilir. İşgücünün ayrıntılı kırılımı (bölüm, ekip) analiz potansiyelini artırır.</li>
+  <li><b>Bütçelenen ve fiili kadro karşılaştırılırken:</b> bütçe ile fiili kadro arasında artan fark, ilgili alanın çekme ya da elde tutma sorunları olduğuna işaret edebilir.</li>
+  <li><b>Kadro tek başına yetmediğinde:</b> yarı zamanlı çalışanların FTE'ye dönüştürülmesi, kurumun çıktı ve sonuçlarını sağlayan eşdeğer tam zamanlı çalışan sayısını gösterir.</li>
+  <li><b>Esneklik ve çeviklik için koşullu işgücü kullanılırken:</b> teknolojinin gelişmesi, uzaktan işgücü, platform (gig) ekonomisi ve kurumların esneklik ihtiyacı nedeniyle koşullu ve geçici işgücü kullanımı küresel olarak artıyor.</li>
+  <li><b>Günlük teslim kapasitesi izlenirken:</b> devamsızlık, kurumun çıktı ve verimlilik düzeylerini günlük bazda teslim etme yeteneğini etkiler.</li>
+  <li><b>Dış raporlamada:</b> yatırımcı, analist, sendika, medya ve sektör grupları (kıyaslama faaliyetleri) için karşılaştırılabilir göstergeler üretilir (ISO 30414 ile birlikte).</li>
+</ul>
+<div class="note">Bu belge bir <b>ölçme</b> belgesidir ve işgücünün <b>çalışma kapasitesiyle</b> sınırlıdır. Şartnamenin kendi ifadesiyle mevcut tahsisli iş, beceri ya da belirli işlere uygunluk bu belgenin konusu değildir;
+bunlar ISO 30409'dadır. Ayrıca sonuç beklenenden kötü göründüğünde ileri inceleme olumlu göstergeleri de ortaya çıkarabilir.</div>
+
+<h2 id="cerceve">Çerçeve ve Metodoloji</h2>
+
+<h3>Dört metrik, ortak yapı</h3>
+<p>Şartname, ISO 30414'te belgelenen işgücü bulunabilirliği kümesindeki metrikleri aşağıdaki gibi sıralar. Her metrik için genel tanım, amaç, formül ve kullanım biçimi verilir; devamsızlık için ayrıca hedef kullanıcılar, bağlam etkenleri ve öngörü etkenleri.</p>
+<table>
+  <thead><tr><th>Metrik</th><th>Madde</th><th>Tanım</th><th>Amaç</th></tr></thead>
+  <tbody>
+    <tr><td><b>Çalışan sayısı — kadro (headcount)</b></td><td>4</td>
+      <td>Kuruma çalışan kişi sayısı: her çalışan, kurumla ilişkide geçirdiği süre ne olursa olsun, işgücünün bireysel bir parçası olarak sayılır; şu anda sıfır saat çalışan tam ya da yarı zamanlılar da dahildir.
+      İki kategoriye ayrılır: toplam kadro; toplam tam zamanlı kadro ve toplam yarı zamanlı kadro.</td>
+      <td>Herhangi bir ölçüm noktasında kuruma bulunabilir çalışan sayısını vurgular.</td></tr>
+    <tr><td><b>Tam zaman eşdeğeri (FTE)</b></td><td>5</td>
+      <td>Tanımlı bir dönemde çalışılan toplam saatleri tamamlamak için gereken tam zamanlı çalışan sayısı.</td>
+      <td>Yarı zamanlı çalışanların FTE'ye çevrilmesi, kurumun çıktı ve sonuçlarını sağlayan eşdeğer tam zamanlı çalışan sayısını gösterir. Kadro tek başına yanıltabilir.</td></tr>
+    <tr><td><b>Koşullu işgücü</b></td><td>6</td>
+      <td>Bağımsız yükleniciler (serbest çalışanlar ve danışmanlar) ile geçici işgücü (kiralık, geçici/interim ve gözetimli çalışanlar).</td>
+      <td>Bu emek kaynağının ürettiği çabanın ve çalışma saatlerinin anlaşılması; sonra Tablo 4'teki gibi karşılaştırılıp analiz edilmesi.</td></tr>
+    <tr><td><b>Devamsızlık</b></td><td>7</td>
+      <td>Çalışanların kullanılabilir çalışma günlerinin yüzde kaçında bulunamadığı. Tatil, resmî tatil ve yetkili izin hesaba dahil değildir.</td>
+      <td>Kurumun günlük çıktı ve verimlilik düzeylerini teslim edebilme yeteneğini etkilediği için ölçülür.</td></tr>
+  </tbody>
+</table>
+
+<h3>Formüller</h3>
+<table>
+  <thead><tr><th>Metrik</th><th>Formül</th><th>Değişkenler</th></tr></thead>
+  <tbody>
+    <tr><td><b>Kadro</b></td><td>Her çalışanın bir kişi olarak sayılması</td><td>Toplam; tam zamanlı ve yarı zamanlı kırılımı. Hesaplama mali yıl, yıllık bütçe döngüsü ya da ikisiyle hizalanır.</td></tr>
+    <tr><td><b>FTE</b></td><td style="font-family:var(--serif)">D = A + (B/C)</td>
+      <td>A tam zamanlı çalışan; B yarı zamanlı toplam saat; C ortalama haftalık çalışma saati; D tam zaman eşdeğeri toplamı. Örnek: 140 = 100 + (1 600/40).</td></tr>
+    <tr><td><b>Koşullu işgücü</b></td><td>Toplam koşullu işgücü, ISO 30414:2018, 4.7.12.3'te açıklanan tüm işgücünün toplamı</td>
+      <td>Toplam geçici işgücü, aynı maddenin b) bendindeki işgücünün kırılımıdır (Tablo 4).</td></tr>
+    <tr><td><b>Devamsızlık oranı</b></td><td style="font-family:var(--serif)">A = B/C × 100</td>
+      <td>A kullanılabilir çalışma günlerinin yüzdesi olarak devamsızlık oranı; B ölçüm dönemi boyunca devamsız gün sayısı; C ölçüm dönemi boyunca kullanılabilir çalışma günü sayısı. Örnek: C = 1 200; B = 25; A = 25/1 200 × 100 = %2,08.</td></tr>
+  </tbody>
+</table>
+
+<h3>Ölçüm noktası ve karşılaştırma (madde 4.3, 5.3, 6.3, 7.3)</h3>
+<ul>
+  <li>Hesaplama noktası her tanımlı ölçüm döneminin sonudur: birinci ay sonu, ikinci çeyrek sonu ya da yıl sonu toplamları.</li>
+  <li>Hesaplama mali yıl, yıllık bütçe döngüsü ya da ikisiyle hizalanmalıdır.</li>
+  <li>Kurum başka bir ölçüm noktası seçerse, tercih edilen nokta tutarlı kullanılmalı ve açıkça belirtilmelidir.</li>
+  <li>Raporlama, önceki dönemlerle cari dönemin ve geçmiş yıllarla cari yılın karşılaştırmasını içermelidir; tipik karşılaştırma aralığı üç ilâ beş yıldır. Bu ölçüm dönemi eğilimlerin oluşmasına, beklenti ve sonuçların daha iyi yönetilmesine ve gelecek karşılaştırma için hedef koymaya imkân verir.</li>
+  <li>Fiili değerin bütçelenen değerle karşılaştırılması (kadro, FTE, koşullu işgücü, devamsızlık için) yöneticiler, üst yönetim, yönetim kurulu ve diğer ilgili paydaşlar için anlayışın derinliğini artırır.</li>
+</ul>
+
+<h3>Kullanım biçimi (madde 4.4, 5.4, 6.4, 7.4)</h3>
+<ul>
+  <li><b>Kadro</b> işgücünün büyüklüğünü ve karmasını izlemek için kullanılır; büyümenin ve genişleme ya da daralmaya ilişkin olası sorunların hem geçmiş hem öncü göstergesi olabilir. İşgücü büyüklüğünün ayrıntılı kırılımı (bölüm ya da ekibe göre; ekipleri ya da
+  departmanları bütçelenen kadroya göre karşılaştırmak; "benzerle benzeri" kadroyu karşılaştırılabilir ekiplerle kıyaslamak) analiz potansiyelini artırır. Bütçelenen ile fiili kadro arasındaki artan fark çekme ya da elde tutma sorunlarına işaret edebilir.</li>
+  <li><b>FTE</b> tablosu, yarı zamanlı çalışanlar için FTE saatlerini hesaplar ve tanımlı dönem için tam zamanlı çalışanları ekler; hesap, tam zamanlı çalışanların haftalık süresinin 40 saat olduğunu varsayar. Toplam FTE'nin ve yarı zamanlı çalışanların toplam FTE içindeki yüzdesinin
+  büyümesi birlikte izlenir (Tablo 3).</li>
+  <li><b>Koşullu işgücü</b> karşılaştırma tablosunda toplam koşullu işgücü ve bileşenleri tutulur (Tablo 4). Kurumun büyüklüğüne ve karmaşıklığına bağlı olarak tablo alt kümelerle (departman, hizmet hattı, konum, yetkinlik) genişletilebilir.</li>
+  <li><b>Devamsızlık</b> toplam düzeyde azalıyor görünebilir, ancak ayrıntı (Tablo 5) belirli bir bölümde sorun olduğunu ortaya koyabilir; örnekte üretimde ölçüm dönemi boyunca yaklaşık %50 artış vardır ve daha fazla inceleme gerekir.</li>
+</ul>
+
+<h3>Hedef kullanıcılar (madde 7.5)</h3>
+<p>İşgücü bulunabilirliği kümesi metrikleri yakından ilişkili olduğu ve birlikte raporlandığı için tüm metriklerde hedef kullanıcılar benzerdir:</p>
+<table>
+  <thead><tr><th style="width:150px">Kullanıcı türü</th><th>Kullanıcılar</th></tr></thead>
+  <tbody>
+    <tr><td><b>İç kullanıcılar</b></td><td>Yönetim kurulları; diğer insan kaynakları hizmet hatları; üst yönetim ekibi; hat yönetimi; sendika delegeleri (varsa); finans; hukuk.</td></tr>
+    <tr><td><b>Dış kullanıcılar</b></td><td>Yatırımcılar; finansal analistler; sendikalar (varsa); medya; sektör grupları (kıyaslama faaliyetleri).</td></tr>
+  </tbody>
+</table>
+
+<h3>Bağlam etkenleri (madde 7.6)</h3>
+<p>Birçok etken ölçüm sonucunu önemli ölçüde etkileyebilir. Tablo 5'te gösterildiği gibi sonuçların beklenenden düşük ya da kötüleşiyor olduğu durumlar mümkündür; ileri inceleme olumlu iyileşme göstergeleri de bulabilir. Örneğin Tablo 3'te yarı zamanlı kaynak kullanımındaki toplam artış ölçüm dönemi boyunca
+%11'dir; bu muhtemelen yönetim stratejisinden kaynaklanır. FTE hareketinin altındaki nedenler düşünülürken şunlar dikkate alınabilir:</p>
+<ul>
+  <li>Kurumun yürüttüğü güncel faaliyetler: yeniden yapılanmalar; işgücünü eğitmeye yönelik güncel faaliyetler.</li>
+  <li>Kültürel değişimler (olumlu ve olumsuz).</li>
+  <li>Kuşak bakış açıları.</li>
+  <li>Bildirimlerde artışa yol açan toplumsal değişim ya da farkındalık.</li>
+  <li>Pazar talebi.</li>
+  <li>Sendika müzakereleri ya da diğer sektörel veya bölgesel faaliyetler.</li>
+  <li>Sektör beklentisi.</li>
+  <li>Ekonomik etkenler: daralmalar; genişlemeler.</li>
+</ul>
+
+<h3>Öngörü etkenleri (madde 7.7)</h3>
+<p>Mevcut durumdaki olası iyileşme ya da kötüleşmeyi öngörürken kurumlar gelecekteki bilinen ve beklenen olaylara bakabilir:</p>
+<ul>
+  <li>Planlanan örgüt yapısı veya işgücü değişiklikleri.</li>
+  <li>Yaklaşan sendika müzakereleri.</li>
+  <li>Ekonomik etkenler: daralmalar; genişlemeler.</li>
+  <li>İşgücü farkındalığı ve eğitimi.</li>
+  <li>Siyasi, sosyal, çevresel ve yasal dinamikler.</li>
+  <li>Sektörel etkiler.</li>
+</ul>
+
+<h2 id="ornekler">Şartnamenin Rapor Örnekleri</h2>
+<p>Şartname, her metrik için bir rapor örneği verir. Sayılar şartnamedeki örneklerdir; gerçek bir kuruma ait değildir.</p>
+
+<h3>Tablo 1 — Bütçelenen kadronun fiili kadroyla çeyreklik karşılaştırması</h3>
+<table>
+  <thead><tr><th rowspan="2">Birim</th><th colspan="2">1. çeyrek</th><th colspan="2">2. çeyrek</th><th colspan="2">3. çeyrek</th><th colspan="2">4. çeyrek</th></tr>
+  <tr><th class="num">Bütçe</th><th class="num">Fiili</th><th class="num">Bütçe</th><th class="num">Fiili</th><th class="num">Bütçe</th><th class="num">Fiili</th><th class="num">Bütçe</th><th class="num">Fiili</th></tr></thead>
+  <tbody id="t1Body"></tbody>
+</table>
+<p>Analiz tam zamanlı ve yarı zamanlı kırılımı, önceki yıllarla ya da ikisiyle karşılaştırmayı içerecek biçimde genişletilebilir.</p>
+
+<h3>Tablo 2 — 31 Aralık 2016 itibarıyla FTE hesabı</h3>
+<p>Bu tablo, sayfadaki <a href="#tablo">FTE hesap tablosunun</a> örnek verisidir; yarı zamanlı saatten FTE'ye (B/C, C = 40) ve tam zamanlı çalışan eklenerek toplam FTE'ye geçilir.</p>
+
+<h3>Tablo 3 — Zaman içinde FTE ve yarı zamanlı FTE yüzdesi</h3>
+<table>
+  <thead><tr><th rowspan="2">Birim</th><th colspan="2">2016</th><th colspan="2">2017</th><th colspan="2">2018</th></tr>
+  <tr><th class="num">FTE</th><th class="num">Yarı zamanlı FTE %</th><th class="num">FTE</th><th class="num">Yarı zamanlı FTE %</th><th class="num">FTE</th><th class="num">Yarı zamanlı FTE %</th></tr></thead>
+  <tbody id="t3Body"></tbody>
+</table>
+
+<h3>Tablo 4 — Geçici işgücü</h3>
+<table>
+  <thead><tr><th>Geçici işgücü türü</th><th class="num">30-06-2020'ye kadar 6 ay</th><th class="num">Karşılaştırma 30-06-2019</th><th class="num">Karşılaştırma 30-06-2018</th><th class="num">Karşılaştırma 30-06-2017</th></tr></thead>
+  <tbody>
+    <tr><td>Serbest çalışan ve danışmanların toplamı (bağımsız yükleniciler)</td><td class="num">90</td><td class="num">85</td><td class="num">85</td><td class="num">80</td></tr>
+    <tr><td>Kiralık ve ajans işgücü toplamı</td><td class="num">87</td><td class="num">85</td><td class="num">80</td><td class="num">70</td></tr>
+    <tr><td><b>Toplam koşullu işgücü</b></td><td class="num"><b>177</b></td><td class="num"><b>170</b></td><td class="num"><b>165</b></td><td class="num"><b>150</b></td></tr>
+  </tbody>
+</table>
+<p>Kurumun büyüklüğüne ve karmaşıklığına bağlı olarak tablo alt kümelerle (örneğin departman, hizmet hattı, konum ya da yetkinlik) genişletilebilir.</p>
+
+<h3>Tablo 5 — Birimlere göre, kullanılabilir çalışma günlerinin yüzdesi olarak devamsızlık (%)</h3>
+<table>
+  <thead><tr><th rowspan="2">Birim</th><th colspan="5">2020</th><th class="num" rowspan="2">2019 yıl</th><th class="num" rowspan="2">2018 yıl</th><th class="num" rowspan="2">2017 yıl</th></tr>
+  <tr><th class="num">Yıl</th><th class="num">4. ç.</th><th class="num">3. ç.</th><th class="num">2. ç.</th><th class="num">1. ç.</th></tr></thead>
+  <tbody id="t5Body"></tbody>
+</table>
+
+<h2 id="adimlar">Metrik Seçim Adımları</h2>
+<ol>
+  <li><b>Ölçüm noktasını sabitleyin.</b> Dönem sonu kesiti seçilir (ay sonu, çeyrek sonu, yıl sonu), mali yıl ya da bütçe döngüsüyle hizalanır ve dönemler boyunca korunur.</li>
+  <li><b>Kadro tanımını yazın.</b> Her çalışan bir kişi olarak sayılır; sıfır saatli çalışanlar dahil mi, kırılım tam zamanlı ve yarı zamanlı mı?</li>
+  <li><b>Haftalık tam zamanlı süreyi belirleyin.</b> FTE hesabının paydası; şartname örneği 40 saattir.</li>
+  <li><b>Koşullu işgücü bileşenlerini ayırın.</b> Bağımsız yükleniciler ile kiralık, geçici ve gözetimli işgücünü ayrı kayda alın.</li>
+  <li><b>Devamsızlığın kapsamını yazın.</b> Hangi devamsızlıklar dahil (hastalık, yaralanma, tıbbi, kişisel, grev, iş memnuniyetsizliği), hangileri hesap dışı (tatil, resmî tatil, yetkili izin)?</li>
+  <li><b>Kırılımları seçin.</b> Ekip, hat, bölüm, konum, kurum; toplulaştırmayı ayrıntıdan üretin.</li>
+  <li><b>Bütçelenen değerleri tanımlayın.</b> Kadro, FTE, koşullu işgücü ve devamsızlık için bütçelenen değerler fiilin karşılaştırma tabanıdır.</li>
+  <li><b>Karşılaştırma tabanını kurun.</b> Önceki dönem, geçmiş üç ilâ beş yıl, bütçe ve varsa sektör verisi.</li>
+  <li><b>Bağlam ve öngörü etkenlerini yazın.</b> Sayının yanına yeniden yapılanma, ekonomik koşullar, sendika görüşmeleri ve diğer olayları not edin.</li>
+</ol>
+
+<h2 id="kavramlar">Temel Kavramlar</h2>
+<p>Şartname, 3. maddesinde terim tanımlamaz ("No terms and definitions are listed"). Aşağıdaki tablo, metinde geçen temel kavramların kısa özetleridir. Açıklamalar özgün olarak yazılmıştır; bağlayıcı olan şartnamenin kendi metnidir.</p>
+<table>
+  <thead><tr><th style="width:90px">Madde</th><th style="width:220px">Kavram</th><th>Açıklama</th></tr></thead>
+  <tbody>
+    <tr><td><b>4.1</b></td><td>Kadro <small>(headcount)</small></td>
+      <td>Kuruma çalışan kişi sayısı; her çalışan, kuruma bağlı olduğu süre ne olursa olsun bir kişi sayılır. Şu anda sıfır saat çalışan tam ya da yarı zamanlılar da dahildir.</td></tr>
+    <tr><td><b>5.1</b></td><td>Tam zaman eşdeğeri <small>(full-time equivalent, FTE)</small></td>
+      <td>Tanımlı bir dönemde çalışılan toplam saatleri tamamlamak için gereken tam zamanlı çalışan sayısı.</td></tr>
+    <tr><td><b>5.3</b></td><td>Yarı zamanlı toplam saat <small>(part-time total hours)</small></td>
+      <td>FTE formülündeki B değişkeni: yarı zamanlıların toplam çalışma saati.</td></tr>
+    <tr><td><b>5.3</b></td><td>Ortalama haftalık çalışma saati</td>
+      <td>FTE formülündeki C değişkeni; örnekte tam zamanlı çalışan için 40 saat varsayılır.</td></tr>
+    <tr><td><b>6</b></td><td>Koşullu işgücü <small>(contingent workforce)</small></td>
+      <td>Bağımsız yükleniciler ile geçici işgücünün toplamı. Küresel olarak teknoloji, uzaktan işgücü ve platform ekonomisi nedeniyle kullanımı artıyor.</td></tr>
+    <tr><td><b>Giriş</b></td><td>Bağımsız yüklenici <small>(independent contractor)</small></td>
+      <td>Serbest çalışanlar ve danışmanlar.</td></tr>
+    <tr><td><b>Giriş</b></td><td>Geçici işgücü <small>(temporary workforce)</small></td>
+      <td>Kiralık (leasing), geçici (interim) veya gözetimli çalışanlar; ajans işgücü.</td></tr>
+    <tr><td><b>7.1</b></td><td>Devamsızlık <small>(absenteeism)</small></td>
+      <td>Çalışanların kullanılabilir çalışma günlerinde bulunamama durumu; hastalık, yaralanma, tıbbi sorunlar, kişisel konular, grev ya da iş memnuniyetsizliği kaynaklı; kaçınılabilir ya da kaçınılamaz olabilir.</td></tr>
+    <tr><td><b>7.2</b></td><td>Hesap dışı devamsızlık</td>
+      <td>Tatil, resmî tatil ve yetkili izin devamsızlık oranı hesabının parçası değildir.</td></tr>
+    <tr><td><b>4.3</b></td><td>Ölçüm noktası</td>
+      <td>Her tanımlı ölçüm döneminin sonu (ay sonu, çeyrek sonu, yıl sonu); mali yıl ya da bütçe döngüsüyle hizalı.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="matris">Metrik Matrisi</h2>
+<p>Aşağıdaki tablo, şartnamenin tanımladığı ve türettiği metrikler ile bağlam–öngörü etkenlerinin kullanıcı × süreç aşaması × raporlama sınıflandırmasıdır. Kullanıcı sütunları şartnamenin hedef kullanıcı listesine (madde 7.5) dayanır;
+aşama ve raporlama sınıflandırması bu sayfanın yazarlık sınıflandırmasıdır. Filtreleri değiştirdiğinizde tablo anında daralır.</p>
+
+<div class="filters">
+  <div><label for="fUser">Kullanıcı</label>
+    <select id="fUser">
+      <option value="">Tümü</option>
+      <option value="hr">İK hizmet birimleri</option>
+      <option value="exec">Üst yönetim ve yönetim kurulu</option>
+      <option value="line">Hat yönetimi</option>
+      <option value="fin">Finans ve hukuk</option>
+      <option value="ext">Dış paydaş</option>
+    </select></div>
+  <div><label for="fStage">Metrik bölümü</label>
+    <select id="fStage">
+      <option value="">Tümü</option>
+      <option value="kadro">Kadro (madde 4)</option>
+      <option value="fte">FTE (madde 5)</option>
+      <option value="kosullu">Koşullu işgücü (madde 6)</option>
+      <option value="devamsiz">Devamsızlık (madde 7)</option>
+      <option value="baglam">Ölçüm, bağlam ve öngörü</option>
+    </select></div>
+  <div><label for="fType">Metrik ailesi</label>
+    <select id="fType">
+      <option value="">Tümü</option>
+      <option value="p">Kadro</option>
+      <option value="c">FTE</option>
+      <option value="s">Koşullu işgücü</option>
+      <option value="r">Devamsızlık</option>
+      <option value="o">Ölçüm, bağlam ve öngörü</option>
+    </select></div>
+  <div><label for="fRep">Raporlama</label>
+    <select id="fRep">
+      <option value="">Tümü</option>
+      <option value="ic">İç raporlama</option>
+      <option value="dis">Dış raporlama</option>
+    </select></div>
+  <div><label for="fQ">Metrik adında ara</label>
+    <input type="text" id="fQ" placeholder="ör. FTE"></div>
+</div>
+
+<div class="count" id="mCount"></div>
+<table class="matrix">
+  <thead><tr>
+    <th>Metrik</th>
+    <th class="rot">İK</th>
+    <th class="rot">Üst yönetim</th>
+    <th class="rot">Hat yönetimi</th>
+    <th class="rot">Finans / hukuk</th>
+    <th class="rot">Dış paydaş</th>
+  </tr></thead>
+  <tbody id="mBody"></tbody>
+</table>
+<div class="legend">
+  <span><span class="dot p"></span> kadro</span>
+  <span><span class="dot c"></span> FTE</span>
+  <span><span class="dot s"></span> koşullu işgücü</span>
+  <span><span class="dot r"></span> devamsızlık</span>
+  <span><span class="dot o"></span> ölçüm, bağlam ve öngörü</span>
+  <span><span class="tag iso">30414</span> ISO 30414'te tanımlı işgücü bulunabilirliği metriği</span>
+  <span><span class="tag lvl">hesaplayıcı</span> bu sayfada hesaplanabilen metrik</span>
+  <span>Hesaplayıcıya bağlı metrikler <b>koyu</b> işaretlenmiştir.</span>
+</div>
+
+<h2 id="tablo">FTE Hesap Tablosu</h2>
+<p>FTE, birim bazında iki girdiden hesaplanır: yarı zamanlıların toplam çalışma saati ve tam zamanlı çalışan sayısı. Aşağıdaki tabloya kendi birimlerinizi girin; yarı zamanlı FTE (B ÷ C), toplam FTE (A + B ÷ C), yarı zamanlı FTE payı ve toplamlar anında
+güncellenir. Haftalık tam zamanlı çalışma saatini (C) değiştirebilirsiniz; şartname örneği 40 saattir. Önceki dönem toplam FTE'yi girerseniz değişim de hesaplanır. Örnek veri şartnamenin Tablo 2 sayılarıdır.</p>
+
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnek">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizle">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsv">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktar">Hesaplayıcıya aktar</button>
+  <span class="inline"><label for="haftalik">Haftalık çalışma saati (C)</label>
+    <input type="number" id="haftalik" min="1" step="any" value="40"></span>
+  <span class="inline"><label for="oncekiFte">Önceki dönem toplam FTE</label>
+    <input type="number" id="oncekiFte" min="0" step="any" value="" placeholder="isteğe bağlı"></span>
+</div>
+
+<table class="postbl">
+  <thead><tr>
+    <th>Birim</th>
+    <th class="num">Yarı zamanlı saat (B)</th><th class="num">Tam zamanlı çalışan (A)</th>
+    <th class="calc" style="width:90px">Yarı zamanlı FTE</th><th class="calc" style="width:80px">Toplam FTE</th>
+    <th class="calc" style="width:90px">Yarı zamanlı pay (%)</th>
+  </tr></thead>
+  <tbody id="pBody"></tbody>
+  <tfoot><tr>
+    <td>Toplam</td>
+    <td class="calc" id="tSaat">—</td>
+    <td class="calc" id="tTam">—</td>
+    <td class="calc" id="tYari">—</td>
+    <td class="calc" id="tFte">—</td>
+    <td class="calc" id="tPay">—</td>
+  </tr></tfoot>
+</table>
+
+<div class="cards" id="pCards"></div>
+<div class="note" id="pNot"></div>
+
+<h2 id="formuller">Formüller ve Tanımlar</h2>
+<p>Metriklerin bir bölümü sayımdır (kadro, koşullu işgücü bileşenleri) ve formül gerektirmez. Şartname iki metrik için açık formül verir: FTE ve devamsızlık oranı. Aşağıda şartnamenin formülleri ile onlardan türetilen karşılaştırma hesapları
+bulunur; türetilmiş olanlar notlarında belirtilmiştir.</p>
+<table>
+  <thead><tr><th>Metrik</th><th>Formül</th><th>Not</th></tr></thead>
+  <tbody id="fBody"></tbody>
+</table>
+
+<h2 id="hesaplayici">Hesaplayıcı</h2>
+<p>Metriği seçin, alanları doldurun; sonuç, formülün yerine konmuş hâli ve yorum aşağıda görünür.
+Kurulum gerekmez, veriler tarayıcıdan çıkmaz.</p>
+
+<div class="panel">
+  <h3>İşgücü Bulunabilirliği Metrik Hesaplayıcısı</h3>
+  <p class="hint">Alanlar seçtiğiniz metriğe göre değişir. Kadro ve koşullu işgücü kişi, FTE tam zaman eşdeğeri, devamsızlık ve paylar yüzde olarak raporlanır.</p>
+  <div class="grid">
+    <div class="field" style="grid-column:1/-1">
+      <label for="cMetric">Metrik <span class="req">*</span></label>
+      <select id="cMetric"></select>
+    </div>
+  </div>
+  <div class="grid" id="cFields" style="margin-top:14px"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="oAll"> Tümünü seç</label>
+    <label><input type="checkbox" id="oFormula" checked> Formülün açık hâli</label>
+    <label><input type="checkbox" id="oInterp" checked> Yorum ve eşik</label>
+    <label><input type="checkbox" id="oPy"> Python karşılığı</label>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-run" id="btnRun">Hesapla</button>
+    <button class="btn-ghost" id="btnExample">Örnek veriyi yükle</button>
+    <button class="btn-ghost" id="btnPy">Python motorunu yükle</button>
+    <span class="chip" id="engStatus">Motor: tarayıcı (JavaScript)</span>
+  </div>
+  <p class="hint" style="margin:14px 0 0">Python motoru seçildiğinde hesaplama, bu sayfaya gömülü
+  <code style="background:#1c2836;color:#cfe0f0">iso30425_metrikler.py</code> modülünün
+  <code style="background:#1c2836;color:#cfe0f0">hesapla()</code> fonksiyonu tarafından, tarayıcı içinde
+  çalışan gerçek bir CPython yorumlayıcısında (Pyodide/WebAssembly) yapılır. İlk yüklemede yaklaşık
+  10–12 MB indirilir; sonrası önbellekten gelir. Çevrimdışıysanız sayfa JavaScript yedeğiyle
+  aynı sonuçları vermeye devam eder.</p>
+</div>
+
+<div id="cResult"></div>
+
+<h2 id="python">Python Kod Örnekleri</h2>
+<p>Bu sayfadaki hesaplamalar JavaScript'te taklit edilmez: modülün tamamı sayfaya gömülüdür ve
+Pyodide (WebAssembly üzerinde CPython) ile tarayıcı içinde çalıştırılır. Hesaplayıcıda Python motorunu
+seçtiğinizde her sonuç <code>hesapla()</code> fonksiyonundan gelir. Aynı dosya
+(<code>iso30425_metrikler.py</code>) komut satırında da bağımsız çalışır; doğrudan çalıştırıldığında
+örnek değerlerle doğrulama çıktısı üretir.</p>
+
+<div class="filename">iso30425_metrikler.py (özet)</div>
+<pre><i># --- Kadro ve FTE ---</i>
+
+<b>def</b> <span class="fn">kadro_sapmasi</span>(fiili, butce):
+    <i>"""Fiili − bütçelenen kadro; artan fark çekme/elde tutma sorununa işaret edebilir."""</i>
+    <b>return</b> fiili - butce
+
+<b>def</b> <span class="fn">fte</span>(tam_zamanli, yari_saat, haftalik_saat):
+    <i>"""Şartname formülü: D = A + (B / C)."""</i>
+    <b>return</b> tam_zamanli + yari_saat / haftalik_saat
+
+<b>def</b> <span class="fn">yari_zamanli_fte_payi</span>(yari_fte, toplam_fte):
+    <i>"""Tablo 3: toplam FTE içinde yarı zamanlıların yüzdesi."""</i>
+    <b>return</b> <u>100</u> * yari_fte / toplam_fte
+
+<i># --- Koşullu işgücü ve devamsızlık ---</i>
+
+<b>def</b> <span class="fn">kosullu_isgucu</span>(serbest, kiralik):
+    <i>"""Bağımsız yükleniciler + kiralık ve ajans işgücü."""</i>
+    <b>return</b> serbest + kiralik
+
+<b>def</b> <span class="fn">devamsizlik_orani</span>(devamsiz_gun, mevcut_gun):
+    <i>"""Şartname formülü: A = B / C × 100 (tatil ve yetkili izin hariç)."""</i>
+    <b>return</b> <u>100</u> * devamsiz_gun / mevcut_gun
+
+<b>def</b> <span class="fn">goreli_degisim</span>(onceki, cari):
+    <i>"""Tablo 5'teki bir bölümün devamsızlığındaki göreli artış."""</i>
+    <b>return</b> <u>100</u> * (cari - onceki) / onceki
+</pre>
+
+<h3>Çalıştırılabilir konsol</h3>
+<p>Aşağıdaki kod, sayfaya gömülü modüle karşı çalışır. <b>Kodu çalıştır</b> düğmesi Python motorunu
+(yüklü değilse) indirir, modülü içe aktarır ve çıktıyı altta gösterir. Kodu serbestçe değiştirebilir,
+kendi verinizi yazabilirsiniz; her şey tarayıcıda kalır.</p>
+
+<div class="console">
+  <div class="console-bar">
+    <span>iso30425_metrikler modülüne karşı çalışır · Python 3 (Pyodide)</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button class="btn-run btn-sm" id="btnRunPy">Kodu çalıştır</button>
+      <button class="btn-ghost btn-sm" id="btnDemo" style="border-color:var(--line);color:var(--ink-soft)">Tam demoyu yükle</button>
+      <button class="btn-ghost btn-sm" id="btnReset" style="border-color:var(--line);color:var(--ink-soft)">Sıfırla</button>
+    </span>
+  </div>
+  <textarea id="pyCode" spellcheck="false"></textarea>
+  <pre id="pyOut">Çıktı burada görünecek. İlk çalıştırmada Python motoru indirilir (10–12 MB).</pre>
+</div>
+
+<details class="src"><summary>Gömülü modülün tam kaynağı (iso30425_metrikler.py)</summary>
+  <pre id="srcView">yükleniyor…</pre>
+</details>
+
+<h2 id="yorum">Sonuçların Yorumlanması</h2>
+<ul>
+  <li><b>Kadro sabit ama FTE artıyorsa</b> yarı zamanlı çalışanların saatleri artıyor olabilir; kadro ile FTE'yi birlikte okuyun. Kadro tek başına yanıltabilir, çünkü yarı zamanlı çalışan sayısı gereken toplam çalışan sayısını çarpıtabilir.</li>
+  <li><b>Bütçe ile fiili kadro arasındaki fark artıyorsa</b> ilgili alan çekme ya da elde tutma sorunu yaşıyor olabilir; tek dönemlik sapma yerine farkın zaman içindeki seyrine bakın. Fiili kadro bütçeyi aşıyorsa kontrolsüz genişleme sorusu doğar.</li>
+  <li><b>Yarı zamanlı FTE payı hızla büyüyorsa</b> bu bir yönetim stratejisinin sonucu olabilir (şartnamedeki örnekte toplam payın yaklaşık 11 puan artması); ancak ayrıntıya inin: bazı birimlerde artış çok daha büyük, bazılarında sıfır olabilir.</li>
+  <li><b>Koşullu işgücü artıyorsa</b> kurum esneklik arıyor olabilir; bu işgücünün ürettiği çabayı ve çalışma saatlerini kadroyla karşılaştırın. Bağımsız yüklenici ile kiralık işgücü ayrı izlenmeli; bileşenlerden hangisi büyüyor ki toplam büyüyor?</li>
+  <li><b>Toplam devamsızlık düşüyor ama bir bölümde artıyorsa</b> toplam ortalama sorunu gizler. Şartnamedeki örnekte genel oran azalırken üretim ölçüm dönemi boyunca yaklaşık %50 artmıştır; bu bölüm için ayrıntılı inceleme gerekir.</li>
+  <li><b>Devamsızlık nedenlerini ayırın.</b> Hastalık, yaralanma, kişisel konular, grev ve iş memnuniyetsizliği farklı müdahaleler gerektirir; kaçınılabilir ve kaçınılamaz devamsızlık ayrı değerlendirilmelidir. Tatil, resmî tatil ve yetkili izin bu orana dahil değildir.</li>
+  <li><b>Sonuç beklenenin altındaysa hemen olumsuz yorumlamayın.</b> Şartname, ileri incelemenin olumlu iyileşme göstergeleri bulabileceğini söyler. Yeniden yapılanma, işgücü eğitimi, kültürel değişim, pazar talebi ya da ekonomik daralma sayının anlamını değiştirebilir.</li>
+  <li><b>Bağlam yazılmadan dönem karşılaştırması yapmayın.</b> Yaklaşan sendika müzakereleri, planlı yapısal değişiklikler, ekonomik hareketler ve yasal dinamikler sonraki dönemin sayısını etkileyecektir; öngörü etkenlerini sayının yanına not edin.</li>
+</ul>
+
+<h2 id="sinirlamalar">Sınırlamalar</h2>
+<ul>
+  <li><b>Şartnamenin yayımlanmış örneğinde bir yorum tutarsızlığı vardır.</b> Madde 7.6, yarı zamanlı kaynak kullanımındaki artışın "lojistik ve üretim departmanlarında %12 ve %15" olduğunu söyler. Tablo 3'e göre lojistikte yarı zamanlı FTE payı %20,00'dan %35,25'e
+  (yaklaşık 15 puan), üretimde %18,00'dan %30,00'a (12 puan) çıkmıştır; yani sıra tersine yazılmıştır. Bu sayfadaki tablolar şartnamenin sayılarını aynen verir; hesaplayıcı tablodaki sayılardan hesaplar.</li>
+  <li>Şartnamenin Tablo 4 başlığındaki ilk sütun "geçici işgücü <i>eğitim</i> türü" olarak yazılmıştır; tablo içeriği (serbest çalışanlar, kiralık işgücü, toplam) bir <i>tür</i> kırılımıdır ve bu sayfada "geçici işgücü türü" olarak verilmiştir.</li>
+  <li><b>Şartname yorum eşiği vermez.</b> Hesaplayıcının "yorum ve eşik" satırındaki bantlar standarttan değil, başlangıç varsayımlarından gelir. Devamsızlık, kadro sapması ve koşullu işgücü payı için kurumunuzun hedeflerini ve sektör kıyaslamasını kullanın.</li>
+  <li>FTE formülü, tam zamanlı haftalık süreyi (C) ortak bir sayı olarak alır; kurumunuzda tam zamanlı süre ülke, sözleşme ya da birime göre değişiyorsa birim bazında kendi C değerinizi kullanın. Fazla mesai ve yıllık izin FTE hesabına nasıl yansıyacağı şartnamede tanımlı değildir.</li>
+  <li>Kadro sayımı, sıfır saat çalışan tam ya da yarı zamanlıları da içerir (madde 4.1); bu yüzden kadro ile fiilen çalışılan saat arasında fark olabilir. Koşullu işgücünün FTE'ye çevrilmesi şartnamede tanımlı değildir; kadro ve koşullu işgücü karşılaştırılırken birimlerin (kişi ya da FTE) aynı olduğundan emin olun.</li>
+  <li>Toplam koşullu işgücü içindeki pay (koşullu ÷ (çalışan + koşullu)) şartnamede yoktur, türetilmiştir; hangi çalışan tanımının (kadro mu FTE mi) paydada kullanıldığı yazılmalıdır.</li>
+  <li>Devamsızlık oranının paydası "kullanılabilir çalışma günü"dür; yarı zamanlı ve vardiyalı çalışanlar için bu sayının nasıl hesaplanacağı (kişi-gün mü, kişi-vardiya mı) kurumca yazılmalı ve seriler boyunca değiştirilmemelidir.</li>
+  <li>Küçük paydalarda oranlar oynaktır: 10 kişilik bir ekipte tek bir kişinin uzun devamsızlığı, bölüm oranını belirgin değiştirir. Az sayıda vakada mutlak sayıları da verin.</li>
+  <li>Şartname işgücünün çalışma kapasitesiyle sınırlıdır; beceri, uygunluk ve iş tahsisi (ISO 30409) ayrıca değerlendirilir.</li>
+  <li>Bu sayfadaki tablolar şartnamenin örnek sayılarıdır; gerçek bir kuruma ait değildir.</li>
+</ul>
+
+<h2 id="raporlama">Metriklerin Raporlanması</h2>
+<table>
+  <thead><tr><th>Alıcı</th><th>Ne görmek ister</th><th>Rapor biçimi</th></tr></thead>
+  <tbody>
+    <tr><td>İK hizmet birimleri</td>
+      <td>Tüm metrikler; birim, ekip ve konum kırılımı; bütçe karşılaştırması; kadro/FTE/koşullu işgücü karması; devamsızlık nedenleri</td>
+      <td>Analitik rapor, aylık</td></tr>
+    <tr><td>Üst yönetim ve yönetim kurulu</td>
+      <td>Toplam kadro ve FTE eğilimi, bütçe sapması, koşullu işgücü payı, devamsızlık eğilimi ve sorunlu birimler</td>
+      <td>Skor kartı, dönemsel</td></tr>
+    <tr><td>Hat yönetimi</td>
+      <td>Kendi ekiplerinin kadrosu, bütçelenen ile fiili fark, FTE, devamsızlık</td>
+      <td>Birim panosu, aylık</td></tr>
+    <tr><td>Finans ve hukuk</td>
+      <td>Bütçelenen ile fiili kadro ve FTE, koşullu işgücü, devamsızlığın maliyet ve yasal boyutu</td>
+      <td>Bütçe ekli rapor, çeyreklik</td></tr>
+    <tr><td>Dış paydaş (yatırımcı, finansal analist, sendika, medya, sektör grupları)</td>
+      <td>Karşılaştırılabilir toplam göstergeler ve yöntem dipnotu; kıyaslama faaliyetleri için kadro, FTE, koşullu işgücü ve devamsızlık</td>
+      <td>Faaliyet ve sürdürülebilirlik raporu, yıllık</td></tr>
+  </tbody>
+</table>
+<p><b>Her raporda bulunması gerekenler:</b> ölçüm noktası, dönem, haftalık tam zamanlı süre (C), kadro ve koşullu işgücü tanımları, devamsızlık kapsamı (hangi izinler hesap dışı), kırılım düzeyi ve karşılaştırma tabanı (önceki dönem, geçmiş yıllar, bütçe).
+Sendika delegeleri iç kullanıcılar arasında sayılır; işgücü verisi paylaşımı kurum içi mutabakatın parçasıdır.</p>
+
+<h2 id="ilgili">İlgili Standartlar</h2>
+<ul>
+  <li><b>ISO 30414</b> — iç ve dış insan sermayesi raporlaması. Bu şartnamedeki metriklerin tanımı oradan gelir (madde 4.7.12 ve 4.7.12.3); işgücü bulunabilirliği, ISO 30414'ün 11 çekirdek raporlama alanından biridir.</li>
+  <li><b>ISO 30409</b> — işgücü planlaması; işgücünün mevcut tahsisli işi, becerisi ve belirli işlere uygunluğu bu standardın konusudur, bu şartnamenin değil.</li>
+  <li><b>ISO 30400</b> — insan kaynakları yönetimi terimler sözlüğü.</li>
+  <li><b>ISO/TS 30430, ISO/TS 30421, ISO/TS 30422</b> — işe alım, devir ve tutma ile öğrenme ve gelişim; kadro ve FTE hareketinin nedenlerini açıklayan komşu belgeler.</li>
+</ul>
+
+<h2 id="sss">Sıkça Sorulan Sorular</h2>
+<details><summary>Kadro ile FTE arasındaki fark nedir?</summary>
+<p>Kadro, çalışma süresine bakmaksızın her çalışanı bir kişi sayar; FTE ise çalışılan toplam saatleri tamamlamak için gereken tam zamanlı çalışan sayısını verir. Yarı zamanlı çalışan sayısı, gereken toplam çalışan sayısını çarpıtabilir; bu yüzden şartname yarı zamanlıların FTE'ye çevrilmesini
+ve ikisinin birlikte okunmasını ister. Tam zamanlı ve yarı zamanlı kadronun birlikte FTE'ye çevrilmesi kurumun yapısına daha fazla ışık tutar.</p></details>
+
+<details><summary>FTE nasıl hesaplanır?</summary>
+<p>D = A + (B/C): A tam zamanlı çalışan sayısı, B yarı zamanlıların toplam çalışma saati, C ortalama haftalık çalışma saatidir. Örnekte merkez işlevler ve idare biriminde 100 tam zamanlı çalışan ve 1 600 saat yarı zamanlı çalışma var; haftalık süre 40 saat olduğundan yarı zamanlıların FTE karşılığı 40,
+toplam 140 FTE'dir.</p></details>
+
+<details><summary>Devamsızlığa tatil ve izinler dahil mi?</summary>
+<p>Hayır. Şartname, tatil, resmî tatil ve yetkili izinlerin devamsızlık oranı hesabının parçası olmadığını söyler. Devamsızlık; hastalık, yaralanma, tıbbi sorunlar, kişisel konular, grev ya da iş memnuniyetsizliği nedeniyle işte bulunamamayı kapsar ve kaçınılabilir ya da kaçınılamaz olabilir.
+Hangi devamsızlık türlerini saydığınızı kurum içinde yazılı tutun.</p></details>
+
+<details><summary>Koşullu işgücü kimleri kapsar?</summary>
+<p>Bağımsız yükleniciler (serbest çalışanlar ve danışmanlar) ile geçici işgücü: kiralık (leasing), geçici (interim) ya da gözetimli çalışanlar, yani ajans işgücü. Şartnamedeki Tablo 4, toplam koşullu işgücünü bu iki bileşenin toplamı olarak ve dönem dönem karşılaştırmalı gösterir.
+Kurumun büyüklüğüne göre departman, hizmet hattı, konum ya da yetkinlik alt kümeleri eklenebilir.</p></details>
+
+<details><summary>Ölçüm noktasını neden sabit tutmalıyım?</summary>
+<p>Çünkü eğilim ancak aynı noktalardan ölçülen dönemler karşılaştırıldığında anlam taşır. Şartname, hesaplamanın her tanımlı ölçüm dönemi sonunda (ay sonu, çeyrek sonu, yıl sonu) ve mali yıl ya da bütçe döngüsüyle hizalı yapılmasını ister. Başka bir nokta seçerseniz tercihi tutarlı kullanın ve raporda yazın.</p></details>
+
+<details><summary>Kaç yıl karşılaştırma yapmalıyım?</summary>
+<p>Tipik karşılaştırma aralığı üç ilâ beş yıldır. Bu süre eğilimlerin oluşmasına, beklenti ve sonuçların daha iyi yönetilmesine ve gelecek karşılaştırma için hedef koymaya imkân verir. Önceki dönemle cari dönem ve geçmiş yıllarla cari yıl karşılaştırılır; fiili ile bütçelenen karşılaştırması da anlayışı derinleştirir.</p></details>
+
+<details><summary>Toplam devamsızlık düşüyor, yine de endişelenmeli miyim?</summary>
+<p>Evet, ayrıntıya bakın. Şartnamenin örneğinde genel devamsızlık oranı azalıyor, ancak üretim birimi ölçüm dönemi boyunca yaklaşık %50 artış gösteriyor; bu yüzden bu birim için daha fazla inceleme gerekiyor. Toplulaştırılmış rakam, birim bazlı sorunları gizleyebilir; ekip, bölüm ve konum kırılımlarını rapora ekleyin.</p></details>
+
+<details><summary>Bu metrikler beceri ya da iş tahsisini ölçer mi?</summary>
+<p>Hayır. Şartname, kalıcı ve geçici işgücünün çalışma kapasitesiyle ilgilidir; mevcut tahsisli iş, beceri ya da belirli iş çabalarına uygunluğu dikkate almaz. Bu konular ISO 30409'da ele alınır. Bulunabilirlik metriklerini işgücü planlaması verisiyle birlikte okuyun.</p></details>
+
+<footer>
+  ISO/TS 30425:2021 çerçevesinden üretilmiş çalışma aracı. Metrik adları, sınıflandırma ve formüller şartnameye dayanır; açıklamalar, örnek değerler ve kod özgün olarak yazılmıştır. Rapor örneklerindeki sayılar şartnameden alınmıştır.
+  Şartnamenin kendisi telif korumalıdır ve bu sayfa onun yerine geçmez.
+</footer>
+
+</div>
+<script type="text/x-python" id="pysrc">
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+iso30425_metrikler.py
+=====================
+ISO/TS 30425:2021 (Human resource management — Workforce availability
+metrics cluster) çerçevesindeki işgücü bulunabilirliği metriklerinin Python
+karşılığı.
+
+Teknik şartname, ISO 30414'ün "işgücü bulunabilirliği" kümesindeki
+metrikleri ayrıntılandırır: çalışan sayısı (kadro), tam zaman eşdeğeri
+(FTE), koşullu işgücü ve devamsızlık. Her metrik için genel tanım, amaç,
+formül ve kullanım biçimini; devamsızlık için ayrıca hedef kullanıcıları,
+bağlam ve öngörü etkenlerini verir. İki metrik için açık formül içerir:
+FTE (D = A + B/C) ve devamsızlık oranı (A = B/C × 100). Modül üç bölüme
+ayrılmıştır:
+
+    1) Kadro ve FTE      — bütçe–fiili kadro, FTE, yarı zamanlı FTE payı
+    2) Koşullu işgücü ve devamsızlık — toplam, pay, devamsızlık oranı, değişim
+    3) Yardımcı yapılar  — birim tablosu (Tablo 2), denetim, dağıtıcı
+
+Kullanım:
+    from iso30425_metrikler import fte, devamsizlik_orani
+    fte(100, 1600, 40)            ->  140.0
+    devamsizlik_orani(25, 1200)   ->  2.0833...
+
+Doğrudan çalıştırıldığında (python3 iso30425_metrikler.py) tüm fonksiyonlar
+örnek verilerle çalıştırılır ve sonuçlar tablo hâlinde yazdırılır.
+
+Not: Metrik adları, sınıflandırma ve formüller ISO/TS 30425:2021'e dayanır.
+Kod ve açıklamalar özgün olarak yazılmıştır; şartnamenin kendisi telif
+korumalıdır.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+__all__ = [
+    "GecersizGirdi",
+    # kadro ve FTE
+    "kadro_sapmasi", "gerceklesme_orani", "fte", "yari_zamanli_fte",
+    "yari_zamanli_fte_payi", "goreli_degisim",
+    # koşullu işgücü ve devamsızlık
+    "kosullu_isgucu", "devamsizlik_orani",
+    # yardımcı
+    "Birim", "FTETablosu", "ornek_tablo", "erisilebilirlik_denetimi",
+    "hesapla", "METRIK_LISTESI",
+]
+
+
+class GecersizGirdi(ValueError):
+    """Girdiler tutarsız: payda sıfır, parça bütünden büyük vb."""
+
+
+def _bol(pay: float, payda: float, ad: str = "payda") -> float:
+    if payda <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return pay / payda
+
+
+def _oran(parca: float, butun: float, ad: str = "parça") -> float:
+    """Yüzde olarak parça / bütün; parça bütünden büyük olamaz."""
+    if butun <= 0:
+        raise GecersizGirdi("bütün sıfırdan büyük olmalı")
+    if parca < 0 or parca > butun:
+        raise GecersizGirdi(f"{ad} 0 ile bütün arasında olmalı")
+    return 100 * parca / butun
+
+
+# ---------------------------------------------------------------------------
+# 1) Kadro ve tam zaman eşdeğeri (madde 4 ve 5)
+# ---------------------------------------------------------------------------
+
+def kadro_sapmasi(fiili: float, butce: float) -> float:
+    """Fiili kadro − bütçelenen kadro (kişi). Negatif değer bütçenin altında kalındığını gösterir.
+
+    Şartname, bütçelenen ile fiili kadro arasında artan bir farkın, ilgili alanda çekme
+    veya elde tutma sorunu olabileceğine işaret edebileceğini söyler (madde 4.4).
+    """
+    if fiili < 0 or butce <= 0:
+        raise GecersizGirdi("fiili kadro negatif, bütçe sıfır olamaz")
+    return fiili - butce
+
+
+def gerceklesme_orani(fiili: float, butce: float) -> float:
+    """Bütçelenen kadroya göre gerçekleşme (%) = fiili / bütçe × 100."""
+    return 100 * _bol(fiili, butce, "bütçelenen kadro")
+
+
+def fte(tam_zamanli: float, yari_saat: float, haftalik_saat: float) -> float:
+    """Tam zaman eşdeğeri D = A + (B / C).
+
+    A tam zamanlı çalışan sayısı, B yarı zamanlıların toplam çalışma saati,
+    C ortalama haftalık çalışma saatidir (şartname örneğinde 40 saat).
+    """
+    if tam_zamanli < 0 or yari_saat < 0:
+        raise GecersizGirdi("tam zamanlı çalışan ve yarı zamanlı saat negatif olamaz")
+    return tam_zamanli + _bol(yari_saat, haftalik_saat, "haftalık çalışma saati")
+
+
+def yari_zamanli_fte(yari_saat: float, haftalik_saat: float) -> float:
+    """Yarı zamanlı çalışanların FTE karşılığı = B / C."""
+    return _bol(yari_saat, haftalik_saat, "haftalık çalışma saati")
+
+
+def yari_zamanli_fte_payi(yari_fte: float, toplam_fte: float) -> float:
+    """Toplam FTE içinde yarı zamanlılardan gelen payın yüzdesi (Tablo 3)."""
+    return _oran(yari_fte, toplam_fte, "yarı zamanlı FTE")
+
+
+def goreli_degisim(onceki: float, cari: float) -> float:
+    """Göreli değişim (%) = (cari − önceki) / önceki × 100."""
+    if onceki <= 0:
+        raise GecersizGirdi("önceki değer sıfırdan büyük olmalı")
+    if cari < 0:
+        raise GecersizGirdi("cari değer negatif olamaz")
+    return 100 * (cari - onceki) / onceki
+
+
+# ---------------------------------------------------------------------------
+# 2) Koşullu işgücü ve devamsızlık (madde 6 ve 7)
+# ---------------------------------------------------------------------------
+
+def kosullu_isgucu(serbest: float, kiralik: float) -> float:
+    """Toplam koşullu işgücü = bağımsız yükleniciler + kiralık ve ajans işgücü.
+
+    Bağımsız yüklenici (serbest çalışan, danışman) ile geçici işgücü
+    (kiralık, geçici/interim, gözetimli çalışan) ISO 30414:2018, 4.7.12.3
+    kırılımındadır; şartname toplamı bunların toplamı olarak verir.
+    """
+    if serbest < 0 or kiralik < 0:
+        raise GecersizGirdi("işgücü bileşenleri negatif olamaz")
+    return serbest + kiralik
+
+
+def devamsizlik_orani(devamsiz_gun: float, mevcut_gun: float) -> float:
+    """Devamsızlık oranı A = B / C × 100.
+
+    B ölçüm döneminde devamsız geçirilen gün, C çalışılabilir gün sayısıdır.
+    Tatil, resmî tatil ve yetkili izin hesaba dahil değildir (madde 7.2).
+    """
+    return _oran(devamsiz_gun, mevcut_gun, "devamsız gün")
+
+
+# ---------------------------------------------------------------------------
+# 3) Yardımcı yapılar: birim tablosu (Tablo 2)
+# ---------------------------------------------------------------------------
+
+@dataclass
+class Birim:
+    """Tek bir birimin FTE verisi."""
+    ad: str
+    yari_saat: float = 0      # yarı zamanlıların toplam çalışma saati
+    tam: float = 0            # tam zamanlı çalışan
+
+    def fte(self, haftalik_saat: float = 40) -> float:
+        return fte(self.tam, self.yari_saat, haftalik_saat)
+
+    def yari_fte(self, haftalik_saat: float = 40) -> float:
+        return yari_zamanli_fte(self.yari_saat, haftalik_saat)
+
+
+@dataclass
+class FTETablosu:
+    """Birimlere göre FTE hesap tablosu."""
+    birimler: list = field(default_factory=list)
+    haftalik_saat: float = 40
+
+    def ekle(self, ad, yari_saat, tam) -> "FTETablosu":
+        self.birimler.append(Birim(ad, yari_saat, tam))
+        return self
+
+    def ozet(self) -> dict:
+        h = self.haftalik_saat
+        toplam_saat = sum(b.yari_saat for b in self.birimler)
+        tam = sum(b.tam for b in self.birimler)
+        yari = yari_zamanli_fte(toplam_saat, h)
+        toplam = tam + yari
+        en_buyuk = max(self.birimler, key=lambda b: b.fte(h))
+        return {
+            "birim_sayisi": len(self.birimler),
+            "yari_zamanli_saat": toplam_saat,
+            "yari_zamanli_fte": yari,
+            "tam_zamanli": tam,
+            "toplam_fte": toplam,
+            "yari_fte_payi": round(yari_zamanli_fte_payi(yari, toplam), 2),
+            "en_buyuk_birim": (en_buyuk.ad, en_buyuk.fte(h)),
+        }
+
+
+def ornek_tablo() -> FTETablosu:
+    """Altı birimlik örnek FTE tablosu (şartnamenin Tablo 2 örneğiyle aynı sayılar)."""
+    t = FTETablosu()
+    for satir in [
+        ("Merkez işlevler ve idare", 1600, 100),
+        ("Lojistik",                 2400, 240),
+        ("Üretim",                   3600, 410),
+        ("Araştırma ve geliştirme",   400,  40),
+        ("BT",                        600,  15),
+        ("Satış",                       0,  45),
+    ]:
+        t.ekle(*satir)
+    return t
+
+
+def erisilebilirlik_denetimi(olcum_noktasi_sabit: bool = False,
+                             mali_yil_hizali: bool = False,
+                             butce_karsilastirmasi: bool = False,
+                             gecmis_donem_karsilastirmasi: bool = False,
+                             birim_kirilimi: bool = False,
+                             devamsizlik_kapsami_yazili: bool = False,
+                             baglam_notlari: bool = False) -> list:
+    """Bir işgücü bulunabilirliği raporunun eksiklerini listeler.
+
+    Maddeler ISO/TS 30425'in 4.3, 5.3, 6.3 ve 7.3 maddelerindeki beklentilerden
+    türetilmiştir; bir uygunluk sınaması değil, hazırlık kontrol listesidir.
+    """
+    kontroller = [
+        (olcum_noktasi_sabit, "Ölçüm noktası (ay sonu, çeyrek sonu, yıl sonu) sabitlenmemiş; seçilen nokta tutarlı uygulanmalı ve yazılmalı."),
+        (mali_yil_hizali, "Hesaplama mali yıl, yıllık bütçe döngüsü ya da ikisiyle hizalı değil."),
+        (butce_karsilastirmasi, "Fiili ile bütçelenen değerler karşılaştırılmıyor: yönetim için anlama derinliği eksik kalır."),
+        (gecmis_donem_karsilastirmasi, "Önceki dönem ve geçmiş yıllarla karşılaştırma yok; tipik aralık üç ila beş yıldır."),
+        (birim_kirilimi, "Birim, ekip, bölüm ya da konum kırılımı yok: toplulaştırılmış rakam sorunları gizler."),
+        (devamsizlik_kapsami_yazili, "Devamsızlığın kapsamı yazılı değil: tatil, resmî tatil ve yetkili izin hesap dışıdır."),
+        (baglam_notlari, "Sayının yanında bağlam ve öngörü etkenleri (yeniden yapılanma, ekonomi, sendika görüşmeleri) yazılmamış."),
+    ]
+    return [metin for tamam, metin in kontroller if not tamam]
+
+
+# ---------------------------------------------------------------------------
+# 4) Dağıtıcı: hesaplayıcı arayüzünün kullandığı tek giriş noktası
+# ---------------------------------------------------------------------------
+
+METRIK_LISTESI = [
+    "fte", "fte_degisim", "kadro_sapma", "kosullu", "devamsizlik", "devamsizlik_degisim",
+]
+
+
+def _g(x) -> str:
+    """Sayıyı, bilimsel gösterim kullanmadan en kısa biçimde yazar."""
+    return f"{x:.12g}"
+
+
+def hesapla(metrik: str, **g) -> dict:
+    """Metrik kimliği ve girdilerle hesabı yapar; sözlük döndürür.
+
+    Dönen anahtarlar: deger, ifade (formülün yerine konmuş hâli), ondalik,
+    birim, ayrinti (etiket–değer çiftleri).
+    """
+    if metrik == "fte":
+        d = fte(g["tam_zamanli"], g["yari_saat"], g["haftalik_saat"])
+        yari = yari_zamanli_fte(g["yari_saat"], g["haftalik_saat"])
+        pay = yari_zamanli_fte_payi(yari, d)
+        return {"deger": d, "ondalik": 1, "birim": "FTE",
+                "ifade": f"{_g(g['tam_zamanli'])} + ({_g(g['yari_saat'])} ÷ {_g(g['haftalik_saat'])})",
+                "ayrinti": [["Yarı zamanlıların FTE karşılığı", yari],
+                            ["Yarı zamanlı FTE payı (%)", round(pay, 1)],
+                            ["Tam zamanlı çalışanın payı (%)", round(100 - pay, 1)]]}
+
+    if metrik == "fte_degisim":
+        if g["fte_onceki"] <= 0 or g["fte_cari"] <= 0:
+            raise GecersizGirdi("FTE değerleri sıfırdan büyük olmalı")
+        po = yari_zamanli_fte_payi(g["yari_fte_onceki"], g["fte_onceki"])
+        pc = yari_zamanli_fte_payi(g["yari_fte_cari"], g["fte_cari"])
+        return {"deger": pc - po, "ondalik": 2, "birim": "puan (yarı zamanlı FTE payı değişimi)",
+                "ifade": f"({_g(g['yari_fte_cari'])} ÷ {_g(g['fte_cari'])} × 100) − "
+                         f"({_g(g['yari_fte_onceki'])} ÷ {_g(g['fte_onceki'])} × 100)",
+                "ayrinti": [["Önceki dönem yarı zamanlı FTE payı (%)", round(po, 2)],
+                            ["Cari dönem yarı zamanlı FTE payı (%)", round(pc, 2)],
+                            ["Toplam FTE değişimi (%)", round(goreli_degisim(g["fte_onceki"], g["fte_cari"]), 1)]]}
+
+    if metrik == "kadro_sapma":
+        d = kadro_sapmasi(g["fiili"], g["butce"])
+        onceki = kadro_sapmasi(g["fiili_onceki"], g["butce_onceki"])
+        return {"deger": d, "ondalik": 0, "birim": "kişi (fiili − bütçe)",
+                "ifade": f"{_g(g['fiili'])} − {_g(g['butce'])}",
+                "ayrinti": [["Bütçelenen kadroya göre gerçekleşme (%)", round(gerceklesme_orani(g["fiili"], g["butce"]), 1)],
+                            ["Önceki dönem sapması (kişi)", onceki],
+                            ["Sapmanın önceki döneme göre değişimi (kişi)", d - onceki]]}
+
+    if metrik == "kosullu":
+        d = kosullu_isgucu(g["serbest"], g["kiralik"])
+        if g["onceki_toplam"] <= 0 or g["calisan"] <= 0:
+            raise GecersizGirdi("önceki toplam ve çalışan sayısı sıfırdan büyük olmalı")
+        return {"deger": d, "ondalik": 0, "birim": "kişi (koşullu işgücü)",
+                "ifade": f"{_g(g['serbest'])} + {_g(g['kiralik'])}",
+                "ayrinti": [["Bağımsız yüklenici ve danışman payı (%)", round(100 * _bol(g["serbest"], d, "toplam"), 1)],
+                            ["Kiralık ve ajans işgücü payı (%)", round(100 * _bol(g["kiralik"], d, "toplam"), 1)],
+                            ["Önceki döneme göre değişim (%)", round(goreli_degisim(g["onceki_toplam"], d), 1)],
+                            ["Toplam işgücü içindeki payı (%)", round(100 * d / (g["calisan"] + d), 1)]]}
+
+    if metrik == "devamsizlik":
+        d = devamsizlik_orani(g["devamsiz_gun"], g["mevcut_gun"])
+        return {"deger": d, "ondalik": 2, "birim": "% devamsızlık",
+                "ifade": f"{_g(g['devamsiz_gun'])} ÷ {_g(g['mevcut_gun'])} × 100",
+                "ayrinti": [["Devamsızlık dışı gün", g["mevcut_gun"] - g["devamsiz_gun"]],
+                            ["Bin çalışma gününde devamsız gün", round(10 * d, 1)],
+                            ["Çalışılabilir günlerin devamsızlık dışı payı (%)", round(100 - d, 1)]]}
+
+    if metrik == "devamsizlik_degisim":
+        d = goreli_degisim(g["onceki_oran"], g["cari_oran"])
+        return {"deger": d, "ondalik": 1, "birim": "% göreli değişim",
+                "ifade": f"({_g(g['cari_oran'])} − {_g(g['onceki_oran'])}) ÷ {_g(g['onceki_oran'])} × 100",
+                "ayrinti": [["Puan farkı", round(g["cari_oran"] - g["onceki_oran"], 2)],
+                            ["Cari oranın öncekine katı", round(g["cari_oran"] / g["onceki_oran"], 2)]]}
+
+    raise ValueError(f"Bilinmeyen metrik: {metrik}")
+
+
+# ---------------------------------------------------------------------------
+# 5) Doğrulama çıktısı
+# ---------------------------------------------------------------------------
+
+def _demo() -> None:
+    cizgi = "-" * 64
+    print("ISO/TS 30425 — doğrulama çıktısı")
+    print(cizgi)
+
+    t = ornek_tablo()
+    print("Birimlere göre FTE (şartnamenin Tablo 2 sayıları; 40 saat/hafta)")
+    print(f"{'Birim':<28}{'Yarı saat':>10}{'Yarı FTE':>10}{'Tam':>6}{'Toplam':>8}")
+    for b in t.birimler:
+        print(f"{b.ad:<28}{b.yari_saat:>10}{b.yari_fte():>10.0f}{b.tam:>6}{b.fte():>8.0f}")
+    print(cizgi)
+    for anahtar, deger in t.ozet().items():
+        print(f"{anahtar:<20}: {deger}")
+    print(cizgi)
+
+    print(f"Bütçe–fiili sapma (Ç4)   : {kadro_sapmasi(18487, 18530)} kişi"
+          f" (%{gerceklesme_orani(18487, 18530):.1f})")
+    print(f"Yarı zamanlı FTE payı    : %{yari_zamanli_fte_payi(215, 1065):.2f} (2016)"
+          f" → %{yari_zamanli_fte_payi(428, 1370):.2f} (2018)")
+    print(f"Koşullu işgücü           : {kosullu_isgucu(90, 87):.0f} kişi")
+    print(f"Devamsızlık (örnek)      : %{devamsizlik_orani(25, 1200):.2f}")
+    print(f"Üretim devamsızlığı      : %{goreli_degisim(2.5, 3.8):.0f} artış (2017 → 2020 Ç4)")
+    print(cizgi)
+
+    print("Dağıtıcı örneği:")
+    print(hesapla("fte", tam_zamanli=100, yari_saat=1600, haftalik_saat=40))
+    print(cizgi)
+
+    print("Rapor denetimi (hiçbir ön koşulu sağlamayan bir kurum için):")
+    for u in erisilebilirlik_denetimi():
+        print(" !", u)
+
+
+if __name__ == "__main__":
+    _demo()
+</script>
+<script>
+/* =========================================================
+   1) METRİK VERİ TABANI
+   u: kullanıcılar (hr İK hizmet birimleri / exec üst yönetim ve yönetim kurulu / line hat yönetimi /
+      fin finans ve hukuk / ext dış paydaş)
+   st: metrik bölümü (kadro madde 4, fte madde 5, kosullu madde 6, devamsiz madde 7, baglam)
+   r: raporlama (ic, dis)
+   t: aile (p kadro / c FTE / s koşullu işgücü / r devamsızlık / o ölçüm, bağlam ve öngörü)
+   calc: bu sayfadaki hesaplayıcı kimliği
+   iso: ISO 30414'te tanımlı işgücü bulunabilirliği metriği
+   k: ek etiket (ctx bağlam etkeni, pre öngörü etkeni, onk ön koşul, tur türetilmiş)
+   ========================================================= */
+var METRICS = [
+ {g:"Kadro (çalışan sayısı)", t:"p", items:[
+  {n:"Toplam kadro (headcount)", st:"kadro", r:["ic","dis"], iso:1, d:"Her çalışan, kurumla ilişkide geçirdiği süre ne olursa olsun bir kişi sayılır; sıfır saat çalışanlar dahil (4.1)", u:["hr","exec","line","fin","ext"]},
+  {n:"Tam zamanlı kadro", st:"kadro", r:["ic","dis"], iso:1, d:"Toplam tam zamanlı kadro (4.1)", u:["hr","exec","line","fin","ext"]},
+  {n:"Yarı zamanlı kadro", st:"kadro", r:["ic","dis"], iso:1, d:"Toplam yarı zamanlı kadro (4.1)", u:["hr","exec","line","fin","ext"]},
+  {n:"Bütçelenen ile fiili kadro karşılaştırması", st:"kadro", r:["ic"], calc:"kadro_sapma", d:"Çeyreklik karşılaştırma (Tablo 1); artan fark çekme ya da elde tutma sorununa işaret edebilir (4.4)", u:["hr","exec","line","fin"]},
+  {n:"Bütçe–fiili farkın zaman içindeki seyri", st:"kadro", r:["ic"], k:"tur", d:"Tek dönemlik sapma yerine farkın artıp azalması", u:["hr","exec","line"]},
+  {n:"Birim, ekip ve bölüm kırılımı", st:"kadro", r:["ic"], d:"İşgücü büyüklüğünün ayrıntılı kırılımı analiz potansiyelini artırır (4.4)", u:["hr","exec","line"]},
+  {n:"\"Benzerle benzeri\" ekip karşılaştırması", st:"kadro", r:["ic"], d:"Kadroyu karşılaştırılabilir ekiplerle kıyaslama (4.4)", u:["hr","line"]},
+  {n:"Önceki dönem ve geçmiş yıllarla kadro karşılaştırması", st:"kadro", r:["ic","dis"], d:"Tipik karşılaştırma aralığı üç ilâ beş yıl (4.3)", u:["hr","exec","ext"]},
+  {n:"Tam ve yarı zamanlı kırılımında yıllar arası karşılaştırma", st:"kadro", r:["ic"], d:"Tablo 1 analizi genişletilebilir (4.3)", u:["hr","exec","fin"]},
+  {n:"İşgücü büyüklüğü ve karması (büyüme göstergesi)", st:"kadro", r:["ic","dis"], d:"Hem geçmiş hem öncü büyüme göstergesi; genişleme ya da daralma sorunları (4.4)", u:["hr","exec","ext"]}
+ ]},
+ {g:"Tam zaman eşdeğeri (FTE)", t:"c", items:[
+  {n:"Toplam tam zaman eşdeğeri (FTE)", st:"fte", r:["ic","dis"], iso:1, calc:"fte", d:"D = A + (B/C): tam zamanlı çalışan + yarı zamanlı saat ÷ haftalık süre (5.3)", u:["hr","exec","line","fin","ext"]},
+  {n:"Yarı zamanlıların FTE karşılığı", st:"fte", r:["ic"], calc:"fte", d:"B/C: yarı zamanlıların toplam saati ÷ ortalama haftalık çalışma saati (5.3)", u:["hr","line","fin"]},
+  {n:"Toplam FTE içinde yarı zamanlı FTE payı", st:"fte", r:["ic","dis"], calc:"fte_degisim", d:"Yarı zamanlı FTE ÷ toplam FTE; zaman içindeki değişim (5.2, Tablo 3)", u:["hr","exec","line","fin","ext"]},
+  {n:"Birim bazında FTE tablosu", st:"fte", r:["ic"], d:"Yarı zamanlı saat, yarı zamanlı FTE, tam zamanlı çalışan ve toplam FTE (Tablo 2)", u:["hr","exec","line","fin"]},
+  {n:"Haftalık tam zamanlı çalışma saati (C)", st:"fte", r:["ic"], k:"onk", d:"FTE formülünün paydası; örnek hesap 40 saat varsayar (5.4)", u:["hr","fin"]},
+  {n:"FTE eğilimi (yıllar arası)", st:"fte", r:["ic","dis"], d:"Toplam FTE ve yarı zamanlı pay büyümesi (Tablo 3: 2016–2018)", u:["hr","exec","ext"]},
+  {n:"Bütçelenen ile fiili FTE karşılaştırması", st:"fte", r:["ic"], d:"Yönetim, üst yönetim ve yönetim kurulu için anlayışın derinliğini artırır (5.3)", u:["hr","exec","fin"]},
+  {n:"Kadro ile FTE birlikte okuma", st:"fte", r:["ic"], k:"tur", d:"Kadro tek başına yanıltabilir; yarı zamanlı çalışan sayısı gereken toplamı çarpıtır (5.2)", u:["hr","exec","line"]}
+ ]},
+ {g:"Koşullu işgücü", t:"s", items:[
+  {n:"Toplam koşullu işgücü", st:"kosullu", r:["ic","dis"], iso:1, calc:"kosullu", d:"Bağımsız yükleniciler + geçici işgücü; ISO 30414:2018, 4.7.12.3 (6.3)", u:["hr","exec","line","fin","ext"]},
+  {n:"Bağımsız yükleniciler (serbest çalışan ve danışman)", st:"kosullu", r:["ic","dis"], iso:1, d:"Tablo 4: serbest çalışan ve danışmanların toplamı", u:["hr","exec","fin","ext"]},
+  {n:"Geçici işgücü: kiralık, geçici (interim) ve gözetimli", st:"kosullu", r:["ic","dis"], iso:1, d:"Tablo 4: kiralık ve ajans işgücü toplamı (6.3)", u:["hr","exec","fin","ext"]},
+  {n:"Koşullu işgücünün ürettiği çaba ve çalışma saatleri", st:"kosullu", r:["ic"], d:"Metriğin amacı: bu emek kaynağının ürettiği çabayı anlamak (6.2)", u:["hr","exec","line","fin"]},
+  {n:"Alt kümeler: departman, hizmet hattı, konum, yetkinlik", st:"kosullu", r:["ic"], d:"Kurumun büyüklüğüne göre Tablo 4 genişletilebilir (6.4)", u:["hr","exec","line"]},
+  {n:"Bütçelenen ile fiili koşullu işgücü", st:"kosullu", r:["ic"], d:"Anlayışın derinliğini artırır (6.3)", u:["hr","exec","fin"]},
+  {n:"Dönemsel karşılaştırma (6 ay ve üç yıl)", st:"kosullu", r:["ic","dis"], d:"Tablo 4: 30-06-2020'ye kadar 6 ay ve 2019, 2018, 2017 karşılaştırmaları", u:["hr","exec","ext"]},
+  {n:"Toplam işgücü içinde koşullu işgücü payı", st:"kosullu", r:["ic"], k:"tur", d:"Koşullu ÷ (çalışan + koşullu); şartnamede yoktur, türetilmiştir", u:["hr","exec","fin"]},
+  {n:"Koşullu işgücü kullanımındaki artış", st:"kosullu", r:["ic"], k:"ctx", d:"Gelişen teknoloji, uzaktan işgücü, gig ekonomisi, esneklik ve çeviklik ihtiyacı (6.1)", u:["hr","exec","ext"]}
+ ]},
+ {g:"Devamsızlık", t:"r", items:[
+  {n:"Devamsızlık oranı", st:"devamsiz", r:["ic","dis"], iso:1, calc:"devamsizlik", d:"A = B/C × 100: devamsız gün ÷ kullanılabilir çalışma günü (7.3)", u:["hr","exec","line","fin","ext"]},
+  {n:"Devamsız gün sayısı (B)", st:"devamsiz", r:["ic"], d:"Ölçüm dönemi boyunca devamsız gün", u:["hr","line","fin"]},
+  {n:"Kullanılabilir çalışma günü sayısı (C)", st:"devamsiz", r:["ic"], k:"onk", d:"Ölçüm dönemi boyunca kullanılabilir çalışma günü", u:["hr","fin"]},
+  {n:"Birim bazında devamsızlık", st:"devamsiz", r:["ic"], d:"Toplam azalırken bir birimde artış olabilir (Tablo 5, 7.4)", u:["hr","exec","line"]},
+  {n:"Çeyreklik devamsızlık", st:"devamsiz", r:["ic"], d:"Yıl ve çeyrek bazında (Tablo 5: 2020 Ç1–Ç4)", u:["hr","exec","line"]},
+  {n:"Devamsızlıkta göreli değişim", st:"devamsiz", r:["ic"], k:"tur", calc:"devamsizlik_degisim", d:"Örnek: üretimde ölçüm dönemi boyunca yaklaşık %50 artış (7.4)", u:["hr","exec","line"]},
+  {n:"Bütçelenen ile fiili devamsızlık", st:"devamsiz", r:["ic"], d:"Anlayışın derinliğini artırır (7.3)", u:["hr","exec","fin"]},
+  {n:"Hesap dışı devamsızlıklar: tatil, resmî tatil, yetkili izin", st:"devamsiz", r:["ic"], k:"onk", d:"Devamsızlık oranı hesabının parçası değildir (7.2)", u:["hr","fin"]},
+  {n:"Devamsızlık nedenleri: hastalık, yaralanma, tıbbi, kişisel, grev, iş memnuniyetsizliği", st:"devamsiz", r:["ic"], d:"Kaçınılabilir ya da kaçınılamaz olabilir (7.2)", u:["hr","line"]},
+  {n:"Önceki dönem ve geçmiş yıllarla devamsızlık karşılaştırması", st:"devamsiz", r:["ic","dis"], d:"Tablo 5: 2017–2020", u:["hr","exec","ext"]}
+ ]},
+ {g:"Ölçüm, bağlam ve öngörü", t:"o", items:[
+  {n:"Ölçüm noktası (dönem sonu)", st:"baglam", r:["ic"], k:"onk", d:"Ay sonu, çeyrek sonu ya da yıl sonu toplamları; farklı nokta seçilirse tutarlı ve açık olmalı (4.3)", u:["hr","exec","fin"]},
+  {n:"Mali yıl ya da bütçe döngüsüyle hizalama", st:"baglam", r:["ic"], k:"onk", d:"Hesaplama mali yıl, yıllık bütçe döngüsü ya da ikisiyle hizalanır (4.3)", u:["hr","fin"]},
+  {n:"Ayrıntılı hesaplama ve toplulaştırma", st:"baglam", r:["ic"], k:"onk", d:"Ekip, hat, bölüm, konum ve kurum düzeyinde hesaplama; kurumlar ve konumlar arasında toplulaştırma (Giriş)", u:["hr","exec"]},
+  {n:"Kapsam sınırı: iş tahsisi, beceri ve uygunluk", st:"baglam", r:["ic"], k:"onk", d:"Bu belge çalışma kapasitesiyle ilgilidir; beceri ve uygunluk ISO 30409'dadır (Kapsam)", u:["hr","exec"]},
+  {n:"Güncel faaliyetler: yeniden yapılanma, işgücü eğitimi", st:"baglam", r:["ic"], k:"ctx", d:"FTE hareketinin altındaki nedenler (7.6)", u:["hr","exec","line"]},
+  {n:"Kültürel değişimler (olumlu ve olumsuz)", st:"baglam", r:["ic"], k:"ctx", d:"Bağlam etkeni (7.6)", u:["hr","exec"]},
+  {n:"Kuşak bakış açıları", st:"baglam", r:["ic"], k:"ctx", d:"Bağlam etkeni (7.6)", u:["hr"]},
+  {n:"Bildirimlerde artışa yol açan toplumsal değişim ya da farkındalık", st:"baglam", r:["ic"], k:"ctx", d:"Bağlam etkeni (7.6)", u:["hr","exec","fin"]},
+  {n:"Pazar talebi", st:"baglam", r:["ic","dis"], k:"ctx", d:"Bağlam etkeni (7.6)", u:["hr","exec","fin","ext"]},
+  {n:"Sendika müzakereleri ya da sektörel ve bölgesel faaliyetler", st:"baglam", r:["ic","dis"], k:"ctx", d:"Bağlam etkeni (7.6)", u:["hr","exec","line","ext"]},
+  {n:"Sektör beklentisi", st:"baglam", r:["ic","dis"], k:"ctx", d:"Bağlam etkeni; kıyaslamanın anlamlı olduğu aralığı belirler (7.6)", u:["hr","exec","ext"]},
+  {n:"Ekonomik etkenler: daralma ve genişleme", st:"baglam", r:["ic","dis"], k:"ctx", d:"Bağlam etkeni (7.6)", u:["hr","exec","fin","ext"]},
+  {n:"Planlanan örgüt yapısı veya işgücü değişiklikleri", st:"baglam", r:["ic"], k:"pre", d:"Bilinen ve beklenen olaylar üzerinden öngörü (7.7)", u:["hr","exec","fin"]},
+  {n:"Yaklaşan sendika müzakereleri", st:"baglam", r:["ic","dis"], k:"pre", d:"Öngörü etkeni (7.7)", u:["hr","exec","line","ext"]},
+  {n:"Ekonomik etkenler (öngörü): daralma ve genişleme", st:"baglam", r:["ic","dis"], k:"pre", d:"Öngörü etkeni (7.7)", u:["hr","exec","fin","ext"]},
+  {n:"İşgücü farkındalığı ve eğitimi", st:"baglam", r:["ic"], k:"pre", d:"Öngörü etkeni (7.7)", u:["hr","line"]},
+  {n:"Siyasi, sosyal, çevresel ve yasal dinamikler", st:"baglam", r:["ic","dis"], k:"pre", d:"Öngörü etkeni (7.7)", u:["hr","exec","fin","ext"]},
+  {n:"Sektörel etkiler", st:"baglam", r:["ic","dis"], k:"pre", d:"Öngörü etkeni (7.7)", u:["hr","exec","ext"]}
+ ]}
+];
+
+var USERS = ["hr","exec","line","fin","ext"];
+var AILE_AD = {p:"kadro", c:"FTE", s:"koşullu işgücü", r:"devamsızlık", o:"ölçüm ve bağlam"};
+var EK_AD = {ctx:"bağlam etkeni", pre:"öngörü etkeni", onk:"ön koşul", tur:"türetilmiş"};
+
+/* --- matris çizimi --- */
+function renderMatrix(){
+  var fu = document.getElementById("fUser").value;
+  var fs = document.getElementById("fStage").value;
+  var ft = document.getElementById("fType").value;
+  var fr = document.getElementById("fRep").value;
+  var fq = document.getElementById("fQ").value.toLocaleLowerCase("tr");
+  var body = document.getElementById("mBody");
+  var html = "", shown = 0;
+
+  METRICS.forEach(function(grp){
+    if(ft && grp.t !== ft) return;
+    var rows = "";
+    grp.items.forEach(function(m){
+      if(fu && m.u.indexOf(fu) === -1) return;
+      if(fs && m.st !== fs) return;
+      if(fr && m.r.indexOf(fr) === -1) return;
+      if(fq && m.n.toLocaleLowerCase("tr").indexOf(fq) === -1) return;
+      shown++;
+      var cells = USERS.map(function(u){
+        if(m.u.indexOf(u) === -1) return '<td class="num"></td>';
+        var mark = '<span class="dot ' + grp.t + '"></span>';
+        return '<td class="num" title="' + m.n + '">' + (m.calc ? '<b>' + mark + '</b>' : mark) + '</td>';
+      }).join("");
+      var tags = '<span class="tag ' + grp.t + '">' + AILE_AD[grp.t] + '</span>' +
+                 (m.k ? ' <span class="tag lvl">' + EK_AD[m.k] + '</span>' : "") +
+                 (m.iso ? ' <span class="tag iso">30414</span>' : "") +
+                 (m.calc ? ' <span class="tag lvl">hesaplayıcı</span>' : "") +
+                 (m.r.indexOf("dis") !== -1 ? ' <span class="tag iso">dış rapor</span>' : "");
+      rows += '<tr><td class="name">' + (m.calc ? '<b>' + m.n + '</b>' : m.n) + ' ' + tags +
+              '<em>' + m.d + '</em></td>' + cells + '</tr>';
+    });
+    if(rows){
+      html += '<tr class="group"><td colspan="6">' + grp.g + '</td></tr>' + rows;
+    }
+  });
+
+  body.innerHTML = html || '<tr><td colspan="6">Bu filtre birleşimiyle eşleşen metrik yok.</td></tr>';
+  document.getElementById("mCount").textContent = shown + " metrik ve etken gösteriliyor.";
+}
+["fUser","fStage","fType","fRep","fQ"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", renderMatrix);
+});
+renderMatrix();
+
+/* =========================================================
+   2) ŞARTNAMENİN RAPOR ÖRNEKLERİ (Tablo 1, 3, 5)
+   ========================================================= */
+var TL = function(x){ return x.toLocaleString("tr-TR"); };
+var T1 = [
+  ["Merkez işlevler ve idare", [4850,4774,4850,4850,4900,4875,4900,4898]],
+  ["Lojistik",                 [6150,6132,6150,6150,6200,6175,6200,6198]],
+  ["Üretim",                   [1350,1351,1365,1365,1365,1365,1375,1365]],
+  ["Araştırma ve geliştirme",  [990,993,990,991,990,990,990,990]],
+  ["BT",                       [1160,1157,1165,1160,1165,1162,1165,1162]],
+  ["Satış",                    [3875,3868,3875,3868,3900,3875,3900,3874]]
+];
+(function(){
+  var tot = [0,0,0,0,0,0,0,0];
+  var rows = T1.map(function(r){
+    r[1].forEach(function(v,i){ tot[i] += v; });
+    return '<tr><td>' + r[0] + '</td>' + r[1].map(function(v){ return '<td class="num">' + TL(v) + '</td>'; }).join("") + '</tr>';
+  }).join("");
+  rows += '<tr><td><b>Toplam</b></td>' + tot.map(function(v){ return '<td class="num"><b>' + TL(v) + '</b></td>'; }).join("") + '</tr>';
+  document.getElementById("t1Body").innerHTML = rows;
+})();
+
+/* birim, [FTE 2016, yarı %], [FTE 2017, yarı %], [FTE 2018, yarı %] (şartnamedeki yuvarlanmış yüzdeler) */
+var T3 = [
+  ["Merkez işlevler ve idare", 140, 28.57, 150, 33.33, 170, 41.18],
+  ["Lojistik",                 300, 20.00, 350, 32.00, 400, 35.25],
+  ["Üretim",                   500, 18.00, 600, 25.00, 650, 30.00],
+  ["Araştırma ve geliştirme",   50, 20.00,  50, 20.00,  50, 20.00],
+  ["BT",                        30, 50.00,  35, 35.00,  40, 30.00],
+  ["Satış",                     45,  0.00,  50,  0.00,  60,  0.00],
+  ["Toplam",                  1065, 20.19,1235, 27.06,1370, 31.24]
+];
+(function(){
+  var f2 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:2, maximumFractionDigits:2}); };
+  document.getElementById("t3Body").innerHTML = T3.map(function(r, i){
+    var b = i === T3.length - 1;
+    var cell = function(v, p){ return '<td class="num">' + (b ? '<b>' : '') + (p ? f2(v) : TL(v)) + (b ? '</b>' : '') + '</td>'; };
+    return '<tr><td>' + (b ? '<b>' + r[0] + '</b>' : r[0]) + '</td>' + cell(r[1]) + cell(r[2],1) + cell(r[3]) + cell(r[4],1) + cell(r[5]) + cell(r[6],1) + '</tr>';
+  }).join("");
+})();
+
+/* birim, 2020 yıl, Ç4, Ç3, Ç2, Ç1, 2019, 2018, 2017 */
+var T5 = [
+  ["Merkez işlevler ve idare", 2.44, 2.25, 2.25, 2.5, 2.75, 2.5, 2.25, 2.5],
+  ["Lojistik",                 3.19, 3, 3.5, 3.25, 3, 3, 3.25, 3],
+  ["Üretim",                   3.39, 3.8, 3.5, 3.25, 3, 3, 3.8, 2.5],
+  ["Araştırma ve geliştirme",  2.06, 2, 2, 2, 2.25, 2.5, 2.25, 2.25],
+  ["BT",                       2.06, 2, 2, 2, 2.25, 2.5, 2.25, 2.25],
+  ["Satış",                    3.81, 4.25, 4, 3.5, 3.5, 4, 4.25, 4]
+];
+(function(){
+  var f2 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:2, maximumFractionDigits:2}); };
+  document.getElementById("t5Body").innerHTML = T5.map(function(r){
+    return '<tr><td>' + r[0] + '</td>' + r.slice(1).map(function(v){ return '<td class="num">' + f2(v) + '</td>'; }).join("") + '</tr>';
+  }).join("");
+})();
+
+/* =========================================================
+   3) FTE HESAP TABLOSU (Tablo 2)
+   ========================================================= */
+var SATIR = 8;
+/* birim, yarı zamanlı saat, tam zamanlı çalışan */
+var ORNEK_TBL = [
+  ["Merkez işlevler ve idare", 1600, 100],
+  ["Lojistik",                 2400, 240],
+  ["Üretim",                   3600, 410],
+  ["Araştırma ve geliştirme",   400,  40],
+  ["BT",                        600,  15],
+  ["Satış",                       0,  45],
+  ["", 0, 0],
+  ["", 0, 0]
+];
+
+function buildTbl(){
+  var html = "";
+  for(var i=0;i<SATIR;i++){
+    html += '<tr>' +
+      '<td><input type="text" id="p_ad_' + i + '" placeholder="Birim ' + (i+1) + '"></td>' +
+      '<td><input type="number" min="0" step="any" id="p_saat_' + i + '"></td>' +
+      '<td><input type="number" min="0" step="1" id="p_tam_' + i + '"></td>' +
+      '<td class="calc" id="p_yfte_' + i + '">—</td>' +
+      '<td class="calc" id="p_fte_' + i + '">—</td>' +
+      '<td class="calc" id="p_pay_' + i + '">—</td></tr>';
+  }
+  document.getElementById("pBody").innerHTML = html;
+  document.getElementById("pBody").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", computeTbl);
+  });
+  document.getElementById("haftalik").addEventListener("input", computeTbl);
+  document.getElementById("oncekiFte").addEventListener("input", computeTbl);
+}
+
+function pNum(k, i){
+  var v = parseFloat(document.getElementById("p_" + k + "_" + i).value);
+  return isNaN(v) || v < 0 ? 0 : v;
+}
+
+var TBL = {n:0, saat:0, tam:0, fte:0, c:40, ok:false};
+
+function computeTbl(){
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var f0 = function(x){ return x.toLocaleString("tr-TR", {maximumFractionDigits:2}); };
+  var c = parseFloat(document.getElementById("haftalik").value);
+  var cOk = !isNaN(c) && c > 0;
+  var n = 0, saat = 0, tam = 0, yari = 0, enBuyuk = null;
+
+  for(var i=0;i<SATIR;i++){
+    var ad = document.getElementById("p_ad_" + i).value.trim() || ("Birim " + (i+1));
+    var b = pNum("saat", i), a = pNum("tam", i);
+    var yf = document.getElementById("p_yfte_" + i), tf = document.getElementById("p_fte_" + i), py = document.getElementById("p_pay_" + i);
+    if(!(b > 0 || a > 0) || !cOk){ yf.textContent = tf.textContent = py.textContent = "—"; continue; }
+    var yfte = b / c, toplam = a + yfte;
+    n++; saat += b; tam += a; yari += yfte;
+    yf.textContent = f0(yfte); tf.textContent = f0(toplam); py.textContent = f1(100 * yfte / toplam);
+    if(enBuyuk === null || toplam > enBuyuk.v) enBuyuk = {ad:ad, v:toplam};
+  }
+
+  var toplamFte = tam + yari;
+  document.getElementById("tSaat").textContent = n ? f0(saat) : "—";
+  document.getElementById("tTam").textContent = n ? f0(tam) : "—";
+  document.getElementById("tYari").textContent = n ? f0(yari) : "—";
+  document.getElementById("tFte").textContent = n ? f0(toplamFte) : "—";
+  document.getElementById("tPay").textContent = n ? f1(100 * yari / toplamFte) : "—";
+
+  var kart = document.getElementById("pCards");
+  var ok = n > 0 && cOk;
+  TBL = {n:n, saat:saat, tam:tam, fte:toplamFte, c: cOk ? c : 40, ok:ok};
+  if(!ok){
+    kart.innerHTML = "";
+    document.getElementById("pNot").textContent = !cOk && n === 0 ? "Tabloya birimleri girin ya da örnek veriyi yükleyin." :
+      (!cOk ? "Haftalık çalışma saati (C) sıfırdan büyük olmalı." : "Tabloya birimleri girin ya da örnek veriyi yükleyin.");
+    return;
+  }
+
+  var onceki = parseFloat(document.getElementById("oncekiFte").value);
+  var degisim = (!isNaN(onceki) && onceki > 0) ? 100 * (toplamFte - onceki) / onceki : null;
+  var kartlar = '';
+  kartlar += '<div class="card"><b>' + f0(toplamFte) + '</b><span>Toplam FTE (A + B/C)</span></div>';
+  kartlar += '<div class="card"><b>' + f0(tam) + '</b><span>Tam zamanlı çalışan (A)</span></div>';
+  kartlar += '<div class="card alt"><b>' + f0(yari) + '</b><span>Yarı zamanlıların FTE karşılığı (B/C)</span></div>';
+  kartlar += '<div class="card alt"><b>' + f1(100 * yari / toplamFte) + ' %</b><span>Yarı zamanlı FTE payı</span></div>';
+  kartlar += '<div class="card warn"><b>' + (degisim === null ? "—" : (degisim > 0 ? "+" : "") + f1(degisim) + ' %') + '</b><span>Önceki döneme göre FTE değişimi</span></div>';
+  kartlar += '<div class="card warn"><b>' + (enBuyuk ? f0(enBuyuk.v) : "—") + '</b><span>En büyük birim: ' + (enBuyuk ? enBuyuk.ad : "—") + '</span></div>';
+  kart.innerHTML = kartlar;
+
+  var not = "A = " + f0(tam) + ", B = " + f0(saat) + " saat, C = " + f0(c) + " → D = " + f0(tam) + " + (" + f0(saat) + " ÷ " + f0(c) + ") = " + f0(toplamFte) + " FTE. ";
+  if(degisim !== null) not += "Önceki döneme (" + f0(onceki) + " FTE) göre " + (degisim > 0 ? "+" : "") + f1(degisim) + " % değişim. ";
+  not += "Kadro (kişi sayısı) bu tabloda yalnızca tam zamanlıları içerir; yarı zamanlı çalışan sayısını ayrıca kadro olarak raporlayın.";
+  document.getElementById("pNot").textContent = not;
+}
+
+function loadTblExample(){
+  for(var i=0;i<SATIR;i++){
+    var s = ORNEK_TBL[i];
+    document.getElementById("p_ad_" + i).value = s[0];
+    document.getElementById("p_saat_" + i).value = s[1] ? s[1] : "";
+    document.getElementById("p_tam_" + i).value = s[2] ? s[2] : "";
+  }
+  document.getElementById("haftalik").value = 40;
+  document.getElementById("oncekiFte").value = "";
+  computeTbl();
+}
+
+document.getElementById("btnOrnek").addEventListener("click", loadTblExample);
+document.getElementById("btnTemizle").addEventListener("click", function(){
+  for(var i=0;i<SATIR;i++){
+    ["ad","saat","tam"].forEach(function(k){ document.getElementById("p_" + k + "_" + i).value = ""; });
+  }
+  document.getElementById("oncekiFte").value = "";
+  computeTbl();
+});
+document.getElementById("btnCsv").addEventListener("click", function(){
+  var satir = ["Birim;Yari zamanli saat (B);Tam zamanli calisan (A);Yari zamanli FTE;Toplam FTE;Yari zamanli pay %"];
+  var c = parseFloat(document.getElementById("haftalik").value);
+  for(var i=0;i<SATIR;i++){
+    var b = pNum("saat", i), a = pNum("tam", i);
+    if(!(b > 0 || a > 0) || !(c > 0)) continue;
+    var ad = document.getElementById("p_ad_" + i).value.trim() || ("Birim " + (i+1));
+    var y = b / c;
+    satir.push([ad, b, a, y.toFixed(2), (a + y).toFixed(2), (100 * y / (a + y)).toFixed(1)].join(";"));
+  }
+  if(TBL.ok){
+    var y = TBL.saat / TBL.c;
+    satir.push(["Toplam", TBL.saat, TBL.tam, y.toFixed(2), TBL.fte.toFixed(2), (100 * y / TBL.fte).toFixed(1)].join(";"));
+  }
+  var blob = new Blob(["\ufeff" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "iso30425_fte_tablosu.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* =========================================================
+   4) FORMÜL TABLOSU + HESAPLAYICI
+   Alan adları gömülü Python modülünün hesapla() imzasıyla birebir aynıdır.
+   ========================================================= */
+function gerek(kosul, mesaj){ if(!kosul) throw new Error("GecersizGirdi: " + mesaj); }
+function oranOk(parca, butun, ad){
+  gerek(butun > 0, "bütün sıfırdan büyük olmalı");
+  gerek(parca >= 0 && parca <= butun, ad + " 0 ile bütün arasında olmalı");
+  return 100 * parca / butun;
+}
+function bolOk(pay, payda, ad){ gerek(payda > 0, ad + " sıfırdan büyük olmalı"); return pay / payda; }
+function goreli(onceki, cari){
+  gerek(onceki > 0, "önceki değer sıfırdan büyük olmalı");
+  gerek(cari >= 0, "cari değer negatif olamaz");
+  return 100 * (cari - onceki) / onceki;
+}
+function r1(x){ return +x.toFixed(1); }
+function r2(x){ return +x.toFixed(2); }
+
+var CALC = [
+ {id:"fte", name:"Tam zaman eşdeğeri (FTE)", grp:"FTE", noHeur:true,
+  formula:"D = A + (B &divide; C)",
+  note:"Şartname formülü: A tam zamanlı çalışan, B yarı zamanlıların toplam saati, C ortalama haftalık çalışma saati, D tam zaman eşdeğeri toplamı. Şartname örneği: 140 = 100 + (1 600/40). Hesap, tam zamanlı haftalık sürenin 40 saat olduğunu varsayar.",
+  fields:[{k:"tam_zamanli",l:"Tam zamanlı çalışan (A)",v:100},{k:"yari_saat",l:"Yarı zamanlıların toplam saati (B)",v:1600},
+          {k:"haftalik_saat",l:"Ortalama haftalık çalışma saati (C)",v:40,step:0.5}],
+  unit:"FTE",
+  py:"fte(tam_zamanli=100, yari_saat=1600, haftalik_saat=40)",
+  calc:function(v){ gerek(v.tam_zamanli >= 0 && v.yari_saat >= 0, "tam zamanlı çalışan ve yarı zamanlı saat negatif olamaz");
+    var yari = bolOk(v.yari_saat, v.haftalik_saat, "haftalık çalışma saati"), d = v.tam_zamanli + yari;
+    var pay = oranOk(yari, d, "yarı zamanlı FTE");
+    return {value:d, dec:1, expl:v.tam_zamanli + " + (" + v.yari_saat + " ÷ " + v.haftalik_saat + ")",
+      detail:[["Yarı zamanlıların FTE karşılığı", yari],
+              ["Yarı zamanlı FTE payı (%)", r1(pay)],
+              ["Tam zamanlı çalışanın payı (%)", r1(100-pay)]]}; },
+  bands:[[0,"ok","FTE'yi kadro ile birlikte okuyun: kadro tek başına yanıltabilir; yarı zamanlı çalışan sayısı gereken toplam çalışan sayısını çarpıtabilir (madde 5.2)."]]},
+
+ {id:"fte_degisim", name:"Yarı zamanlı FTE payının değişimi", grp:"FTE", noHeur:true,
+  formula:"Pay değişimi = (Yarı zamanlı FTE<sub>cari</sub> &divide; FTE<sub>cari</sub> &minus; Yarı zamanlı FTE<sub>önceki</sub> &divide; FTE<sub>önceki</sub>) &times; 100",
+  note:"Tablo 3, zaman içinde toplam FTE ve toplam FTE'nin yüzde kaçının yarı zamanlı olduğunu gösterir (örnekte %20,19'dan %31,24'e). Şartname bu farkı puan olarak hesaplamaz; yönetim stratejisinin etkisini görmek için türetilmiştir.",
+  fields:[{k:"fte_onceki",l:"Önceki dönem toplam FTE",v:1065},{k:"yari_fte_onceki",l:"Önceki dönem yarı zamanlı FTE",v:215},
+          {k:"fte_cari",l:"Cari dönem toplam FTE",v:1370},{k:"yari_fte_cari",l:"Cari dönem yarı zamanlı FTE",v:428}],
+  unit:"puan (yarı zamanlı FTE payı değişimi)",
+  py:"yari_zamanli_fte_payi(yari_fte=428, toplam_fte=1370)",
+  calc:function(v){ gerek(v.fte_onceki > 0 && v.fte_cari > 0, "FTE değerleri sıfırdan büyük olmalı");
+    var po = oranOk(v.yari_fte_onceki, v.fte_onceki, "yarı zamanlı FTE"), pc = oranOk(v.yari_fte_cari, v.fte_cari, "yarı zamanlı FTE");
+    return {value:pc-po, dec:2, expl:"(" + v.yari_fte_cari + " ÷ " + v.fte_cari + " × 100) − (" + v.yari_fte_onceki + " ÷ " + v.fte_onceki + " × 100)",
+      detail:[["Önceki dönem yarı zamanlı FTE payı (%)", r2(po)],
+              ["Cari dönem yarı zamanlı FTE payı (%)", r2(pc)],
+              ["Toplam FTE değişimi (%)", r1(goreli(v.fte_onceki, v.fte_cari))]]}; },
+  bands:[[0,"ok","Artış bir yönetim stratejisinin sonucu olabilir; ayrıntıya inin: bazı birimlerde artış çok daha büyük, bazılarında sıfır olabilir (madde 7.6)."]]},
+
+ {id:"kadro_sapma", name:"Bütçelenen ile fiili kadro sapması", grp:"Kadro", noHeur:true,
+  formula:"Sapma = Fiili kadro &minus; Bütçelenen kadro",
+  note:"Şartname, bütçelenen ile fiili kadro karşılaştırmasının (Tablo 1) yöneticiler, üst yönetim ve yönetim kurulu için anlayışı derinleştirdiğini ve artan farkın çekme ya da elde tutma sorununa işaret edebileceğini söyler (madde 4.3, 4.4). Önceki dönemle sapma değişimi türetilmiştir.",
+  fields:[{k:"butce",l:"Bütçelenen kadro (cari dönem sonu)",v:18530},{k:"fiili",l:"Fiili kadro (cari dönem sonu)",v:18487},
+          {k:"butce_onceki",l:"Bütçelenen kadro (önceki dönem sonu)",v:18520},{k:"fiili_onceki",l:"Fiili kadro (önceki dönem sonu)",v:18442}],
+  unit:"kişi (fiili − bütçe)",
+  py:"kadro_sapmasi(fiili=18487, butce=18530)",
+  calc:function(v){ gerek(v.fiili >= 0 && v.butce > 0, "fiili kadro negatif, bütçe sıfır olamaz");
+    gerek(v.fiili_onceki >= 0 && v.butce_onceki > 0, "fiili kadro negatif, bütçe sıfır olamaz");
+    var d = v.fiili - v.butce, onceki = v.fiili_onceki - v.butce_onceki;
+    return {value:d, dec:0, expl:v.fiili + " − " + v.butce,
+      detail:[["Bütçelenen kadroya göre gerçekleşme (%)", r1(100*v.fiili/v.butce)],
+              ["Önceki dönem sapması (kişi)", onceki],
+              ["Sapmanın önceki döneme göre değişimi (kişi)", d-onceki]]}; },
+  bands:[[0,"ok","Tek dönemlik sapma yerine farkın zaman içinde artıp artmadığına bakın; artan fark ilgili alanda çekme ya da elde tutma sorununa işaret edebilir (madde 4.4)."]]},
+
+ {id:"kosullu", name:"Toplam koşullu işgücü", grp:"Koşullu işgücü", noHeur:true,
+  formula:"Koşullu işgücü = Bağımsız yükleniciler + Kiralık ve ajans işgücü",
+  note:"Şartname toplamı, ISO 30414:2018, 4.7.12.3'te açıklanan işgücünün toplamı olarak verir (Tablo 4: 90 + 87 = 177). Önceki döneme göre değişim ve toplam işgücü içindeki pay türetilmiştir; çalışan sayısının hangi birimle (kişi ya da FTE) girildiğini yazın.",
+  fields:[{k:"serbest",l:"Serbest çalışan ve danışmanlar (bağımsız yüklenici)",v:90},{k:"kiralik",l:"Kiralık, geçici ve gözetimli (ajans) işgücü",v:87},
+          {k:"onceki_toplam",l:"Önceki dönem toplam koşullu işgücü",v:170},{k:"calisan",l:"Çalışan sayısı (kadro ya da FTE)",v:1370}],
+  unit:"kişi (koşullu işgücü)",
+  py:"kosullu_isgucu(serbest=90, kiralik=87)",
+  calc:function(v){ gerek(v.serbest >= 0 && v.kiralik >= 0, "işgücü bileşenleri negatif olamaz");
+    gerek(v.onceki_toplam > 0 && v.calisan > 0, "önceki toplam ve çalışan sayısı sıfırdan büyük olmalı");
+    var d = v.serbest + v.kiralik;
+    return {value:d, dec:0, expl:v.serbest + " + " + v.kiralik,
+      detail:[["Bağımsız yüklenici ve danışman payı (%)", r1(100*bolOk(v.serbest, d, "toplam"))],
+              ["Kiralık ve ajans işgücü payı (%)", r1(100*bolOk(v.kiralik, d, "toplam"))],
+              ["Önceki döneme göre değişim (%)", r1(goreli(v.onceki_toplam, d))],
+              ["Toplam işgücü içindeki payı (%)", r1(100*d/(v.calisan+d))]]}; },
+  bands:[[0,"ok","Koşullu işgücünün ürettiği çabayı ve çalışma saatlerini kadroyla birlikte okuyun; hangi bileşenin (bağımsız yüklenici mi kiralık mı) büyüdüğüne bakın (madde 6.2)."]]},
+
+ {id:"devamsizlik", name:"Devamsızlık oranı", grp:"Devamsızlık", noHeur:true,
+  formula:"A = (B &divide; C) &times; 100",
+  note:"Şartname formülü: A, kullanılabilir çalışma günlerinin yüzdesi olarak devamsızlık oranı; B ölçüm dönemi boyunca devamsız gün; C ölçüm dönemi boyunca kullanılabilir çalışma günü. Örnek: C = 1 200; B = 25; A = %2,08. Tatil, resmî tatil ve yetkili izin hesaba dahil değildir.",
+  fields:[{k:"devamsiz_gun",l:"Devamsız gün sayısı (B)",v:25},{k:"mevcut_gun",l:"Kullanılabilir çalışma günü sayısı (C)",v:1200}],
+  unit:"% devamsızlık",
+  py:"devamsizlik_orani(devamsiz_gun=25, mevcut_gun=1200)",
+  calc:function(v){ var d = oranOk(v.devamsiz_gun, v.mevcut_gun, "devamsız gün");
+    return {value:d, dec:2, expl:v.devamsiz_gun + " ÷ " + v.mevcut_gun + " × 100",
+      detail:[["Devamsızlık dışı gün", v.mevcut_gun-v.devamsiz_gun],
+              ["Bin çalışma gününde devamsız gün", r1(10*d)],
+              ["Çalışılabilir günlerin devamsızlık dışı payı (%)", r1(100-d)]]}; },
+  bands:[[0,"ok","Standart eşik vermez: oranı önceki dönemler, bütçe ve birim kırılımıyla birlikte okuyun; toplam düşerken tek bir birimde artış olabilir (madde 7.4)."]]},
+
+ {id:"devamsizlik_degisim", name:"Devamsızlık oranının göreli değişimi", grp:"Devamsızlık",
+  formula:"Göreli değişim = ((Cari oran &minus; Önceki oran) &divide; Önceki oran) &times; 100",
+  note:"Şartnamenin Tablo 5 örneğinde üretim birimi için 2017'de %2,5 olan devamsızlık 2020 4. çeyrekte %3,8'e çıkmıştır (yaklaşık %50 artış) ve ileri inceleme gerekir. Göreli değişim hesabı şartnamede yoktur, türetilmiştir; ±%10 bantları başlangıç varsayımıdır.",
+  fields:[{k:"onceki_oran",l:"Önceki dönem devamsızlık oranı (%)",v:2.5,step:0.01},{k:"cari_oran",l:"Cari dönem devamsızlık oranı (%)",v:3.8,step:0.01}],
+  unit:"% göreli değişim",
+  py:"goreli_degisim(onceki=2.5, cari=3.8)",
+  calc:function(v){ var d = goreli(v.onceki_oran, v.cari_oran);
+    return {value:d, dec:1, expl:"(" + v.cari_oran + " − " + v.onceki_oran + ") ÷ " + v.onceki_oran + " × 100",
+      detail:[["Puan farkı", r2(v.cari_oran-v.onceki_oran)],
+              ["Cari oranın öncekine katı", r2(v.cari_oran/v.onceki_oran)]]}; },
+  bands:[[10,"bad","Devamsızlık belirgin artmış: ayrıntılı inceleme gerekir; nedenleri (hastalık, yaralanma, kişisel konular, grev, iş memnuniyetsizliği) ayırın (madde 7.4)."],
+         [-10,"ok","Önemli bir değişim yok; birim kırılımına yine de bakın."],
+         [-1e9,"ok","Devamsızlık azalmış; olumlu göstergenin altındaki nedeni araştırın."]]}
+];
+
+/* --- formül tablosu --- */
+(function(){
+  var rows = CALC.map(function(c){
+    return '<tr><td><b>' + c.name + '</b></td><td><span style="font-family:var(--serif)">' +
+           c.formula + '</span></td><td>' + c.note + '</td></tr>';
+  }).join("");
+  document.getElementById("fBody").innerHTML = rows;
+})();
+
+/* --- hesaplayıcı --- */
+var sel = document.getElementById("cMetric");
+CALC.forEach(function(c, i){
+  var o = document.createElement("option");
+  o.value = i; o.textContent = c.grp + " — " + c.name;
+  sel.appendChild(o);
+});
+
+function buildFields(){
+  var c = CALC[+sel.value];
+  document.getElementById("cFields").innerHTML = c.fields.map(function(f){
+    return '<div class="field"><label for="in_' + f.k + '">' + f.l + '</label>' +
+      '<input type="number" id="in_' + f.k + '" value="" step="' + (f.step || "any") + '" placeholder="' + f.v + '"></div>';
+  }).join("");
+  document.getElementById("cFields").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", run);
+  });
+}
+
+function readVals(){
+  var c = CALC[+sel.value], v = {}, missing = false;
+  c.fields.forEach(function(f){
+    var el = document.getElementById("in_" + f.k);
+    var raw = el && el.value !== "" ? parseFloat(el.value) : NaN;
+    if(isNaN(raw)){ missing = true; v[f.k] = f.v; } else { v[f.k] = raw; }
+  });
+  return {v:v, missing:missing};
+}
+
+function fmt(x, dec){
+  if(!isFinite(x)) return "—";
+  return x.toLocaleString("tr-TR", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+
+/* Hesaplama motoru: Python hazırsa gömülü modül, değilse JS yedeği */
+function compute(c, v){
+  if(PY.ready){
+    try{
+      PY.pyodide.globals.set("_metrik", c.id);
+      PY.pyodide.globals.set("_girdi", JSON.stringify(v));
+      var raw = PY.pyodide.runPython(
+        "import json\n" +
+        "json.dumps(hesapla(_metrik, **json.loads(_girdi)))");
+      var r = JSON.parse(raw);
+      return {value:r.deger, expl:r.ifade, dec:r.ondalik, detail:r.ayrinti,
+              unit:r.birim, durum:r.durum, engine:"python"};
+    }catch(err){
+      var msg = String(err);
+      /* Kullanıcı girdisi kaynaklı hata: motor sorunu değil, yedeğe geçme */
+      if(msg.indexOf("GecersizGirdi") !== -1 || msg.indexOf("ZeroDivisionError") !== -1) throw err;
+      setEngine("off", "Motor: JS yedeği — Python hatası");
+    }
+  }
+  var out = c.calc(v);
+  out.engine = "js";
+  return out;
+}
+
+function run(){
+  var c = CALC[+sel.value];
+  var r = readVals();
+  var out;
+  try { out = compute(c, r.v); } catch(e){ out = null; }
+  var box = document.getElementById("cResult");
+  if(!out || !isFinite(out.value)){
+    box.innerHTML = '<div class="result"><b>Hesaplanamadı.</b> Payda sıfır olamaz, parça bütünden büyük olamaz ve değerler geçerli aralıkta olmalı; alanları kontrol edin.</div>';
+    return;
+  }
+  var dec = (out.dec === undefined) ? 1 : out.dec;
+  var unit = out.unit || c.unit;
+  var html = '<div class="result">';
+  html += '<div class="big">' + fmt(out.value, dec) + ' <span>' + unit + '</span></div>';
+  html += '<div style="font-size:13px;color:var(--ink-soft);margin-top:6px">' + c.name +
+          ' · ' + (out.engine === "python" ? 'Python (Pyodide) ile hesaplandı' : 'JavaScript ile hesaplandı') +
+          (r.missing ? ' · <i>boş alanlar için örnek değer kullanıldı</i>' : '') + '</div>';
+
+  if(document.getElementById("oFormula").checked){
+    html += '<div class="formula">' + c.formula + '<br><span style="color:var(--ink-soft);font-size:15px">= ' +
+            out.expl + ' = <b>' + fmt(out.value, dec) + '</b> ' + unit + '</span></div>';
+  }
+  if(out.detail && out.detail.length){
+    html += '<dl>' + out.detail.map(function(d){
+      var val = (typeof d[1] === "number") ? d[1].toLocaleString("tr-TR") : d[1];
+      return '<dt>' + d[0] + '</dt><dd>' + val + '</dd>';
+    }).join("") + '</dl>';
+  }
+  if(document.getElementById("oInterp").checked){
+    if(c.durumMetin && out.durum){
+      html += '<div class="verdict ' + out.durum + '">' + c.durumMetin[out.durum] + '</div>';
+    } else if(c.bands){
+      var band = c.bands[c.bands.length-1];
+      for(var i=0;i<c.bands.length;i++){ if(out.value >= c.bands[i][0]){ band = c.bands[i]; break; } }
+      html += '<div class="verdict ' + band[1] + '">' + band[2] + '</div>';
+      if(c.bands.length > 1 && !c.noHeur){
+        html += '<div class="note" style="margin-top:12px">Yorum eşikleri standarttan değil, başlangıç varsayımlarından gelir; kendi hedeflerinizle değiştirin.</div>';
+      }
+    }
+    html += '<div class="note" style="margin-top:12px">' + c.note + '</div>';
+  }
+  if(document.getElementById("oPy").checked){
+    var args = c.fields.map(function(f){ return f.k + "=" + r.v[f.k]; }).join(", ");
+    var call = 'hesapla("' + c.id + '", ' + args + ')';
+    html += '<pre style="margin-top:16px"><i>&gt;&gt;&gt; from iso30425_metrikler import hesapla</i>\n' +
+            '&gt;&gt;&gt; ' + call + '["deger"]\n' + out.value + '\n\n' +
+            '<i># eşdeğer doğrudan çağrı</i>\n&gt;&gt;&gt; ' + c.py + '</pre>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+sel.addEventListener("change", function(){ buildFields(); run(); });
+document.getElementById("btnRun").addEventListener("click", run);
+document.getElementById("btnExample").addEventListener("click", function(){
+  var c = CALC[+sel.value];
+  c.fields.forEach(function(f){ document.getElementById("in_" + f.k).value = f.v; });
+  run();
+});
+["oFormula","oInterp","oPy"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", function(){
+    var all = document.getElementById("oFormula").checked &&
+              document.getElementById("oInterp").checked &&
+              document.getElementById("oPy").checked;
+    document.getElementById("oAll").checked = all;
+    run();
+  });
+});
+document.getElementById("oAll").addEventListener("change", function(){
+  var s = this.checked;
+  ["oFormula","oInterp","oPy"].forEach(function(id){ document.getElementById(id).checked = s; });
+  run();
+});
+
+/* --- tablodan hesaplayıcıya aktarma --- */
+document.getElementById("btnAktar").addEventListener("click", function(){
+  if(!TBL.ok){ loadTblExample(); }
+  var idx = CALC.map(function(c){ return c.id; }).indexOf("fte");
+  sel.value = idx; buildFields();
+  document.getElementById("in_tam_zamanli").value = TBL.tam;
+  document.getElementById("in_yari_saat").value = TBL.saat;
+  document.getElementById("in_haftalik_saat").value = TBL.c;
+  run();
+  document.getElementById("hesaplayici").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* =========================================================
+   4) PYTHON MOTORU (Pyodide / WebAssembly)
+   Gömülü iso30425_metrikler.py modülü tarayıcı içinde
+   gerçek CPython ile çalıştırılır. Erişim yoksa JS yedeği
+   devrede kalır ve sonuçlar değişmez.
+   ========================================================= */
+var PY = {ready:false, busy:false, pyodide:null};
+
+var PYODIDE_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+  "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"
+];
+
+function setEngine(state, text){
+  var chip = document.getElementById("engStatus");
+  chip.className = "chip" + (state ? " " + state : "");
+  chip.textContent = text;
+}
+
+function loadScript(src){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function(){ resolve(src); };
+    s.onerror = function(){ reject(new Error(src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function pySource(){
+  return document.getElementById("pysrc").textContent;
+}
+
+async function initPython(){
+  if(PY.ready) return true;
+  if(PY.busy) return false;
+  PY.busy = true;
+  document.getElementById("btnPy").disabled = true;
+  setEngine("busy", "Motor: Pyodide indiriliyor…");
+  try{
+    if(typeof loadPyodide === "undefined"){
+      try { await loadScript(PYODIDE_URLS[0]); }
+      catch(e){ await loadScript(PYODIDE_URLS[1]); }
+    }
+    setEngine("busy", "Motor: Python başlatılıyor…");
+    PY.pyodide = await loadPyodide();
+
+    /* Modülü sanal dosya sistemine yazmadan, gerçek bir modül nesnesi olarak kur:
+       böylece __name__ != "__main__" olur ve _demo() kendiliğinden çalışmaz.
+       Kayıt exec'ten ÖNCE yapılır; @dataclass işlenirken modülü sys.modules'te arar. */
+    PY.pyodide.globals.set("_kaynak", pySource());
+    PY.pyodide.runPython(
+      "import sys, types\n" +
+      "_m = types.ModuleType('iso30425_metrikler')\n" +
+      "_m.__file__ = 'iso30425_metrikler.py'\n" +
+      "sys.modules['iso30425_metrikler'] = _m\n" +
+      "exec(compile(_kaynak, 'iso30425_metrikler.py', 'exec'), _m.__dict__)\n" +
+      "from iso30425_metrikler import *\n" +
+      "import iso30425_metrikler as m\n"
+    );
+    var sur = PY.pyodide.runPython(
+      "import sys\n'.'.join(str(x) for x in sys.version_info[:3])");
+    PY.ready = true;
+    setEngine("on", "Motor: Python " + sur + " (Pyodide)");
+    run();
+    return true;
+  }catch(e){
+    setEngine("off", "Motor: tarayıcı (JS) — Pyodide yüklenemedi");
+    document.getElementById("pyOut").textContent =
+      "Python motoru yüklenemedi. Bu genellikle çevrimdışı olmaktan ya da ağ kısıtından kaynaklanır.\n" +
+      "Sayfa çalışmaya devam eder; hesaplamalar JavaScript yedeğiyle aynı sonuçları verir.\n\n" + e;
+    return false;
+  }finally{
+    PY.busy = false;
+    document.getElementById("btnPy").disabled = false;
+  }
+}
+
+document.getElementById("btnPy").addEventListener("click", initPython);
+
+/* --- konsol --- */
+var VARSAYILAN_KOD =
+  'from iso30425_metrikler import *\n' +
+  'import iso30425_metrikler as m\n\n' +
+  '# Kadro ve FTE\n' +
+  'print("Bütçe–fiili sapma  :", kadro_sapmasi(18487, 18530), "kişi")\n' +
+  'print("Gerçekleşme        :", round(gerceklesme_orani(18487, 18530), 1), "%")\n' +
+  'print("FTE                :", fte(100, 1600, 40))\n' +
+  'print("Yarı zamanlı pay   :", round(yari_zamanli_fte_payi(215, 1065), 2), "%")\n\n' +
+  '# Koşullu işgücü ve devamsızlık\n' +
+  'print("Koşullu işgücü     :", kosullu_isgucu(90, 87))\n' +
+  'print("Devamsızlık        :", round(devamsizlik_orani(25, 1200), 2), "%")\n' +
+  'print("Üretimde artış     :", round(goreli_degisim(2.5, 3.8)), "%")\n\n' +
+  '# Birim tablosu (Tablo 2 sayıları)\n' +
+  't = ornek_tablo()\n' +
+  'for anahtar, deger in t.ozet().items():\n' +
+  '    print(f"{anahtar:<20}: {deger}")\n\n' +
+  '# Dağıtıcı, hesaplayıcının kullandığı arayüzdür:\n' +
+  'print(hesapla("fte", tam_zamanli=100, yari_saat=1600, haftalik_saat=40))\n\n' +
+  '# Rapor denetimi: hangi ön koşullar eksik?\n' +
+  'for uyari in erisilebilirlik_denetimi(olcum_noktasi_sabit=True, mali_yil_hizali=True):\n' +
+  '    print("!", uyari)\n';
+
+document.getElementById("pyCode").value = VARSAYILAN_KOD;
+
+async function runConsole(){
+  var out = document.getElementById("pyOut");
+  if(!PY.ready){
+    out.textContent = "Python motoru hazırlanıyor, ilk çalıştırma biraz sürebilir…";
+    var ok = await initPython();
+    if(!ok) return;
+  }
+  out.textContent = "çalışıyor…";
+  try{
+    PY.pyodide.globals.set("_kod", document.getElementById("pyCode").value);
+    var cikti = PY.pyodide.runPython(
+      "import io, contextlib, traceback\n" +
+      "_tampon = io.StringIO()\n" +
+      "with contextlib.redirect_stdout(_tampon), contextlib.redirect_stderr(_tampon):\n" +
+      "    try:\n" +
+      "        exec(_kod, globals())\n" +
+      "    except Exception:\n" +
+      "        traceback.print_exc()\n" +
+      "_tampon.getvalue()"
+    );
+    out.textContent = cikti && cikti.trim() ? cikti : "(çıktı yok)";
+  }catch(e){
+    out.textContent = "Hata: " + e;
+  }
+}
+
+document.getElementById("btnRunPy").addEventListener("click", runConsole);
+document.getElementById("btnReset").addEventListener("click", function(){
+  document.getElementById("pyCode").value = VARSAYILAN_KOD;
+  document.getElementById("pyOut").textContent = "Kod sıfırlandı.";
+});
+document.getElementById("btnDemo").addEventListener("click", function(){
+  document.getElementById("pyCode").value =
+    "import iso30425_metrikler as m\n\n" +
+    "# Modülün kendi doğrulama çıktısı (komut satırındaki\n" +
+    "# python3 iso30425_metrikler.py ile aynı sonucu verir)\n" +
+    "m._demo()\n";
+  runConsole();
+});
+
+/* modül kaynağını sayfada okunur kıl */
+document.getElementById("srcView").textContent = pySource().trim();
+
+buildTbl();
+loadTblExample();
+buildFields();
+run();
+</script>
+</body>
+</html>
