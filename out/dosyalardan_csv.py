@@ -56,7 +56,7 @@ if __name__ == "__main__":
     if not os.path.isdir(klasor):
         sys.exit(f"Klasör bulunamadı: {klasor}")
 
-    satirlar, ayrismayan, eslesen = [], [], 0
+    satirlar, ayrismayan, eslesen, bulunamayan = [], [], 0, []
     for ad in sorted(os.listdir(klasor)):
         if not ad.lower().endswith(".pdf") or ad.startswith("."):
             continue
@@ -65,6 +65,8 @@ if __name__ == "__main__":
             k = kunye[s[0]]
             s = [s[0]] + [k[b] or s[i] for i, b in enumerate(BASLIK[1:9], start=1)] + [s[9]]
             eslesen += 1
+        elif s and kunye:
+            bulunamayan.append(s)
         (satirlar if s else ayrismayan).append(s or ad)
 
     with open(cikti, "w", encoding="utf-8-sig", newline="") as f:
@@ -75,6 +77,12 @@ if __name__ == "__main__":
     print(f"{len(satirlar)} dosya ayrıştırıldı -> {cikti}")
     if kunye:
         print(f"YÖK künyesiyle düzeltilen: {eslesen} | listede bulunamayan (dosya adındaki değerler kaldı): {len(satirlar) - eslesen}")
+    if kunye and bulunamayan:
+        with open("kunyesi_bulunamayan.csv", "w", encoding="utf-8-sig", newline="") as f:
+            w = csv.writer(f, delimiter=";", quoting=csv.QUOTE_ALL)
+            w.writerow(["TezNo", "Adı Soyadı", "Yıl", "Üniversite", "Dosya Adı"])
+            w.writerows([b[0], b[1], b[2], b[3], b[9]] for b in bulunamayan)
+        print(f"YÖK listesinde olmayan tezler -> kunyesi_bulunamayan.csv ({len(bulunamayan)} satır)")
     if ayrismayan:
         print(f"Ayrıştırılamayan {len(ayrismayan)} dosya (CSV'ye eklenmedi):")
         for a in ayrismayan[:30]:
