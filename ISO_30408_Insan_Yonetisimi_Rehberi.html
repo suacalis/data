@@ -1,0 +1,2048 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO 30408 İnsan Yönetişimi Rehberi — Sınıflandırma ve Hesaplayıcı</title>
+<style>
+  :root{
+    --ink:#101418;
+    --ink-soft:#59636f;
+    --ink-faint:#8b95a1;
+    --line:#dde3ea;
+    --line-soft:#eef1f5;
+    --bg:#ffffff;
+    --canvas:#f6f8fa;
+    --accent:#0b5c8a;
+    --accent-soft:#e7f0f6;
+    --panel:#0e1520;
+    --panel-2:#16202e;
+    --panel-line:#28394f;
+    --out-ink:#8a3b12;  --out-bg:#fbeee6;
+    --eff-ink:#14615c;  --eff-bg:#e6f2f1;
+    --efc-ink:#33478c;  --efc-bg:#eaedf8;
+    --rea-ink:#7a5c00;  --rea-bg:#f8f1d9;
+    --cos-ink:#8c2f4b;  --cos-bg:#f9e8ee;
+    --ok:#1d6f42; --warn:#8a6100; --bad:#992121;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--canvas);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.62;
+  }
+  .sheet{max-width:1000px;margin:0 auto;background:var(--bg);padding:56px 60px 80px;
+    box-shadow:0 0 0 1px var(--line);}
+  @media(max-width:760px){ .sheet{padding:28px 20px 56px} }
+
+  h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:25px;margin:52px 0 4px;padding-bottom:8px;
+     border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  h3{font-size:17px;margin:32px 0 6px;letter-spacing:.01em}
+  h4{font-size:15px;margin:22px 0 4px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:12px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  small{color:var(--ink-soft)}
+  .lede{font-size:17px;color:var(--ink-soft)}
+
+  .srcbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 0;margin:0 0 26px;font-size:13.5px;color:var(--ink-soft)}
+  .srcbar b{color:var(--ink);font-weight:600}
+
+  .toc{background:var(--canvas);border:1px solid var(--line);padding:16px 20px;margin:26px 0 0;
+    font-size:14px;columns:2;column-gap:34px}
+  @media(max-width:640px){.toc{columns:1}}
+  .toc a{display:block;padding:3px 0;text-decoration:none;color:var(--ink)}
+  .toc a:hover{color:var(--accent);text-decoration:underline}
+  .toc b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 4px}
+
+  .keypoints li{margin:10px 0}
+  .keypoints b{font-weight:650}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink-soft);padding-bottom:6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:var(--canvas);font-weight:650;font-size:13px}
+  tbody tr:nth-child(even){background:#fcfdfe}
+  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;width:66px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink)}
+  .dot.o{background:var(--out-ink)} .dot.s{background:var(--eff-ink)} .dot.p{background:var(--efc-ink)}
+  .dot.r{background:var(--rea-ink)} .dot.c{background:var(--cos-ink)}
+
+  .tag{display:inline-block;font-size:11px;line-height:1.5;padding:1px 7px;border-radius:3px;
+    letter-spacing:.03em;white-space:nowrap;font-weight:600}
+  .tag.o{color:var(--out-ink);background:var(--out-bg)}
+  .tag.s{color:var(--eff-ink);background:var(--eff-bg)}
+  .tag.p{color:var(--efc-ink);background:var(--efc-bg)}
+  .tag.r{color:var(--rea-ink);background:var(--rea-bg)}
+  .tag.c{color:var(--cos-ink);background:var(--cos-bg)}
+  .tag.iso{color:#4a4a4a;background:#eeeeee}
+  .tag.lvl{color:#5a3a86;background:#f0eaf8}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--line-soft);padding:1px 5px;border-radius:3px}
+  pre{background:var(--panel);color:#e7eef6;border-radius:6px;padding:18px 20px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:14px 0}
+  pre b{color:#f0b866;font-weight:400}      /* anahtar kelime */
+  pre i{color:#7f8ea1;font-style:normal}    /* yorum */
+  pre u{color:#9fd28a;text-decoration:none} /* dize/sayı */
+  pre .fn{color:#79c0e8}
+  .filename{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin:14px 0 -8px}
+
+  .formula{font-family:var(--serif);font-size:16.5px;background:var(--canvas);
+    border-left:3px solid var(--accent);padding:12px 16px;margin:12px 0;overflow-x:auto}
+  .formula em{font-style:italic}
+
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 14px;color:var(--ink-soft);font-size:14px;margin:14px 0}
+
+  /* --- panel --- */
+  .panel{background:var(--panel);color:#dbe5f0;border-radius:8px;padding:22px 24px;margin:20px 0}
+  .panel h3{color:#fff;margin:0 0 4px;font-size:16px}
+  .panel .hint{color:#8fa2b8;font-size:13px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#8fa2b8;margin-bottom:5px}
+  .field label .req{color:#e08a5a}
+  select,input[type=number],input[type=text]{
+    width:100%;background:var(--panel-2);border:1px solid var(--panel-line);color:#eef4fb;
+    border-radius:5px;padding:9px 10px;font-family:var(--sans);font-size:14px}
+  input[type=number]{font-family:var(--mono)}
+  select:focus,input:focus{outline:2px solid #4a8fc0;outline-offset:1px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13.5px;color:#b9c7d6}
+  .checks label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .panel-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:5px;cursor:pointer;
+    border:1px solid transparent;padding:9px 18px}
+  .btn-run{background:#1c74ab;color:#fff}
+  .btn-run:hover{background:#2385c2}
+  .btn-ghost{background:transparent;color:#9fb3c9;border-color:var(--panel-line)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9fb3c9;
+    border:1px solid var(--panel-line);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7c8ea3}
+  .chip.busy::before{background:#e0a13c}
+  .chip.on::before{background:#4ec07a}
+  .chip.off::before{background:#c05a5a}
+
+  .console{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+  .console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+    background:var(--canvas);border-bottom:1px solid var(--line);padding:8px 12px;font-size:12.5px;color:var(--ink-soft)}
+  .console textarea{width:100%;border:0;display:block;background:var(--panel);color:#e7eef6;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:16px 20px;resize:vertical;min-height:190px}
+  .console textarea:focus{outline:2px solid #4a8fc0;outline-offset:-2px}
+  .console pre{margin:0;border-radius:0;background:#0a1017;border-top:1px solid var(--panel-line);min-height:64px}
+  .btn-sm{padding:6px 14px;font-size:13px}
+  details.src pre{max-height:420px;overflow:auto}
+  .btn-ghost:hover{color:#fff;border-color:#47607d}
+
+  .result{border:1px solid var(--line);border-top:3px solid var(--accent);padding:18px 20px;margin:18px 0}
+  .result .big{font-family:var(--serif);font-size:32px;line-height:1.1}
+  .result .big span{font-size:16px;color:var(--ink-soft);font-family:var(--sans)}
+  .result dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:14px 0 0;font-size:14px}
+  .result dt{color:var(--ink-soft)}
+  .result dd{margin:0;font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px;padding:10px 12px;font-size:14px;border-radius:4px;background:var(--canvas)}
+  .verdict.ok{color:var(--ok);background:#eef6f1}
+  .verdict.warn{color:var(--warn);background:#fbf5e7}
+  .verdict.bad{color:var(--bad);background:#faeeee}
+
+  /* --- matris --- */
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;
+    background:var(--canvas);border:1px solid var(--line);padding:14px 16px;margin:16px 0}
+  .filters label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .filters select,.filters input{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .matrix{font-size:13.5px}
+  .matrix th.rot{width:72px;text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom}
+  .matrix td.name{font-weight:500}
+  .matrix td.name em{display:block;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .matrix tr.group td{background:#f2f5f8;font-weight:650;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+  .count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+
+  /* --- pozisyon tablosu --- */
+  .postbl{font-size:13.5px}
+  .postbl input[type=text],.postbl input[type=date],.postbl input[type=number]{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .postbl input[type=text]{font-family:var(--sans)}
+  .postbl input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .postbl td.chk{text-align:center}
+  .postbl input[type=number]{text-align:right}
+  .postbl td:first-child{min-width:150px}
+  .postbl th.num,.postbl td.num{width:auto}
+  @media(max-width:760px){table{display:block;overflow-x:auto}}
+  .postbl td.calc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap}
+  .postbl tfoot td{background:var(--canvas);font-weight:650}
+  .tblbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+  .tblbar button{border-color:var(--line);color:var(--ink-soft);background:#fff}
+  .tblbar button:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tblbar .inline{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft)}
+  .tblbar .inline input{width:78px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .card{border:1px solid var(--line);border-top:3px solid var(--eff-ink);padding:12px 14px}
+  .card b{display:block;font-family:var(--serif);font-size:24px;line-height:1.2}
+  .card span{font-size:12px;color:var(--ink-soft)}
+  .card.alt{border-top-color:var(--efc-ink)}
+  .card.warn{border-top-color:var(--out-ink)}
+
+  details{border-bottom:1px solid var(--line);padding:12px 0}
+  summary{cursor:pointer;font-weight:600;font-size:15px}
+  summary::marker{color:var(--accent)}
+  details p{margin:10px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  @media (prefers-reduced-motion:no-preference){
+    .result{transition:border-color .2s}
+  }
+  @media print{
+    body{background:#fff} .sheet{box-shadow:none;max-width:none;padding:0}
+    .panel{background:#fff;color:#000;border:1px solid #000}
+    pre{background:#f4f4f4;color:#000}
+  }
+.postbl input[type=number]{min-width:56px}
+.postbl input[type=text]{min-width:100px}
+.postbl th input[type=text]{width:100%;font-weight:600}
+.tblbar .inline input{width:90px}
+.postbl th,.postbl td{padding-left:5px;padding-right:5px}
+.postbl select{min-width:110px;font-size:12.5px}
+.figcap{font-size:12.5px;color:var(--ink-soft);margin-top:6px}
+.fl{margin:14px 0}.fl-row{display:flex;gap:8px;align-items:stretch;flex-wrap:wrap}
+.fl-box{flex:1 1 140px;border:2px solid var(--ink,#222);border-radius:8px;padding:10px 8px;text-align:center;font-size:13px;background:var(--paper,#fff)}
+.fl-box small{display:block;color:var(--ink-soft);font-size:11px;margin-top:4px}
+.fl-arr{align-self:center;font-size:22px;color:var(--ink-soft)}
+.fl-back{text-align:center;font-size:12.5px;color:var(--ink-soft);margin-top:8px;border-top:2px dashed var(--line);padding-top:6px}
+@media(max-width:760px){.fl-arr{display:none}}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>ISO 30408 İnsan Yönetişimi Rehberi</h1>
+<div class="srcbar">
+  <span><b>Kaynak:</b> BS ISO 30408:2016 — <i>Human resource management — Guidelines on human governance</i></span>
+  <span><b>Kapsam:</b> 5 kullanıcı · 5 madde grubu · 94 madde ve unsur</span>
+  <span><b>Hesaplama:</b> gömülü Python modülü (Pyodide/WebAssembly)</span>
+  <span><b>Sürüm:</b> Ekim 2026</span>
+</div>
+
+<h2 id="genel">Genel Bakış</h2>
+<p>ISO 30408:2016, kurumlarda <b>insan yönetişimini</b> (human governance) kurma, sürdürme ve sürekli iyileştirme için araç, süreç ve uygulamalara rehberlik eden bir uluslararası standarttır (ISO/TC 260, ilk baskı 1 Eylül 2016). BS ISO 30408:2016, İngiltere uyarlamasıdır ve BSI tarafından 30 Eylül 2016'da yayımlanmıştır (HCS/1 İnsan Sermayesi Komitesi).
+Girişe göre tüm kurumların bir yönetişimi vardır: yönetişim, kurumun yönlendirildiği, denetlendiği ve hesap verdiği sistemdir ve kuralları, sistemleri, süreçleri ve davranışı tanımlar. <b>İnsan yönetişimi</b> ise özellikle kurumdaki insanların yönlendirildiği ve hesap verdiği sistemdir; insanların yönetişimi, fiziksel varlıkların ya da mali sermayenin yönetişimi kadar önemlidir ve kurum içinde uygun davranışı teşvik eder.
+Standart; üç ilkeyi (adillik ve şeffaflık, açıklık, hesap verebilirlik), yönetim kurulu, üst yönetim ve operasyonel yönetimin rollerini, insan yönetişiminin kurumsal ihtiyaçlarla hizalanmasını, raporların içeriğini ve analizini, dokuz uygulama adımını ve iki ek (rapor şablonları) içerir. Kapsamı sendikalar ve diğer temsilci organlarla ilişkileri dışarıda bırakır.
+Bu sayfa, standardın unsurlarını filtrelenebilir bir matrise; Ek A ve B şablonlarını canlı tablolara; sayısallaştırılabilen kavramları (hedef, kabul edilebilir sonuç aralığı, değer uyumu) türetilmiş formüllere, bir hesaplayıcıya ve Python koduna dönüştürür. Standart formül ya da eşik vermez; sayısal bölümler bu sayfaya aittir ve "türetilmiş" olarak işaretlidir. İlişkili belge: ISO 30400 (terimler, tek atıf); aynı serideki ISO 30415 (çeşitlilik ve kapsayıcılık) ve ISO 30414 (insan sermayesi raporlaması) tamamlayıcıdır.</p>
+
+<h3>Önemli Noktalar</h3>
+<ul class="keypoints">
+  <li><b>Üç temel ilke (madde 4).</b> Adillik ve şeffaflık; açıklık; yönetim organlarına, yasal otoritelere ve paydaşlara karşı hesap verebilirlik. İlkeler "içerebilir" kipiyle verilir; kuruma özgü ilkeler misyon, vizyon, değerler, strateji, değer yaratma, marka imajı, sürdürülebilirlik, kaynaklar ve paydaş dengesine yerleştirilebilir.</li>
+  <li><b>Üç katmanlı sorumluluk (madde 5).</b> Yönetim kurulu resmî taahhütte bulunur ve sistemden hesap verir (4 ifade); üst yönetim yedi şey yapar (rol, katılım, misyon-vizyon-değer, KPI'lar, sonuçları gözden geçirme, sapma planı, iş birliği); operasyonel yönetim hedef ve ölçülerin tanımına katılır ve ilkeleri performans hedeflerine entegre eder. Operasyon devredilse de <b>nihai hesap verebilirlik üst yönetimdedir</b>.</li>
+  <li><b>Hizalama süreci (madde 6.1).</b> İK işlev, uygulama ve süreçlerinin değer katışını belirle; her birinde hedef ve başarı ölçülerini tanımla; iş hedefleriyle hizala; etkililiği raporlamak için biçim tasarla.</li>
+  <li><b>Rapor üç bölümden oluşur (6.3).</b> Kurumun ihtiyaçları (vizyon, değer, misyon, strateji; kurumsal ihtiyaçlara bağlı KPI'lar), insan yönetişimi işlev, uygulama ve süreçleri (onbir adım) ve analiz.</li>
+  <li><b>Kabul edilebilir sonuç aralığı (6.3.3 g).</b> Her uygulama için ölçü ve kabul edilebilir bir sonuç aralığı tanımlanır; önemli sapmalarda üst yönetim eksiklikleri gidermek için plan ve raporlama prosedürü geliştirir (5.3 f).</li>
+  <li><b>Analiz soruları (6.3.4).</b> Sekiz soru: işlevsel hedefler kurumsal hedeflere bağlı mı, ölçüler KPI içeriyor mu, hedefler tamamlayıcı mı çatışıyor mu, eksik hedef var mı, KPI'lar güncel mi, uygulamalar tamamlayıcı mı, ölçüler önem ve sıklık içeriyor mu, çalışanlar ve müşteriler ilkelerin teslim edildiğini düşünüyor mu.</li>
+  <li><b>Dokuz uygulama adımı (madde 7)</b> ve dört + iki şablon: A.1 kurumsal ihtiyaçlar, A.2 işlevsel hedef gözden geçirme, A.3 uygulama raporu, A.4 değer uyumu; B.1 ve B.2 özet raporlar.</li>
+</ul>
+
+<div class="toc">
+  <b>İçindekiler</b>
+  <a href="#genel">Genel bakış ve önemli noktalar</a>
+  <a href="#nezaman">Ne zaman kullanılır</a>
+  <a href="#cerceve">Çerçeve ve metodoloji</a>
+  <a href="#sablonlar">Ek A ve B şablonları</a>
+  <a href="#adimlar">Uygulama adımları</a>
+  <a href="#kavramlar">Temel kavramlar</a>
+  <a href="#matris">Madde matrisi</a>
+  <a href="#tablo">Öz değerlendirme tablosu</a>
+  <a href="#sonuc">Sonuç tablosu (A.2/A.3)</a>
+  <a href="#uyum">Değer uyumu matrisi (A.4)</a>
+  <a href="#formuller">Formüller ve tanımlar</a>
+  <a href="#hesaplayici">Hesaplayıcı</a>
+  <a href="#python">Python kod örnekleri</a>
+  <a href="#yorum">Sonuçların yorumlanması</a>
+  <a href="#sinirlamalar">Sınırlamalar</a>
+  <a href="#raporlama">Çıktıların iletilmesi</a>
+  <a href="#ilgili">İlgili standartlar</a>
+  <a href="#sss">Sıkça sorulan sorular</a>
+</div>
+
+<h2 id="nezaman">Ne Zaman Kullanılır</h2>
+<p>Standart; kamu ya da özel, kâr amaçlı ya da kâr amacı gütmeyen, her büyüklük ve sektördeki kurumlar içindir. Yönetim katmanı olmayan kurumlarda yönergeler nihai karar sorumluluğu olanlara uygulanır (5.1).</p>
+<ul>
+  <li><b>İnsan yönetişimi sistemi kurarken:</b> ilkeler, çerçeve, hedeflerin iş planıyla hizalanması, proje ve girişimler (madde 4, 7).</li>
+  <li><b>Yönetim kurulu ve üst yönetim taahhüdünü tanımlarken:</b> resmî taahhüt, KPI'lar, düzenli gözden geçirme, sapma planı (5.2, 5.3).</li>
+  <li><b>İK işlevlerini kurumsal hedeflerle hizalarken:</b> değer katışı, hedef ve ölçüler, kabul edilebilir aralık, araç ve süreçlerin ilkelere etkisi (6.1, 6.3.3).</li>
+  <li><b>Raporlama biçimi tasarlarken:</b> kurumsal ihtiyaç, işlev ve uygulama raporları, özet rapor ve iletişim (6.2, 6.3, Ek A–B).</li>
+  <li><b>Mevcut sistemi analiz ederken:</b> sekiz analiz sorusu; çalışan ve müşteri algısı (6.3.4).</li>
+</ul>
+<div class="note">Standart <b>sendikalar ve diğer temsilci organlarla ilişkileri ele almaz</b> (madde 1). Sayısal bir ölçü, hedef ya da eşik içermez; kurumun hangi ölçüleri ve kabul edilebilir aralıkları kullanacağı kuruma bırakılır. Bir yönetim sistemi şartnamesi ya da sertifikasyon standardı değildir.</div>
+
+<h2 id="cerceve">Çerçeve ve Metodoloji</h2>
+
+<h3>Şekil 1 — İnsan yönetişimi döngüsü (türetilmiş akış)</h3>
+<p>Standart şekil içermez. Aşağıdaki akış, madde 6 ve 7'deki adımların bu sayfaya özgü bir özetidir: kurumsal ihtiyaçlardan başlayıp işlev ve uygulamalar, değer uyumu, raporlama ve analizden geçer ve sonuçları yeniden ihtiyaçlara geri besler.</p>
+<div class="fl" id="flowChart"></div>
+<p class="figcap">Bu çizim yazarlık yorumudur; standart adımları sıralı bir döngü olarak adlandırmaz, "sürekli iyileştirme" ifadesini yalnızca kapsamda kullanır.</p>
+
+<h3>Üç ilke ve kurumun ilkeleri</h3>
+<table>
+  <thead><tr><th style="width:90px">Madde</th><th style="width:240px">İlke</th><th>Anlam</th></tr></thead>
+  <tbody>
+    <tr><td><b>4 a</b></td><td>Adillik ve şeffaflık</td><td>Kurumsal süreç ve uygulamaların tasarımında ve sonuçlarında.</td></tr>
+    <tr><td><b>4 b</b></td><td>Açıklık</td><td>Kurumsal süreç, uygulama ve sonuçlarda açıklık.</td></tr>
+    <tr><td><b>4 c</b></td><td>Hesap verebilirlik</td><td>Kurumun yönetim organlarına, yasal otoritelere ve paydaşlarına karşı.</td></tr>
+  </tbody>
+</table>
+<p>Yönetim, bu ilkeleri stratejik hedefleri belirlerken resmî olarak ele alıp hizalamalı ve paydaşlara iletmelidir. Kuruma özgü ilkeler misyon, vizyon, değerler ve stratejiye; değer yaratma biçimine; dış paydaşlara iletilmek istenen marka imajına; uzun vadeli çevresel ve toplumsal sürdürülebilirliğe; kaynaklara (etik ve sosyal sorumluluk hedefleri dahil) ve kurum ile paydaşların ihtiyaçları arasındaki dengeye yerleştirilebilir.</p>
+
+<h3>Roller ve sorumluluklar (madde 5)</h3>
+<table>
+  <thead><tr><th style="width:150px">Rol</th><th>Yapması gerekenler</th><th class="num" style="width:70px">İfade</th></tr></thead>
+  <tbody>
+    <tr><td><b>Yönetim kurulu</b> (5.2)</td><td>İnsanın değer sunmadaki rolünü anlamak; resmî taahhütte bulunmak; sistemi yönetmekten hesap verebilir olmak; durum güncellemelerini izleyip uygun eylem almak.</td><td class="num">4</td></tr>
+    <tr><td><b>Üst yönetim</b> (5.3)</td><td>Rolleri tanımlamak, her düzeyde katılımı teşvik etmek, misyon-vizyon-değer bildirimini gözden geçirmek, KPI'ları belirlemek, sonuçları rapor şablonlarıyla gözden geçirmek, sapma için plan geliştirmek, paydaş iş birliğini artırmak.</td><td class="num">7</td></tr>
+    <tr><td><b>Operasyonel yönetim işlevleri</b> (5.4.1)</td><td>Rol ve sorumlulukları anlamak; hedef ve ölçülerin tanımına katılmak; ilkeleri performans hedeflerine entegre etmek.</td><td class="num">3</td></tr>
+    <tr><td><b>İnsan yönetişimi güvenceleri</b> (5.4.2)</td><td>İK işlevleri hizalı; uygulama tutarlı; rol sahipleri ilkeleri anlar ve hesap verir; yetkinlik ölçütlerini karşılar.</td><td class="num">4</td></tr>
+    <tr><td><b>Nihai hesap verebilirlik</b> (5.4.3)</td><td>Operasyon devredilir ancak nihai hesap verebilirlik üst yönetimdedir; insanlar ilke ve rolleri anlar; paydaş katılımı izlenir; strateji ve sonuçlar belgelenmiş bilgi olarak saklanır.</td><td class="num">3</td></tr>
+  </tbody>
+</table>
+
+<h2 id="sablonlar">Ek A ve B Şablonları</h2>
+<p>İki ek de bilgilendiricidir; doldurulacak şablonlar sunar. Aşağıdaki tablo her şablonun alanlarını özetler; bu sayfadaki canlı tablolar A.2/A.3 ve A.4'ün sayısal karşılıklarıdır.</p>
+<table>
+  <thead><tr><th style="width:80px">Şablon</th><th style="width:230px">Amaç</th><th>Alanlar</th></tr></thead>
+  <tbody>
+    <tr><td><b>A.1</b></td><td>Kurumsal ihtiyaçlar</td><td>Vizyon bildirimi; misyon bildirimi; insan yönetişimi ilkeleri (dört satır); strateji ve değer önerileri; temel insan yönetişimi hedefleri.</td></tr>
+    <tr><td><b>A.2</b></td><td>İşlevsel hedef gözden geçirme</td><td>İşlev; mevcut hedef(ler); hedef ölçü(ler)i; hedef; izleme takvimi; sonuçlar; eylem adımları; hedef ve ölçünün insan yönetişimi hedeflerine katkısı ve değer katmıyorsa yeniden yapılandırma.</td></tr>
+    <tr><td><b>A.3</b></td><td>Uygulama raporu</td><td>A.2 ile aynı alanlar, işlev altında bir uygulama için (üç eylem adımı satırı).</td></tr>
+    <tr><td><b>A.4</b></td><td>Değer uyumu</td><td>İşlev alanı; uygulama; araçlar; süreç; ilgili diğer kişi ve bölümler (nihai karar vereni belirt); tamamlayıcı uygulamalar; üç ilke × araç ve süreç matrisinde her birinin ilkeyi güçlendirdiği, zayıflattığı ya da nötr olduğu.</td></tr>
+    <tr><td><b>B.1</b></td><td>Kurumsal hedefler ve işlev özet raporu</td><td>Kurumsal hedef sütunları (her biri üç hedef); insan yönetişimi alanı başına hedefler ve hedef ölçüleri.</td></tr>
+    <tr><td><b>B.2</b></td><td>İşlev ve uygulama özet raporu</td><td>Her işlev için uygulama sütunları (her biri üç hedef ve üç hedef ölçüsü).</td></tr>
+  </tbody>
+</table>
+
+<h2 id="adimlar">Uygulama Adımları</h2>
+<ol>
+  <li><b>İlkeleri tanımlayın (7 a).</b> Adillik ve şeffaflık, açıklık, hesap verebilirlik ve kuruma özgü ilkeler; kuruma uygunluğunu doğrulayın.</li>
+  <li><b>Çerçeveyi geliştirin (7 b) ve hedefleri iş planıyla hizalayın (7 c).</b> Yönetim kurulunun taahhüdü, üst yönetimin KPI'ları (5.2, 5.3).</li>
+  <li><b>Proje ve girişimleri hizalayın (7 d).</b> Sistemi uygulayan, pekiştiren, gözden geçiren ve sürdüren girişimler.</li>
+  <li><b>Hizalama sürecini işletin (6.1).</b> İK işlevlerinin değer katışını, hedef ve ölçülerini belirleyin; iş hedefleriyle hizalayın.</li>
+  <li><b>İşlev, uygulama ve süreçleri belirleyin (6.3.3).</b> Hedef, ölçü, kabul edilebilir aralık, araç ve süreçler; ilkelere etkisi; paydaş geri bildirimi.</li>
+  <li><b>İletin ve raporlayın (6.2, 7 e).</b> Değer, misyon ve vizyon bildirimleri ve özet rapor; belgelenmiş bilgi.</li>
+  <li><b>Katılımı ve izlemeyi sağlayın (7 g, h).</b> Her düzeyde etkin katılım; ilkelerin tanımlı ölçülerle uygulanması ve izlenmesi.</li>
+  <li><b>Analiz edin ve düzeltin (6.3.4, 7 f, i).</b> Sekiz analiz sorusu, gözden geçirme ve ilkelerin performans, kültür ve faaliyetlere entegrasyonu.</li>
+</ol>
+
+<h2 id="kavramlar">Temel Kavramlar</h2>
+<p>Standart 3. maddesinde ISO 30400'e ek olarak tek terim tanımlar. Aşağıdaki tablo bu terimin ve metinde geçen kilit kavramların kısa özetidir. Açıklamalar özgün olarak yazılmıştır; bağlayıcı olan standardın kendi metnidir.</p>
+<table>
+  <thead><tr><th style="width:90px">Madde</th><th style="width:240px">Kavram</th><th>Açıklama</th></tr></thead>
+  <tbody>
+    <tr><td><b>3.1</b></td><td>İnsan yönetişimi <small>(human governance)</small></td><td>Kurumun, paydaşlarını ve insani ve toplumsal faktörleri gözeterek, en üst ve her karar düzeyinde yönetildiği ve denetlendiği sistem.</td></tr>
+    <tr><td><b>Giriş</b></td><td>Yönetişim <small>(governance)</small></td><td>Kurumların yönlendirildiği, denetlendiği ve hesap verdiği sistem; kuralları, sistemleri, süreçleri ve davranışı tanımlar.</td></tr>
+    <tr><td><b>5.2 notu</b></td><td>Yönetim kurulu <small>(board)</small></td><td>Kurumun yönetişiminden toplu olarak sorumlu, seçilmiş ya da atanmış kişiler; önemli stratejik kararları verir ve stratejik politikayı belirler.</td></tr>
+    <tr><td><b>5.3 notu</b></td><td>Üst yönetim <small>(top management)</small></td><td>Kurumu en üst düzeyde yöneten, denetleyen ve karar veren kişi ya da kişiler grubu.</td></tr>
+    <tr><td><b>5.4</b></td><td>Operasyonel yönetim</td><td>İK yönetimi süreçlerinin işletilmesinden sorumlu, uygun kaynak ve yetkiye sahip kişiler; sorumluluk devredilse de nihai hesap verebilirlik üst yönetimde kalır.</td></tr>
+    <tr><td><b>6.3.2</b></td><td>Temel performans göstergesi (KPI)</td><td>Kurumsal ihtiyaçlara (maliyet verimliliği, yenilikçi ürünler, müşteri ilişkileri gibi) bağlı insan yönetişimi göstergesi.</td></tr>
+    <tr><td><b>6.3.2</b></td><td>Temel başarı ölçüsü</td><td>İnsan yönetişimi sürecinde kuruma özgü ölçüler: yenilik, personel devri, devamsızlık ya da müşteri ölçüleri gibi.</td></tr>
+    <tr><td><b>6.3.3 g</b></td><td>Kabul edilebilir sonuç aralığı</td><td>Her uygulamanın ölçüsü için tanımlanan, sonuçların kabul edilebilir sayıldığı değerler aralığı.</td></tr>
+    <tr><td><b>A.4</b></td><td>Değer uyumu <small>(value alignment)</small></td><td>Bir uygulamanın araç ve süreçlerinin her insan yönetişimi ilkesini güçlendirmesi, zayıflatması ya da nötr kalması.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="matris">Madde Matrisi</h2>
+<p>Aşağıdaki tablo, standardın giriş, ilke, rol, hizalama, rapor, analiz ve uygulama unsurlarının kullanıcı × bölüm × unsur türü sınıflandırmasıdır. Her "kurum şunu yapmalı" ifadesi ve her analiz sorusu ayrı bir satırdır. Kullanıcı sütunları standardın rol tanımlarına (5. madde) dayanır; bölüm sınıflandırması ve kullanıcı atamaları bu sayfanın yazarlık sınıflandırmasıdır. Filtreleri değiştirdiğinizde tablo anında daralır.</p>
+
+<div class="filters">
+  <div><label for="fUser">Kullanıcı</label>
+    <select id="fUser">
+      <option value="">Tümü</option>
+      <option value="board">Yönetim kurulu</option>
+      <option value="top">Üst yönetim</option>
+      <option value="ops">Operasyonel yönetim</option>
+      <option value="hr">İK ve insan yönetişimi işlevleri</option>
+      <option value="stk">Çalışanlar ve diğer paydaşlar</option>
+    </select></div>
+  <div><label for="fStage">Bölüm</label>
+    <select id="fStage">
+      <option value="">Tümü</option>
+      <option value="giris">Giriş, kapsam ve terimler (Giriş, 1–3)</option>
+      <option value="ilke">İlkeler (4)</option>
+      <option value="roller">Roller ve sorumluluklar (5)</option>
+      <option value="uyum">Hizalama ve iletişim (6.1–6.2)</option>
+      <option value="rapor">Raporlar ve analiz (6.3)</option>
+      <option value="uygulama">Uygulama (7)</option>
+      <option value="ek">Ek A ve B</option>
+    </select></div>
+  <div><label for="fType">Madde grubu</label>
+    <select id="fType">
+      <option value="">Tümü</option>
+      <option value="p">Giriş ve ilkeler</option>
+      <option value="c">Roller ve sorumluluklar</option>
+      <option value="s">Hizalama ve iletişim</option>
+      <option value="r">Raporlama ve analiz</option>
+      <option value="o">Uygulama ve şablonlar</option>
+    </select></div>
+  <div><label for="fRep">Unsur türü</label>
+    <select id="fRep">
+      <option value="">Tümü</option>
+      <option value="ilke">İlke ve kavram</option>
+      <option value="gerek">Gereklilik (kurum şunu yapmalı)</option>
+      <option value="soru">Analiz sorusu</option>
+      <option value="sablon">Şablon</option>
+    </select></div>
+  <div><label for="fQ">Madde adında ara</label>
+    <input type="text" id="fQ" placeholder="ör. KPI"></div>
+</div>
+
+<div class="count" id="mCount"></div>
+<table class="matrix">
+  <thead><tr>
+    <th>Madde / unsur</th>
+    <th class="rot">Yönetim kurulu</th>
+    <th class="rot">Üst yönetim</th>
+    <th class="rot">Operasyonel yönetim</th>
+    <th class="rot">İK ve insan yönetişimi</th>
+    <th class="rot">Çalışanlar ve paydaşlar</th>
+  </tr></thead>
+  <tbody id="mBody"></tbody>
+</table>
+<div class="legend">
+  <span><span class="dot p"></span> giriş ve ilkeler</span>
+  <span><span class="dot c"></span> roller ve sorumluluklar</span>
+  <span><span class="dot s"></span> hizalama ve iletişim</span>
+  <span><span class="dot r"></span> raporlama ve analiz</span>
+  <span><span class="dot o"></span> uygulama ve şablonlar</span>
+  <span><span class="tag lvl">hesaplayıcı</span> bu sayfada hesaplanabilen unsur</span>
+  <span>Hesaplayıcıya bağlı unsurlar <b>koyu</b> işaretlenmiştir.</span>
+</div>
+
+<h2 id="tablo">Öz Değerlendirme Tablosu</h2>
+<p>Standart bir uygunluk sınaması ya da puanlama yöntemi vermez; ancak madde 5–7'deki "kurum şunu yapmalı" ifadelerinin her biri uygulanıp uygulanmadığı açısından değerlendirilebilir. Her madde için kurumunuzda <b>tam uygulanan</b> ve <b>kısmen uygulanan</b> ifade sayısını girin (ifade sayıları standarttandır; 6.3.4 için ifadeler sekiz analiz sorusudur). Kapsama, kısmen uygulananı yarım sayarak bu sayfada türetilmiştir;
+<b>hedef kapsama</b> kurumca belirlenir (varsayılan %70 yalnızca örnektir). Örnek veri örnek amaçlıdır.</p>
+
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnek">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizle">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsv">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktar">Hesaplayıcıya aktar</button>
+</div>
+<div class="tblbar">
+  <span class="inline"><label for="tHedef">Hedef kapsama (%)</label><input type="number" id="tHedef" step="any" value="70"></span>
+</div>
+
+<table class="postbl">
+  <thead><tr>
+    <th style="width:60px">Madde</th><th>Konu</th>
+    <th class="num">İfade sayısı</th><th class="num">Tam uygulanan</th><th class="num">Kısmen uygulanan</th>
+    <th class="calc" style="width:90px">Kapsama (%)</th>
+    <th class="calc" style="width:170px">Durum</th>
+  </tr></thead>
+  <tbody id="pBody"></tbody>
+  <tfoot><tr>
+    <td>Toplam</td><td></td>
+    <td class="calc" id="tTop">—</td><td class="calc" id="tUyg">—</td><td class="calc" id="tKis">—</td>
+    <td class="calc" id="tKap">—</td><td class="calc" id="tDur">—</td>
+  </tr></tfoot>
+</table>
+
+<div class="cards" id="pCards"></div>
+<div class="note" id="pNot"></div>
+
+<h2 id="sonuc">Sonuç Tablosu (A.2 ve A.3)</h2>
+<p>Ek A.2 ve A.3 şablonları her işlev ya da uygulama için hedef ölçüyü, hedef değeri ve sonuçları kaydeder; 6.3.3 g kabul edilebilir bir sonuç aralığı tanımlanmasını ister. Bu tablo üçünü birleştirir: her satır için <b>hedef</b>, <b>kabul edilebilir alt ve üst sınır</b> ve <b>sonucu</b> girin; hedefe göre sapma ve aralık durumu hesaplanır. Hesaplar bu sayfada türetilmiştir; hedef ve aralıkları kurum belirler. Örnek veri örnek amaçlıdır.</p>
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnekR">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizleR">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsvR">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktarR">Hesaplayıcıya aktar</button>
+</div>
+<table class="postbl">
+  <thead><tr>
+    <th>İşlev / uygulama (ölçü)</th>
+    <th class="num">Hedef</th><th class="num">Alt sınır</th><th class="num">Üst sınır</th><th class="num">Sonuç</th>
+    <th class="calc" style="width:90px">Sapma (%)</th><th class="calc" style="width:180px">Aralık durumu</th>
+  </tr></thead>
+  <tbody id="rBody"></tbody>
+</table>
+<div class="cards" id="rCards"></div>
+<div class="note" id="rNot"></div>
+
+<h2 id="uyum">Değer Uyumu Matrisi (A.4)</h2>
+<p>Ek A.4, her araç ve sürecin her insan yönetişimi ilkesini güçlendirdiğini, zayıflattığını ya da nötr olduğunu işaretlemeyi ister (6.3.3 i). Başlıklara ilkelerinizi yazın (standart üç ilke sayar: adillik ve şeffaflık, açıklık, hesap verebilirlik), satırlara araç ya da süreçleri girin ve her hücreye değerlendirmenizi seçin. Satır, sütun ve genel <b>uyum puanı</b> (−100…+100) bu sayfada türetilmiştir; standart yalnızca üç sınıf kullanır. Örnek veri örnek amaçlıdır.</p>
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnekU">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizleU">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsvU">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktarU">Hesaplayıcıya aktar</button>
+</div>
+<table class="postbl">
+  <thead id="uHead"></thead>
+  <tbody id="uBody"></tbody>
+  <tfoot id="uFoot"></tfoot>
+</table>
+<div class="cards" id="uCards"></div>
+<div class="note" id="uNot"></div>
+
+<h2 id="formuller">Formüller ve Tanımlar</h2>
+<p>Standart hiçbir formül, ölçek ya da birim vermez; hedef, ölçü, kabul edilebilir aralık, izleme takvimi ve sonuç kavramlarını sözlü olarak tanımlar. Aşağıdaki hesaplar, bu kavramları sayıya dökmek için <b>bu sayfada türetilmiştir</b>.</p>
+<table>
+  <thead><tr><th>Hesap</th><th>Formül</th><th>Not</th></tr></thead>
+  <tbody id="fBody"></tbody>
+</table>
+
+<h2 id="hesaplayici">Hesaplayıcı</h2>
+<p>Hesabı seçin, alanları doldurun; sonuç, formülün yerine konmuş hâli ve yorum aşağıda görünür.
+Kurulum gerekmez, veriler tarayıcıdan çıkmaz.</p>
+
+<div class="panel">
+  <h3>İnsan Yönetişimi Hesaplayıcısı</h3>
+  <p class="hint">Alanlar seçtiğiniz hesaba göre değişir. Hedef, sonuç, sayı ve oranlar girilir; sonuçlar türetilmiştir ve standart eşik içermez.</p>
+  <div class="grid">
+    <div class="field" style="grid-column:1/-1">
+      <label for="cMetric">Hesap <span class="req">*</span></label>
+      <select id="cMetric"></select>
+    </div>
+  </div>
+  <div class="grid" id="cFields" style="margin-top:14px"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="oAll"> Tümünü seç</label>
+    <label><input type="checkbox" id="oFormula" checked> Formülün açık hâli</label>
+    <label><input type="checkbox" id="oInterp" checked> Yorum ve eşik</label>
+    <label><input type="checkbox" id="oPy"> Python karşılığı</label>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-run" id="btnRun">Hesapla</button>
+    <button class="btn-ghost" id="btnExample">Örnek veriyi yükle</button>
+    <button class="btn-ghost" id="btnPy">Python motorunu yükle</button>
+    <span class="chip" id="engStatus">Motor: tarayıcı (JavaScript)</span>
+  </div>
+  <p class="hint" style="margin:14px 0 0">Python motoru seçildiğinde hesaplama, bu sayfaya gömülü
+  <code style="background:#1c2836;color:#cfe0f0">iso30408_metrikler.py</code> modülünün
+  <code style="background:#1c2836;color:#cfe0f0">hesapla()</code> fonksiyonu tarafından, tarayıcı içinde
+  çalışan gerçek bir CPython yorumlayıcısında (Pyodide/WebAssembly) yapılır. İlk yüklemede yaklaşık
+  10–12 MB indirilir; sonrası önbellekten gelir. Çevrimdışıysanız sayfa JavaScript yedeğiyle
+  aynı sonuçları vermeye devam eder.</p>
+</div>
+
+<div id="cResult"></div>
+
+<h2 id="python">Python Kod Örnekleri</h2>
+<p>Bu sayfadaki hesaplamalar JavaScript'te taklit edilmez: modülün tamamı sayfaya gömülüdür ve
+Pyodide (WebAssembly üzerinde CPython) ile tarayıcı içinde çalıştırılır. Hesaplayıcıda Python motorunu
+seçtiğinizde her sonuç <code>hesapla()</code> fonksiyonundan gelir. Aynı dosya
+(<code>iso30408_metrikler.py</code>) komut satırında da bağımsız çalışır; doğrudan çalıştırıldığında
+örnek değerlerle doğrulama çıktısı üretir.</p>
+
+<div class="filename">iso30408_metrikler.py (özet)</div>
+<pre><i># --- Ölçüler (madde 5.3, 6.3.3, Ek A) ---</i>
+
+<b>def</b> <span class="fn">hedef_sapmasi</span>(hedef, sonuc):
+    <i>"""(sonuç − hedef) ÷ hedef × 100 (%)."""</i>
+    <b>return</b> <u>100</u> * (sonuc - hedef) / hedef
+
+<b>def</b> <span class="fn">aralik_sapmasi</span>(sonuc, alt, ust):
+    <i>"""Kabul edilebilir aralık dışı sapma: içindeyse 0, altında negatif, üstünde pozitif."""</i>
+    <b>if</b> sonuc &lt; alt: <b>return</b> sonuc - alt
+    <b>if</b> sonuc &gt; ust: <b>return</b> sonuc - ust
+    <b>return</b> <u>0.0</u>
+
+<b>def</b> <span class="fn">uyum_puani</span>(guclendirir, notr, zayiflatir):
+    <i>"""Değer uyumu (Ek A.4): (güçlendiren − zayıflatan) ÷ toplam × 100."""</i>
+    <b>return</b> <u>100</u> * (guclendirir - zayiflatir) / (guclendirir + notr + zayiflatir)
+
+<b>def</b> <span class="fn">kapsama</span>(toplam, uygulanan, kismen=<u>0</u>):
+    <i>"""(uygulanan + 0,5 × kısmen) ÷ toplam × 100 (%)."""</i>
+    <b>return</b> <u>100</u> * (uygulanan + <u>0.5</u> * kismen) / toplam
+</pre>
+
+<h3>Çalıştırılabilir konsol</h3>
+<p>Aşağıdaki kod, sayfaya gömülü modüle karşı çalışır. <b>Kodu çalıştır</b> düğmesi Python motorunu
+(yüklü değilse) indirir, modülü içe aktarır ve çıktıyı altta gösterir. Kodu serbestçe değiştirebilir,
+kendi verinizi yazabilirsiniz; her şey tarayıcıda kalır.</p>
+
+<div class="console">
+  <div class="console-bar">
+    <span>iso30408_metrikler modülüne karşı çalışır · Python 3 (Pyodide)</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button class="btn-run btn-sm" id="btnRunPy">Kodu çalıştır</button>
+      <button class="btn-ghost btn-sm" id="btnDemo" style="border-color:var(--line);color:var(--ink-soft)">Tam demoyu yükle</button>
+      <button class="btn-ghost btn-sm" id="btnReset" style="border-color:var(--line);color:var(--ink-soft)">Sıfırla</button>
+    </span>
+  </div>
+  <textarea id="pyCode" spellcheck="false"></textarea>
+  <pre id="pyOut">Çıktı burada görünecek. İlk çalıştırmada Python motoru indirilir (10–12 MB).</pre>
+</div>
+
+<details class="src"><summary>Gömülü modülün tam kaynağı (iso30408_metrikler.py)</summary>
+  <pre id="srcView">yükleniyor…</pre>
+</details>
+
+<h2 id="yorum">Sonuçların Yorumlanması</h2>
+<ul>
+  <li><b>Standart hiçbir sayı vermez.</b> Hedef, kabul edilebilir aralık, KPI ve başarı ölçüleri kurumun kendi ihtiyaçlarından türetilir (6.3.2). Sapma ve puanlar yalnızca kurumun kendi başlangıç değerleriyle ve zaman içindeki eğilimle anlam kazanır.</li>
+  <li><b>Hedefin yönünü belirleyin.</b> Gönüllü ayrılmada hedefin altı iyi olabilir, eğitim saatinde hedefin altı kötü olabilir; sapmanın işareti tek başına yorumlanmaz. Kabul edilebilir aralık bu yüzden her ölçü için ayrıca tanımlanır (6.3.3 g).</li>
+  <li><b>Önemli sapma için eşik kurum belirler.</b> 5.3 f önemli sapmalarda plan ve raporlama prosedürü ister ama "önemli"yi tanımlamaz; aralık dışı her sonucu otomatik önemli saymayın, ölçünün iş etkisini değerlendirin.</li>
+  <li><b>Araçlar ilkeleri zayıflatabilir.</b> Değer uyumu matrisinde bir ilkeyi zayıflatan araç (örn. gizli ücret politikası, şeffaflık ilkesine karşı) iyi niyetle kurulmuş olsa bile düzeltilmeli ya da ilkenin nasıl iletileceği gözden geçirilmelidir (6.3.3 i, k).</li>
+  <li><b>Algıyı da ölçün.</b> Sekizinci analiz sorusu, çalışanların ve müşterilerin kurumun ilan ettiği ilkeleri teslim ettiğini düşünüp düşünmediğini sorar; tasarım ile algı arasındaki fark, ilkenin iletilmediğini ya da uygulanmadığını gösterebilir.</li>
+  <li><b>Hedefler birbirini tamamlamalı.</b> Çatışan işlevsel hedefler (ör. maliyet düşürme ile eğitim yatırımı) analiz sorularında (c, f) açıkça sorulur; bağlantı oranı yüksek olsa da çatışmaları ayrıca inceleyin.</li>
+  <li><b>Sistem ancak hesap verebilirlik varsa işler.</b> Operasyon devredilse de nihai hesap verebilirlik üst yönetimdedir (5.4.3); yönetim kurulu sistemi yönetmekten sorumludur (5.2). Kapsama puanı bu rollerin üstlenildiğinin kanıtı değildir.</li>
+  <li><b>Kapsama bir uygunluk puanı değildir.</b> Kapsama yüzdesi, rehber ifadelerinin ne kadarının uygulandığını gösterir; hangi ifadelerin kurumunuza uygulanabilir olduğunu siz belirlersiniz.</li>
+</ul>
+
+<h2 id="sinirlamalar">Sınırlamalar</h2>
+<ul>
+  <li><b>Standart ölçü, formül, eşik ya da hedef vermez.</b> Tüm sapma, aralık, uyum puanı, bağlantı, algı, izleme, katılım ve kapsama hesapları bu sayfada türetilmiştir. Standart yalnızca KPI ve ölçü örneklerini anar (maliyet verimliliği, yenilik, personel devri, devamsızlık, müşteri) ve nasıl hesaplanacaklarını söylemez.</li>
+  <li><b>İlke sayısı tutarsızdır.</b> Madde 4 üç ilke sayar ("içerebilir"), A.4 şablonu üç ilke sütunu içerir; ancak A.1 şablonu "insan yönetişimi ilkeleri" için dört satır bırakır. Ayrıca 4 a "adillik ve şeffaflık"ı tek ilke sayarken 4 b "açıklık"ı ayrı sayar; şeffaflık ile açıklık kavramsal olarak örtüşür.</li>
+  <li><b>Kabul edilebilir aralık için şablonda alan yoktur.</b> 6.3.3 g her uygulama için kabul edilebilir sonuç aralığı tanımlanmasını ister; fakat A.2 ve A.3 şablonlarında yalnızca "hedef", "izleme takvimi" ve "sonuçlar" alanları vardır. Bu sayfanın sonuç tablosu aralığı ayrı alan olarak ekler.</li>
+  <li><b>5.4.2'nin öznesi belirsizdir.</b> 5.4.1 "operasyonel yönetim işlevleri yapmalı" der; 5.4.2 ise "insan yönetişimi şunu sağlamalı" biçiminde bir sistemi özne yapar. Kimin hesap verdiği, 5.4.3'teki üst yönetimin nihai hesap verebilirliği ile birlikte okunmalıdır.</li>
+  <li><b>Üst yönetim ifadeleri iki yerde geçer.</b> 5.3 (a–g) ve 5.4.3'te üst yönetimin yapması gerekenler ayrı ayrı sayılır; bazıları örtüşür (insanların ilke ve rolleri anlaması, katılımın teşviki ve izlenmesi). Bu sayfa her ikisini ayrı ifade olarak sayar (7 + 3).</li>
+  <li><b>6.2 ve 5.4.3'te farklı belgelenmiş bilgi.</b> 6.2 ilke ve kararların; 5.4.3 insan yönetişimi stratejileri ve sonuçlarının belgelenmiş bilgi olarak saklanmasını ister. İkisi aynı belge kümesi midir, ayrı mıdır, standart belirtmez.</li>
+  <li><b>Kapsam dışı konular.</b> Sendikalar ve diğer temsilci organlarla ilişkiler (madde 1) ele alınmaz; çalışan sesi için ISO 30415'e bakılabilir.</li>
+  <li><b>Şekil ve sayımlar bu sayfaya aittir.</b> Standart şekil içermez; Şekil 1 bu sayfaya özgü bir akıştır. Madde sayıları (57 ifade, 8 analiz sorusu, 9 adım) standardın maddeleri sayılarak bu sayfada hesaplanmıştır; matristeki kullanıcı ve bölüm atamaları yazarlık yorumudur. Tabloların örnek verisi ve %70 hedefi örnek amaçlıdır.</li>
+</ul>
+
+<h2 id="raporlama">Çıktıların İletilmesi</h2>
+<table>
+  <thead><tr><th>Alıcı</th><th>Ne görmek ister</th><th>Biçim</th></tr></thead>
+  <tbody>
+    <tr><td>Yönetim kurulu</td>
+      <td>İnsan yönetişimi sisteminin durumu, kurumsal ihtiyaçlarla hizası, önemli sapmalar, alınan eylemler, uzun vadeli değere katkı (5.2, 6.2)</td>
+      <td>Kısa özet rapor, dönemsel</td></tr>
+    <tr><td>Üst yönetim</td>
+      <td>KPI sonuçları, kabul edilebilir aralık durumu, A.2 ve A.3 raporları, sapma planları, analiz soruları ve boşluklar (5.3, 6.3)</td>
+      <td>Rapor şablonları (Ek A, B), düzenli gözden geçirme</td></tr>
+    <tr><td>Operasyonel yönetim ve İK işlevleri</td>
+      <td>İşlev ve uygulama hedefleri, ölçüler, değer uyumu matrisi, araç ve süreç değişiklikleri (5.4, 6.3.3)</td>
+      <td>Ayrıntılı işlev ve uygulama raporları (A.3, B.2)</td></tr>
+    <tr><td>Çalışanlar ve diğer paydaşlar</td>
+      <td>Değer, misyon ve vizyon bildirimleri (insan yönetişimi ilkeleriyle) ve özet rapor; geri bildirim kanalları (6.2)</td>
+      <td>Duyuru ve özet rapor; talep üzerine erişilebilir belgelenmiş bilgi</td></tr>
+  </tbody>
+</table>
+<p><b>Her insan yönetişimi raporunda bulunması gerekenler:</b> kurumun ihtiyaçları (vizyon, değer, misyon, strateji, KPI'lar ve başarı ölçüleri); organizasyon şeması ve raporlama ilişkileri; işlev, uygulama ve süreçlerin hedefleri, ölçüleri ve kabul edilebilir aralıkları; araç ve süreçlerin ilkelere etkisi; analiz sonuçları ve boşluklar; eylem adımları ve izleme takvimi.</p>
+
+<h2 id="ilgili">İlgili Standartlar</h2>
+<ul>
+  <li><b>ISO 30400</b> — insan kaynakları yönetimi terimler sözlüğü; tek normatif atıf ve tek kaynakça kaydı.</li>
+  <li><b>ISO 30415</b> — çeşitlilik ve kapsayıcılık; ISO 30415 insan yönetişimi için ISO 30408'e atıf yapar (standartta anılmaz; bu sayfa ilişkilendirir).</li>
+  <li><b>ISO 30414</b> — insan sermayesi raporlaması; raporlama içeriği bakımından tamamlayıcıdır (standartta anılmaz).</li>
+  <li><b>ISO 30409</b> — işgücü planlaması; kurumsal ihtiyaçların işgücü hedeflerine çevrilmesi (standartta anılmaz).</li>
+</ul>
+
+<h2 id="sss">Sıkça Sorulan Sorular</h2>
+<details><summary>İnsan yönetişimi nedir?</summary>
+<p>Kurumun, paydaşlarını ve insani ve toplumsal faktörleri gözeterek, en üst ve her karar düzeyinde yönetildiği ve denetlendiği sistemdir (3.1). Kurumdaki insanların nasıl yönlendirildiğini ve hesap verdiğini tanımlar.</p></details>
+
+<details><summary>Yönetim kurulu ne yapmalı?</summary>
+<p>İnsanın paydaşlara değer sunmadaki rolünü anlamalı, etkin insan yönetişimini teşvik etmek için resmî taahhütte bulunmalı, sistemi yönetmekten hesap verebilir olmalı ve durum güncellemelerini izleyip uygun eylem almalıdır (5.2).</p></details>
+
+<details><summary>Üst yönetim ile operasyonel yönetim arasındaki fark nedir?</summary>
+<p>Üst yönetim KPI'ları belirler, sonuçları gözden geçirir, sapma planı geliştirir ve nihai hesap verebilirliği taşır. Operasyonel yönetim, hedef ve ölçülerin tanımına katılır, ilkeleri performans hedeflerine entegre eder ve İK süreçlerini işletir; sorumluluk devredilse de nihai hesap verebilirlik üst yönetimde kalır (5.3, 5.4).</p></details>
+
+<details><summary>Rapor neleri içermeli?</summary>
+<p>Kurumun ihtiyaçları (vizyon, değer, misyon, strateji ve KPI'lar), insan yönetişimi işlev, uygulama ve süreçleri ve analiz bölümlerini (6.3). Üst yönetim için kısa ve daha az ayrıntılı rapor üretilebilir; roller için kapsamlı analiz yer alır (6.2).</p></details>
+
+<details><summary>Kabul edilebilir sonuç aralığı ne demektir?</summary>
+<p>Her uygulamanın ölçüsü için sonuçların kabul edilebilir sayıldığı değer aralığıdır (6.3.3 g). Standart aralıkları belirlemez; kurum belirler. Sonucun aralık dışına çıkması önemli sapmaysa üst yönetim eksiklikleri gidermek için plan ve raporlama prosedürü geliştirmelidir (5.3 f).</p></details>
+
+<details><summary>Değer uyumu şablonu (A.4) ne işe yarar?</summary>
+<p>Bir uygulamanın araç ve süreçlerinin her insan yönetişimi ilkesini güçlendirdiğini, zayıflattığını ya da nötr olduğunu gösterir. İlkeyi zayıflatan araçlar yeniden tasarlanabilir ya da ilkenin iletilmesi için düzeltici eylem alınabilir (6.3.3 i, k).</p></details>
+
+<details><summary>Standardı sertifikalandırabilir miyim?</summary>
+<p>Hayır; standart bir rehberdir. Uygunluk sınaması ya da denetim ölçütü içermez, yalnızca "kurum şunu yapmalı" biçiminde yönlendirme verir. Bu sayfadaki kapsama puanı bir uygunluk sonucu değildir.</p></details>
+
+<details><summary>Küçük kurumlar için nasıl uygulanır?</summary>
+<p>Standart her büyüklükteki kuruma uygulanabilir. Yönetim katmanı olmayan kurumlarda yönergeler nihai karar sorumluluğu olanlara uygulanır (5.1). Şablonlar ve sekiz analiz sorusu küçük kurumlar için de kullanılabilir.</p></details>
+
+<footer>
+  ISO 30408:2016 çerçevesinden üretilmiş çalışma aracı. İlkeler, roller, adımlar ve kavramlar standarda dayanır; açıklamalar, örnek değerler, oranlar ve kod özgün olarak yazılmıştır. Standardın kendisi telif korumalıdır ve bu sayfa onun yerine geçmez.
+</footer>
+
+</div>
+
+<script type="text/x-python" id="pysrc">
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+iso30408_metrikler.py
+=====================
+BS ISO 30408:2016 (Human resource management — Guidelines on human governance)
+çerçevesindeki insan yönetişimi raporlama ve değerlendirme kavramlarının Python karşılığı.
+
+Standart bir rehberdir: formül ya da eşik vermez. Hedef, ölçü, izleme takvimi, sonuç
+ve "kabul edilebilir sonuç aralığı" (6.3.3 g) kavramlarını; Ek A'da hedef/sonuç ve
+değer uyumu (ilkeyi güçlendirir, zayıflatır ya da nötr) şablonlarını verir. Bu modüldeki
+tüm hesaplar bu kavramları sayıya dökmek için TÜRETİLMİŞTİR. Modül üç bölüme ayrılmıştır:
+
+    1) Ölçüler  — hedef sapması, kabul edilebilir aralık, değer uyum puanı, oranlar, kapsama
+    2) Yapılar  — öz değerlendirme tablosu, sonuç tablosu (A.2/A.3), değer uyumu (A.4), uygulama denetimi
+    3) Dağıtıcı — hesaplayıcının kullandığı tek giriş noktası
+
+Kullanım:
+    from iso30408_metrikler import hedef_sapmasi, aralik_sapmasi
+    hedef_sapmasi(100, 92)         ->  -8.0
+    aralik_sapmasi(92, 95, 110)    ->  -3.0
+
+Doğrudan çalıştırıldığında (python3 iso30408_metrikler.py) tüm fonksiyonlar
+örnek verilerle çalıştırılır ve sonuçlar tablo hâlinde yazdırılır.
+
+Not: Kavramlar ISO 30408:2016'ya dayanır. Oranlar, sapma ve puanlama kuralları bu
+modülde türetilmiştir. Kod ve açıklamalar özgün olarak yazılmıştır; standardın kendisi
+telif korumalıdır.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+__all__ = [
+    "GecersizGirdi", "ALANLAR", "UYGULAMA_ADIMLARI",
+    "hedef_sapmasi", "aralik_sapmasi", "uyum_puani", "baglanti_orani", "algi_orani",
+    "izleme_orani", "katilim_orani", "kapsama",
+    "Alan", "OzDegerlendirme", "ornek_tablo", "SonucSatiri", "SonucTablosu", "ornek_sonuclar",
+    "UyumMatrisi", "ornek_uyum", "uygulama_denetimi", "hesapla", "METRIK_LISTESI",
+]
+
+
+class GecersizGirdi(ValueError):
+    """Girdiler tutarsız: payda sıfır, negatif değer, aralık ters vb."""
+
+
+# Her madde için "kurum şunu yapmalı" ifadelerinin sayısı (6.3.4 için son analiz soruları)
+ALANLAR = [
+    ("5.2", "Yönetim kurulu", 4),
+    ("5.3", "Üst yönetim", 7),
+    ("5.4.1", "Operasyonel yönetim işlevleri", 3),
+    ("5.4.2", "İnsan yönetişimi güvenceleri", 4),
+    ("5.4.3", "Üst yönetimin nihai hesap verebilirliği", 3),
+    ("6.1", "Yönetişimi ihtiyaçlara hizalama", 4),
+    ("6.2", "İletişim", 4),
+    ("6.3.3", "İşlev, uygulama ve süreçlerin belirlenmesi", 11),
+    ("6.3.4", "Analiz soruları", 8),
+    ("7", "Uygulama adımları", 9),
+]
+
+# Madde 7: kurulum için dokuz temel adım (a–i)
+UYGULAMA_ADIMLARI = {
+    "a": "İlkeleri tanımla ve kuruma uygunluğunu doğrula",
+    "b": "İnsan yönetişimi çerçevesi geliştir",
+    "c": "Hedefleri iş planıyla hizala",
+    "d": "İlişkili proje ve girişimleri belirle ve hizala",
+    "e": "İlkeleri tüm kurumsal iletişime entegre et",
+    "f": "İK işlev, uygulama ve süreçlerini ilkelerle hizalamak için gözden geçir",
+    "g": "Her düzeyde etkin katılımı teşvik et",
+    "h": "İlkelerin uygulanmasını ve izlenmesini tanımlı ölçülerle sağla",
+    "i": "İlkeleri performans, kültür ve faaliyetlere nasıl entegre edeceğini netleştir",
+}
+
+
+def _bol(pay: float, payda: float, ad: str = "payda") -> float:
+    if payda <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return pay / payda
+
+
+def _negatif_yok(**degerler: float) -> None:
+    for ad, v in degerler.items():
+        if v < 0:
+            raise GecersizGirdi(f"{ad} negatif olamaz")
+
+
+# ---------------------------------------------------------------------------
+# 1) Ölçüler (madde 5.3, 6.3.3, 6.3.4, Ek A)
+# ---------------------------------------------------------------------------
+
+def hedef_sapmasi(hedef: float, sonuc: float) -> float:
+    """Hedefe göre sapma (%): (sonuç − hedef) ÷ hedef × 100."""
+    _negatif_yok(sonuc=sonuc)
+    return 100 * _bol(sonuc - hedef, hedef, "hedef")
+
+
+def aralik_sapmasi(sonuc: float, alt: float, ust: float) -> float:
+    """Sonucun kabul edilebilir aralığın dışına çıkma miktarı: içindeyse 0, altında negatif, üstünde pozitif."""
+    if alt > ust:
+        raise GecersizGirdi("alt sınır üst sınırdan büyük olamaz")
+    _negatif_yok(sonuc=sonuc, alt=alt)
+    if sonuc < alt:
+        return sonuc - alt
+    if sonuc > ust:
+        return sonuc - ust
+    return 0.0
+
+
+def uyum_puani(guclendirir: float, notr: float, zayiflatir: float) -> float:
+    """Değer uyum puanı (−100…+100): (güçlendiren − zayıflatan) ÷ toplam × 100."""
+    _negatif_yok(guclendirir=guclendirir, notr=notr, zayiflatir=zayiflatir)
+    return 100 * _bol(guclendirir - zayiflatir, guclendirir + notr + zayiflatir, "toplam değerlendirme")
+
+
+def _oran(parca: float, butun: float, ad: str, ad_butun: str) -> float:
+    _negatif_yok(**{ad: parca})
+    if parca > butun:
+        raise GecersizGirdi(f"{ad} {ad_butun} sayısını aşamaz")
+    return 100 * _bol(parca, butun, ad_butun)
+
+
+def baglanti_orani(bagli: float, toplam: float) -> float:
+    """Kurumsal hedefe ya da KPI'ya bağlı hedef/ölçü oranı (%): bağlı ÷ toplam × 100."""
+    return _oran(bagli, toplam, "bagli", "toplam")
+
+
+def algi_orani(olumlu: float, yanit: float) -> float:
+    """Çalışan ve müşterilerin ilkelerin hayata geçirildiğini düşünme oranı (%)."""
+    return _oran(olumlu, yanit, "olumlu", "yanit")
+
+
+def izleme_orani(tamamlanan: float, planlanan: float) -> float:
+    """İzleme takvimine uyum (%): tamamlanan gözden geçirme ÷ planlanan × 100."""
+    return _oran(tamamlanan, planlanan, "tamamlanan", "planlanan")
+
+
+def katilim_orani(katilan: float, hedef_kitle: float) -> float:
+    """Paydaş katılım oranı (%): katılan ÷ hedef kitle × 100."""
+    return _oran(katilan, hedef_kitle, "katilan", "hedef_kitle")
+
+
+def kapsama(toplam: float, uygulanan: float, kismen: float = 0) -> float:
+    """İfadelerin uygulama kapsaması (%): (uygulanan + 0,5 × kısmen) ÷ toplam × 100."""
+    _negatif_yok(uygulanan=uygulanan, kismen=kismen)
+    if uygulanan + kismen > toplam:
+        raise GecersizGirdi("uygulanan ve kısmen uygulanan toplamı ifade sayısını aşamaz")
+    return 100 * _bol(uygulanan + 0.5 * kismen, toplam, "ifade sayısı")
+
+
+# ---------------------------------------------------------------------------
+# 2) Yapılar
+# ---------------------------------------------------------------------------
+
+@dataclass
+class Alan:
+    """Öz değerlendirme tablosunda bir madde."""
+    kod: str
+    ad: str
+    toplam: int
+    uygulanan: float = 0
+    kismen: float = 0
+
+    def kapsama(self) -> float:
+        return kapsama(self.toplam, self.uygulanan, self.kismen)
+
+
+@dataclass
+class OzDegerlendirme:
+    """Madde 5–7 öz değerlendirme tablosu. Hedef kapsama kurumca belirlenir (varsayılan %70)."""
+    alanlar: list = field(default_factory=lambda: [Alan(k, a, n) for k, a, n in ALANLAR])
+    hedef: float = 70.0
+
+    def gir(self, kod: str, uygulanan: float, kismen: float = 0) -> "OzDegerlendirme":
+        for a in self.alanlar:
+            if a.kod == kod:
+                a.uygulanan, a.kismen = uygulanan, kismen
+                a.kapsama()  # doğrulama
+                return self
+        raise GecersizGirdi(f"bilinmeyen madde: {kod}")
+
+    def ozet(self) -> dict:
+        toplam = sum(a.toplam for a in self.alanlar)
+        uyg = sum(a.uygulanan for a in self.alanlar)
+        kis = sum(a.kismen for a in self.alanlar)
+        oranlar = [(a.kapsama(), a.kod) for a in self.alanlar]
+        en_zayif = oranlar[0]
+        for o in oranlar[1:]:
+            if o[0] < en_zayif[0]:
+                en_zayif = o
+        return {
+            "alan_sayisi": len(self.alanlar),
+            "toplam_ifade": toplam,
+            "genel_kapsama": round(kapsama(toplam, uyg, kis), 1),
+            "hedef_alti": [k for o, k in oranlar if o < self.hedef],
+            "en_zayif": en_zayif[1],
+        }
+
+
+def ornek_tablo() -> OzDegerlendirme:
+    """Örnek amaçlı doldurulmuş tablo (standart bu sayıları vermez)."""
+    t = OzDegerlendirme()
+    for kod, u, k in [("5.2", 3, 1), ("5.3", 4, 2), ("5.4.1", 2, 1), ("5.4.2", 2, 1), ("5.4.3", 2, 1),
+                      ("6.1", 3, 1), ("6.2", 2, 1), ("6.3.3", 6, 3), ("6.3.4", 4, 2), ("7", 5, 2)]:
+        t.gir(kod, u, k)
+    return t
+
+
+@dataclass
+class SonucSatiri:
+    """Ek A.2/A.3 şablonu: bir işlev ya da uygulama için hedef, kabul edilebilir aralık ve sonuç."""
+    ad: str
+    hedef: float
+    alt: float
+    ust: float
+    sonuc: float
+
+    def sapma(self) -> float:
+        return hedef_sapmasi(self.hedef, self.sonuc)
+
+    def durum(self) -> str:
+        d = aralik_sapmasi(self.sonuc, self.alt, self.ust)
+        return "aralık içinde" if d == 0 else ("aralığın altında" if d < 0 else "aralığın üstünde")
+
+
+@dataclass
+class SonucTablosu:
+    satirlar: list = field(default_factory=list)
+
+    def ekle(self, ad, hedef, alt, ust, sonuc) -> "SonucTablosu":
+        self.satirlar.append(SonucSatiri(ad, hedef, alt, ust, sonuc))
+        return self
+
+    def ozet(self) -> dict:
+        durumlar = {s.ad: s.durum() for s in self.satirlar}
+        disinda = [ad for ad, d in durumlar.items() if d != "aralık içinde"]
+        return {"satir_sayisi": len(self.satirlar), "durumlar": durumlar, "aralik_disinda": disinda}
+
+
+def ornek_sonuclar() -> SonucTablosu:
+    """Örnek amaçlı üç ölçü (standart bu sayıları vermez)."""
+    t = SonucTablosu()
+    t.ekle("Gönüllü ayrılma (%)", 8, 5, 10, 11.5)
+    t.ekle("Devamsızlık (%)", 3, 2, 4, 3.2)
+    t.ekle("Eğitim saati / çalışan", 24, 20, 40, 18)
+    return t
+
+
+@dataclass
+class UyumMatrisi:
+    """Ek A.4: her araç ve süreç, her ilkeyi güçlendirir (+1), nötrdür (0) ya da zayıflatır (−1)."""
+    ilkeler: list
+    satirlar: dict = field(default_factory=dict)
+
+    def ekle(self, ad: str, degerler: list) -> "UyumMatrisi":
+        if len(degerler) != len(self.ilkeler):
+            raise GecersizGirdi("her ilke için bir değer gerekir")
+        for v in degerler:
+            if v not in (-1, 0, 1):
+                raise GecersizGirdi("değerler -1, 0 ya da +1 olmalı")
+        self.satirlar[ad] = degerler
+        return self
+
+    def ozet(self) -> dict:
+        n = len(self.ilkeler)
+        arac = {ad: round(100 * sum(v) / n, 1) for ad, v in self.satirlar.items()}
+        ilke = {}
+        for j, ad in enumerate(self.ilkeler):
+            sutun = [v[j] for v in self.satirlar.values()]
+            ilke[ad] = round(100 * sum(sutun) / len(sutun), 1)
+        zayiflatan = [ad for ad, v in self.satirlar.items() if -1 in v]
+        return {"arac_puani": arac, "ilke_puani": ilke, "zayiflatan_arac": zayiflatan}
+
+
+def ornek_uyum() -> UyumMatrisi:
+    """Örnek amaçlı matris: üç ilke (adillik, açıklık, hesap verebilirlik) ve üç araç."""
+    m = UyumMatrisi(["Adillik ve şeffaflık", "Açıklık", "Hesap verebilirlik"])
+    m.ekle("Performans değerlendirme formu", [1, 0, 1])
+    m.ekle("Yıllık çalışan anketi", [0, 1, 1])
+    m.ekle("Gizli ücret politikası", [-1, -1, 0])
+    return m
+
+
+def uygulama_denetimi(**adimlar: bool) -> list:
+    """Madde 7'nin dokuz adımına göre eksikleri listeler (a–i; verilmeyen adım yapılmamış sayılır)."""
+    for k in adimlar:
+        if k not in UYGULAMA_ADIMLARI:
+            raise GecersizGirdi(f"bilinmeyen adım: {k}")
+    return [f"{k}) {metin}" for k, metin in UYGULAMA_ADIMLARI.items() if not adimlar.get(k, False)]
+
+
+# ---------------------------------------------------------------------------
+# 3) Dağıtıcı: hesaplayıcı arayüzünün kullandığı tek giriş noktası
+# ---------------------------------------------------------------------------
+
+METRIK_LISTESI = ["sapma", "aralik", "uyum", "baglanti", "algi", "izleme", "katilim", "kapsama"]
+
+
+def _g(x) -> str:
+    """Sayıyı, bilimsel gösterim kullanmadan en kısa biçimde yazar."""
+    return f"{x:.12g}"
+
+
+def hesapla(metrik: str, **g) -> dict:
+    """Metrik kimliği ve girdilerle hesabı yapar; sözlük döndürür.
+
+    Dönen anahtarlar: deger, ifade (formülün yerine konmuş hâli), ondalik,
+    birim, ayrinti (etiket–değer çiftleri).
+    """
+    if metrik == "sapma":
+        d = hedef_sapmasi(g["hedef"], g["sonuc"])
+        return {"deger": d, "ondalik": 1, "birim": "% (hedefe göre sapma)",
+                "ifade": f"({_g(g['sonuc'])} − {_g(g['hedef'])}) ÷ {_g(g['hedef'])} × 100",
+                "ayrinti": [["Mutlak sapma", round(g["sonuc"] - g["hedef"], 2)],
+                            ["Hedefin yüzdesi olarak (%)", round(100 * g["sonuc"] / g["hedef"], 1)]]}
+
+    if metrik == "aralik":
+        d = aralik_sapmasi(g["sonuc"], g["alt"], g["ust"])
+        durum = "aralık içinde" if d == 0 else ("aralığın altında" if d < 0 else "aralığın üstünde")
+        return {"deger": d, "ondalik": 1, "birim": "birim (aralık dışı sapma)",
+                "ifade": f"{_g(g['sonuc'])} ile [{_g(g['alt'])}, {_g(g['ust'])}] aralığı",
+                "ayrinti": [["Durum", durum],
+                            ["Aralık genişliği", round(g["ust"] - g["alt"], 2)]]}
+
+    if metrik == "uyum":
+        d = uyum_puani(g["guclendirir"], g["notr"], g["zayiflatir"])
+        return {"deger": d, "ondalik": 1, "birim": "puan (−100…+100)",
+                "ifade": f"({_g(g['guclendirir'])} − {_g(g['zayiflatir'])}) ÷ ({_g(g['guclendirir'])} + {_g(g['notr'])} + {_g(g['zayiflatir'])}) × 100",
+                "ayrinti": [["Toplam değerlendirme", round(g["guclendirir"] + g["notr"] + g["zayiflatir"], 2)],
+                            ["Zayıflatanların payı (%)", round(100 * g["zayiflatir"] / (g["guclendirir"] + g["notr"] + g["zayiflatir"]), 1)]]}
+
+    if metrik == "baglanti":
+        d = baglanti_orani(g["bagli"], g["toplam"])
+        return {"deger": d, "ondalik": 1, "birim": "% (bağlı ÷ toplam)",
+                "ifade": f"{_g(g['bagli'])} ÷ {_g(g['toplam'])} × 100",
+                "ayrinti": [["Bağlantısı olmayan", round(g["toplam"] - g["bagli"], 2)]]}
+
+    if metrik == "algi":
+        d = algi_orani(g["olumlu"], g["yanit"])
+        return {"deger": d, "ondalik": 1, "birim": "% (olumlu ÷ yanıt)",
+                "ifade": f"{_g(g['olumlu'])} ÷ {_g(g['yanit'])} × 100",
+                "ayrinti": [["Olumlu olmayan yanıt", round(g["yanit"] - g["olumlu"], 2)],
+                            ["Olumlu olmayanların payı (%)", round(100 - d, 1)]]}
+
+    if metrik == "izleme":
+        d = izleme_orani(g["tamamlanan"], g["planlanan"])
+        return {"deger": d, "ondalik": 1, "birim": "% (tamamlanan ÷ planlanan)",
+                "ifade": f"{_g(g['tamamlanan'])} ÷ {_g(g['planlanan'])} × 100",
+                "ayrinti": [["Geciken gözden geçirme", round(g["planlanan"] - g["tamamlanan"], 2)]]}
+
+    if metrik == "katilim":
+        d = katilim_orani(g["katilan"], g["hedef_kitle"])
+        return {"deger": d, "ondalik": 1, "birim": "% (katılan ÷ hedef kitle)",
+                "ifade": f"{_g(g['katilan'])} ÷ {_g(g['hedef_kitle'])} × 100",
+                "ayrinti": [["Katılmayan", round(g["hedef_kitle"] - g["katilan"], 2)]]}
+
+    if metrik == "kapsama":
+        d = kapsama(g["toplam"], g["uygulanan"], g["kismen"])
+        return {"deger": d, "ondalik": 1, "birim": "% (kapsama)",
+                "ifade": f"({_g(g['uygulanan'])} + 0,5 × {_g(g['kismen'])}) ÷ {_g(g['toplam'])} × 100",
+                "ayrinti": [["Hiç uygulanmayan ifade", round(g["toplam"] - g["uygulanan"] - g["kismen"], 2)],
+                            ["Yalnızca tam uygulananların payı (%)", round(100 * g["uygulanan"] / g["toplam"], 1)]]}
+
+    raise ValueError(f"Bilinmeyen metrik: {metrik}")
+
+
+# ---------------------------------------------------------------------------
+# 4) Doğrulama çıktısı
+# ---------------------------------------------------------------------------
+
+def _demo() -> None:
+    cizgi = "-" * 64
+    print("ISO 30408 — doğrulama çıktısı")
+    print(cizgi)
+    print(f"Hedef sapması (100→92)   : {hedef_sapmasi(100, 92):+.1f} %")
+    print(f"Aralık (92 / 95–110)     : {aralik_sapmasi(92, 95, 110):+.1f}")
+    print(f"Uyum puanı (5,3,2)       : {uyum_puani(5, 3, 2):+.1f}")
+    print(f"Bağlantı (6/8)           : %{baglanti_orani(6, 8):.1f}")
+    print(f"Algı (310/420)           : %{algi_orani(310, 420):.1f}")
+    print(f"İzleme (9/12)            : %{izleme_orani(9, 12):.1f}")
+    print(f"Kapsama (11, 6, 3)       : %{kapsama(11, 6, 3):.1f}")
+    print(cizgi)
+
+    for anahtar, deger in ornek_tablo().ozet().items():
+        print(f"{anahtar:<14}: {deger}")
+    print(cizgi)
+    print(ornek_sonuclar().ozet())
+    print(ornek_uyum().ozet())
+    print(cizgi)
+
+    print("Dağıtıcı örneği:")
+    print(hesapla("sapma", hedef=100, sonuc=92))
+    print(cizgi)
+
+    print("Uygulama denetimi (yalnızca a, b ve c yapılmış):")
+    for u in uygulama_denetimi(a=True, b=True, c=True):
+        print(" !", u)
+
+
+if __name__ == "__main__":
+    _demo()
+</script>
+<script>
+/* =========================================================
+   1) MADDE VERİ TABANI
+   u: kullanıcılar (board yönetim kurulu / top üst yönetim / ops operasyonel yönetim /
+      hr İK ve insan yönetişimi işlevleri / stk çalışanlar ve diğer paydaşlar)
+   st: bölüm (giris, ilke, roller, uyum, rapor, uygulama, ek)
+   r: unsur türü (ilke, gerek "kurum şunu yapmalı", soru, sablon)
+   t: aile (p giriş ve ilkeler / c roller ve sorumluluklar / s hizalama ve iletişim / r raporlama ve analiz / o uygulama ve ekler)
+   calc: bu sayfadaki hesaplayıcı kimliği
+   k: ek etiket (ctx bağlam, tur türetilmiş)
+   ========================================================= */
+var METRICS = [
+ {g:"Giriş, kapsam ve ilkeler (Giriş, madde 1–4)", t:"p", items:[
+  {n:"Giriş: insanlar kurumun merkezindedir", st:"giris", r:["ilke"], d:"Uzun vadeli sürdürülebilir başarı için yönetişim sistemindeki tüm paydaşlar dikkate alınır", u:["board", "top", "ops", "hr", "stk"]},
+  {n:"Giriş: yönetişim sistemi", st:"giris", r:["ilke"], d:"Kurumun yönetildiği, denetlendiği ve hesap verdiği sistem; kuralları, sistemleri, süreçleri ve davranışı tanımlar", u:["board", "top", "hr"]},
+  {n:"Giriş: insan yönetişimi", st:"giris", r:["ilke"], d:"Kurumdaki insanların yönetildiği ve hesap verdiği sistem; insani ve toplumsal faktörleri karar sürecine katar", u:["board", "top", "hr", "stk"]},
+  {n:"Giriş: yönetişim ve stratejik planlamanın hizalanması", st:"giris", r:["ilke"], d:"Kurumsal, mevzuat ve operasyonel ihtiyaçlara yanıt, İK risklerini öngörme, maliyet ve değer yönetimi, kültür, iletişim ve iş birliği, genel performans", u:["board", "top", "hr"]},
+  {n:"Giriş: amaç", st:"giris", r:["ilke"], d:"İnsan yönetişimi sistemini yapılandırmak ve kurumun ihtiyaçlarına hizalamak için rehberlik", u:["top", "hr"]},
+  {n:"Kapsam: araçlar, süreçler ve uygulamalar (1)", st:"giris", r:["ilke"], d:"Etkin insan yönetişimini kurma, sürdürme ve sürekli iyileştirme için araç, süreç ve uygulamalar", u:["top", "hr"]},
+  {n:"Kapsam: tüm kurumlar (1)", st:"giris", r:["ilke"], d:"Her büyüklük ve sektör; kamu ya da özel, kâr amaçlı ya da kâr amacı gütmeyen", u:["board", "top", "hr"]},
+  {n:"Kapsam dışı: sendikalar ve temsilci organlar (1)", st:"giris", r:["ilke"], k:"ctx", d:"Sendikalarla ya da diğer temsilci organlarla ilişkiler ele alınmaz", u:["hr", "stk"]},
+  {n:"Normatif atıf yok (2)", st:"giris", r:["ilke"], k:"ctx", d:"Standartta normatif atıf yoktur; terimler için ISO 30400 kullanılır", u:["hr"]},
+  {n:"Terim: insan yönetişimi (3.1)", st:"giris", r:["ilke"], d:"Kurumun, paydaşlarını ve insani ve toplumsal faktörleri gözeterek, en üst ve her karar düzeyinde yönetildiği ve denetlendiği sistem", u:["board", "top", "hr", "stk"]},
+  {n:"İlke: adillik ve şeffaflık (4 a)", st:"ilke", r:["ilke"], calc:"uyum", d:"Kurumsal süreç ve uygulamaların tasarımında ve sonuçlarında", u:["board", "top", "ops", "hr", "stk"]},
+  {n:"İlke: açıklık (4 b)", st:"ilke", r:["ilke"], calc:"uyum", d:"Kurumsal süreç, uygulama ve sonuçlarda açıklık", u:["board", "top", "ops", "hr", "stk"]},
+  {n:"İlke: hesap verebilirlik (4 c)", st:"ilke", r:["ilke"], calc:"uyum", d:"Kurumun yönetim organlarına, yasal otoritelere ve paydaşlarına karşı hesap verebilirlik", u:["board", "top", "ops", "hr", "stk"]},
+  {n:"İlkeleri stratejik hedeflerle hizalama ve iletme (4)", st:"ilke", r:["gerek"], calc:"izleme", d:"Yönetim, ilkeleri stratejik hedefleri oluştururken resmî olarak ele alır, hizalar ve paydaşlara iletir", u:["top", "ops", "hr"]},
+  {n:"Kuruma özgü ilkeler: misyon, vizyon, değerler ve strateji (4)", st:"ilke", r:["ilke"], d:"Kuruma özgü ilkeler misyon, vizyon, değerler ve stratejiye yerleştirilebilir", u:["board", "top", "hr"]},
+  {n:"Kuruma özgü ilkeler: değer yaratma ve marka imajı (4)", st:"ilke", r:["ilke"], d:"Paydaşlara değer yaratma biçimi; dış paydaşlara iletilmek istenen marka imajı", u:["top", "hr", "stk"]},
+  {n:"Kuruma özgü ilkeler: sürdürülebilirlik (4)", st:"ilke", r:["ilke"], d:"Uzun vadeli çevresel ve toplumsal sürdürülebilirliğe destek", u:["board", "top"]},
+  {n:"Kuruma özgü ilkeler: kaynaklar ve etik hedefler (4)", st:"ilke", r:["ilke"], d:"Mali, insan ve diğer kaynaklar ile etik ve sosyal sorumluluk hedefleri ve girişimleri", u:["board", "top", "hr"]},
+  {n:"Kuruma özgü ilkeler: kurum ve paydaş ihtiyaçlarının dengesi (4)", st:"ilke", r:["ilke"], d:"Kurumun ihtiyaçları ile paydaşlarınki arasında denge", u:["board", "top", "hr", "stk"]}
+ ]},
+ {g:"Roller, sorumluluklar, bağlılık ve hesap verebilirlik (madde 5)", t:"c", items:[
+  {n:"Genel: tüm düzeylerde eşgüdüm ve bağlılık (5.1)", st:"roller", r:["ilke"], d:"En yüksek bağlılık, iş stratejisi planlama ve uygulamasıyla bütünleşerek gösterilir", u:["board", "top", "ops"]},
+  {n:"Genel: yönetim katmanı olmayan kurumlar (5.1)", st:"roller", r:["ilke"], d:"Katman yoksa yönergeler nihai karar sorumluluğu olanlara uygulanır", u:["top", "hr"]},
+  {n:"Yönetim kurulu: insanın değer sunmadaki rolünü anlar (5.2)", st:"roller", r:["gerek"], d:"Kurumdaki insanların paydaşlara değer sunmadaki rolünü anlamak", u:["board"]},
+  {n:"Yönetim kurulu: resmî taahhüt (5.2)", st:"roller", r:["gerek"], d:"Etkin insan yönetişimini teşvik etmek için resmî taahhütte bulunmak", u:["board"]},
+  {n:"Yönetim kurulu: sistemi yönetmekten hesap verebilir (5.2)", st:"roller", r:["gerek"], d:"İnsan yönetişimi sistemini yönetmekten sorumlu olmak", u:["board"]},
+  {n:"Yönetim kurulu: durum güncellemelerini izler (5.2)", st:"roller", r:["gerek"], calc:"izleme", d:"Etkin insan yönetişimine ilişkin durum güncellemelerini izlemek ve uygun eylem almak", u:["board", "top"]},
+  {n:"Üst yönetim: rol ve sorumlulukları tanımlar (5.3 a)", st:"roller", r:["gerek"], d:"Etkin insan yönetişimi için kendi rol ve sorumluluklarını belirlemek", u:["top"]},
+  {n:"Üst yönetim: her düzeyde katılımı teşvik eder (5.3 b)", st:"roller", r:["gerek"], calc:"katilim", d:"Her düzeydeki insanın etkin katılımını teşvik etmek", u:["top", "ops", "stk"]},
+  {n:"Üst yönetim: misyon, vizyon ve değer bildirimini gözden geçirir (5.3 c)", st:"roller", r:["gerek"], d:"İnsan yönetişimini destekleyen misyon, vizyon ve değer bildirimine bağlılık ve gözden geçirme", u:["top"]},
+  {n:"Üst yönetim: KPI'ları belirler ve üzerinde uzlaşır (5.3 d)", st:"roller", r:["gerek"], calc:"baglanti", d:"İK tarafından teslim edilecek temel performans göstergelerini belirlemek", u:["top", "hr"]},
+  {n:"Üst yönetim: sonuçları rapor şablonlarıyla gözden geçirir (5.3 e)", st:"roller", r:["gerek"], calc:"izleme", d:"İnsan yönetişimi rapor şablonlarını inceleyerek sonuçları düzenli gözden geçirmek", u:["top", "hr"]},
+  {n:"Üst yönetim: önemli sapmalarda plan ve raporlama (5.3 f)", st:"roller", r:["gerek"], calc:"sapma", d:"Eksiklikleri gidermek için plan ve raporlama prosedürü geliştirmek", u:["top", "hr"]},
+  {n:"Üst yönetim: paydaş iş birliğini artırır (5.3 g)", st:"roller", r:["gerek"], d:"İnsan yönetişimi ilkeleriyle ilgili paydaşlar arasında iş birliğini artırmak", u:["top", "hr", "stk"]},
+  {n:"Operasyonel yönetim: rol ve sorumlulukları anlar (5.4.1 a)", st:"roller", r:["gerek"], d:"İlkelerin paydaşlara teslimi için operasyonel yönetimin rol ve sorumluluklarını anlamak", u:["ops"]},
+  {n:"Operasyonel yönetim: hedef ve ölçüleri tanımlar (5.4.1 b)", st:"roller", r:["gerek"], calc:"baglanti", d:"Etkin insan yönetişimine katkıda bulunan hedef ve ölçülerin tanımına katılmak", u:["ops", "hr"]},
+  {n:"Operasyonel yönetim: ilkeleri performans hedeflerine entegre eder (5.4.1 c)", st:"roller", r:["gerek"], d:"İnsan yönetişimi ilke ve girişimlerini performans hedeflerine dahil etmek", u:["ops"]},
+  {n:"İnsan yönetişimi güvencesi: işlevler hizalıdır (5.4.2 a)", st:"roller", r:["gerek"], d:"İK işlev ve uygulamaları kurumun hedef ve ilkeleriyle iç ve dış olarak hizalıdır", u:["hr", "ops"]},
+  {n:"İnsan yönetişimi güvencesi: tutarlı uygulama (5.4.2 b)", st:"roller", r:["gerek"], d:"Uygulama her düzeyde tutarlı ve uygun biçimde yönetilir", u:["hr", "ops"]},
+  {n:"İnsan yönetişimi güvencesi: roller ilkeleri anlar ve hesap verir (5.4.2 c)", st:"roller", r:["gerek"], d:"Rol sahipleri benimsenen ilkeleri anlar ve kontrolleri altındaki sistem ve süreçlerden hesap verir", u:["hr", "ops"]},
+  {n:"İnsan yönetişimi güvencesi: yetkinlik ölçütleri (5.4.2 d)", st:"roller", r:["gerek"], d:"Rol sahipleri rolleri yerine getirecek yetkinlik ölçütlerini karşılar", u:["hr", "ops"]},
+  {n:"Nihai hesap verebilirlik üst yönetimdedir (5.4.3)", st:"roller", r:["gerek"], d:"Operasyon sorumluluğu devredilebilir ancak nihai hesap verebilirlik üst yönetimde kalır", u:["top", "board"]},
+  {n:"Üst yönetim: ilke ve girişimlerin, rol ve sorumlulukların anlaşılması (5.4.3 a, b)", st:"roller", r:["gerek"], calc:"katilim", d:"İnsanların ilke ve girişimleri ile uyum için gereken rol ve sorumlulukları anlamasını sağlamak", u:["top", "ops", "stk"]},
+  {n:"Üst yönetim: paydaş katılımını izler (5.4.3)", st:"roller", r:["gerek"], calc:"katilim", d:"Geçerli paydaş katılımını anlamak ve izlemek; modern çalışma ortamının ayrılmaz parçasıdır", u:["top", "stk"]},
+  {n:"Üst yönetim: strateji ve sonuçları belgelenmiş bilgi olarak tutar (5.4.3)", st:"roller", r:["gerek"], d:"İnsan yönetişimi stratejilerini ve sonuçlarını belgelenmiş bilgi olarak saklamak", u:["top", "hr"]}
+ ]},
+ {g:"Yönetişimi kurumsal ihtiyaçlara hizalama ve iletişim (madde 6.1–6.2)", t:"s", items:[
+  {n:"Hizalama: İK işlevlerinin değer katışı (6.1 a)", st:"uyum", r:["gerek"], calc:"uyum", d:"Tüm İK işlev, uygulama ve süreçlerinin kuruma nasıl değer kattığını belirlemek", u:["top", "hr", "ops"]},
+  {n:"Hizalama: her işlev için hedef ve başarı ölçüleri (6.1 b)", st:"uyum", r:["gerek"], calc:"baglanti", d:"Her işlev, uygulama ve süreçteki hedef ve başarı ölçülerini belirlemek", u:["hr", "ops"]},
+  {n:"Hizalama: iş ya da kurum hedefleriyle değerlendirme (6.1 c)", st:"uyum", r:["gerek"], calc:"baglanti", d:"İşlev, uygulama ve süreçleri iş ya da kurum hedefleriyle değerlendirmek ve hizalamak", u:["top", "hr"]},
+  {n:"Hizalama: raporlama biçimi tasarlama (6.1 d)", st:"uyum", r:["gerek"], d:"İnsan yönetişiminin etkililiğini iletmek ve raporlamak için biçim tasarlamak", u:["hr"]},
+  {n:"Hizalama: uzun vadeli değer ve marka imajı (6.1)", st:"uyum", r:["ilke"], d:"Süreç, uzun vadeli değeri güçlendirirken algılanan marka imajını da artırır", u:["board", "top", "stk"]},
+  {n:"İletişim: yöntemlerin kurulması (6.2)", st:"uyum", r:["gerek"], d:"Gerekli bilginin dahili ve harici paydaşlar dahil tüm düzeylere yayılması için yöntemler", u:["top", "hr", "stk"]},
+  {n:"İletişim: raporların uzun vadeli değere katkıyı anlatması (6.2)", st:"uyum", r:["gerek"], d:"Raporlar sistemi ve uzun vadeli değere katkısını tanımlar; roller için ayrıntılı analiz, üst yönetim için kısa rapor", u:["hr", "top"]},
+  {n:"İletişim: belgelenmiş bilgi (6.2)", st:"uyum", r:["gerek"], d:"İlke ve kararlar talep üzerine erişilebilir belgelenmiş bilgi olarak saklanır", u:["hr", "top"]},
+  {n:"İletişim: değer, misyon ve vizyon bildirimleri (6.2 a)", st:"uyum", r:["gerek"], calc:"algi", d:"Değer, misyon ve vizyon bildirimlerini (insan yönetişimi ilkeleri dahil) ilgili paydaşlara iletmek", u:["top", "hr", "stk"]},
+  {n:"İletişim: özet rapor (6.2 b)", st:"uyum", r:["gerek"], d:"Çalışanlar ve üst yönetim dahil ilgili paydaşlara özet rapor iletmek", u:["hr", "top", "stk"]}
+ ]},
+ {g:"İnsan yönetişimi raporları ve analiz (madde 6.3)", t:"r", items:[
+  {n:"Rapor bölümleri (6.3.1)", st:"rapor", r:["ilke"], d:"Raporlar kurumun ihtiyaçları, insan yönetişimi uygulama ve süreçleri ile analiz bölümlerini içerir", u:["hr", "top"]},
+  {n:"Kurumun ihtiyaçları: vizyon, değer, misyon, strateji (6.3.2)", st:"rapor", r:["gerek"], d:"Rapor bölümü vizyon, değerler, misyon ve stratejiyi içerir", u:["hr", "top", "board"]},
+  {n:"Kurumun ihtiyaçları: kurumsal ihtiyaçlara bağlı KPI'lar (6.3.2)", st:"rapor", r:["gerek"], calc:"baglanti", d:"Maliyet verimliliği, yenilikçi ürün ya da müşteri ilişkileri gibi ihtiyaçlara bağlı insan yönetişimi KPI'ları", u:["hr", "top"]},
+  {n:"Kurumun ihtiyaçları: başarı ölçüleri (6.3.2)", st:"rapor", r:["gerek"], calc:"aralik", d:"Yenilik, personel devri, devamsızlık ya da müşteri ölçüleri gibi temel başarı ölçülerini belirlemek", u:["hr", "top"]},
+  {n:"Kurumun ihtiyaçları: organizasyon şeması (6.3.2)", st:"rapor", r:["gerek"], d:"İK işlevlerinin yönetimi, raporlama ilişkileriyle organizasyon şemasında gösterilir", u:["hr"]},
+  {n:"İşlevleri belirleme: organizasyon şemasına göre (6.3.3 a)", st:"rapor", r:["gerek"], d:"İnsan yönetişimi işlevlerini organizasyon şemasına göre belirlemek", u:["hr"]},
+  {n:"İşlevleri belirleme: hedef ve ölçüleri tanımlama (6.3.3 b)", st:"rapor", r:["gerek"], calc:"baglanti", d:"Her insan yönetişimi işlev düzeyinin nasıl değerlendirileceğinin hedef ve ölçülerini tanımlamak", u:["hr", "ops"]},
+  {n:"İşlevleri belirleme: yönetimi değerlendirme ve hizalama (6.3.3 c)", st:"rapor", r:["gerek"], d:"İnsan yönetişimi işlevlerinin yönetimini değerlendirmek ve hizalamak", u:["hr", "top"]},
+  {n:"İşlevleri belirleme: uygulamaları belirleme (6.3.3 d)", st:"rapor", r:["gerek"], d:"Her işlev ve düzeyle ilişkili uygulamaları belirlemek", u:["hr", "ops"]},
+  {n:"İşlevleri belirleme: uygulamaların tutarlılığı (6.3.3 e)", st:"rapor", r:["gerek"], d:"Uygulamaların her İK işlevi ve yönetim düzeyinin hedefleriyle tutarlılığı", u:["hr", "ops"]},
+  {n:"İşlevleri belirleme: uygulama ölçüleri (6.3.3 f)", st:"rapor", r:["gerek"], calc:"sapma", d:"Her uygulama için ilgili ölçüler belirlemek", u:["hr", "ops"]},
+  {n:"İşlevleri belirleme: kabul edilebilir sonuç aralığı (6.3.3 g)", st:"rapor", r:["gerek"], calc:"aralik", d:"Kabul edilebilir bir sonuç aralığı tanımlamak", u:["hr", "ops"]},
+  {n:"İşlevleri belirleme: araç ve süreçler (6.3.3 h)", st:"rapor", r:["gerek"], d:"Her uygulama için araç ve süreçleri belirlemek", u:["hr", "ops"]},
+  {n:"İşlevleri belirleme: araç ve süreçlerin desteklediği ilkeler (6.3.3 i)", st:"rapor", r:["gerek"], calc:"uyum", d:"Araç ve süreçlerin çalışanlara ve diğer paydaşlara hangi ilkeleri teşvik ettiğini incelemek", u:["hr", "ops"]},
+  {n:"İşlevleri belirleme: paydaş etkileşimi ve geri bildirim (6.3.3 j)", st:"rapor", r:["gerek"], calc:"katilim", d:"Hedef ve sonuçlar hakkında geri bildirim toplamak ve paylaşmak için etkileşimi teşvik etmek", u:["hr", "stk"]},
+  {n:"İşlevleri belirleme: iletilmeyen ilkelerde düzeltici eylem (6.3.3 k)", st:"rapor", r:["gerek"], calc:"algi", d:"İletilmesi gereken ilkeleri belirlemek ve iletilmeyenler için düzeltici eylem almak", u:["hr", "top"]},
+  {n:"Analiz: önceki KPI ve ölçüler hâlâ uygun mu (6.3.4)", st:"rapor", r:["gerek"], calc:"baglanti", d:"Başlangıç analizi, önceden kullanılan KPI ve ölçülerin hâlâ uygun olduğundan emin olur", u:["hr", "top"]},
+  {n:"Analiz: tüm süreçte hizalama ve boşluk (6.3.4)", st:"rapor", r:["gerek"], d:"Başlangıç analizi, tüm süreci hizalama ve boşlukların belirlenmesi açısından inceler", u:["hr", "top"]},
+  {n:"Analiz sorusu a: işlevsel hedefler kurumsal hedeflere bağlı mı", st:"rapor", r:["soru"], calc:"baglanti", d:"İşlevsel hedeflerin kurumsal hedeflerle bağlantısı (6.3.4 a)", u:["hr", "top"]},
+  {n:"Analiz sorusu b: işlevsel ölçüler KPI içeriyor mu", st:"rapor", r:["soru"], calc:"baglanti", d:"İşlevsel ölçülerin KPI içerip içermediği (6.3.4 b)", u:["hr", "top"]},
+  {n:"Analiz sorusu c: işlevsel hedefler tamamlayıcı mı, çatışıyor mu", st:"rapor", r:["soru"], d:"Hedeflerin birbirini tamamlayıp tamamlamadığı ya da çatışıp çatışmadığı (6.3.4 c)", u:["hr", "top"]},
+  {n:"Analiz sorusu d: eksik hedef ya da KPI var mı", st:"rapor", r:["soru"], calc:"baglanti", d:"Eksik bir hedef ya da KPI olup olmadığı (6.3.4 d)", u:["hr", "top"]},
+  {n:"Analiz sorusu e: mevcut KPI'lar güncel hedeflerle hizalı mı", st:"rapor", r:["soru"], calc:"baglanti", d:"Mevcut KPI'ların güncel kurumsal hedeflerle hizası (6.3.4 e)", u:["hr", "top"]},
+  {n:"Analiz sorusu f: uygulamalar tamamlayıcı mı, çatışıyor mu", st:"rapor", r:["soru"], d:"Her işlevdeki insan yönetişimi uygulamalarının tamamlayıcı ya da çatışan oluşu (6.3.4 f)", u:["hr", "ops"]},
+  {n:"Analiz sorusu g: ölçüler önem ve sıklık analizi içeriyor mu", st:"rapor", r:["soru"], calc:"izleme", d:"İnsan yönetişimi ölçülerinin önem ve sıklık analizi içerip içermediği (6.3.4 g)", u:["hr", "top"]},
+  {n:"Analiz sorusu h: çalışanlar ve müşteriler ilkelerin teslim edildiğini düşünüyor mu", st:"rapor", r:["soru"], calc:"algi", d:"Çalışanların ve müşterilerin kurumun ilan ettiği ilkeleri teslim ettiğine dair algısı (6.3.4 h)", u:["stk", "hr", "top"]}
+ ]},
+ {g:"Uygulama ve Ek şablonlar (madde 7, Ek A, Ek B)", t:"o", items:[
+  {n:"Adım a: ilkeleri tanımla ve kuruma uygunluğunu doğrula (7 a)", st:"uygulama", r:["gerek"], calc:"kapsama", d:"İnsan yönetişimi ilkelerini tanımlamak ve kurumla ilgisini doğrulamak", u:["top", "hr"]},
+  {n:"Adım b: çerçeve geliştir (7 b)", st:"uygulama", r:["gerek"], calc:"kapsama", d:"İnsan yönetişimi çerçevesi geliştirmek", u:["top", "hr"]},
+  {n:"Adım c: hedefleri iş planıyla hizala (7 c)", st:"uygulama", r:["gerek"], calc:"kapsama", d:"İnsan yönetişimi sistemlerinin hedeflerini iş planıyla ifade etmek ve hizalamak", u:["top", "hr"]},
+  {n:"Adım d: projeleri ve girişimleri hizala (7 d)", st:"uygulama", r:["gerek"], calc:"kapsama", d:"Sistemi uygulayan, pekiştiren, gözden geçiren ve sürdüren ilişkili proje ve girişimleri belirlemek ve hizalamak", u:["hr", "ops"]},
+  {n:"Adım e: ilkeleri iletişime entegre et (7 e)", st:"uygulama", r:["gerek"], calc:"kapsama", d:"İlkeleri tüm kurumsal iletişime entegre etmek", u:["hr", "top", "stk"]},
+  {n:"Adım f: İK işlev, uygulama ve süreçlerini gözden geçir (7 f)", st:"uygulama", r:["gerek"], calc:"kapsama", d:"İlkelerle hizayı gözden geçirmek", u:["hr", "ops"]},
+  {n:"Adım g: her düzeyde katılımı teşvik et (7 g)", st:"uygulama", r:["gerek"], calc:"katilim", d:"Tüm düzeylerde etkin katılımı teşvik etmek", u:["top", "ops", "stk"]},
+  {n:"Adım h: tanımlı ölçülerle uygulama ve izleme (7 h)", st:"uygulama", r:["gerek"], calc:"izleme", d:"İlkelerin kurumun tanımladığı ölçülerle uygulandığından ve izlendiğinden emin olmak (6.3.3)", u:["hr", "ops"]},
+  {n:"Adım i: performans, kültür ve faaliyetlere entegrasyon (7 i)", st:"uygulama", r:["gerek"], calc:"kapsama", d:"İlkelerin performans, kültür ve faaliyetlerle nasıl bütünleşeceğini netleştirmek", u:["top", "hr", "ops"]},
+  {n:"Şablon A.1: kurumsal ihtiyaçlar", st:"ek", r:["sablon"], d:"Vizyon, misyon, insan yönetişimi ilkeleri, strateji ve değer önerileri, temel insan yönetişimi hedefleri", u:["hr", "top"]},
+  {n:"Şablon A.2: işlevsel hedef gözden geçirme", st:"ek", r:["sablon"], calc:"sapma", d:"İşlev, mevcut hedef, hedef ölçüsü, hedef değeri, izleme takvimi, sonuçlar, eylem adımları ve ölçünün katkısı", u:["hr", "ops"]},
+  {n:"Şablon A.3: uygulama raporu", st:"ek", r:["sablon"], calc:"aralik", d:"İşlev ve uygulama; hedefler, ölçüler, hedef değeri, izleme takvimi, sonuçlar ve eylem adımları", u:["hr", "ops"]},
+  {n:"Şablon A.4: değer uyumu", st:"ek", r:["sablon"], calc:"uyum", d:"Alan, uygulama, araçlar, süreç, ilgili kişiler ve tamamlayıcı uygulamalar; her araç ve süreç her ilkeyi güçlendirir, zayıflatır ya da nötrdür", u:["hr", "ops"]},
+  {n:"Şablon B.1: kurumsal hedefler ve işlev özet raporu", st:"ek", r:["sablon"], d:"Kurumsal hedefler altında insan yönetişimi alanlarının hedef ve ölçüleri", u:["top", "hr", "board"]},
+  {n:"Şablon B.2: işlev ve uygulama özet raporu", st:"ek", r:["sablon"], d:"Her işlev için uygulamaların hedef ve ölçüleri", u:["hr", "ops"]}
+ ]}
+];
+
+var USERS = ["board","top","ops","hr","stk"];
+var AILE_AD = {p:"giriş ve ilkeler", c:"roller ve sorumluluklar", s:"hizalama ve iletişim", r:"raporlama ve analiz", o:"uygulama ve şablonlar"};
+var TUR_AD = {ilke:"ilke ve kavram", gerek:"gereklilik", soru:"analiz sorusu", sablon:"şablon"};
+var EK_AD = {ctx:"bağlam", tur:"türetilmiş"};
+
+/* --- matris çizimi --- */
+function renderMatrix(){
+  var fu = document.getElementById("fUser").value;
+  var fs = document.getElementById("fStage").value;
+  var ft = document.getElementById("fType").value;
+  var fr = document.getElementById("fRep").value;
+  var fq = document.getElementById("fQ").value.toLocaleLowerCase("tr");
+  var body = document.getElementById("mBody");
+  var html = "", shown = 0;
+
+  METRICS.forEach(function(grp){
+    if(ft && grp.t !== ft) return;
+    var rows = "";
+    grp.items.forEach(function(m){
+      if(fu && m.u.indexOf(fu) === -1) return;
+      if(fs && m.st !== fs) return;
+      if(fr && m.r.indexOf(fr) === -1) return;
+      if(fq && m.n.toLocaleLowerCase("tr").indexOf(fq) === -1) return;
+      shown++;
+      var cells = USERS.map(function(u){
+        if(m.u.indexOf(u) === -1) return '<td class="num"></td>';
+        var mark = '<span class="dot ' + grp.t + '"></span>';
+        return '<td class="num" title="' + m.n + '">' + (m.calc ? '<b>' + mark + '</b>' : mark) + '</td>';
+      }).join("");
+      var tags = '<span class="tag ' + grp.t + '">' + AILE_AD[grp.t] + '</span>' +
+                 ' <span class="tag lvl">' + TUR_AD[m.r[0]] + '</span>' + (m.k ? ' <span class="tag lvl">' + EK_AD[m.k] + '</span>' : "") +
+                 (m.calc ? ' <span class="tag lvl">hesaplayıcı</span>' : "") +
+                 "";
+      rows += '<tr><td class="name">' + (m.calc ? '<b>' + m.n + '</b>' : m.n) + ' ' + tags +
+              '<em>' + m.d + '</em></td>' + cells + '</tr>';
+    });
+    if(rows){
+      html += '<tr class="group"><td colspan="6">' + grp.g + '</td></tr>' + rows;
+    }
+  });
+
+  body.innerHTML = html || '<tr><td colspan="6">Bu filtre birleşimiyle eşleşen metrik yok.</td></tr>';
+  document.getElementById("mCount").textContent = shown + " metrik ve etken gösteriliyor.";
+}
+["fUser","fStage","fType","fRep","fQ"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", renderMatrix);
+});
+renderMatrix();
+
+/* =========================================================
+   2) ŞEKİL 1: İNSAN YÖNETİŞİMİ DÖNGÜSÜ (türetilmiş akış; madde 6 ve 7)
+   ========================================================= */
+var AKIS = [["Kurumsal ihtiyaçlar","6.3.2"],["İşlev, uygulama ve süreçler","6.3.3"],["Değer uyumu ve araçlar","A.4"],["Raporlama ve iletişim","6.2, 6.3"],["Analiz ve düzeltici eylem","6.3.4"]];
+(function(){
+  var h = '<div class="fl-row">';
+  AKIS.forEach(function(a, i){
+    h += '<div class="fl-box"><b>' + (i+1) + '. ' + a[0] + '</b><small>madde ' + a[1] + '</small></div>';
+    if(i < AKIS.length - 1) h += '<div class="fl-arr">→</div>';
+  });
+  h += '</div><div class="fl-back">↺ sonuçlar yeniden ihtiyaçlara ve hedeflere geri beslenir (sürekli iyileştirme, 1)</div>';
+  document.getElementById("flowChart").innerHTML = h;
+})();
+
+var ALANLAR = [
+  ["5.2","Yönetim kurulu",4], ["5.3","Üst yönetim",7], ["5.4.1","Operasyonel yönetim işlevleri",3], ["5.4.2","İnsan yönetişimi güvenceleri",4],
+  ["5.4.3","Üst yönetimin nihai hesap verebilirliği",3], ["6.1","Yönetişimi ihtiyaçlara hizalama",4], ["6.2","İletişim",4],
+  ["6.3.3","İşlev, uygulama ve süreçlerin belirlenmesi",11], ["6.3.4","Analiz soruları",8], ["7","Uygulama adımları",9]
+];
+/* =========================================================
+   3) ÖZ DEĞERLENDİRME TABLOSU (madde 5–7)
+   ========================================================= */
+var SATIR = ALANLAR.length;
+/* örnek amaçlı: tam uygulanan, kısmen uygulanan */
+var ORNEK_TBL = [[3,1],[4,2],[2,1],[2,1],[2,1],[3,1],[2,1],[6,3],[4,2],[5,2]];
+
+function buildTbl(){
+  var html = "";
+  for(var i=0;i<SATIR;i++){
+    var a = ALANLAR[i];
+    html += '<tr><td><b>' + a[0] + '</b></td><td>' + a[1] + '</td><td class="num">' + a[2] + '</td>' +
+      '<td><input type="number" min="0" step="1" id="p_u_' + i + '"></td>' +
+      '<td><input type="number" min="0" step="1" id="p_k_' + i + '"></td>' +
+      '<td class="calc" id="p_kap_' + i + '">—</td><td class="calc" id="p_dur_' + i + '">—</td></tr>';
+  }
+  document.getElementById("pBody").innerHTML = html;
+  document.getElementById("pBody").querySelectorAll("input").forEach(function(el){ el.addEventListener("input", computeTbl); });
+  document.getElementById("tHedef").addEventListener("input", computeTbl);
+  buildRes(); buildUyum();
+}
+
+function pv(k, i){
+  var v = parseFloat(document.getElementById("p_" + k + "_" + i).value);
+  return isNaN(v) ? null : v;
+}
+
+var TBL = {n:0, ok:false, ilk:null};
+
+function computeTbl(){
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var hedef = parseFloat(document.getElementById("tHedef").value);
+  var hedefOk = !isNaN(hedef) && hedef >= 0 && hedef <= 100;
+  var n = 0, hatali = 0, sT = 0, sU = 0, sK = 0, ilk = null, alti = 0, zayif = null, guclu = null;
+
+  for(var i=0;i<SATIR;i++){
+    var a = ALANLAR[i];
+    var u = pv("u", i), k = pv("k", i);
+    var cK = document.getElementById("p_kap_" + i), cD = document.getElementById("p_dur_" + i);
+    cK.textContent = "—"; cD.textContent = "—";
+    if(u === null && k === null) continue;
+    if(u === null) u = 0;
+    if(k === null) k = 0;
+    if(u < 0 || k < 0 || u + k > a[2] || !hedefOk){
+      hatali++; cD.textContent = "tutarsız"; continue;
+    }
+    n++; sT += a[2]; sU += u; sK += k;
+    var kap = 100 * (u + 0.5 * k) / a[2];
+    cK.textContent = f1(kap);
+    if(kap < hedef){ alti++; cD.textContent = "hedefin altında (" + f1(kap - hedef) + " puan)"; }
+    else cD.textContent = "hedefte";
+    if(zayif === null || kap < zayif[0]) zayif = [kap, a[0]];
+    if(guclu === null || kap > guclu[0]) guclu = [kap, a[0]];
+    if(ilk === null) ilk = {toplam:a[2], uygulanan:u, kismen:k};
+  }
+
+  var ok = n > 0;
+  document.getElementById("tTop").textContent = n ? sT : "—";
+  document.getElementById("tUyg").textContent = n ? sU : "—";
+  document.getElementById("tKis").textContent = n ? sK : "—";
+  document.getElementById("tKap").textContent = n ? f1(100 * (sU + 0.5 * sK) / sT) : "—";
+  document.getElementById("tDur").textContent = n ? (alti + " / " + n + " madde hedefin altında") : "—";
+
+  var kart = document.getElementById("pCards");
+  TBL = {n:n, ok:ok, ilk:ilk};
+  if(!ok){
+    kart.innerHTML = "";
+    document.getElementById("pNot").textContent = hatali ? "Tutarsız satır var: sayılar negatif olmamalı, uygulanan ile kısmen uygulananın toplamı ifade sayısını aşmamalı; hedef 0–100 arasında olmalı." :
+      "Her madde için uygulanan ve kısmen uygulanan ifade sayısını girin ya da örnek veriyi yükleyin.";
+    return;
+  }
+  var kartlar = '';
+  kartlar += '<div class="card"><b>' + f1(100 * (sU + 0.5 * sK) / sT) + ' %</b><span>Genel kapsama (değerlendirilen maddeler)</span></div>';
+  kartlar += '<div class="card"><b>' + f1(100 * sU / sT) + ' %</b><span>Yalnızca tam uygulananların payı</span></div>';
+  kartlar += '<div class="card alt"><b>' + n + '</b><span>Değerlendirilen madde</span></div>';
+  kartlar += '<div class="card alt"><b>' + alti + '</b><span>Hedefin altındaki madde</span></div>';
+  kartlar += '<div class="card warn"><b>' + zayif[1] + '</b><span>En düşük kapsama (' + f1(zayif[0]) + ' %)</span></div>';
+  kartlar += '<div class="card"><b>' + guclu[1] + '</b><span>En yüksek kapsama (' + f1(guclu[0]) + ' %)</span></div>';
+  kart.innerHTML = kartlar;
+
+  var not = "Kapsama = (uygulanan + 0,5 × kısmen) ÷ ifade sayısı × 100; bu puanlama ve hedef bu sayfada türetilmiştir, standart eşik ya da puanlama vermez; standart yalnızca rapor şablonları verir. ";
+  if(alti) not += "Hedefin altındaki maddelerin ifadelerini matriste süzün (Bölüm ve Unsur türü filtreleri). ";
+  if(hatali) not += hatali + " tutarsız satır hesaba katılmadı. ";
+  not += "Toplam, maddelerin ifadelerinin toplamıdır; madde oranlarının ortalaması değildir.";
+  document.getElementById("pNot").textContent = not;
+}
+
+function loadTblExample(){
+  for(var i=0;i<SATIR;i++){
+    document.getElementById("p_u_" + i).value = ORNEK_TBL[i][0];
+    document.getElementById("p_k_" + i).value = ORNEK_TBL[i][1];
+  }
+  computeTbl();
+}
+
+document.getElementById("btnOrnek").addEventListener("click", loadTblExample);
+document.getElementById("btnTemizle").addEventListener("click", function(){
+  for(var i=0;i<SATIR;i++){
+    document.getElementById("p_u_" + i).value = "";
+    document.getElementById("p_k_" + i).value = "";
+  }
+  computeTbl();
+});
+document.getElementById("btnCsv").addEventListener("click", function(){
+  var satir = ["Madde;Konu;Ifade sayisi;Uygulanan;Kismen;Kapsama %"];
+  for(var i=0;i<SATIR;i++){
+    var a = ALANLAR[i];
+    var u = pv("u", i), k = pv("k", i);
+    if(u === null && k === null) continue;
+    u = u === null ? 0 : u; k = k === null ? 0 : k;
+    if(u < 0 || k < 0 || u + k > a[2]) continue;
+    satir.push([a[0], a[1], a[2], u, k, (100 * (u + 0.5 * k) / a[2]).toFixed(1)].join(";"));
+  }
+  var blob = new Blob(["﻿" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a2 = document.createElement("a");
+  a2.href = URL.createObjectURL(blob);
+  a2.download = "iso30408_oz_degerlendirme.csv";
+  a2.click();
+  URL.revokeObjectURL(a2.href);
+});
+
+/* =========================================================
+   3b) SONUÇ TABLOSU (Ek A.2 ve A.3): hedef, kabul edilebilir aralık ve sonuç
+   ========================================================= */
+var RSATIR = 8;
+var RALAN = ["hed","alt","ust","son"];
+/* ad, hedef, alt sınır, üst sınır, sonuç — örnek amaçlı */
+var ORNEK_RES = [["Gönüllü ayrılma (%)", 8, 5, 10, 11.5], ["Devamsızlık (%)", 3, 2, 4, 3.2], ["Eğitim saati / çalışan", 24, 20, 40, 18], ["Çalışan memnuniyeti (puan)", 4, 3.8, 5, 4.1]];
+
+function buildRes(){
+  var html = "";
+  for(var i=0;i<RSATIR;i++){
+    html += '<tr><td><input type="text" id="r_ad_' + i + '" placeholder="İşlev / uygulama ' + (i+1) + '"></td>';
+    RALAN.forEach(function(k){ html += '<td><input type="number" min="0" step="any" id="r_' + k + '_' + i + '"></td>'; });
+    ["sap","dur"].forEach(function(k){ html += '<td class="calc" id="r_' + k + '_' + i + '">—</td>'; });
+    html += '</tr>';
+  }
+  document.getElementById("rBody").innerHTML = html;
+  document.getElementById("rBody").querySelectorAll("input").forEach(function(el){ el.addEventListener("input", computeRes); });
+}
+function rv(k, i){
+  var v = parseFloat(document.getElementById("r_" + k + "_" + i).value);
+  return isNaN(v) ? null : v;
+}
+var RES = {n:0, ok:false, ilk:null};
+
+function computeRes(){
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var n = 0, hatali = 0, ic = 0, alt = 0, ust = 0, ilk = null, enB = null;
+  for(var i=0;i<RSATIR;i++){
+    var s = {}; RALAN.forEach(function(k){ s[k] = rv(k, i); });
+    var cs = document.getElementById("r_sap_" + i), cd = document.getElementById("r_dur_" + i);
+    cs.textContent = "—"; cd.textContent = "—";
+    if(s.hed === null && s.alt === null && s.ust === null && s.son === null) continue;
+    var ad = document.getElementById("r_ad_" + i).value.trim() || ("İşlev " + (i+1));
+    if(!(s.hed > 0) || s.alt === null || s.ust === null || s.son === null || s.alt > s.ust || s.son < 0 || s.alt < 0){
+      hatali++; cd.textContent = "tutarsız"; continue;
+    }
+    n++;
+    var sap = 100 * (s.son - s.hed) / s.hed;
+    cs.textContent = f1(sap);
+    if(s.son < s.alt){ alt++; cd.textContent = "aralığın altında (" + f1(s.son - s.alt) + ")"; }
+    else if(s.son > s.ust){ ust++; cd.textContent = "aralığın üstünde (+" + f1(s.son - s.ust) + ")"; }
+    else { ic++; cd.textContent = "aralık içinde"; }
+    if(enB === null || Math.abs(sap) > Math.abs(enB[0])) enB = [sap, ad];
+    if(ilk === null) ilk = {son:s.son, alt:s.alt, ust:s.ust, hed:s.hed};
+  }
+  var kart = document.getElementById("rCards");
+  RES = {n:n, ok:n > 0, ilk:ilk};
+  if(!n){
+    kart.innerHTML = "";
+    document.getElementById("rNot").textContent = hatali ? "Tutarsız satır var: hedef sıfırdan büyük, alt sınır üst sınırı aşmamalı, tüm alanlar doldurulmalı, değerler negatif olmamalı." :
+      "Ölçüleri girin ya da örnek veriyi yükleyin.";
+    return;
+  }
+  var h = '<div class="card"><b>' + n + '</b><span>Değerlendirilen ölçü</span></div>';
+  h += '<div class="card"><b>' + ic + '</b><span>Aralık içinde</span></div>';
+  h += '<div class="card warn"><b>' + alt + '</b><span>Aralığın altında</span></div>';
+  h += '<div class="card warn"><b>' + ust + '</b><span>Aralığın üstünde</span></div>';
+  h += '<div class="card alt"><b>' + f1(enB[0]) + ' %</b><span>Hedeften en büyük sapma: ' + enB[1] + '</span></div>';
+  kart.innerHTML = h;
+  var not = "Sapma = (sonuç − hedef) ÷ hedef × 100; durum, 6.3.3 g'deki 'kabul edilebilir sonuç aralığı'na göre belirlenir. Hedef, aralık ve eşleme bu sayfada türetilmiştir; standart değer vermez. ";
+  if(alt + ust) not += "Aralık dışındaki ölçüler için üst yönetim eksiklikleri gidermek üzere plan ve raporlama prosedürü geliştirmelidir (5.3 f). ";
+  if(hatali) not += hatali + " tutarsız satır hesaba katılmadı.";
+  document.getElementById("rNot").textContent = not;
+}
+function loadResExample(){
+  for(var i=0;i<RSATIR;i++){
+    var s = ORNEK_RES[i];
+    document.getElementById("r_ad_" + i).value = s ? s[0] : "";
+    RALAN.forEach(function(k, j){ document.getElementById("r_" + k + "_" + i).value = s ? s[j+1] : ""; });
+  }
+  computeRes();
+}
+document.getElementById("btnOrnekR").addEventListener("click", loadResExample);
+document.getElementById("btnTemizleR").addEventListener("click", function(){
+  for(var i=0;i<RSATIR;i++){
+    document.getElementById("r_ad_" + i).value = "";
+    RALAN.forEach(function(k){ document.getElementById("r_" + k + "_" + i).value = ""; });
+  }
+  computeRes();
+});
+document.getElementById("btnCsvR").addEventListener("click", function(){
+  var satir = ["Islev/uygulama;Hedef;Alt sinir;Ust sinir;Sonuc;Sapma %;Durum"];
+  for(var i=0;i<RSATIR;i++){
+    var s = {}; RALAN.forEach(function(k){ s[k] = rv(k, i); });
+    if(!(s.hed > 0) || s.alt === null || s.ust === null || s.son === null || s.alt > s.ust) continue;
+    var ad = document.getElementById("r_ad_" + i).value.trim() || ("Islev " + (i+1));
+    var d = s.son < s.alt ? "alt" : (s.son > s.ust ? "ust" : "icinde");
+    satir.push([ad, s.hed, s.alt, s.ust, s.son, (100 * (s.son - s.hed) / s.hed).toFixed(1), d].join(";"));
+  }
+  var blob = new Blob(["\ufeff" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a2 = document.createElement("a");
+  a2.href = URL.createObjectURL(blob);
+  a2.download = "iso30408_sonuc_tablosu.csv";
+  a2.click();
+  URL.revokeObjectURL(a2.href);
+});
+
+/* =========================================================
+   3c) DEĞER UYUMU MATRİSİ (Ek A.4): her araç ve süreç her ilkeyi güçlendirir (+1), nötrdür (0) ya da zayıflatır (−1)
+   ========================================================= */
+var USATIR = 6, UILKE = 3;
+var ORNEK_UYUM = {ilke:["Adillik ve şeffaflık","Açıklık","Hesap verebilirlik"], satir:[
+  ["Performans değerlendirme formu", [1,0,1]], ["Yıllık çalışan anketi", [0,1,1]], ["Gizli ücret politikası", [-1,-1,0]], ["Terfi komitesi süreci", [1,0,1]]]};
+
+function buildUyum(){
+  var th = "";
+  for(var j=0;j<UILKE;j++) th += '<th><input type="text" id="u_ilke_' + j + '" placeholder="İlke ' + (j+1) + '"></th>';
+  document.getElementById("uHead").innerHTML = '<tr><th>Araç / süreç</th>' + th + '<th class="calc" style="width:90px">Araç puanı</th></tr>';
+  var html = "";
+  for(var i=0;i<USATIR;i++){
+    html += '<tr><td><input type="text" id="u_ad_' + i + '" placeholder="Araç ya da süreç ' + (i+1) + '"></td>';
+    for(var j=0;j<UILKE;j++) html += '<td><select id="u_v_' + i + '_' + j + '"><option value="">—</option><option value="1">güçlendirir (+1)</option><option value="0">nötr (0)</option><option value="-1">zayıflatır (−1)</option></select></td>';
+    html += '<td class="calc" id="u_pu_' + i + '">—</td></tr>';
+  }
+  document.getElementById("uBody").innerHTML = html;
+  var ft = '<tr><td>İlke puanı</td>';
+  for(var j=0;j<UILKE;j++) ft += '<td class="calc" id="u_ip_' + j + '">—</td>';
+  ft += '<td class="calc" id="u_gp">—</td></tr>';
+  document.getElementById("uFoot").innerHTML = ft;
+  document.getElementById("uBody").querySelectorAll("select,input").forEach(function(el){ el.addEventListener("input", computeUyum); });
+  for(var j=0;j<UILKE;j++) document.getElementById("u_ilke_" + j).addEventListener("input", computeUyum);
+}
+var UYUM = {ok:false, g:0, n:0, z:0};
+
+function computeUyum(){
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var sutS = [], sutN = [], g = 0, n = 0, z = 0, zayif = [], satirSay = 0;
+  for(var j=0;j<UILKE;j++){ sutS.push(0); sutN.push(0); }
+  for(var i=0;i<USATIR;i++){
+    var ad = document.getElementById("u_ad_" + i).value.trim() || ("Araç " + (i+1));
+    var top = 0, say = 0, zay = false;
+    var cell = document.getElementById("u_pu_" + i); cell.textContent = "—";
+    for(var j=0;j<UILKE;j++){
+      var v = document.getElementById("u_v_" + i + "_" + j).value;
+      if(v === "") continue;
+      v = parseInt(v, 10); top += v; say++; sutS[j] += v; sutN[j]++;
+      if(v === 1) g++; else if(v === 0) n++; else { z++; zay = true; }
+    }
+    if(say){ satirSay++; cell.textContent = f1(100 * top / say); if(zay) zayif.push(ad); }
+  }
+  var tg = g + n + z;
+  for(var j=0;j<UILKE;j++) document.getElementById("u_ip_" + j).textContent = sutN[j] ? f1(100 * sutS[j] / sutN[j]) : "—";
+  document.getElementById("u_gp").textContent = tg ? f1(100 * (g - z) / tg) : "—";
+  UYUM = {ok:tg > 0, g:g, n:n, z:z};
+  var kart = document.getElementById("uCards");
+  if(!tg){
+    kart.innerHTML = "";
+    document.getElementById("uNot").textContent = "Her araç ve süreç için her ilkeye ilişkin değerlendirmeyi seçin ya da örnek veriyi yükleyin.";
+    return;
+  }
+  var h = '<div class="card"><b>' + f1(100 * (g - z) / tg) + '</b><span>Genel uyum puanı (−100…+100)</span></div>';
+  h += '<div class="card alt"><b>' + g + ' / ' + n + ' / ' + z + '</b><span>Güçlendiren / nötr / zayıflatan</span></div>';
+  h += '<div class="card warn"><b>' + zayif.length + '</b><span>Bir ilkeyi zayıflatan araç ya da süreç</span></div>';
+  kart.innerHTML = h;
+  document.getElementById("uNot").textContent = "Puan = (güçlendiren − zayıflatan) ÷ toplam değerlendirme × 100; araç, ilke ve genel puan bu sayfada türetilmiştir, standart yalnızca üç sınıf (güçlendirir, zayıflatır, nötr) kullanır. " +
+    (zayif.length ? "İlkeyi zayıflatan araçlar: " + zayif.join("; ") + ". Standardın 6.3.3 k adımı gereği bu araçları gözden geçirin ya da ilkenin iletilmesi için düzeltici eylem alın." : "Hiçbir araç bir ilkeyi zayıflatmıyor.");
+}
+function loadUyumExample(){
+  for(var j=0;j<UILKE;j++) document.getElementById("u_ilke_" + j).value = ORNEK_UYUM.ilke[j] || "";
+  for(var i=0;i<USATIR;i++){
+    var s = ORNEK_UYUM.satir[i];
+    document.getElementById("u_ad_" + i).value = s ? s[0] : "";
+    for(var j=0;j<UILKE;j++) document.getElementById("u_v_" + i + "_" + j).value = s ? String(s[1][j]) : "";
+  }
+  computeUyum();
+}
+document.getElementById("btnOrnekU").addEventListener("click", loadUyumExample);
+document.getElementById("btnTemizleU").addEventListener("click", function(){
+  for(var j=0;j<UILKE;j++) document.getElementById("u_ilke_" + j).value = "";
+  for(var i=0;i<USATIR;i++){
+    document.getElementById("u_ad_" + i).value = "";
+    for(var j=0;j<UILKE;j++) document.getElementById("u_v_" + i + "_" + j).value = "";
+  }
+  computeUyum();
+});
+document.getElementById("btnCsvU").addEventListener("click", function(){
+  var bas = ["Arac/surec"];
+  for(var j=0;j<UILKE;j++) bas.push(document.getElementById("u_ilke_" + j).value.trim() || ("Ilke " + (j+1)));
+  bas.push("Arac puani");
+  var satir = [bas.join(";")];
+  for(var i=0;i<USATIR;i++){
+    var vs = [], top = 0, say = 0;
+    for(var j=0;j<UILKE;j++){ var v = document.getElementById("u_v_" + i + "_" + j).value; vs.push(v); if(v !== ""){ top += parseInt(v, 10); say++; } }
+    if(!say) continue;
+    satir.push([document.getElementById("u_ad_" + i).value.trim() || ("Arac " + (i+1))].concat(vs).concat([(100 * top / say).toFixed(1)]).join(";"));
+  }
+  var blob = new Blob(["\ufeff" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a2 = document.createElement("a");
+  a2.href = URL.createObjectURL(blob);
+  a2.download = "iso30408_deger_uyumu.csv";
+  a2.click();
+  URL.revokeObjectURL(a2.href);
+});
+
+/* =========================================================
+   4) FORMÜL TABLOSU + HESAPLAYICI
+   Alan adları gömülü Python modülünün hesapla() imzasıyla birebir aynıdır.
+   ========================================================= */
+function gerek(kosul, mesaj){ if(!kosul) throw new Error("GecersizGirdi: " + mesaj); }
+function bolOk(pay, payda, ad){ gerek(payda > 0, ad + " sıfırdan büyük olmalı"); return pay / payda; }
+function negYok(v, ks){ ks.forEach(function(k){ gerek(v[k] >= 0, k + " negatif olamaz"); }); }
+/* Python round() ile aynı davranış: tam yarım değerlerde en yakın çifte yuvarlar */
+function pyround(x, n){
+  var m = Math.pow(10, n), y = x * m, f = Math.floor(y);
+  if(y - f === 0.5) return (f % 2 === 0 ? f : f + 1) / m;
+  return Math.round(y) / m;
+}
+function r1(x){ return pyround(x, 1); }
+function r2(x){ return pyround(x, 2); }
+function r3(x){ return pyround(x, 3); }
+
+var CALC = [
+ {id:"sapma", name:"Hedefe göre sapma (hedef ve sonuç)", grp:"Ölçüm", noHeur:true,
+  formula:"Sapma = ((Sonuç &minus; Hedef) &divide; Hedef) &times; 100",
+  note:"Ek A.2 ve A.3: her işlev ya da uygulama için hedef, hedef değeri, izleme takvimi ve sonuçlar kaydedilir; 5.3 f: önemli sapmalar olduğunda üst yönetim eksiklikleri gidermek için plan ve raporlama prosedürü geliştirir. Standart sapmanın nasıl hesaplanacağını ya da önemli sayılacağını söylemez; yüzde bu sayfada türetilmiştir.",
+  fields:[{k:"hedef",l:"Hedef değer",v:100,step:0.1},{k:"sonuc",l:"Sonuç (gerçekleşen)",v:92,step:0.1}],
+  unit:"% (hedefe göre sapma)",
+  py:"hesapla('sapma', hedef=100, sonuc=92)",
+  calc:function(v){
+    negYok(v, ["sonuc"]);
+    var d = 100 * bolOk(v.sonuc - v.hedef, v.hedef, "hedef");
+    return {value:d, dec:1, expl:"(" + v.sonuc + " − " + v.hedef + ") ÷ " + v.hedef + " × 100",
+      detail:[["Mutlak sapma", r2(v.sonuc - v.hedef)],
+              ["Hedefin yüzdesi olarak (%)", r1(100 * v.sonuc / v.hedef)]]}; },
+  bands:[[0.0000001,"ok","Sonuç hedefin üstünde; hedefin yönünü (yüksek mi iyi, düşük mü iyi) göz önünde bulundurun ve kabul edilebilir aralıkla birlikte okuyun."],
+         [-0.0000001,"ok","Sonuç hedefe eşit."],
+         [-1e9,"warn","Sonuç hedefin altında; önemli sapma sayılıyorsa plan ve raporlama prosedürü gerekir (5.3 f). Standart önem eşiği vermez; kurum belirler."]]},
+
+ {id:"aralik", name:"Kabul edilebilir sonuç aralığı sapması", grp:"Ölçüm", noHeur:true,
+  formula:"Sapma = Sonuç &minus; Alt sınır (altındaysa); Sonuç &minus; Üst sınır (üstündeyse); 0 (aralıktaysa)",
+  note:"Madde 6.3.3 g: her uygulama için kabul edilebilir bir sonuç aralığı tanımlanır. Standart aralıkları vermez; bu hesap sonucun aralığın ne kadar dışında kaldığını gösterir ve bu sayfada türetilmiştir.",
+  fields:[{k:"sonuc",l:"Sonuç",v:92,step:0.1},{k:"alt",l:"Kabul edilebilir alt sınır",v:95,step:0.1},{k:"ust",l:"Kabul edilebilir üst sınır",v:110,step:0.1}],
+  unit:"birim (aralık dışı sapma)",
+  py:"hesapla('aralik', sonuc=92, alt=95, ust=110)",
+  calc:function(v){
+    gerek(v.alt <= v.ust, "alt sınır üst sınırdan büyük olamaz");
+    negYok(v, ["sonuc","alt"]);
+    var d = v.sonuc < v.alt ? v.sonuc - v.alt : (v.sonuc > v.ust ? v.sonuc - v.ust : 0);
+    var durum = d === 0 ? "aralık içinde" : (d < 0 ? "aralığın altında" : "aralığın üstünde");
+    return {value:d, dec:1, expl:v.sonuc + " ile [" + v.alt + ", " + v.ust + "] aralığı",
+      detail:[["Durum", durum],
+              ["Aralık genişliği", r2(v.ust - v.alt)]]}; },
+  bands:[[0.0000001,"warn","Sonuç aralığın üstünde; üst sınırın aşılması iyi ya da kötü olabilir, ölçünün yönüne göre değerlendirin."],
+         [-0.0000001,"ok","Sonuç kabul edilebilir aralıkta."],
+         [-1e9,"warn","Sonuç aralığın altında; eylem adımlarını (A.2/A.3) belirleyin ve üst yönetime raporlayın (5.3 e, f)."]]},
+
+ {id:"uyum", name:"Değer uyum puanı (araçların ilkeleri güçlendirmesi)", grp:"Değer uyumu", noHeur:true,
+  formula:"Puan = ((Güçlendiren &minus; Zayıflatan) &divide; (Güçlendiren + Nötr + Zayıflatan)) &times; 100",
+  note:"Ek A.4: her araç ve süreç, her insan yönetişimi ilkesini güçlendirir, zayıflatır ya da nötrdür. 6.3.3 i: araç ve süreçlerin hangi ilkeleri teşvik ettiği incelenir. Sayısal puanlama standartta yoktur; sınıfların sayımla puana çevrilmesi bu sayfada türetilmiştir (−100 hepsi zayıflatır, +100 hepsi güçlendirir).",
+  fields:[{k:"guclendirir",l:"İlkeyi güçlendiren değerlendirme sayısı",v:5},{k:"notr",l:"Nötr değerlendirme sayısı",v:3},{k:"zayiflatir",l:"İlkeyi zayıflatan değerlendirme sayısı",v:2}],
+  unit:"puan (−100…+100)",
+  py:"hesapla('uyum', guclendirir=5, notr=3, zayiflatir=2)",
+  calc:function(v){
+    negYok(v, ["guclendirir","notr","zayiflatir"]);
+    var t = v.guclendirir + v.notr + v.zayiflatir;
+    var d = 100 * bolOk(v.guclendirir - v.zayiflatir, t, "toplam değerlendirme");
+    return {value:d, dec:1, expl:"(" + v.guclendirir + " − " + v.zayiflatir + ") ÷ (" + v.guclendirir + " + " + v.notr + " + " + v.zayiflatir + ") × 100",
+      detail:[["Toplam değerlendirme", r2(t)],
+              ["Zayıflatanların payı (%)", r1(100 * v.zayiflatir / t)]]}; },
+  bands:[[0.0000001,"ok","Araçlar ilkeleri net olarak güçlendiriyor; yine de tek tek zayıflatan araçlara bakın (6.3.3 k)."],
+         [-0.0000001,"warn","Güçlendiren ve zayıflatan etkiler dengede; zayıflatanları belirleyip yeniden tasarlayın."],
+         [-1e9,"bad","Araçlar ilkeleri ağırlıklı olarak zayıflatıyor; ilkelerin iletilmesi ve araçların gözden geçirilmesi için düzeltici eylem gerekir (6.3.3 k)."]]},
+
+ {id:"baglanti", name:"Hedef ve ölçü bağlantı oranı", grp:"Hizalama", noHeur:true,
+  formula:"Bağlantı = (Kurumsal hedefe ya da KPI'ya bağlı hedef/ölçü &divide; Toplam hedef/ölçü) &times; 100",
+  note:"Madde 6.3.4 a, b ve e: işlevsel hedefler kurumsal hedeflere bağlı mı, işlevsel ölçüler KPI içeriyor mu, mevcut KPI'lar güncel hedeflerle hizalı mı. Evet/hayır sorularını bir orana çevirmek bu sayfada türetilmiştir.",
+  fields:[{k:"bagli",l:"Kurumsal hedefe/KPI'ya bağlı olanlar",v:6},{k:"toplam",l:"Toplam işlevsel hedef/ölçü",v:8}],
+  unit:"% (bağlı ÷ toplam)",
+  py:"hesapla('baglanti', bagli=6, toplam=8)",
+  calc:function(v){
+    negYok(v, ["bagli"]);
+    gerek(v.bagli <= v.toplam, "bagli toplam sayısını aşamaz");
+    var d = 100 * bolOk(v.bagli, v.toplam, "toplam");
+    return {value:d, dec:1, expl:v.bagli + " ÷ " + v.toplam + " × 100",
+      detail:[["Bağlantısı olmayan", r2(v.toplam - v.bagli)]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Bağlantısı olmayan hedef ve ölçüleri ya kurumsal bir hedefe bağlayın ya da kaldırın; çatışan hedefleri de ayrıca inceleyin (6.3.4 c)."]]},
+
+ {id:"algi", name:"İlkelerin teslim edildiği algısı oranı", grp:"Algı", noHeur:true,
+  formula:"Algı = (Olumlu yanıt &divide; Toplam yanıt) &times; 100",
+  note:"Madde 6.3.4 h: çalışanlar ve müşteriler kurumun ilan ettiği insan yönetişimi ilkelerini teslim ettiğini düşünüyor mu? 6.3.3 k: iletilmeyen ilkelerde düzeltici eylem. Oran bu sayfada türetilmiştir; standart anket yöntemi ya da eşik vermez.",
+  fields:[{k:"olumlu",l:"Olumlu yanıt sayısı",v:310},{k:"yanit",l:"Toplam yanıt sayısı",v:420}],
+  unit:"% (olumlu ÷ yanıt)",
+  py:"hesapla('algi', olumlu=310, yanit=420)",
+  calc:function(v){
+    negYok(v, ["olumlu"]);
+    gerek(v.olumlu <= v.yanit, "olumlu sayısı yanıt sayısını aşamaz");
+    var d = 100 * bolOk(v.olumlu, v.yanit, "yanit");
+    return {value:d, dec:1, expl:v.olumlu + " ÷ " + v.yanit + " × 100",
+      detail:[["Olumlu olmayan yanıt", r2(v.yanit - v.olumlu)],
+              ["Olumlu olmayanların payı (%)", r1(100 - d)]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Çalışan ve müşteri algılarını ayrı ayrı okuyun; düşük algı, ilkenin iletilmediğini ya da uygulamayla örtüşmediğini gösterebilir (6.3.3 k)."]]},
+
+ {id:"izleme", name:"İzleme takvimine uyum", grp:"İzleme", noHeur:true,
+  formula:"Uyum = (Tamamlanan gözden geçirme &divide; Planlanan gözden geçirme) &times; 100",
+  note:"Ek A.2 ve A.3: her hedef için bir izleme takvimi tanımlanır; 5.3 e: üst yönetim sonuçları rapor şablonlarıyla düzenli gözden geçirir; 5.2: yönetim kurulu durum güncellemelerini izler. Takvime uyum oranı bu sayfada türetilmiştir.",
+  fields:[{k:"tamamlanan",l:"Tamamlanan gözden geçirme",v:9},{k:"planlanan",l:"Planlanan gözden geçirme",v:12}],
+  unit:"% (tamamlanan ÷ planlanan)",
+  py:"hesapla('izleme', tamamlanan=9, planlanan=12)",
+  calc:function(v){
+    negYok(v, ["tamamlanan"]);
+    gerek(v.tamamlanan <= v.planlanan, "tamamlanan sayısı planlanan sayısını aşamaz");
+    var d = 100 * bolOk(v.tamamlanan, v.planlanan, "planlanan");
+    return {value:d, dec:1, expl:v.tamamlanan + " ÷ " + v.planlanan + " × 100",
+      detail:[["Geciken gözden geçirme", r2(v.planlanan - v.tamamlanan)]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Geciken gözden geçirmelerin nedenlerini ve izleme sıklığının (6.3.4 g: önem ve sıklık) yeterliliğini değerlendirin."]]},
+
+ {id:"katilim", name:"Paydaş katılım oranı", grp:"Katılım", noHeur:true,
+  formula:"Katılım = (Katılan &divide; Hedef kitle) &times; 100",
+  note:"Madde 5.3 b ve 7 g: her düzeyde insanların etkin katılımı teşvik edilir; 5.4.3: paydaş katılımı anlaşılır ve izlenir; 6.3.3 j: hedef ve sonuçlara ilişkin geri bildirim toplamak için etkileşim. Oran bu sayfada türetilmiştir; standart katılımın tanımını ve eşiğini vermez.",
+  fields:[{k:"katilan",l:"Katılan / geri bildirim veren",v:360},{k:"hedef_kitle",l:"Hedef kitle",v:600}],
+  unit:"% (katılan ÷ hedef kitle)",
+  py:"hesapla('katilim', katilan=360, hedef_kitle=600)",
+  calc:function(v){
+    negYok(v, ["katilan"]);
+    gerek(v.katilan <= v.hedef_kitle, "katilan hedef_kitle sayısını aşamaz");
+    var d = 100 * bolOk(v.katilan, v.hedef_kitle, "hedef_kitle");
+    return {value:d, dec:1, expl:v.katilan + " ÷ " + v.hedef_kitle + " × 100",
+      detail:[["Katılmayan", r2(v.hedef_kitle - v.katilan)]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Katılımı düzeylere göre (üst yönetim, operasyonel yönetim, diğer çalışanlar) bölümleyin."]]},
+
+ {id:"kapsama", name:"İfadelerin uygulama kapsaması (öz değerlendirme)", grp:"Uygulama", noHeur:true,
+  formula:"Kapsama = ((Uygulanan + 0,5 &times; Kısmen uygulanan) &divide; İfade sayısı) &times; 100",
+  note:"Madde 5–7'deki 'kurum şunu yapmalı' ifadelerinin ne kadarının uygulandığı; madde 7 dokuz temel adımı sayar. Standart puanlama ya da eşik vermez; kısmen uygulananın yarım sayılması ve hedef bu sayfada türetilmiştir. Bir uygunluk sınaması değildir.",
+  fields:[{k:"toplam",l:"Maddedeki ifade sayısı",v:11},{k:"uygulanan",l:"Tam uygulanan ifade",v:6},{k:"kismen",l:"Kısmen uygulanan ifade",v:3}],
+  unit:"% (kapsama)",
+  py:"hesapla('kapsama', toplam=11, uygulanan=6, kismen=3)",
+  calc:function(v){
+    negYok(v, ["uygulanan","kismen"]);
+    gerek(v.uygulanan + v.kismen <= v.toplam, "uygulanan ve kısmen uygulanan toplamı ifade sayısını aşamaz");
+    var d = 100 * bolOk(v.uygulanan + 0.5 * v.kismen, v.toplam, "ifade sayısı");
+    return {value:d, dec:1, expl:"(" + v.uygulanan + " + 0,5 × " + v.kismen + ") ÷ " + v.toplam + " × 100",
+      detail:[["Hiç uygulanmayan ifade", r2(v.toplam - v.uygulanan - v.kismen)],
+              ["Yalnızca tam uygulananların payı (%)", r1(100 * v.uygulanan / v.toplam)]]}; },
+  bands:[[0,"ok","Hedefinizi önceden belirleyin; hedefin altındaki maddelerde eksik ifadeleri matriste süzüp eylem planına dönüştürün."]]}
+];
+
+/* --- formül tablosu --- */
+(function(){
+  var rows = CALC.map(function(c){
+    return '<tr><td><b>' + c.name + '</b></td><td><span style="font-family:var(--serif)">' +
+           c.formula + '</span></td><td>' + c.note + '</td></tr>';
+  }).join("");
+  document.getElementById("fBody").innerHTML = rows;
+})();
+
+/* --- hesaplayıcı --- */
+var sel = document.getElementById("cMetric");
+CALC.forEach(function(c, i){
+  var o = document.createElement("option");
+  o.value = i; o.textContent = c.grp + " — " + c.name;
+  sel.appendChild(o);
+});
+
+function buildFields(){
+  var c = CALC[+sel.value];
+  document.getElementById("cFields").innerHTML = c.fields.map(function(f){
+    return '<div class="field"><label for="in_' + f.k + '">' + f.l + '</label>' +
+      '<input type="number" id="in_' + f.k + '" value="" step="' + (f.step || "any") + '" placeholder="' + f.v + '"></div>';
+  }).join("");
+  document.getElementById("cFields").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", run);
+  });
+}
+
+function readVals(){
+  var c = CALC[+sel.value], v = {}, missing = false;
+  c.fields.forEach(function(f){
+    var el = document.getElementById("in_" + f.k);
+    var raw = el && el.value !== "" ? parseFloat(el.value) : NaN;
+    if(isNaN(raw)){ missing = true; v[f.k] = f.v; } else { v[f.k] = raw; }
+  });
+  return {v:v, missing:missing};
+}
+
+function fmt(x, dec){
+  if(!isFinite(x)) return "—";
+  return x.toLocaleString("tr-TR", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+
+/* Hesaplama motoru: Python hazırsa gömülü modül, değilse JS yedeği */
+function compute(c, v){
+  if(PY.ready){
+    try{
+      PY.pyodide.globals.set("_metrik", c.id);
+      PY.pyodide.globals.set("_girdi", JSON.stringify(v));
+      var raw = PY.pyodide.runPython(
+        "import json\n" +
+        "json.dumps(hesapla(_metrik, **json.loads(_girdi)))");
+      var r = JSON.parse(raw);
+      return {value:r.deger, expl:r.ifade, dec:r.ondalik, detail:r.ayrinti,
+              unit:r.birim, durum:r.durum, engine:"python"};
+    }catch(err){
+      var msg = String(err);
+      /* Kullanıcı girdisi kaynaklı hata: motor sorunu değil, yedeğe geçme */
+      if(msg.indexOf("GecersizGirdi") !== -1 || msg.indexOf("ZeroDivisionError") !== -1) throw err;
+      setEngine("off", "Motor: JS yedeği — Python hatası");
+    }
+  }
+  var out = c.calc(v);
+  out.engine = "js";
+  return out;
+}
+
+function run(){
+  var c = CALC[+sel.value];
+  var r = readVals();
+  var out;
+  try { out = compute(c, r.v); } catch(e){ out = null; }
+  var box = document.getElementById("cResult");
+  if(!out || !isFinite(out.value)){
+    box.innerHTML = '<div class="result"><b>Hesaplanamadı.</b> Payda sıfır olamaz, parça bütünden büyük olamaz ve değerler geçerli aralıkta olmalı; alanları kontrol edin.</div>';
+    return;
+  }
+  var dec = (out.dec === undefined) ? 1 : out.dec;
+  var unit = out.unit || c.unit;
+  var html = '<div class="result">';
+  html += '<div class="big">' + fmt(out.value, dec) + ' <span>' + unit + '</span></div>';
+  html += '<div style="font-size:13px;color:var(--ink-soft);margin-top:6px">' + c.name +
+          ' · ' + (out.engine === "python" ? 'Python (Pyodide) ile hesaplandı' : 'JavaScript ile hesaplandı') +
+          (r.missing ? ' · <i>boş alanlar için örnek değer kullanıldı</i>' : '') + '</div>';
+
+  if(document.getElementById("oFormula").checked){
+    html += '<div class="formula">' + c.formula + '<br><span style="color:var(--ink-soft);font-size:15px">= ' +
+            out.expl + ' = <b>' + fmt(out.value, dec) + '</b> ' + unit + '</span></div>';
+  }
+  if(out.detail && out.detail.length){
+    html += '<dl>' + out.detail.map(function(d){
+      var val = (typeof d[1] === "number") ? d[1].toLocaleString("tr-TR") : d[1];
+      return '<dt>' + d[0] + '</dt><dd>' + val + '</dd>';
+    }).join("") + '</dl>';
+  }
+  if(document.getElementById("oInterp").checked){
+    if(c.durumMetin && out.durum){
+      html += '<div class="verdict ' + out.durum + '">' + c.durumMetin[out.durum] + '</div>';
+    } else if(c.bands){
+      var band = c.bands[c.bands.length-1];
+      for(var i=0;i<c.bands.length;i++){ if(out.value >= c.bands[i][0]){ band = c.bands[i]; break; } }
+      html += '<div class="verdict ' + band[1] + '">' + band[2] + '</div>';
+      if(c.bands.length > 1 && !c.noHeur){
+        html += '<div class="note" style="margin-top:12px">Yorum eşikleri standarttan değil, başlangıç varsayımlarından gelir; kendi hedeflerinizle değiştirin.</div>';
+      }
+    }
+    html += '<div class="note" style="margin-top:12px">' + c.note + '</div>';
+  }
+  if(document.getElementById("oPy").checked){
+    var args = c.fields.map(function(f){ return f.k + "=" + r.v[f.k]; }).join(", ");
+    var call = 'hesapla("' + c.id + '", ' + args + ')';
+    html += '<pre style="margin-top:16px"><i>&gt;&gt;&gt; from iso30408_metrikler import hesapla</i>\n' +
+            '&gt;&gt;&gt; ' + call + '["deger"]\n' + out.value + '\n\n' +
+            '<i># eşdeğer doğrudan çağrı</i>\n&gt;&gt;&gt; ' + c.py + '</pre>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+sel.addEventListener("change", function(){ buildFields(); run(); });
+document.getElementById("btnRun").addEventListener("click", run);
+document.getElementById("btnExample").addEventListener("click", function(){
+  var c = CALC[+sel.value];
+  c.fields.forEach(function(f){ document.getElementById("in_" + f.k).value = f.v; });
+  run();
+});
+["oFormula","oInterp","oPy"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", function(){
+    var all = document.getElementById("oFormula").checked &&
+              document.getElementById("oInterp").checked &&
+              document.getElementById("oPy").checked;
+    document.getElementById("oAll").checked = all;
+    run();
+  });
+});
+document.getElementById("oAll").addEventListener("change", function(){
+  var s = this.checked;
+  ["oFormula","oInterp","oPy"].forEach(function(id){ document.getElementById(id).checked = s; });
+  run();
+});
+
+/* --- tablolardan hesaplayıcıya aktarma --- */
+function hesapGit(id){
+  var idx = CALC.map(function(c){ return c.id; }).indexOf(id);
+  sel.value = idx; buildFields();
+}
+function hesapSon(){
+  run();
+  document.getElementById("hesaplayici").scrollIntoView({behavior:"smooth", block:"start"});
+}
+document.getElementById("btnAktar").addEventListener("click", function(){
+  if(!TBL.ok){ loadTblExample(); }
+  hesapGit("kapsama");
+  var ilk = TBL.ilk;
+  if(ilk){
+    document.getElementById("in_toplam").value = ilk.toplam;
+    document.getElementById("in_uygulanan").value = ilk.uygulanan;
+    document.getElementById("in_kismen").value = ilk.kismen;
+  }
+  hesapSon();
+});
+document.getElementById("btnAktarR").addEventListener("click", function(){
+  if(!RES.ok){ loadResExample(); }
+  hesapGit("aralik");
+  var s = RES.ilk;
+  if(s){
+    document.getElementById("in_sonuc").value = s.son;
+    document.getElementById("in_alt").value = s.alt;
+    document.getElementById("in_ust").value = s.ust;
+  }
+  hesapSon();
+});
+document.getElementById("btnAktarU").addEventListener("click", function(){
+  if(!UYUM.ok){ loadUyumExample(); }
+  hesapGit("uyum");
+  document.getElementById("in_guclendirir").value = UYUM.g;
+  document.getElementById("in_notr").value = UYUM.n;
+  document.getElementById("in_zayiflatir").value = UYUM.z;
+  hesapSon();
+});
+
+/* =========================================================
+   4) PYTHON MOTORU (Pyodide / WebAssembly)
+   Gömülü iso30408_metrikler.py modülü tarayıcı içinde
+   gerçek CPython ile çalıştırılır. Erişim yoksa JS yedeği
+   devrede kalır ve sonuçlar değişmez.
+   ========================================================= */
+var PY = {ready:false, busy:false, pyodide:null};
+
+var PYODIDE_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+  "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"
+];
+
+function setEngine(state, text){
+  var chip = document.getElementById("engStatus");
+  chip.className = "chip" + (state ? " " + state : "");
+  chip.textContent = text;
+}
+
+function loadScript(src){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function(){ resolve(src); };
+    s.onerror = function(){ reject(new Error(src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function pySource(){
+  return document.getElementById("pysrc").textContent;
+}
+
+async function initPython(){
+  if(PY.ready) return true;
+  if(PY.busy) return false;
+  PY.busy = true;
+  document.getElementById("btnPy").disabled = true;
+  setEngine("busy", "Motor: Pyodide indiriliyor…");
+  try{
+    if(typeof loadPyodide === "undefined"){
+      try { await loadScript(PYODIDE_URLS[0]); }
+      catch(e){ await loadScript(PYODIDE_URLS[1]); }
+    }
+    setEngine("busy", "Motor: Python başlatılıyor…");
+    PY.pyodide = await loadPyodide();
+
+    /* Modülü sanal dosya sistemine yazmadan, gerçek bir modül nesnesi olarak kur:
+       böylece __name__ != "__main__" olur ve _demo() kendiliğinden çalışmaz.
+       Kayıt exec'ten ÖNCE yapılır; @dataclass işlenirken modülü sys.modules'te arar. */
+    PY.pyodide.globals.set("_kaynak", pySource());
+    PY.pyodide.runPython(
+      "import sys, types\n" +
+      "_m = types.ModuleType('iso30408_metrikler')\n" +
+      "_m.__file__ = 'iso30408_metrikler.py'\n" +
+      "sys.modules['iso30408_metrikler'] = _m\n" +
+      "exec(compile(_kaynak, 'iso30408_metrikler.py', 'exec'), _m.__dict__)\n" +
+      "from iso30408_metrikler import *\n" +
+      "import iso30408_metrikler as m\n"
+    );
+    var sur = PY.pyodide.runPython(
+      "import sys\n'.'.join(str(x) for x in sys.version_info[:3])");
+    PY.ready = true;
+    setEngine("on", "Motor: Python " + sur + " (Pyodide)");
+    run();
+    return true;
+  }catch(e){
+    setEngine("off", "Motor: tarayıcı (JS) — Pyodide yüklenemedi");
+    document.getElementById("pyOut").textContent =
+      "Python motoru yüklenemedi. Bu genellikle çevrimdışı olmaktan ya da ağ kısıtından kaynaklanır.\n" +
+      "Sayfa çalışmaya devam eder; hesaplamalar JavaScript yedeğiyle aynı sonuçları verir.\n\n" + e;
+    return false;
+  }finally{
+    PY.busy = false;
+    document.getElementById("btnPy").disabled = false;
+  }
+}
+
+document.getElementById("btnPy").addEventListener("click", initPython);
+
+/* --- konsol --- */
+var VARSAYILAN_KOD =
+  'from iso30408_metrikler import *\n' +
+  'import iso30408_metrikler as m\n\n' +
+  '# Ölçüm: hedef sapması ve kabul edilebilir aralık\n' +
+  'print("Hedef sapması   :", hedef_sapmasi(100, 92), "%")\n' +
+  'print("Aralık sapması  :", aralik_sapmasi(92, 95, 110))\n' +
+  'print("Uyum puanı      :", uyum_puani(5, 3, 2))\n' +
+  'print("Bağlantı        :", baglanti_orani(6, 8), "%")\n' +
+  'print("İzleme uyumu    :", round(izleme_orani(9, 12), 1), "%")\n\n' +
+  '# Öz değerlendirme tablosu (madde 5–7)\n' +
+  't = ornek_tablo()\n' +
+  'for anahtar, deger in t.ozet().items():\n' +
+  '    print(f"{anahtar:<14}: {deger}")\n\n' +
+  '# Sonuç tablosu (A.2/A.3) ve değer uyumu (A.4)\n' +
+  'print(ornek_sonuclar().ozet())\n' +
+  'print(ornek_uyum().ozet())\n\n' +
+  '# Dağıtıcı, hesaplayıcının kullandığı arayüzdür:\n' +
+  'print(hesapla("kapsama", toplam=11, uygulanan=6, kismen=3))\n\n' +
+  '# Madde 7 uygulama denetimi: hangi adımlar eksik?\n' +
+  'for uyari in uygulama_denetimi(a=True, b=True, c=True, g=True):\n' +
+  '    print("!", uyari)\n';
+
+document.getElementById("pyCode").value = VARSAYILAN_KOD;
+
+async function runConsole(){
+  var out = document.getElementById("pyOut");
+  if(!PY.ready){
+    out.textContent = "Python motoru hazırlanıyor, ilk çalıştırma biraz sürebilir…";
+    var ok = await initPython();
+    if(!ok) return;
+  }
+  out.textContent = "çalışıyor…";
+  try{
+    PY.pyodide.globals.set("_kod", document.getElementById("pyCode").value);
+    var cikti = PY.pyodide.runPython(
+      "import io, contextlib, traceback\n" +
+      "_tampon = io.StringIO()\n" +
+      "with contextlib.redirect_stdout(_tampon), contextlib.redirect_stderr(_tampon):\n" +
+      "    try:\n" +
+      "        exec(_kod, globals())\n" +
+      "    except Exception:\n" +
+      "        traceback.print_exc()\n" +
+      "_tampon.getvalue()"
+    );
+    out.textContent = cikti && cikti.trim() ? cikti : "(çıktı yok)";
+  }catch(e){
+    out.textContent = "Hata: " + e;
+  }
+}
+
+document.getElementById("btnRunPy").addEventListener("click", runConsole);
+document.getElementById("btnReset").addEventListener("click", function(){
+  document.getElementById("pyCode").value = VARSAYILAN_KOD;
+  document.getElementById("pyOut").textContent = "Kod sıfırlandı.";
+});
+document.getElementById("btnDemo").addEventListener("click", function(){
+  document.getElementById("pyCode").value =
+    "import iso30408_metrikler as m\n\n" +
+    "# Modülün kendi doğrulama çıktısı (komut satırındaki\n" +
+    "# python3 iso30408_metrikler.py ile aynı sonucu verir)\n" +
+    "m._demo()\n";
+  runConsole();
+});
+
+/* modül kaynağını sayfada okunur kıl */
+document.getElementById("srcView").textContent = pySource().trim();
+
+buildTbl();
+loadTblExample();
+buildFields();
+run();
+</script>
+</body>
+</html>
