@@ -1,0 +1,1854 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO 23326 Çalışan Bağlılığı Rehberi — Sınıflandırma ve Hesaplayıcı</title>
+<style>
+  :root{
+    --ink:#101418;
+    --ink-soft:#59636f;
+    --ink-faint:#8b95a1;
+    --line:#dde3ea;
+    --line-soft:#eef1f5;
+    --bg:#ffffff;
+    --canvas:#f6f8fa;
+    --accent:#0b5c8a;
+    --accent-soft:#e7f0f6;
+    --panel:#0e1520;
+    --panel-2:#16202e;
+    --panel-line:#28394f;
+    --out-ink:#8a3b12;  --out-bg:#fbeee6;
+    --eff-ink:#14615c;  --eff-bg:#e6f2f1;
+    --efc-ink:#33478c;  --efc-bg:#eaedf8;
+    --rea-ink:#7a5c00;  --rea-bg:#f8f1d9;
+    --cos-ink:#8c2f4b;  --cos-bg:#f9e8ee;
+    --ok:#1d6f42; --warn:#8a6100; --bad:#992121;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--canvas);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.62;
+  }
+  .sheet{max-width:1000px;margin:0 auto;background:var(--bg);padding:56px 60px 80px;
+    box-shadow:0 0 0 1px var(--line);}
+  @media(max-width:760px){ .sheet{padding:28px 20px 56px} }
+
+  h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:25px;margin:52px 0 4px;padding-bottom:8px;
+     border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  h3{font-size:17px;margin:32px 0 6px;letter-spacing:.01em}
+  h4{font-size:15px;margin:22px 0 4px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:12px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  small{color:var(--ink-soft)}
+  .lede{font-size:17px;color:var(--ink-soft)}
+
+  .srcbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 0;margin:0 0 26px;font-size:13.5px;color:var(--ink-soft)}
+  .srcbar b{color:var(--ink);font-weight:600}
+
+  .toc{background:var(--canvas);border:1px solid var(--line);padding:16px 20px;margin:26px 0 0;
+    font-size:14px;columns:2;column-gap:34px}
+  @media(max-width:640px){.toc{columns:1}}
+  .toc a{display:block;padding:3px 0;text-decoration:none;color:var(--ink)}
+  .toc a:hover{color:var(--accent);text-decoration:underline}
+  .toc b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 4px}
+
+  .keypoints li{margin:10px 0}
+  .keypoints b{font-weight:650}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink-soft);padding-bottom:6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:var(--canvas);font-weight:650;font-size:13px}
+  tbody tr:nth-child(even){background:#fcfdfe}
+  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;width:66px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink)}
+  .dot.o{background:var(--out-ink)} .dot.s{background:var(--eff-ink)} .dot.p{background:var(--efc-ink)}
+  .dot.r{background:var(--rea-ink)} .dot.c{background:var(--cos-ink)}
+
+  .tag{display:inline-block;font-size:11px;line-height:1.5;padding:1px 7px;border-radius:3px;
+    letter-spacing:.03em;white-space:nowrap;font-weight:600}
+  .tag.o{color:var(--out-ink);background:var(--out-bg)}
+  .tag.s{color:var(--eff-ink);background:var(--eff-bg)}
+  .tag.p{color:var(--efc-ink);background:var(--efc-bg)}
+  .tag.r{color:var(--rea-ink);background:var(--rea-bg)}
+  .tag.c{color:var(--cos-ink);background:var(--cos-bg)}
+  .tag.iso{color:#4a4a4a;background:#eeeeee}
+  .tag.lvl{color:#5a3a86;background:#f0eaf8}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--line-soft);padding:1px 5px;border-radius:3px}
+  pre{background:var(--panel);color:#e7eef6;border-radius:6px;padding:18px 20px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:14px 0}
+  pre b{color:#f0b866;font-weight:400}      /* anahtar kelime */
+  pre i{color:#7f8ea1;font-style:normal}    /* yorum */
+  pre u{color:#9fd28a;text-decoration:none} /* dize/sayı */
+  pre .fn{color:#79c0e8}
+  .filename{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin:14px 0 -8px}
+
+  .formula{font-family:var(--serif);font-size:16.5px;background:var(--canvas);
+    border-left:3px solid var(--accent);padding:12px 16px;margin:12px 0;overflow-x:auto}
+  .formula em{font-style:italic}
+
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 14px;color:var(--ink-soft);font-size:14px;margin:14px 0}
+
+  /* --- panel --- */
+  .panel{background:var(--panel);color:#dbe5f0;border-radius:8px;padding:22px 24px;margin:20px 0}
+  .panel h3{color:#fff;margin:0 0 4px;font-size:16px}
+  .panel .hint{color:#8fa2b8;font-size:13px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#8fa2b8;margin-bottom:5px}
+  .field label .req{color:#e08a5a}
+  select,input[type=number],input[type=text]{
+    width:100%;background:var(--panel-2);border:1px solid var(--panel-line);color:#eef4fb;
+    border-radius:5px;padding:9px 10px;font-family:var(--sans);font-size:14px}
+  input[type=number]{font-family:var(--mono)}
+  select:focus,input:focus{outline:2px solid #4a8fc0;outline-offset:1px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13.5px;color:#b9c7d6}
+  .checks label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .panel-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:5px;cursor:pointer;
+    border:1px solid transparent;padding:9px 18px}
+  .btn-run{background:#1c74ab;color:#fff}
+  .btn-run:hover{background:#2385c2}
+  .btn-ghost{background:transparent;color:#9fb3c9;border-color:var(--panel-line)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9fb3c9;
+    border:1px solid var(--panel-line);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7c8ea3}
+  .chip.busy::before{background:#e0a13c}
+  .chip.on::before{background:#4ec07a}
+  .chip.off::before{background:#c05a5a}
+
+  .console{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+  .console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+    background:var(--canvas);border-bottom:1px solid var(--line);padding:8px 12px;font-size:12.5px;color:var(--ink-soft)}
+  .console textarea{width:100%;border:0;display:block;background:var(--panel);color:#e7eef6;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:16px 20px;resize:vertical;min-height:190px}
+  .console textarea:focus{outline:2px solid #4a8fc0;outline-offset:-2px}
+  .console pre{margin:0;border-radius:0;background:#0a1017;border-top:1px solid var(--panel-line);min-height:64px}
+  .btn-sm{padding:6px 14px;font-size:13px}
+  details.src pre{max-height:420px;overflow:auto}
+  .btn-ghost:hover{color:#fff;border-color:#47607d}
+
+  .result{border:1px solid var(--line);border-top:3px solid var(--accent);padding:18px 20px;margin:18px 0}
+  .result .big{font-family:var(--serif);font-size:32px;line-height:1.1}
+  .result .big span{font-size:16px;color:var(--ink-soft);font-family:var(--sans)}
+  .result dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:14px 0 0;font-size:14px}
+  .result dt{color:var(--ink-soft)}
+  .result dd{margin:0;font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px;padding:10px 12px;font-size:14px;border-radius:4px;background:var(--canvas)}
+  .verdict.ok{color:var(--ok);background:#eef6f1}
+  .verdict.warn{color:var(--warn);background:#fbf5e7}
+  .verdict.bad{color:var(--bad);background:#faeeee}
+
+  /* --- matris --- */
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;
+    background:var(--canvas);border:1px solid var(--line);padding:14px 16px;margin:16px 0}
+  .filters label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .filters select,.filters input{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .matrix{font-size:13.5px}
+  .matrix th.rot{width:72px;text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom}
+  .matrix td.name{font-weight:500}
+  .matrix td.name em{display:block;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .matrix tr.group td{background:#f2f5f8;font-weight:650;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+  .count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+
+  /* --- pozisyon tablosu --- */
+  .postbl{font-size:13.5px}
+  .postbl input[type=text],.postbl input[type=date],.postbl input[type=number]{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .postbl input[type=text]{font-family:var(--sans)}
+  .postbl input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .postbl td.chk{text-align:center}
+  .postbl input[type=number]{text-align:right}
+  .postbl td:first-child{min-width:150px}
+  .postbl th.num,.postbl td.num{width:auto}
+  @media(max-width:760px){table{display:block;overflow-x:auto}}
+  .postbl td.calc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap}
+  .postbl tfoot td{background:var(--canvas);font-weight:650}
+  .tblbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+  .tblbar button{border-color:var(--line);color:var(--ink-soft);background:#fff}
+  .tblbar button:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tblbar .inline{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft)}
+  .tblbar .inline input{width:78px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .card{border:1px solid var(--line);border-top:3px solid var(--eff-ink);padding:12px 14px}
+  .card b{display:block;font-family:var(--serif);font-size:24px;line-height:1.2}
+  .card span{font-size:12px;color:var(--ink-soft)}
+  .card.alt{border-top-color:var(--efc-ink)}
+  .card.warn{border-top-color:var(--out-ink)}
+
+  details{border-bottom:1px solid var(--line);padding:12px 0}
+  summary{cursor:pointer;font-weight:600;font-size:15px}
+  summary::marker{color:var(--accent)}
+  details p{margin:10px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  @media (prefers-reduced-motion:no-preference){
+    .result{transition:border-color .2s}
+  }
+  @media print{
+    body{background:#fff} .sheet{box-shadow:none;max-width:none;padding:0}
+    .panel{background:#fff;color:#000;border:1px solid #000}
+    pre{background:#f4f4f4;color:#000}
+  }
+.postbl input[type=number]{min-width:70px}
+.tblbar .inline input{width:90px}
+.figcap{font-size:12.5px;color:var(--ink-soft);margin-top:6px}
+.fw{display:flex;gap:8px;align-items:stretch;margin:14px 0;flex-wrap:wrap}
+.fw-col{flex:1 1 200px;background:rgba(120,130,150,.14);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.fw-title{text-align:center;font-weight:700;font-size:15px;margin-bottom:4px}.fw-title small{font-weight:400;color:var(--ink-soft)}
+.fw-box{border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:var(--paper,#fff);font-size:13px;text-align:center}
+.fw-box small{display:block;color:var(--ink-soft);font-size:11px}
+.fw-mid{flex:1 1 170px;justify-content:flex-start}
+.fw-big{flex:1;border:1px solid var(--line);border-radius:18px;background:var(--paper,#fff);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:13px;padding:14px;min-height:180px}
+.fw-big small{color:var(--ink-soft);margin-top:6px}
+.fw-arrow{align-self:center;font-size:24px;color:var(--ink-soft)}
+@media(max-width:760px){.fw-arrow{display:none}}
+.bars{margin:10px 0}.br-row{display:flex;align-items:center;gap:10px;margin:5px 0}
+.br-lab{flex:0 0 250px;font-size:13px}.br-track{flex:1;height:22px;background:rgba(120,130,150,.10);border-radius:4px}
+.br-bar{display:block;height:100%;border-radius:4px;font-size:12px;line-height:22px;padding:0 6px;color:#fff;min-width:22px;box-sizing:border-box}
+.br-c{background:#3d78c4}.br-s{background:#b5651d}.br-r{background:#2e8b57}.br-o{background:#8e44ad}
+.br-sum{font-size:12.5px;color:var(--ink-soft);margin-top:6px}
+@media(max-width:760px){.br-lab{flex-basis:130px;font-size:12px}}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>ISO 23326 Çalışan Bağlılığı Rehberi</h1>
+<div class="srcbar">
+  <span><b>Kaynak:</b> BS ISO 23326:2022 — <i>Human resource management — Employee engagement — Guidelines</i></span>
+  <span><b>Kapsam:</b> 5 kullanıcı · 5 madde grubu · 115 madde ve unsur</span>
+  <span><b>Hesaplama:</b> gömülü Python modülü (Pyodide/WebAssembly)</span>
+  <span><b>Sürüm:</b> Ekim 2026</span>
+</div>
+
+<h2 id="genel">Genel Bakış</h2>
+<p>ISO 23326:2022, <b>çalışan bağlılığının</b> (employee engagement) desteklenmesi için politika, süreç ve uygulamalara rehberlik eden bir uluslararası standarttır; ISO/TC 260 tarafından hazırlanmış ilk baskıdır (15 Şubat 2022). BS ISO 23326:2022 onun İngiltere uyarlamasıdır ve BSI tarafından 28 Şubat 2022'de yayımlanmıştır.
+Standart bağlılığı tek bir tanıma bağlamaz; çalışanın iyiliğine, kurumun iyiliğine ve istihdam ilişkisindeki <b>karşılıklı kazanıma</b> odaklanır ve iş tatmini, kuruma bağlılık ve rol dışı davranış (isteğe bağlı çaba) gibi mevcut İK kavramlarının bir karışımı olarak görür. Hem kurumsal hedeflere hem de çalışanın işteki deneyimini iyileştirmeye yönelen bu çift odağın sürdürülebilir performansla ilişkilendirilebileceğini söyler.
+Bu bir <b>rehberdir</b>: sayısal formül, ölçek ya da eşik içermez; ek (annex) ve normatif atıf da yoktur. Bağlılığın ölçümü yalnızca yöntem olarak sayılır (odak grupları, anketler, geçerli araçlar). Bu sayfa, standardın rehber ifadelerini filtrelenebilir bir matrise; sayısallaştırılabilen kavramları öz değerlendirme tablosuna,
+türetilmiş formüllere, canlı bir hesaplayıcıya ve Python koduna dönüştürür. Sayısal bölümler standarda değil bu sayfaya aittir ve her yerde "türetilmiş" olarak işaretlenmiştir. İlişkili belgeler: ISO 10667-1 (insanların değerlendirilmesi), ISO 30400 (terimler), ISO 45003 (psikososyal riskler).</p>
+
+<h3>Önemli Noktalar</h3>
+<ul class="keypoints">
+  <li><b>Beş koşul, bir durum, beş çıktı (Şekil 1).</b> Kurumun değiştirebildiği beş koşul — örgüt kültürü ve iletişim, destekleyici liderlik, örgütsel öğrenme, iş içeriği ve iş tasarımı, ücret ve takdir — işe bağlılığı etkiler; bağlılık da bireysel memnuniyet, kurumsal performans ve sürdürülebilirlik, elde tutma, müşteri hizmeti ve üretkenlik gibi çıktılarla ilişkilendirilir. Madde 6–10 bu koşulları ele alır.</li>
+  <li><b>Üç boyut.</b> Bağlılık, bireyin işindeki <b>dinçlik</b> (enerji ve dayanıklılık), <b>adanmışlık</b> (güçlü katılım, gurur ve meydan okuma) ve <b>yoğunlaşma</b> (tam odaklanma) düzeyiyle ölçülebilir; standart Schaufeli ve arkadaşlarının çalışmasına dayanır (madde 4.3).</li>
+  <li><b>Altı yol gösterici ilke (4.1).</b> Tüm paydaşların rolü vardır; bağlılık kültüre gömülür ve politikalarla hayata geçirilir; iki yönlü iletişim şarttır; ilerleme düzenli, anonim ve gizli anket/görüşmelerle değerlendirilir; sağlık öncelikli olup uzun süreli aşırı bağlılığın riskleri izlenir; veri koruma yasaları gözetilir.</li>
+  <li><b>67 rehber ifadesi.</b> Madde 6–10'da on iki başlık altında "kurumlar şunu yapmalı" biçiminde 67 madde vardır: kültür ve değerler (6), iletişim (7), güçlendirme (7), temsil (2), liderlik (7), öğrenme (9), iş tasarımı (3), çalışma ortamı (8), sağlığı geliştirme (7), dayanıklılık ve iş-yaşam (3), ücret (4), takdir (4).</li>
+  <li><b>Çalışan sesi ve temsil.</b> Çalışanlar ve varsa tanınmış temsilcileri; değerlerin geliştirilmesinde, risk değerlendirmesinde, sağlık yaklaşımında, ücret çerçevesinde ve takdir yöntemlerinde danışılan taraftır. Standart ulusal iş yasalarını ve toplu sözleşmeleri ihlal etmeyi amaçlamaz.</li>
+  <li><b>Ölçüm yöntemleri (5.3).</b> Odak grupları, çalışan anketleri (iç ya da üçüncü taraf) ve geçerli araçlar (ör. Utrecht İşe Bağlılık Ölçeği). Standart hiçbir puan, eşik ya da gösterge belirlemez.</li>
+  <li><b>Aşırı bağlılık da risktir.</b> Sürekli yüksek bağlılığın riskleri sistematik değerlendirilmeli, tükenmişlik önlenmeli, anonim sağlık, güvenlik ve devamsızlık verileri incelenmelidir (4.1, 9.3).</li>
+</ul>
+
+<div class="toc">
+  <b>İçindekiler</b>
+  <a href="#genel">Genel bakış ve önemli noktalar</a>
+  <a href="#nezaman">Ne zaman kullanılır</a>
+  <a href="#cerceve">Çerçeve ve metodoloji</a>
+  <a href="#maddeler">Madde 6–10 özeti</a>
+  <a href="#adimlar">Uygulama adımları</a>
+  <a href="#kavramlar">Temel kavramlar</a>
+  <a href="#matris">Madde matrisi</a>
+  <a href="#tablo">Öz değerlendirme tablosu</a>
+  <a href="#formuller">Formüller ve tanımlar</a>
+  <a href="#hesaplayici">Hesaplayıcı</a>
+  <a href="#python">Python kod örnekleri</a>
+  <a href="#yorum">Sonuçların yorumlanması</a>
+  <a href="#sinirlamalar">Sınırlamalar</a>
+  <a href="#raporlama">Çıktıların iletilmesi</a>
+  <a href="#ilgili">İlgili standartlar</a>
+  <a href="#sss">Sıkça sorulan sorular</a>
+</div>
+
+<h2 id="nezaman">Ne Zaman Kullanılır</h2>
+<p>Standardın hedef kullanıcıları: kurumsal yönetişim organları ve liderler; İK uzmanları; yöneticiler; girişimciler; çalışanlar ve temsilcileri; meslek ve ticaret kuruluşları; çalışan bağlılığıyla ilgilenen akademisyenler ve diğer profesyoneller; ilgili standartların geliştiricileri. Rehber, kamu, özel ve gönüllü sektörde, büyüklüğü ve karmaşıklığı ne olursa olsun, kurum için neyin pratik ya da önemli olduğunu belirlemek amacıyla kullanılır.</p>
+<ul>
+  <li><b>Bağlılık politikası kurarken:</b> liderlerin sorumluluğu, süreklilik taahhüdü, kaynaklar ve karar almada çalışan dahilliği (madde 7).</li>
+  <li><b>Kültür ve iletişimi gözden geçirirken:</b> değerlerin birlikte geliştirilmesi, iki yönlü kanallar, yönetici becerileri, güçlendirme ve temsil (madde 6).</li>
+  <li><b>Öğrenme ve iş tasarımını planlarken:</b> işe başlama programı, ihtiyaç analizi, kapsayıcı eğitim, iş şekillendirme (job crafting) (madde 8, 9.2).</li>
+  <li><b>Çalışma ortamı, sağlık ve esneklik konularında:</b> güvenlik ve esenlik, esnek saat, uzaktan çalışma, tükenmişliğin önlenmesi, sağlık hizmetleri ve iş-yaşam dengesi (madde 9.3–9.5).</li>
+  <li><b>Ücret ve takdir çerçevesi kurarken:</b> adil ve şeffaf dışsal ücret, içsel takdir, meslektaş adaylama (madde 10).</li>
+  <li><b>Bağlılığı ölçerken:</b> odak grupları, anketler ve geçerli araçlar (5.3), anonimlik ve gizlilik (4.1).</li>
+</ul>
+<div class="note">Bu standart bir <b>yönetim sistemi şartnamesi değildir</b>; sertifikalandırma için kullanılamaz ve uygunluk sınaması içermez. Ölçüm araçları, anket soruları, puanlama ve eşikler standardın dışında kalır. Bağlılığa katkısı olan ancak standardın ayrıntılı ele almadığı konular (psikososyal risk yönetimi, öğrenme ve gelişim ölçümleri, ücret yönetimi) için ilgili standartlara bakın.</div>
+
+<h2 id="cerceve">Çerçeve ve Metodoloji</h2>
+
+<h3>Şekil 1 — Çalışan bağlılığı çerçevesine genel bakış</h3>
+<p>Madde 5.1'deki çerçeve, kurumların değiştirebileceği ve geliştirebileceği "koşulları" (öncüller) işe bağlılıkla ve olası çıktılarla ilişkilendirir. Aşağıdaki çizim standardın Şekil 1'inin yeniden çizimidir; koşullar 6–10. maddelerde ayrıntılandırılır.</p>
+<div class="fw">
+  <div class="fw-col">
+    <div class="fw-title">Koşullar<br><small>(öncüller)</small></div>
+    <div class="fw-box"><a href="#maddeler">Örgüt kültürü ve iletişim</a><small>madde 6</small></div>
+    <div class="fw-box"><a href="#maddeler">Destekleyici liderlik</a><small>madde 7</small></div>
+    <div class="fw-box"><a href="#maddeler">Örgütsel öğrenme</a><small>madde 8</small></div>
+    <div class="fw-box"><a href="#maddeler">İş içeriği ve iş tasarımı</a><small>madde 9</small></div>
+    <div class="fw-box"><a href="#maddeler">Ücret ve takdir</a><small>madde 10</small></div>
+  </div>
+  <div class="fw-arrow">→</div>
+  <div class="fw-col fw-mid">
+    <div class="fw-title">Çalışan bağlılığı</div>
+    <div class="fw-big">İşe bağlılık:<br>dinçlik,<br>adanmışlık ve<br>yoğunlaşma<small>madde 4.3</small></div>
+  </div>
+  <div class="fw-arrow">→</div>
+  <div class="fw-col">
+    <div class="fw-title">Olası çıktılar</div>
+    <div class="fw-box">Bireysel iş tatmini ve iş kalitesi</div>
+    <div class="fw-box">Kurumsal performans ve sürdürülebilirlik</div>
+    <div class="fw-box">Daha iyi elde tutma</div>
+    <div class="fw-box">Daha iyi müşteri hizmeti</div>
+    <div class="fw-box">Daha yüksek üretkenlik</div>
+  </div>
+</div>
+<p class="figcap">Oklar, standardın şemasındaki sütun düzenini yansıtır; standart nedensellik kanıtı ya da etki büyüklüğü vermez ve çıktıları "olabilir" kipiyle anar (5.2).</p>
+
+<h3>Üç boyut ve ölçüm yaklaşımı</h3>
+<table>
+  <thead><tr><th style="width:170px">Boyut</th><th>Standarttaki anlamı (4.3)</th><th style="width:230px">Ölçüm notu</th></tr></thead>
+  <tbody>
+    <tr><td><b>Dinçlik</b> <small>(vigour)</small></td><td>Çalışırken yüksek düzeyde enerji ve dayanıklılık; rolde çaba gösterme isteği</td><td>Geçerli bir araçla ölçülür (5.3)</td></tr>
+    <tr><td><b>Adanmışlık</b> <small>(dedication)</small></td><td>İşe güçlü biçimde dahil olma; gurur ve meydan okuma kaynağı olarak deneyimleme</td><td>Geçerli bir araçla ölçülür (5.3)</td></tr>
+    <tr><td><b>Yoğunlaşma</b> <small>(absorption)</small></td><td>İşe tam konsantre olma ve işe dalma</td><td>Geçerli bir araçla ölçülür (5.3)</td></tr>
+  </tbody>
+</table>
+<p>Standart üç yöntemi sayar: <b>odak grupları</b> (deneyimlerin derinlemesine anlaşılması), <b>çalışan anketleri</b> (iç geliştirme ya da üçüncü taraf) ve <b>geçerli araçlar</b> (Utrecht İşe Bağlılık Ölçeği gibi). Hepsinde anonimlik ve gizlilik bireysel düzeyde korunmalı, veri koruma mevzuatına uyulmalıdır (4.1).</p>
+
+<h2 id="maddeler">Madde 6–10 Özeti</h2>
+<p>Beş koşulun her biri, rehber ifadelerini içeren maddelerle ele alınır. Aşağıdaki tablo her maddenin odağını ve rehber ifadesi sayısını verir; çubuk grafik ifadelerin dağılımını gösterir (Şekil 2, türetilmiştir — standart ifadeleri sayılmıştır).</p>
+<table>
+  <thead><tr><th style="width:80px">Madde</th><th style="width:240px">Başlık</th><th>Odak</th><th class="num" style="width:90px">İfade</th></tr></thead>
+  <tbody>
+    <tr><td><b>6.1</b></td><td>Genel: örgüt kültürü ve iletişim</td><td>Liderlerin görünür sorumluluğu; bağlılıkta ortak anlayış; düzenli iletişim</td><td class="num">—</td></tr>
+    <tr><td><b>6.2</b></td><td>Kültür ve değerler</td><td>Değerleri çalışanlarla geliştirme, yöneticilerin rol model olması, değerleri hedeflere bağlama</td><td class="num">6</td></tr>
+    <tr><td><b>6.3</b></td><td>İletişim</td><td>İki yönlü kanallar, tutarlı mesajlar, yönetici becerileri, geri bildirim ve performans görüşmeleri</td><td class="num">7</td></tr>
+    <tr><td><b>6.4</b></td><td>Çalışanların güçlendirilmesi</td><td>Özerklik, eğitim erişimi, danışma yoluyla katkı, kendi kendine yönetilen kariyer, rol yeniden tasarımı</td><td class="num">7</td></tr>
+    <tr><td><b>6.5</b></td><td>Çalışan temsili</td><td>Toplu temsilin tanınması; temsil yoksa kapsam ve görev tanımı</td><td class="num">2</td></tr>
+    <tr><td><b>7</b></td><td>Destekleyici liderlik</td><td>Ortak anlayış, üst yönetici sorumluluğu, politika, kaynaklar, lider gelişimi, açık diyalog</td><td class="num">7</td></tr>
+    <tr><td><b>8</b></td><td>Örgütsel öğrenme</td><td>İşe başlama programı, ihtiyaç analizi, bütçe, kapsayıcı öğrenme, değerlendirme</td><td class="num">9</td></tr>
+    <tr><td><b>9.1</b></td><td>Genel: iş içeriği ve tasarımı</td><td>Bilgi, beceri ve yeteneğe uygun rol; rollerin düzenli gözden geçirilmesi; gelişim bilgisi</td><td class="num">—</td></tr>
+    <tr><td><b>9.2</b></td><td>İş tasarımı</td><td>Sistematik ve danışmacı tasarım, rolün amacı, iş şekillendirme</td><td class="num">3</td></tr>
+    <tr><td><b>9.3</b></td><td>Çalışma ortamı</td><td>Çalışma alanları, kaynaklar, güvenlik ve esenlik, koç liderlik, esnek çalışma, aşırı bağlılık riski, anonim veri</td><td class="num">8</td></tr>
+    <tr><td><b>9.4</b></td><td>İşyerinde sağlığı geliştirme</td><td>Ortak geliştirilen sağlık yaklaşımı, destek hizmetleri, düzenli gözden geçirme, kapsayıcı yaklaşım</td><td class="num">7</td></tr>
+    <tr><td><b>9.5</b></td><td>Dayanıklılık, sürdürülebilirlik ve iş-yaşam yönetimi</td><td>Esneklik seçenekleri, esnek saat ve evden çalışma, iş-yaşam dengesi</td><td class="num">3</td></tr>
+    <tr><td><b>10.1</b></td><td>Genel: ücret ve takdir</td><td>Şeffaf mali ve mali olmayan çerçeve; paydaşlarca düzenli değerlendirme; ücretin toplu pazarlığa konu olabilmesi</td><td class="num">—</td></tr>
+    <tr><td><b>10.2</b></td><td>Ücret (dışsal)</td><td>Adil çerçeve, performans ölçütleri, programlara katılım, mali güvence</td><td class="num">4</td></tr>
+    <tr><td><b>10.3</b></td><td>Takdir (içsel)</td><td>İçsel ödüllere danışma, iş zenginleştirme, koçluk tarzı, meslektaş adaylama</td><td class="num">4</td></tr>
+  </tbody>
+</table>
+<p class="figcap">"—": başlık, rehber ifadesi içermeyen genel (giriş) paragrafıdır; 6.1, 9.1 ve 10.1'in genel hükümleri matriste ayrı unsurlar olarak yer alır.</p>
+<h3>Şekil 2 — Madde başına rehber ifadesi sayısı</h3>
+<div class="bars" id="barChart"></div>
+
+<h2 id="adimlar">Uygulama Adımları</h2>
+<ol>
+  <li><b>Ortak anlayışı kurun (4, 7).</b> Bağlılığın kurumda ne anlama geldiğini çalışanlar ve temsilcileriyle birlikte belirleyin; stratejilere yansıtın.</li>
+  <li><b>Sorumluluk verin (4.1, 7).</b> Üst yöneticilerin iş tanımına bağlılık koşullarını iyileştirme sorumluluğunu ekleyin; bağlılığı teşvik politikası yazın; kaynak (zaman, bütçe) ayırın.</li>
+  <li><b>Mevcut durumu ölçün (5.3).</b> Anket, odak grubu ve geçerli araçla bağlılığı ve beş koşulu değerlendirin; anonimlik ve gizliliği güvenceye alın.</li>
+  <li><b>Koşulları gözden geçirin (6–10).</b> Öz değerlendirme tablosuyla her maddedeki uygulama düzeyini belirleyin; zayıf maddeleri eylem planına dönüştürün (6.2).</li>
+  <li><b>Çalışanları sürece katın (6.2–6.5, 9.3, 10).</b> Değerlerin, rollerin, risk değerlendirmesinin, sağlık yaklaşımının ve ücret/takdir çerçevesinin tasarımına çalışanları ve temsilcilerini dahil edin.</li>
+  <li><b>Aşırı bağlılığı izleyin (4.1, 9.3).</b> Çalışma saatlerini, fazla mesaiyi ve anonim sağlık, güvenlik ve devamsızlık verilerini gözden geçirin; esneklik seçeneklerini duyurun.</li>
+  <li><b>Öğrenmeyi bağlayın (8).</b> İşe başlama programını, ihtiyaç analizini ve değerlendirmeyi bağlılık etkinliklerini besleyecek biçimde işletin.</li>
+  <li><b>İlerlemeyi düzenli değerlendirin ve iyileştirin (4.1, 7).</b> Hedeflere karşı ilerlemeyi tekrar ölçün, sonuçları paylaşın ve politikayı sürekli iyileştirin.</li>
+</ol>
+
+<h2 id="kavramlar">Temel Kavramlar</h2>
+<p>Standart 3. maddesinde yalnızca bir terim tanımlar (sosyal diyalog). Aşağıdaki tablo bu terimin ve metinde geçen kilit kavramların kısa özetidir. Açıklamalar özgün olarak yazılmıştır; bağlayıcı olan standardın kendi metnidir.</p>
+<table>
+  <thead><tr><th style="width:90px">Madde</th><th style="width:240px">Kavram</th><th>Açıklama</th></tr></thead>
+  <tbody>
+    <tr><td><b>3.1</b></td><td>Sosyal diyalog <small>(social dialogue)</small></td>
+      <td>Ekonomik ve sosyal politikaya ilişkin ortak çıkar konularında hükümet, işveren ve çalışan temsilcileri arasında müzakere, danışma ya da basit bilgi alışverişi (ISO 26000:2010, 2.17'den, değiştirilmiş).</td></tr>
+    <tr><td><b>4.2</b></td><td>Çalışan bağlılığı <small>(employee engagement)</small></td>
+      <td>Kapsayıcı işyeri yaklaşımından doğan durum: kurumdaki herkesin yapıcı bir sesi vardır ve kendi için anlamlı biçimde üretken katkı verir. Kurumun kapsayıcı ve destekleyici ortam sunduğu, bireylerin ise isteğe bağlı çabayla karşılık verdiği iki yönlü süreç.</td></tr>
+    <tr><td><b>4.3</b></td><td>Dinçlik, adanmışlık, yoğunlaşma</td>
+      <td>Bağlılığın bireysel düzeydeki üç boyutu (bkz. Çerçeve).</td></tr>
+    <tr><td><b>4.2</b></td><td>İsteğe bağlı çaba <small>(discretionary effort)</small></td>
+      <td>Rol gereklerinin ötesinde, çalışanın kendi isteğiyle verdiği çaba; bağlılığın bir öğesi olarak anılır (Giriş ve 4.2).</td></tr>
+    <tr><td><b>4.1</b></td><td>Aşırı bağlılık <small>(over-engagement)</small></td>
+      <td>Uzun süre sürdürülen yüksek bağlılığın sağlığa yönelik riski; düzenli değerlendirilmelidir.</td></tr>
+    <tr><td><b>5.3</b></td><td>Geçerli araç <small>(validated instrument)</small></td>
+      <td>İşe bağlılığı ölçmek için psikometrik olarak doğrulanmış ölçek; örnek: Utrecht İşe Bağlılık Ölçeği (UWES).</td></tr>
+    <tr><td><b>6.4</b></td><td>Çalışanların güçlendirilmesi <small>(empowerment)</small></td>
+      <td>Çalışanın işinin düzenlenişinde söz sahibi olması ve rolünü yerine getirirken bir ölçüde özerkliğe sahip olması.</td></tr>
+    <tr><td><b>9.2</b></td><td>İş şekillendirme <small>(job crafting)</small></td>
+      <td>Çalışanların rolleri içindeki görevlerin düzenlenişine ve yürütülüşüne ilişkin değişiklik önerebilmesi.</td></tr>
+    <tr><td><b>10.2</b></td><td>Dışsal ücret <small>(extrinsic compensation)</small></td>
+      <td>Bir başarı karşılığı bireye verilen görünür ve elle tutulur, genellikle parasal değeri olan ödül.</td></tr>
+    <tr><td><b>10.3</b></td><td>İçsel takdir <small>(intrinsic recognition)</small></td>
+      <td>Takdir, başarı duygusu ya da bilinçli tatmin gibi soyut ödül.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="matris">Madde Matrisi</h2>
+<p>Aşağıdaki tablo, standardın giriş, ilke, çerçeve ve madde 6–10 rehber ifadelerinin kullanıcı × bölüm × yürütme biçimi sınıflandırmasıdır. Kullanıcı sütunları standardın kullanıcı listesine (Giriş) dayanır; bölüm sınıflandırması ve "çalışanlarla birlikte yürütülür ya da iletilir" ayrımı bu sayfanın yazarlık sınıflandırmasıdır. Filtreleri değiştirdiğinizde tablo anında daralır.</p>
+
+<div class="filters">
+  <div><label for="fUser">Kullanıcı</label>
+    <select id="fUser">
+      <option value="">Tümü</option>
+      <option value="lead">Yönetişim organları ve liderler</option>
+      <option value="hr">İK uzmanları</option>
+      <option value="mgr">Yöneticiler</option>
+      <option value="emp">Çalışanlar ve temsilcileri</option>
+      <option value="res">Meslek kuruluşları, akademisyenler, standart geliştiriciler</option>
+    </select></div>
+  <div><label for="fStage">Bölüm</label>
+    <select id="fStage">
+      <option value="">Tümü</option>
+      <option value="giris">Giriş, kapsam ve terimler (Giriş, 1–3)</option>
+      <option value="ilke">İlkeler ve bağlılık tanımı (4)</option>
+      <option value="cerceve">Çerçeve, çıktılar ve ölçüm (5)</option>
+      <option value="kultur">Örgüt kültürü ve iletişim (6)</option>
+      <option value="lider">Destekleyici liderlik (7)</option>
+      <option value="ogren">Örgütsel öğrenme (8)</option>
+      <option value="is">İş içeriği ve tasarımı (9)</option>
+      <option value="odul">Ücret ve takdir (10)</option>
+    </select></div>
+  <div><label for="fType">Madde grubu</label>
+    <select id="fType">
+      <option value="">Tümü</option>
+      <option value="p">İlkeler ve çerçeve</option>
+      <option value="c">Kültür ve iletişim</option>
+      <option value="s">Liderlik ve öğrenme</option>
+      <option value="r">İş içeriği ve tasarımı</option>
+      <option value="o">Ücret ve takdir</option>
+    </select></div>
+  <div><label for="fRep">Yürütme biçimi</label>
+    <select id="fRep">
+      <option value="">Tümü</option>
+      <option value="ic">Kurum içi politika ve yönetim</option>
+      <option value="dis">Çalışanlarla ve temsilcileriyle birlikte yürütülür/iletilir</option>
+    </select></div>
+  <div><label for="fQ">Madde adında ara</label>
+    <input type="text" id="fQ" placeholder="ör. geri bildirim"></div>
+</div>
+
+<div class="count" id="mCount"></div>
+<table class="matrix">
+  <thead><tr>
+    <th>Madde / unsur</th>
+    <th class="rot">Yönetişim ve liderler</th>
+    <th class="rot">İK uzmanları</th>
+    <th class="rot">Yöneticiler</th>
+    <th class="rot">Çalışanlar ve temsilciler</th>
+    <th class="rot">Meslek kuruluşları ve araştırma</th>
+  </tr></thead>
+  <tbody id="mBody"></tbody>
+</table>
+<div class="legend">
+  <span><span class="dot p"></span> ilke ve çerçeve</span>
+  <span><span class="dot c"></span> kültür ve iletişim</span>
+  <span><span class="dot s"></span> liderlik ve öğrenme</span>
+  <span><span class="dot r"></span> iş içeriği ve tasarımı</span>
+  <span><span class="dot o"></span> ücret ve takdir</span>
+  <span><span class="tag lvl">hesaplayıcı</span> bu sayfada hesaplanabilen unsur</span>
+  <span>Hesaplayıcıya bağlı unsurlar <b>koyu</b> işaretlenmiştir.</span>
+</div>
+
+<h2 id="tablo">Öz Değerlendirme Tablosu</h2>
+<p>Standart bir uygunluk sınaması ya da puanlama yöntemi vermez; ancak madde 6–10'daki rehber ifadelerinin her biri kurumda uygulanıp uygulanmadığı açısından değerlendirilebilir. Her madde için, kurumunuzda <b>tam uygulanan</b> ve <b>kısmen uygulanan</b> ifade sayısını girin (ifade sayıları standarttandır). Kapsama, kısmen uygulananı yarım sayarak bu sayfada türetilmiştir;
+<b>hedef kapsama</b> kurumca belirlenir (varsayılan %70 yalnızca örnektir). Örnek veri örnek amaçlıdır. Matristeki ifadeleri madde ve bölüm filtreleriyle okuyup bu tabloyu doldurabilirsiniz.</p>
+
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnek">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizle">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsv">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktar">Hesaplayıcıya aktar</button>
+</div>
+<div class="tblbar">
+  <span class="inline"><label for="tHedef">Hedef kapsama (%)</label><input type="number" id="tHedef" step="any" value="70"></span>
+</div>
+
+<table class="postbl">
+  <thead><tr>
+    <th style="width:60px">Madde</th><th>Konu</th>
+    <th class="num">İfade sayısı</th><th class="num">Tam uygulanan</th><th class="num">Kısmen uygulanan</th>
+    <th class="calc" style="width:90px">Kapsama (%)</th>
+    <th class="calc" style="width:170px">Durum</th>
+  </tr></thead>
+  <tbody id="pBody"></tbody>
+  <tfoot><tr>
+    <td>Toplam</td><td></td>
+    <td class="calc" id="tTop">—</td><td class="calc" id="tUyg">—</td><td class="calc" id="tKis">—</td>
+    <td class="calc" id="tKap">—</td><td class="calc" id="tDur">—</td>
+  </tr></tfoot>
+</table>
+
+<div class="cards" id="pCards"></div>
+<div class="note" id="pNot"></div>
+
+<h2 id="formuller">Formüller ve Tanımlar</h2>
+<p>Standart hiçbir formül, ölçek ya da birim vermez; bağlılığın üç boyutunu tanımlar ve ölçüm yöntemlerini sayar. Aşağıdaki hesaplar, bu kavramları sayıya dökmek için <b>bu sayfada türetilmiştir</b>; 0–6 ölçeği ve üçer maddelik boyut düzeni UWES kısa formundan gelir, diğer oranlar sıradan anket ve İK raporlama pratiğidir.</p>
+<table>
+  <thead><tr><th>Hesap</th><th>Formül</th><th>Not</th></tr></thead>
+  <tbody id="fBody"></tbody>
+</table>
+
+<h2 id="hesaplayici">Hesaplayıcı</h2>
+<p>Hesabı seçin, alanları doldurun; sonuç, formülün yerine konmuş hâli ve yorum aşağıda görünür.
+Kurulum gerekmez, veriler tarayıcıdan çıkmaz.</p>
+
+<div class="panel">
+  <h3>Çalışan Bağlılığı Hesaplayıcısı</h3>
+  <p class="hint">Alanlar seçtiğiniz hesaba göre değişir. Anket puanları, sayılar ve süreler girilir; sonuçlar türetilmiştir ve standart eşik içermez.</p>
+  <div class="grid">
+    <div class="field" style="grid-column:1/-1">
+      <label for="cMetric">Hesap <span class="req">*</span></label>
+      <select id="cMetric"></select>
+    </div>
+  </div>
+  <div class="grid" id="cFields" style="margin-top:14px"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="oAll"> Tümünü seç</label>
+    <label><input type="checkbox" id="oFormula" checked> Formülün açık hâli</label>
+    <label><input type="checkbox" id="oInterp" checked> Yorum ve eşik</label>
+    <label><input type="checkbox" id="oPy"> Python karşılığı</label>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-run" id="btnRun">Hesapla</button>
+    <button class="btn-ghost" id="btnExample">Örnek veriyi yükle</button>
+    <button class="btn-ghost" id="btnPy">Python motorunu yükle</button>
+    <span class="chip" id="engStatus">Motor: tarayıcı (JavaScript)</span>
+  </div>
+  <p class="hint" style="margin:14px 0 0">Python motoru seçildiğinde hesaplama, bu sayfaya gömülü
+  <code style="background:#1c2836;color:#cfe0f0">iso23326_metrikler.py</code> modülünün
+  <code style="background:#1c2836;color:#cfe0f0">hesapla()</code> fonksiyonu tarafından, tarayıcı içinde
+  çalışan gerçek bir CPython yorumlayıcısında (Pyodide/WebAssembly) yapılır. İlk yüklemede yaklaşık
+  10–12 MB indirilir; sonrası önbellekten gelir. Çevrimdışıysanız sayfa JavaScript yedeğiyle
+  aynı sonuçları vermeye devam eder.</p>
+</div>
+
+<div id="cResult"></div>
+
+<h2 id="python">Python Kod Örnekleri</h2>
+<p>Bu sayfadaki hesaplamalar JavaScript'te taklit edilmez: modülün tamamı sayfaya gömülüdür ve
+Pyodide (WebAssembly üzerinde CPython) ile tarayıcı içinde çalıştırılır. Hesaplayıcıda Python motorunu
+seçtiğinizde her sonuç <code>hesapla()</code> fonksiyonundan gelir. Aynı dosya
+(<code>iso23326_metrikler.py</code>) komut satırında da bağımsız çalışır; doğrudan çalıştırıldığında
+örnek değerlerle doğrulama çıktısı üretir.</p>
+
+<div class="filename">iso23326_metrikler.py (özet)</div>
+<pre><i># --- Ölçüm (madde 4.3, 5.3, 4.1) ---</i>
+
+<b>def</b> <span class="fn">uwes_puani</span>(dincilik, adanmislik, yogunlasma):
+    <i>"""Üç boyutun (3'er madde, 0–6) ortalaması ve 9 maddenin genel ortalaması."""</i>
+    d, a, y = sum(dincilik) / <u>3</u>, sum(adanmislik) / <u>3</u>, sum(yogunlasma) / <u>3</u>
+    <b>return</b> {<s>"toplam"</s>: (sum(dincilik) + sum(adanmislik) + sum(yogunlasma)) / <u>9</u>, ...}
+
+<b>def</b> <span class="fn">katilim_orani</span>(yanit, davet):
+    <i>"""Anket katılımı: yanıt ÷ davet × 100."""</i>
+    <b>return</b> <u>100</u> * yanit / davet
+
+<b>def</b> <span class="fn">donemsel_degisim</span>(onceki, simdiki):
+    <i>"""Hedefe karşı ilerleme: şimdiki − önceki dönem puanı."""</i>
+    <b>return</b> simdiki - onceki
+
+<i># --- Uygulama (madde 6–10) ---</i>
+
+<b>def</b> <span class="fn">fazla_calisma_orani</span>(gercek, sozlesme):
+    <i>"""Aşırı bağlılık işareti: (gerçek − sözleşme) ÷ sözleşme × 100."""</i>
+    <b>return</b> <u>100</u> * (gercek - sozlesme) / sozlesme
+
+<b>def</b> <span class="fn">kapsama</span>(toplam, uygulanan, kismen=<u>0</u>):
+    <i>"""Rehber ifadelerinin uygulama kapsaması: (uygulanan + 0,5 × kısmen) ÷ toplam × 100."""</i>
+    <b>return</b> <u>100</u> * (uygulanan + <u>0.5</u> * kismen) / toplam
+</pre>
+
+<h3>Çalıştırılabilir konsol</h3>
+<p>Aşağıdaki kod, sayfaya gömülü modüle karşı çalışır. <b>Kodu çalıştır</b> düğmesi Python motorunu
+(yüklü değilse) indirir, modülü içe aktarır ve çıktıyı altta gösterir. Kodu serbestçe değiştirebilir,
+kendi verinizi yazabilirsiniz; her şey tarayıcıda kalır.</p>
+
+<div class="console">
+  <div class="console-bar">
+    <span>iso23326_metrikler modülüne karşı çalışır · Python 3 (Pyodide)</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button class="btn-run btn-sm" id="btnRunPy">Kodu çalıştır</button>
+      <button class="btn-ghost btn-sm" id="btnDemo" style="border-color:var(--line);color:var(--ink-soft)">Tam demoyu yükle</button>
+      <button class="btn-ghost btn-sm" id="btnReset" style="border-color:var(--line);color:var(--ink-soft)">Sıfırla</button>
+    </span>
+  </div>
+  <textarea id="pyCode" spellcheck="false"></textarea>
+  <pre id="pyOut">Çıktı burada görünecek. İlk çalıştırmada Python motoru indirilir (10–12 MB).</pre>
+</div>
+
+<details class="src"><summary>Gömülü modülün tam kaynağı (iso23326_metrikler.py)</summary>
+  <pre id="srcView">yükleniyor…</pre>
+</details>
+
+<h2 id="yorum">Sonuçların Yorumlanması</h2>
+<ul>
+  <li><b>Hiçbir sayının standart eşiği yoktur.</b> Standart bağlılık için puan, hedef ya da norm vermez. Kendi önceki ölçümlerinizi, gruplar arası farkları ve zaman içindeki eğilimi okuyun; dış karşılaştırma yapacaksanız aracın kendi norm verilerini kullanın.</li>
+  <li><b>Ortalama yerine dağılıma bakın.</b> Genel UWES benzeri puan yüksek olsa da bir boyutun (örn. yoğunlaşma) düşük kalması, hangi koşulun incelenmesi gerektiğini ipucu olarak verir; ancak koşul–boyut eşlemesi standartta yoktur.</li>
+  <li><b>Katılım ve temsil gücünü birlikte okuyun.</b> Düşük anket katılımı, sonuçların tüm çalışanları temsil etmeme riski taşır; yanıt vermeyenler genellikle en az bağlı olanlar olabilir. Standart katılım eşiği vermez.</li>
+  <li><b>Anonimlik her zaman önceliklidir.</b> Küçük gruplarda ya da birden çok kırılımın birleşiminde sonuçlar kişileri ele verebilir; asgari raporlama grubu büyüklüğünü kurum belirler ve veri koruma mevzuatı gözetilir (4.1).</li>
+  <li><b>Yüksek bağlılık her zaman iyi değildir.</b> Sözleşmenin üstünde süren çalışma, kesintisiz yüksek bağlılığın bir işareti olabilir; standart bunun sağlık riskini düzenli değerlendirmeyi ve tükenmişliği önlemeyi ister (4.1, 9.3). Fazla çalışma payını devamsızlık ve sağlık verileriyle birlikte okuyun.</li>
+  <li><b>Kapsama bir uygunluk puanı değildir.</b> Öz değerlendirme tablosundaki yüzde, rehber ifadelerinin ne kadarının uygulandığını gösterir; standart ifadelerin hepsinin her kurum için pratik ya da önemli olmayabileceğini söyler (Kapsam). Uygulanmayan bir ifadeyi "neden gerekli değil" diye belgeleyin.</li>
+  <li><b>Nedensellik iddiasından kaçının.</b> Standart çıktıları "iyileşebilir" kipiyle anar; çıktılar (üretkenlik, elde tutma) bağlılığın kanıtlanmış sonuçları değil olası yararlarıdır.</li>
+  <li><b>Çalışanlarla birlikte yorumlayın.</b> Sonuçların anlamlandırılması ve eylem planı çalışanlarla ve temsilcileriyle yapıldığında (6.2–6.5, 7) bağlılık için ek değer üretir.</li>
+</ul>
+
+<h2 id="sinirlamalar">Sınırlamalar</h2>
+<ul>
+  <li><b>Standart ölçüm, formül ya da eşik vermez.</b> Madde 5.3 yalnızca yöntemleri sayar. Bu sayfadaki UWES benzeri puan, katılım ve olumlu yanıt oranları, dönemsel değişim, anonimlik marjı, fazla çalışma payı, işe başlama ve eğitim oranları ile kapsama puanı türetilmiştir. UWES'in 0–6 ölçeği ve üçer maddelik boyut düzeni standartta yer almaz; ölçeğin kendi kılavuzundan alınmıştır, resmî madde metinleri için kılavuza bakın.</li>
+  <li><b>Atıf numaraları metinle tutarsızdır.</b> Giriş, "isteğe bağlı çaba" ifadesi için [10] numaralı kaynağı gösterir; bu, ILO'nun "Sosyal Diyalog" yayınıdır. Madde 4.3 ve 5.3 UWES'i [15] ile anar; [15] ise Schaufeli ve Bakker'in 2004 tarihli iş talepleri–iş kaynakları makalesidir. Ayrıca kaynakçadaki [1]–[5], [7]–[9], [11]–[14] ve [16] metinde hiç atıf almaz (yalnızca [6], [10], [15], [17] atıf alır); "job crafting" (9.2) [16] ile ilişkilendirilmemiştir.</li>
+  <li><b>"Sosyal diyalog" tanımlanır ama kullanılmaz.</b> Madde 3.1 tek terim olarak sosyal diyaloğu tanımlar; metnin gövdesinde bu terim bir daha geçmez (yalnızca kaynakça başlığında ve Giriş'teki [10] atfında). Standardın diyalog anlayışı, 6.3'teki iki yönlü iletişim ve danışma ifadelerinde örtük kalır.</li>
+  <li><b>Bağlılığın kendisi terim olarak tanımlanmaz.</b> Giriş, tek bir tanım olmadığını söyler; 4.2 bağlılığı kapsayıcı işyeri yaklaşımıyla, 4.3 ise üç boyutuyla anlatır. 3. maddede "çalışan bağlılığı" terimi yer almaz; bu sayfa 4.2 ve 4.3'ü birlikte okur.</li>
+  <li><b>Giriş ile madde 5.2 çıktıları aynı değildir.</b> Giriş yararlar listesi devamsızlığın azalmasını ve ürün/hizmet yeniliğini de sayar; Şekil 1 ve madde 5.2'deki çıktı listelerinde bunlar yoktur (orada bireysel memnuniyet, kurumsal performans ve sürdürülebilirlik, elde tutma, müşteri hizmeti ve üretkenlik yer alır). Bu sayfa her iki listeyi de olduğu gibi aktarır.</li>
+  <li><b>6.4 ile 8 kısmen çakışır.</b> Eğitim ve gelişim erişimi hem 6.4'te (güçlendirme) hem 8'de (örgütsel öğrenme) geçer; matristeki "erişim" göstergesi iki maddeye de bağlanmıştır.</li>
+  <li><b>10.2'nin giriş cümlesi dışsal ücreti ayırmaz.</b> 10.2'deki rehber listesi "work compensation and recognition" genel ifadesiyle başlar; 10.3 ise "intrinsic recognition" der. Dışsal ve içsel ayrımı 10.2'de yalnızca başlıkta ve açıklamada yapılır.</li>
+  <li><b>İfade sayıları sayım sonucudur.</b> 67 rehber ifadesi ve madde başına sayılar, standardın "organizations should" listelerindeki maddeler sayılarak bu sayfada hesaplanmıştır; 6.1, 9.1 ve 10.1'in genel paragrafları ayrı sayılmamıştır.</li>
+  <li><b>Bölüm ve kullanıcı sınıflandırması yazarlık yorumudur.</b> Matristeki kullanıcı atamaları, yürütme biçimi ve aile kodları standardın kendisinde yoktur; Giriş'in kullanıcı listesi dışında standart hangi ifadenin kime ait olduğunu belirtmez. Öz değerlendirme tablosunun örnek verisi ve %70 hedefi de örnek amaçlıdır.</li>
+  <li>Şekil 1 standardın çiziminin yeniden çizimidir; Şekil 2 türetilmiştir.</li>
+</ul>
+
+<h2 id="raporlama">Çıktıların İletilmesi</h2>
+<table>
+  <thead><tr><th>Alıcı</th><th>Ne görmek ister</th><th>Biçim</th></tr></thead>
+  <tbody>
+    <tr><td>Yönetişim organları ve liderler</td>
+      <td>Bağlılık politikası ve sorumluluklar, hedeflere karşı ilerleme, kurumsal çıktılarla ilişki (elde tutma, performans), riskler (aşırı bağlılık, tükenmişlik)</td>
+      <td>Yönetim kurulu/üst yönetim raporu, yıllık</td></tr>
+    <tr><td>İK uzmanları</td>
+      <td>Anket sonuçları ve katılım, boyut puanları, öz değerlendirme kapsaması, eylem planları, veri koruma ve anonimlik uyumu</td>
+      <td>İzleme panosu ve ayrıntılı rapor, dönemsel</td></tr>
+    <tr><td>Yöneticiler</td>
+      <td>Kendi ekiplerinin (asgari grup büyüklüğü sağlanıyorsa) sonuçları, yapıcı geri bildirim ve performans görüşmesi göstergeleri, esneklik ve iş yükü bilgisi</td>
+      <td>Ekip özeti ve eylem rehberi</td></tr>
+    <tr><td>Çalışanlar ve temsilcileri</td>
+      <td>Anket sonuçlarının genel özeti, ne yapılacağı, değer ve politika değişiklikleri, geri bildirim kanalları, sağlık ve esenlik hizmetleri</td>
+      <td>Duyuru, forum, toplantı ve temsilcilerle istişare; bireyleri ele vermeyen biçimde</td></tr>
+    <tr><td>Meslek kuruluşları ve araştırmacılar</td>
+      <td>Kullanılan ölçüm aracı ve yöntemi, örnek ve katılım, sınırlamalar</td>
+      <td>Yöntem notu ve anonimleştirilmiş veri</td></tr>
+  </tbody>
+</table>
+<p><b>Her bağlılık raporunda bulunması gerekenler:</b> ölçüm yöntemi (anket, odak grubu, araç) ve dönemi; katılım ve temsil gücü; asgari grup büyüklüğü ve anonimlik koruması; boyut ve koşul bazında sonuçlar; önceki dönemle karşılaştırma; aşırı bağlılık ve sağlık riski değerlendirmesi; çalışanlarla paylaşılan sonuçlar ve eylem planı; gözden geçirme dönemi.</p>
+
+<h2 id="ilgili">İlgili Standartlar</h2>
+<ul>
+  <li><b>ISO 10667-1</b> — iş ve örgüt ortamlarında insanları değerlendirme hizmetleri; anket ve değerlendirme araçlarının kullanımında müşteri gereklilikleri (kaynakça [1]).</li>
+  <li><b>ISO 30400</b> — insan kaynakları yönetimi terimler sözlüğü (kaynakça [2]).</li>
+  <li><b>ISO 45003</b> — iş sağlığı ve güvenliği yönetimi: işyerinde psikolojik sağlık ve güvenlik, psikososyal risklerin yönetimi (kaynakça [3]); 9.3 ve 9.4 ile ilişkilidir.</li>
+  <li><b>ISO 26000:2010, 2.17</b> — sosyal diyalog tanımının kaynağı (3.1).</li>
+  <li><b>ISO 30422</b> — öğrenme ve gelişim; madde 8 ile ilişkilidir (standartta anılmaz; bu sayfa ilişkilendirir).</li>
+  <li><b>ISO/TS 24178</b> — örgüt kültürü metrikleri; madde 6.2 ile ilişkilidir (standartta anılmaz).</li>
+  <li><b>ISO/TS 30431</b> — liderlik metrikleri; madde 7 ile ilişkilidir (standartta anılmaz).</li>
+  <li><b>BM Sürdürülebilir Kalkınma Amacı 8</b> — insana yakışır iş ve ekonomik büyüme (Giriş).</li>
+</ul>
+
+<h2 id="sss">Sıkça Sorulan Sorular</h2>
+<details><summary>Çalışan bağlılığı nedir?</summary>
+<p>Standarda göre, kapsayıcı bir işyeri yaklaşımından doğan ve herkesin yapıcı bir sese sahip olduğu, kendi için anlamlı biçimde üretken katkı verdiği durumdur. Kurum kapsayıcı ve destekleyici ortam sunar, bireyler de isteğe bağlı çabayla karşılık verir. Bağlılık dinçlik, adanmışlık ve yoğunlaşma boyutlarıyla ölçülebilir.</p></details>
+
+<details><summary>Standart bağlılığı nasıl ölçmemi söylüyor?</summary>
+<p>Belirli bir ölçüm yöntemi dayatmaz. Odak grupları, çalışan anketleri (iç ya da üçüncü taraf) ve Utrecht İşe Bağlılık Ölçeği gibi geçerli araçlar örnek olarak verilir. Her durumda birey düzeyinde anonimlik ve gizlilik gerekir.</p></details>
+
+<details><summary>Standartta formül, eşik ya da puan var mı?</summary>
+<p>Hayır. Bu sayfadaki tüm hesaplar ve eşleştirmeler türetilmiştir. Standart yalnızca kavramları ve kurumun uygulaması gereken rehber ifadelerini sağlar.</p></details>
+
+<details><summary>Beş koşul nelerdir?</summary>
+<p>Örgüt kültürü ve iletişim (madde 6), destekleyici liderlik (7), örgütsel öğrenme (8), iş içeriği ve iş tasarımı (9) ile ücret ve takdir (10). Şekil 1 bunları bağlılığa ve olası çıktılara bağlar.</p></details>
+
+<details><summary>Çalışan temsilcileri bu süreçte ne yapar?</summary>
+<p>Varsa toplu temsil, işgücünün yasal ve/veya meşru sesi olarak tanınır ve bağlılık girişimlerinde istişare edilir. Temsil yoksa temsilin kapsamı ve görev tanımı üzerinde uzlaşılır; sağlık ve güvenlik de bu kapsamdadır (6.5).</p></details>
+
+<details><summary>Yüksek bağlılığın bir riski var mı?</summary>
+<p>Evet. Standart, uzun süreli aşırı bağlılığın sağlık risklerinin düzenli değerlendirilmesini ve tükenmişliğin önlenmesini ister. Çalışma saatleri, fazla mesai ve anonim sağlık, güvenlik ve devamsızlık verileri incelenir; çalışanlar ve temsilcileri risk değerlendirmesine dahil edilir (4.1, 9.3).</p></details>
+
+<details><summary>Rehber ifadelerinin hepsini uygulamak zorunda mıyım?</summary>
+<p>Standart bir rehberdir; kurumlar neyin pratik ya da önemli olduğunu kendi iç ve dış bağlamlarına göre belirler (Kapsam). Kapsama puanını bir uygunluk ölçütü olarak değil, öncelik belirleme aracı olarak kullanın.</p></details>
+
+<details><summary>Anket sonuçlarını küçük ekiplere göre raporlayabilir miyim?</summary>
+<p>Anonimlik ve gizlilik birey düzeyinde korunmak zorundadır (4.1). Standart asgari grup büyüklüğü vermez; kurumunuz bir eşik belirlemeli ve küçük grupların sonuçlarını birleştirmeli ya da raporlamamalıdır. Hesaplayıcıdaki anonimlik marjı bu eşiğe göre kontrol yapar.</p></details>
+
+<footer>
+  ISO 23326:2022 çerçevesinden üretilmiş çalışma aracı. İlkeler, rehber ifadeleri ve kavramlar standarda dayanır; açıklamalar, örnek değerler, oranlar ve kod özgün olarak yazılmıştır. Standardın kendisi telif korumalıdır ve bu sayfa onun yerine geçmez.
+</footer>
+
+</div>
+
+<script type="text/x-python" id="pysrc">
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+iso23326_metrikler.py
+=====================
+BS ISO 23326:2022 (Human resource management — Employee engagement — Guidelines)
+çerçevesindeki çalışan bağlılığı ölçüm ve öz değerlendirme kavramlarının Python karşılığı.
+
+Standart bir rehberdir: formül, eşik ya da ölçek vermez. Ölçümü (madde 5.3) yalnızca
+yöntem olarak sayar: odak grupları, çalışan anketleri ve geçerli araçlar (ör. Utrecht
+İşe Bağlılık Ölçeği, UWES). Bağlılığı dinçlik (vigour), adanmışlık (dedication) ve
+yoğunlaşma (absorption) boyutlarıyla tanımlar (madde 4.3). Bu modüldeki tüm hesaplar
+bu kavramları sayıya dökmek için TÜRETİLMİŞTİR. Modül üç bölüme ayrılmıştır:
+
+    1) Ölçüm      — UWES benzeri puan, anket katılımı, olumlu yanıt, dönemsel değişim, anonimlik
+    2) Uygulama   — fazla çalışma, işe başlama programı, eğitime erişim, kapsama (madde 6–10)
+    3) Yapılar    — öz değerlendirme tablosu, ilke denetimi (madde 4.1), dağıtıcı
+
+Kullanım:
+    from iso23326_metrikler import katilim_orani, kapsama
+    katilim_orani(420, 600)     ->  70.0
+    kapsama(6, 4, 1)            ->  75.0
+
+Doğrudan çalıştırıldığında (python3 iso23326_metrikler.py) tüm fonksiyonlar
+örnek verilerle çalıştırılır ve sonuçlar tablo hâlinde yazdırılır.
+
+Not: Kavramlar ISO 23326:2022'ye dayanır. Oranlar, 0–6 ölçeği (UWES kılavuzundan),
+kapsama puanlaması ve denetim kuralları bu modülde türetilmiştir. Kod ve açıklamalar
+özgün olarak yazılmıştır; standardın kendisi telif korumalıdır.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+__all__ = [
+    "GecersizGirdi", "ALANLAR", "KOSULLAR",
+    "uwes_puani", "katilim_orani", "olumlu_oran", "donemsel_degisim", "anonimlik_marji",
+    "fazla_calisma_orani", "onboarding_orani", "egitim_erisimi", "kapsama",
+    "Alan", "OzDegerlendirme", "ornek_tablo", "ilke_denetimi",
+    "hesapla", "METRIK_LISTESI",
+]
+
+
+class GecersizGirdi(ValueError):
+    """Girdiler tutarsız: payda sıfır, negatif değer, ölçek dışı puan vb."""
+
+
+# Madde 6–10: rehber ifadelerinin sayısı (standarttaki "organizations should" maddeleri)
+ALANLAR = [
+    ("6.2", "Kültür ve değerler", 6),
+    ("6.3", "İletişim", 7),
+    ("6.4", "Çalışanların güçlendirilmesi", 7),
+    ("6.5", "Çalışan temsili", 2),
+    ("7", "Destekleyici liderlik", 7),
+    ("8", "Örgütsel öğrenme", 9),
+    ("9.2", "İş tasarımı", 3),
+    ("9.3", "Çalışma ortamı", 8),
+    ("9.4", "İşyerinde sağlığı geliştirme", 7),
+    ("9.5", "Dayanıklılık, sürdürülebilirlik ve iş-yaşam yönetimi", 3),
+    ("10.2", "Ücret (dışsal)", 4),
+    ("10.3", "Takdir (içsel)", 4),
+]
+
+# Şekil 1: bağlılığın koşulları (öncüller)
+KOSULLAR = ["Örgüt kültürü ve iletişim", "Destekleyici liderlik", "Örgütsel öğrenme",
+            "İş içeriği ve iş tasarımı", "Ücret ve takdir"]
+
+
+def _bol(pay: float, payda: float, ad: str = "payda") -> float:
+    if payda <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return pay / payda
+
+
+def _negatif_yok(**degerler: float) -> None:
+    for ad, v in degerler.items():
+        if v < 0:
+            raise GecersizGirdi(f"{ad} negatif olamaz")
+
+
+# ---------------------------------------------------------------------------
+# 1) Ölçüm (madde 4.3, 5.3, 4.1)
+# ---------------------------------------------------------------------------
+
+def uwes_puani(dincilik: list, adanmislik: list, yogunlasma: list) -> dict:
+    """UWES benzeri puan: her boyutun ortalaması ve dokuz maddenin genel ortalaması (0–6 ölçeği).
+
+    Standart yalnızca ölçeğin adını anar (5.3); 0–6 ölçeği ve üç madde/boyut düzeni
+    ölçeğin kısa formundan alınmıştır, bu sayfada türetilmiş kabul edilir.
+    """
+    for ad, liste in (("dinçlik", dincilik), ("adanmışlık", adanmislik), ("yoğunlaşma", yogunlasma)):
+        if len(liste) != 3:
+            raise GecersizGirdi(f"{ad} için üç madde puanı gerekir")
+        for p in liste:
+            if p < 0 or p > 6:
+                raise GecersizGirdi(f"{ad} puanı 0 ile 6 arasında olmalı")
+    d = sum(dincilik) / 3
+    a = sum(adanmislik) / 3
+    y = sum(yogunlasma) / 3
+    toplam_madde = sum(dincilik) + sum(adanmislik) + sum(yogunlasma)
+    boyutlar = [("dinçlik", d), ("adanmışlık", a), ("yoğunlaşma", y)]
+    en_dusuk = boyutlar[0]
+    for b in boyutlar[1:]:
+        if b[1] < en_dusuk[1]:
+            en_dusuk = b
+    return {"dincilik": d, "adanmislik": a, "yogunlasma": y,
+            "toplam": toplam_madde / 9, "madde_toplami": toplam_madde, "en_dusuk": en_dusuk[0]}
+
+
+def katilim_orani(yanit: float, davet: float) -> float:
+    """Anket katılım oranı: yanıt veren ÷ davet edilen × 100 (%)."""
+    _negatif_yok(yanit=yanit)
+    if yanit > davet:
+        raise GecersizGirdi("yanıt sayısı davet edilen sayısını aşamaz")
+    return 100 * _bol(yanit, davet, "davet edilen sayısı")
+
+
+def olumlu_oran(olumlu: float, toplam: float) -> float:
+    """Olumlu yanıt oranı: olumlu yanıt ÷ toplam yanıt × 100 (%)."""
+    _negatif_yok(olumlu=olumlu)
+    if olumlu > toplam:
+        raise GecersizGirdi("olumlu yanıt sayısı toplam yanıtı aşamaz")
+    return 100 * _bol(olumlu, toplam, "toplam yanıt")
+
+
+def donemsel_degisim(onceki: float, simdiki: float) -> float:
+    """İki ölçüm dönemi arasındaki puan farkı: şimdiki − önceki."""
+    _negatif_yok(onceki=onceki, simdiki=simdiki)
+    return simdiki - onceki
+
+
+def anonimlik_marji(grup: float, esik: float) -> float:
+    """Raporlama grubu büyüklüğü − kurumun belirlediği asgari grup büyüklüğü (≥ 0 ise kabul)."""
+    _negatif_yok(grup=grup)
+    if esik <= 0:
+        raise GecersizGirdi("asgari grup büyüklüğü sıfırdan büyük olmalı")
+    return grup - esik
+
+
+# ---------------------------------------------------------------------------
+# 2) Uygulama göstergeleri (madde 9.3, 8, 6.4 ve 6–10)
+# ---------------------------------------------------------------------------
+
+def fazla_calisma_orani(gercek: float, sozlesme: float) -> float:
+    """Sözleşme süresinin üstünde çalışma payı: (gerçek − sözleşme) ÷ sözleşme × 100 (%)."""
+    _negatif_yok(gercek=gercek)
+    return 100 * _bol(gercek - sozlesme, sozlesme, "sözleşme süresi")
+
+
+def onboarding_orani(tamamlayan: float, yeni: float) -> float:
+    """İşe başlama programını tamamlayan yeni çalışanların payı (%)."""
+    _negatif_yok(tamamlayan=tamamlayan)
+    if tamamlayan > yeni:
+        raise GecersizGirdi("tamamlayan sayısı yeni işe başlayan sayısını aşamaz")
+    return 100 * _bol(tamamlayan, yeni, "yeni işe başlayan sayısı")
+
+
+def egitim_erisimi(katilan: float, calisan: float) -> float:
+    """Dönem içinde en az bir öğrenme etkinliğine katılan çalışanların payı (%)."""
+    _negatif_yok(katilan=katilan)
+    if katilan > calisan:
+        raise GecersizGirdi("katılan sayısı çalışan sayısını aşamaz")
+    return 100 * _bol(katilan, calisan, "çalışan sayısı")
+
+
+def kapsama(toplam: float, uygulanan: float, kismen: float = 0) -> float:
+    """Rehber ifadelerinin uygulama kapsaması (%): (uygulanan + 0,5 × kısmen) ÷ toplam × 100."""
+    _negatif_yok(uygulanan=uygulanan, kismen=kismen)
+    if uygulanan + kismen > toplam:
+        raise GecersizGirdi("uygulanan ve kısmen uygulanan toplamı ifade sayısını aşamaz")
+    return 100 * _bol(uygulanan + 0.5 * kismen, toplam, "ifade sayısı")
+
+
+# ---------------------------------------------------------------------------
+# 3) Yapılar: öz değerlendirme tablosu ve ilke denetimi
+# ---------------------------------------------------------------------------
+
+@dataclass
+class Alan:
+    """Standardın bir maddesi için öz değerlendirme satırı."""
+    kod: str
+    ad: str
+    toplam: int
+    uygulanan: float = 0
+    kismen: float = 0
+
+    def kapsama(self) -> float:
+        return kapsama(self.toplam, self.uygulanan, self.kismen)
+
+
+@dataclass
+class OzDegerlendirme:
+    """Madde 6–10 için öz değerlendirme tablosu. Hedef kapsama kurumca belirlenir (varsayılan %70)."""
+    alanlar: list = field(default_factory=lambda: [Alan(k, a, n) for k, a, n in ALANLAR])
+    hedef: float = 70.0
+
+    def gir(self, kod: str, uygulanan: float, kismen: float = 0) -> "OzDegerlendirme":
+        for a in self.alanlar:
+            if a.kod == kod:
+                a.uygulanan, a.kismen = uygulanan, kismen
+                a.kapsama()  # doğrulama
+                return self
+        raise GecersizGirdi(f"bilinmeyen madde: {kod}")
+
+    def ozet(self) -> dict:
+        toplam = sum(a.toplam for a in self.alanlar)
+        uyg = sum(a.uygulanan for a in self.alanlar)
+        kis = sum(a.kismen for a in self.alanlar)
+        oranlar = [(a.kapsama(), a.kod) for a in self.alanlar]
+        en_zayif = oranlar[0]
+        for o in oranlar[1:]:
+            if o[0] < en_zayif[0]:
+                en_zayif = o
+        return {
+            "alan_sayisi": len(self.alanlar),
+            "toplam_ifade": toplam,
+            "genel_kapsama": round(kapsama(toplam, uyg, kis), 1),
+            "hedef_alti": [k for o, k in oranlar if o < self.hedef],
+            "en_zayif": en_zayif[1],
+        }
+
+
+def ornek_tablo() -> OzDegerlendirme:
+    """Örnek amaçlı doldurulmuş tablo (standart bu sayıları vermez)."""
+    t = OzDegerlendirme()
+    for kod, u, k in [("6.2", 4, 1), ("6.3", 5, 1), ("6.4", 3, 2), ("6.5", 2, 0), ("7", 4, 2), ("8", 5, 2),
+                      ("9.2", 1, 1), ("9.3", 4, 2), ("9.4", 3, 1), ("9.5", 2, 0), ("10.2", 3, 0), ("10.3", 1, 1)]:
+        t.gir(kod, u, k)
+    return t
+
+
+def ilke_denetimi(paydas_rolleri_tanimli: bool = False,
+                  kulture_ve_politikaya_gomulu: bool = False,
+                  iki_yonlu_iletisim_var: bool = False,
+                  ilerleme_duzenli_olculuyor_anonim: bool = False,
+                  asiri_baglilik_riski_degerlendiriliyor: bool = False,
+                  veri_koruma_yasalarina_uyum: bool = False) -> list:
+    """Madde 4.1'deki altı ilkeye göre eksikleri listeler (hazırlık kontrol listesi, uygunluk sınaması değil)."""
+    kontroller = [
+        (paydas_rolleri_tanimli, "Üst yönetim, yöneticiler, İK uzmanları, çalışanlar ve temsilcilerin bağlılıktaki rolleri tanımlı değil."),
+        (kulture_ve_politikaya_gomulu, "Çalışan bağlılığı kurum kültürüne gömülü değil ya da politikalarla hayata geçirilmiyor."),
+        (iki_yonlu_iletisim_var, "İki yönlü iletişim mekanizması tanımlı değil."),
+        (ilerleme_duzenli_olculuyor_anonim, "Bağlılık hedeflerine karşı ilerleme düzenli ve bireysel düzeyde anonim ve gizli yöntemlerle ölçülmüyor."),
+        (asiri_baglilik_riski_degerlendiriliyor, "Uzun süreli aşırı bağlılığın sağlık riskleri düzenli değerlendirilmiyor."),
+        (veri_koruma_yasalarina_uyum, "Veri koruma ve gizlilik mevzuatı gözetilmiyor."),
+    ]
+    return [metin for tamam, metin in kontroller if not tamam]
+
+
+# ---------------------------------------------------------------------------
+# 4) Dağıtıcı: hesaplayıcı arayüzünün kullandığı tek giriş noktası
+# ---------------------------------------------------------------------------
+
+METRIK_LISTESI = ["uwes", "katilim", "olumlu", "degisim", "anonim",
+                  "fazla", "onboarding", "egitim", "kapsama"]
+
+
+def _g(x) -> str:
+    """Sayıyı, bilimsel gösterim kullanmadan en kısa biçimde yazar."""
+    return f"{x:.12g}"
+
+
+def hesapla(metrik: str, **g) -> dict:
+    """Metrik kimliği ve girdilerle hesabı yapar; sözlük döndürür.
+
+    Dönen anahtarlar: deger, ifade (formülün yerine konmuş hâli), ondalik,
+    birim, ayrinti (etiket–değer çiftleri).
+    """
+    if metrik == "uwes":
+        u = uwes_puani([g["d1"], g["d2"], g["d3"]], [g["a1"], g["a2"], g["a3"]], [g["y1"], g["y2"], g["y3"]])
+        return {"deger": u["toplam"], "ondalik": 2, "birim": "puan (0–6 ortalama)",
+                "ifade": f"{_g(u['madde_toplami'])} ÷ 9",
+                "ayrinti": [["Dinçlik (vigour) ortalaması", round(u["dincilik"], 2)],
+                            ["Adanmışlık (dedication) ortalaması", round(u["adanmislik"], 2)],
+                            ["Yoğunlaşma (absorption) ortalaması", round(u["yogunlasma"], 2)],
+                            ["En düşük boyut", u["en_dusuk"]]]}
+
+    if metrik == "katilim":
+        d = katilim_orani(g["yanit"], g["davet"])
+        return {"deger": d, "ondalik": 1, "birim": "% (yanıt ÷ davet)",
+                "ifade": f"{_g(g['yanit'])} ÷ {_g(g['davet'])} × 100",
+                "ayrinti": [["Yanıt vermeyen", round(g["davet"] - g["yanit"], 2)],
+                            ["Yanıt vermeyenlerin payı (%)", round(100 - d, 1)]]}
+
+    if metrik == "olumlu":
+        d = olumlu_oran(g["olumlu"], g["toplam"])
+        return {"deger": d, "ondalik": 1, "birim": "% (olumlu ÷ toplam yanıt)",
+                "ifade": f"{_g(g['olumlu'])} ÷ {_g(g['toplam'])} × 100",
+                "ayrinti": [["Olumlu olmayan yanıt", round(g["toplam"] - g["olumlu"], 2)],
+                            ["Olumlu olmayanların payı (%)", round(100 - d, 1)]]}
+
+    if metrik == "degisim":
+        d = donemsel_degisim(g["onceki"], g["simdiki"])
+        return {"deger": d, "ondalik": 2, "birim": "puan (şimdiki − önceki)",
+                "ifade": f"{_g(g['simdiki'])} − {_g(g['onceki'])}",
+                "ayrinti": [["Önceki döneme göre değişim (%)", round(100 * _bol(d, g["onceki"], "önceki dönem puanı"), 1)]]}
+
+    if metrik == "anonim":
+        d = anonimlik_marji(g["grup"], g["esik"])
+        return {"deger": d, "ondalik": 0, "birim": "kişi (grup − eşik)",
+                "ifade": f"{_g(g['grup'])} − {_g(g['esik'])}",
+                "ayrinti": [["Grup büyüklüğü ÷ eşik", round(g["grup"] / g["esik"], 2)]]}
+
+    if metrik == "fazla":
+        d = fazla_calisma_orani(g["gercek"], g["sozlesme"])
+        return {"deger": d, "ondalik": 1, "birim": "% (sözleşme süresinin üstü)",
+                "ifade": f"({_g(g['gercek'])} − {_g(g['sozlesme'])}) ÷ {_g(g['sozlesme'])} × 100",
+                "ayrinti": [["Fark (saat/hafta)", round(g["gercek"] - g["sozlesme"], 2)]]}
+
+    if metrik == "onboarding":
+        d = onboarding_orani(g["tamamlayan"], g["yeni"])
+        return {"deger": d, "ondalik": 1, "birim": "% (tamamlayan ÷ yeni)",
+                "ifade": f"{_g(g['tamamlayan'])} ÷ {_g(g['yeni'])} × 100",
+                "ayrinti": [["Programı tamamlamayan", round(g["yeni"] - g["tamamlayan"], 2)]]}
+
+    if metrik == "egitim":
+        d = egitim_erisimi(g["katilan"], g["calisan"])
+        return {"deger": d, "ondalik": 1, "birim": "% (katılan ÷ çalışan)",
+                "ifade": f"{_g(g['katilan'])} ÷ {_g(g['calisan'])} × 100",
+                "ayrinti": [["Etkinliğe katılmayan çalışan", round(g["calisan"] - g["katilan"], 2)]]}
+
+    if metrik == "kapsama":
+        d = kapsama(g["toplam"], g["uygulanan"], g["kismen"])
+        return {"deger": d, "ondalik": 1, "birim": "% (kapsama)",
+                "ifade": f"({_g(g['uygulanan'])} + 0,5 × {_g(g['kismen'])}) ÷ {_g(g['toplam'])} × 100",
+                "ayrinti": [["Hiç uygulanmayan ifade", round(g["toplam"] - g["uygulanan"] - g["kismen"], 2)],
+                            ["Yalnızca tam uygulananların payı (%)", round(100 * g["uygulanan"] / g["toplam"], 1)]]}
+
+    raise ValueError(f"Bilinmeyen metrik: {metrik}")
+
+
+# ---------------------------------------------------------------------------
+# 5) Doğrulama çıktısı
+# ---------------------------------------------------------------------------
+
+def _demo() -> None:
+    cizgi = "-" * 64
+    print("ISO 23326 — doğrulama çıktısı")
+    print(cizgi)
+
+    u = uwes_puani([5, 4, 5], [4, 5, 4], [3, 4, 3])
+    print(f"UWES benzeri puan : {u['toplam']:.2f} (dinçlik {u['dincilik']:.2f}, adanmışlık {u['adanmislik']:.2f}, "
+          f"yoğunlaşma {u['yogunlasma']:.2f}); en düşük: {u['en_dusuk']}")
+    print(f"Katılım (420/600) : %{katilim_orani(420, 600):.1f}")
+    print(f"Olumlu (310/420)  : %{olumlu_oran(310, 420):.1f}")
+    print(f"Değişim (4,1→4,3) : {donemsel_degisim(4.1, 4.3):+.2f} puan")
+    print(f"Anonimlik (8, 5)  : {anonimlik_marji(8, 5):+.0f} kişi")
+    print(f"Fazla çalışma     : %{fazla_calisma_orani(44, 40):.1f}")
+    print(f"Kapsama (6, 4, 1) : %{kapsama(6, 4, 1):.1f}")
+    print(cizgi)
+
+    t = ornek_tablo()
+    for anahtar, deger in t.ozet().items():
+        print(f"{anahtar:<14}: {deger}")
+    print(cizgi)
+
+    print("Dağıtıcı örneği:")
+    print(hesapla("katilim", yanit=420, davet=600))
+    print(cizgi)
+
+    print("İlke denetimi (hiçbir ilkeyi sağlamayan bir kurum için):")
+    for u in ilke_denetimi():
+        print(" !", u)
+
+
+if __name__ == "__main__":
+    _demo()
+</script>
+<script>
+/* =========================================================
+   1) MADDE VERİ TABANI
+   u: kullanıcılar (lead yönetişim organları ve liderler / hr İK uzmanları / mgr yöneticiler /
+      emp çalışanlar ve temsilcileri / res meslek kuruluşları, akademisyenler ve standart geliştiriciler)
+   st: bölüm (giris, ilke, cerceve, kultur, lider, ogren, is, odul)
+   r: iletişim (ic kurum içi politika ve yönetim, dis çalışanlarla ve temsilcilerle birlikte yürütülür/iletilir)
+   t: aile (p ilkeler ve çerçeve / c kültür ve iletişim / s liderlik ve öğrenme / r iş içeriği / o ücret ve takdir)
+   calc: bu sayfadaki hesaplayıcı kimliği
+   k: ek etiket (ctx bağlam, tur türetilmiş)
+   ========================================================= */
+var METRICS = [
+ {g:"İlkeler ve çerçeve (Giriş, madde 1–5)", t:"p", items:[
+  {n:"Odak: çalışanın ve kurumun yararı", st:"giris", r:["ic"], d:"Çalışanın iyiliğine, kurumun iyiliğine ve istihdam ilişkisinde karşılıklı kazanıma odaklanma (Giriş)", u:["lead", "hr", "mgr", "emp", "res"]},
+  {n:"Bağlılığın öğeleri", st:"giris", r:["ic"], d:"İş tatmini, kuruma bağlılık ve rol dışı davranışın (ör. isteğe bağlı çaba) bir karışımı olarak görülebilir (Giriş)", u:["hr", "res", "lead"]},
+  {n:"İşbirlikçi yaklaşım", st:"giris", r:["ic", "dis"], d:"Kurum, çalışanlar ve varsa tanınmış temsilcileri arasında ortak yaklaşım; politika, süreç ve uygulamalarda tutarlılık (Giriş)", u:["lead", "hr", "mgr", "emp"]},
+  {n:"Olası yararlar (Giriş)", st:"giris", r:["ic"], d:"Bireysel iş tatmini, daha az devamsızlık, elde tutma, müşteri hizmeti, yenilik, kurumsal performans ve sürdürülebilirlik, üretkenlik", u:["lead", "hr", "mgr", "res"]},
+  {n:"BM Sürdürülebilir Kalkınma Amacı 8", st:"giris", r:["ic"], d:"İnsana yakışır iş ve ekonomik büyüme hedefiyle ilişkili (Giriş)", u:["lead", "hr", "res"]},
+  {n:"Hedef kullanıcı grupları (Giriş)", st:"giris", r:["ic"], d:"Yönetişim organları ve liderler, İK uzmanları, yöneticiler, girişimciler, çalışanlar ve temsilcileri, meslek ve ticaret kuruluşları, akademisyenler, standart geliştiriciler", u:["lead", "hr", "mgr", "emp", "res"]},
+  {n:"Kapsam: karşılıklı yararlı ortam", st:"giris", r:["ic"], d:"Herkesin kurumun amaç, hedef ve değerleriyle bağ kurduğu; kurumun da kaliteli iş ve gelişim fırsatı sağladığı ortam (1)", u:["lead", "hr", "mgr", "emp"]},
+  {n:"Kapsam: büyüklük ve sektörden bağımsız", st:"giris", r:["ic"], d:"Kamu, özel ve gönüllü sektör; her büyüklük, tür, yapı ve karmaşıklık (1)", u:["lead", "hr", "mgr", "res"]},
+  {n:"Kapsam: kurum adına çalışan herkes", st:"giris", r:["ic"], d:"Ulusal iş yasalarını, toplu sözleşmeleri ve toplu pazarlığı ihlal etmeyi amaçlamaz (1)", u:["lead", "hr", "emp"]},
+  {n:"Normatif atıf yok (2)", st:"giris", r:["ic"], k:"ctx", d:"Standartta normatif atıf bulunmaz; ek de yoktur", u:["res"]},
+  {n:"Sosyal diyalog (3.1)", st:"giris", r:["ic"], d:"Hükümet, işveren ve çalışan temsilcileri arasında müzakere, danışma ya da bilgi alışverişi; terim yalnızca tanımlanır, metinde başka yerde geçmez", u:["hr", "emp", "res"]},
+  {n:"İlke: tüm paydaşların rolü (4.1)", st:"ilke", r:["ic"], d:"Üst yöneticiler, yöneticiler, İK uzmanları, çalışanlar ve temsilcilerinin bağlılığı artırmada rolü vardır", u:["lead", "hr", "mgr", "emp"]},
+  {n:"İlke: kültüre gömülü, politikalarla uygulanır (4.1)", st:"ilke", r:["ic"], d:"Çalışan bağlılığı kurum kültürüne yerleşir ve kurumsal politikalarla hayata geçirilir", u:["lead", "hr", "mgr"]},
+  {n:"İlke: iki yönlü iletişim (4.1)", st:"ilke", r:["ic", "dis"], d:"İki yönlü iletişim bağlılığın temel parçasıdır", u:["lead", "hr", "mgr", "emp"]},
+  {n:"İlke: ilerlemeyi düzenli değerlendirme (4.1)", st:"ilke", r:["ic"], calc:"degisim", d:"Bağlılık hedeflerine karşı ilerleme düzenli değerlendirilir; anketler ya da görüşmelerle", u:["lead", "hr", "mgr", "res"]},
+  {n:"İlke: anketlerde anonimlik ve gizlilik (4.1)", st:"ilke", r:["ic", "dis"], calc:"anonim", d:"Anket ve görüşmeler birey düzeyinde anonimlik ve gizlilikle bağlıdır", u:["hr", "mgr", "emp", "res"]},
+  {n:"İlke: sağlık, esenlik ve aşırı bağlılık riski (4.1)", st:"ilke", r:["ic"], calc:"fazla", d:"Çalışan sağlığı ve esenliği öncelikli; uzun süreli aşırı bağlılığın sağlık riskleri düzenli değerlendirilir", u:["lead", "hr", "mgr", "emp"]},
+  {n:"İlke: veri koruma ve gizlilik yasaları (4.1)", st:"ilke", r:["ic"], d:"Veri koruma ve mahremiyetle ilgili tüm yasal hükümlerin bilinmesi", u:["lead", "hr", "mgr", "res"]},
+  {n:"Çalışan bağlılığı (4.2)", st:"ilke", r:["ic"], d:"Kapsayıcı işyeri yaklaşımı: herkesin yapıcı sesi olması ve kendi için anlamlı biçimde üretken katkı vermesi; iki yönlü süreç", u:["lead", "hr", "mgr", "emp", "res"]},
+  {n:"Boyut: dinçlik (vigour) (4.3)", st:"ilke", r:["ic"], calc:"uwes", d:"Yüksek enerji ve dayanıklılık, rolde çaba göstermeye istek", u:["hr", "res", "mgr"]},
+  {n:"Boyut: adanmışlık (dedication) (4.3)", st:"ilke", r:["ic"], calc:"uwes", d:"İşe güçlü katılım; gurur ve meydan okuma kaynağı olarak deneyimleme", u:["hr", "res", "mgr"]},
+  {n:"Boyut: yoğunlaşma (absorption) (4.3)", st:"ilke", r:["ic"], calc:"uwes", d:"İşe tam odaklanma ve dalma", u:["hr", "res", "mgr"]},
+  {n:"Çerçeve (Şekil 1): koşullar → bağlılık → çıktılar", st:"cerceve", r:["ic"], d:"Kurumun değiştirebildiği beş koşul, işe bağlılık ve olası çıktılar arasındaki ilişki (5.1)", u:["lead", "hr", "mgr", "res"]},
+  {n:"Koşul: örgüt kültürü ve iletişim", st:"cerceve", r:["ic"], d:"Madde 6 — kültür ve değerler, iletişim, güçlendirme, temsil", u:["lead", "hr", "mgr"]},
+  {n:"Koşul: destekleyici liderlik", st:"cerceve", r:["ic"], d:"Madde 7 — liderlerin kabiliyeti ve sorumluluğu", u:["lead", "hr", "mgr"]},
+  {n:"Koşul: örgütsel öğrenme", st:"cerceve", r:["ic"], d:"Madde 8 — işe başlamadan değerlendirmeye öğrenme", u:["lead", "hr", "mgr"]},
+  {n:"Koşul: iş içeriği ve iş tasarımı", st:"cerceve", r:["ic"], d:"Madde 9 — iş tasarımı, çalışma ortamı, sağlık, esneklik", u:["lead", "hr", "mgr"]},
+  {n:"Koşul: ücret ve takdir", st:"cerceve", r:["ic"], d:"Madde 10 — dışsal ücret ve içsel takdir", u:["lead", "hr", "mgr"]},
+  {n:"Çıktı: bireysel memnuniyet ve iş kalitesi (5.2)", st:"cerceve", r:["ic"], d:"Çalışanın işinden ve iş kalitesinden memnuniyeti artabilir", u:["hr", "mgr", "emp", "res"]},
+  {n:"Çıktı: kurumsal performans ve sürdürülebilirlik (5.2)", st:"cerceve", r:["ic"], d:"Daha yüksek bağlılıkta kurumsal performans ve gelecekteki sürdürülebilirlik iyileşebilir", u:["lead", "hr", "mgr", "res"]},
+  {n:"Çıktı: çalışanı elde tutma (5.2)", st:"cerceve", r:["ic"], d:"Çalışanı elde tutma iyileşebilir", u:["lead", "hr", "mgr", "res"]},
+  {n:"Çıktı: müşteri hizmeti (5.2)", st:"cerceve", r:["ic"], d:"Müşteri hizmetinde iyileşme bildirilebilir", u:["lead", "hr", "mgr", "res"]},
+  {n:"Çıktı: üretkenlik (5.2)", st:"cerceve", r:["ic"], d:"Çalışan üretkenliği artabilir", u:["lead", "hr", "mgr", "res"]},
+  {n:"Ölçüm: odak grupları (5.3)", st:"cerceve", r:["ic"], d:"Çalışan deneyimlerini daha derin anlamak için", u:["hr", "res", "mgr"]},
+  {n:"Ölçüm: çalışan anketleri (5.3)", st:"cerceve", r:["ic", "dis"], calc:"katilim", d:"Kurum içinde geliştirilmiş ya da üçüncü taraf hazır anketler; katılım ve yanıt dağılımı izlenir", u:["hr", "mgr", "emp", "res"]},
+  {n:"Ölçüm: olumlu yanıt dağılımı (türetilmiş)", st:"cerceve", r:["ic", "dis"], calc:"olumlu", k:"tur", d:"Anket maddelerinde olumlu yanıtın payı; standart bir gösterge belirtmez", u:["hr", "mgr", "res"]},
+  {n:"Ölçüm: geçerli araçlar (UWES) (5.3)", st:"cerceve", r:["ic"], calc:"uwes", d:"Utrecht İşe Bağlılık Ölçeği gibi işe bağlılığa ilişkin geçerli araçlar", u:["hr", "res"]},
+  {n:"Uygulama kapsaması (türetilmiş)", st:"cerceve", r:["ic"], calc:"kapsama", k:"tur", d:"Madde 6–10'daki rehber ifadelerinin ne kadarının uygulandığının öz değerlendirmesi", u:["lead", "hr", "mgr"]}
+ ]},
+ {g:"Örgüt kültürü ve iletişim (madde 6)", t:"c", items:[
+  {n:"Genel: liderlerin görünür sorumluluğu (6.1)", st:"kultur", r:["ic"], d:"Liderler bağlılığı yönlendirmek ve mümkün kılmaktan görünür biçimde sorumlu", u:["lead", "hr", "mgr"]},
+  {n:"Genel: ortak anlayış ve stratejilere yansıma (6.1)", st:"kultur", r:["ic"], d:"Çalışan bağlılığı konusunda kurum içinde ortak anlayış; kurumsal stratejilere tutarlı yansıma", u:["lead", "hr", "mgr"]},
+  {n:"Genel: düzenli iletişim (6.1)", st:"kultur", r:["ic", "dis"], d:"Rol beklentileri, çalışma biçimleri ve politika, süreç, uygulamalar paydaşlara düzenli iletilir", u:["hr", "mgr", "emp"]},
+  {n:"Kültür: değerlerin geliştirilmesine katılım (6.2)", st:"kultur", r:["ic", "dis"], d:"Çalışanları değerlerin geliştirilmesine dahil et; değerler anlaşılır, kabul edilir ve bağ kurulur olsun", u:["lead", "hr", "emp"]},
+  {n:"Kültür: amaç, kültür ve değerleri etkileme fırsatı (6.2)", st:"kultur", r:["ic", "dis"], d:"Çalışanlara kurumun amaç, kültür ve değerlerini etkileme, anlama, destekleme ve gerçekleştirme fırsatı ver", u:["lead", "hr", "emp"]},
+  {n:"Kültür: yetkin, değerli ve amaçlı hissetme (6.2)", st:"kultur", r:["ic"], d:"Çalışanların işlerinde yetkin, değerli ve amaçlı hissetmelerini güçlendiren kültür", u:["lead", "hr", "mgr"]},
+  {n:"Kültür: yöneticiler rol modeldir (6.2)", st:"kultur", r:["ic"], d:"Yöneticiler kurum değerlerini sergilemekten ve yaşatmaktan sorumlu", u:["lead", "mgr"]},
+  {n:"Kültür: bağlılığı ölçen politikaların değerlendirilmesi (6.2)", st:"kultur", r:["ic"], calc:"kapsama", d:"Bağlılık ölçümünü sürükleyen politika ve uygulamaları değerlendir; iyi uygulama ve endişe alanlarını belirle; gerekirse eylem planı", u:["hr", "mgr"]},
+  {n:"Kültür: değerler ile hedefler arasında bağ (6.2)", st:"kultur", r:["ic"], d:"Kabul edilmiş kurum değerleri ile her düzeydeki hedefler arasında net bağlantı", u:["lead", "hr", "mgr"]},
+  {n:"İletişim: iki yönlü kanallar (6.3)", st:"kultur", r:["ic", "dis"], d:"İki yönlü iletişim için yerleşik mekanizma ve kanallar; geri bildirim fırsatları", u:["hr", "mgr", "emp"]},
+  {n:"İletişim: iç ve dış mesaj tutarlılığı (6.3)", st:"kultur", r:["ic"], d:"Kurum içinde ve dışında iletilen mesajların tutarlılığı", u:["lead", "hr"]},
+  {n:"İletişim: yöneticilere araç ve beceri (6.3)", st:"kultur", r:["ic"], d:"Yöneticilerin çalışanlara net iletişim kurabilmesi için araç ve beceri geliştirme fırsatı", u:["hr", "mgr"]},
+  {n:"İletişim: net iç iletişim (6.3)", st:"kultur", r:["ic", "dis"], d:"Çalışanlara önemli bilgi ve gelişmelerle ilgili net iç iletişim", u:["hr", "mgr", "emp"]},
+  {n:"İletişim: çeşitlilik ve kapsayıcılık taahhüdü (6.3)", st:"kultur", r:["ic", "dis"], d:"Tüm politika, süreç ve uygulamalarda çeşitlilik ve kapsayıcılık taahhüdünü ilet", u:["lead", "hr", "emp"]},
+  {n:"İletişim: yapıcı geri bildirim (6.3)", st:"kultur", r:["ic"], d:"Yöneticilere ekiplerine yapıcı geri bildirim vermenin önemini vurgula", u:["hr", "mgr"]},
+  {n:"İletişim: performans görüşmeleri (6.3)", st:"kultur", r:["ic", "dis"], d:"Çalışanlara performanslarını yöneticileriyle konuşma fırsatı düzenli ver", u:["hr", "mgr", "emp"]},
+  {n:"Güçlendirme: kurum içi öğrenme potansiyeli (6.4)", st:"kultur", r:["ic"], d:"Liderleri ve çalışanları geliştirmek için örgüt içindeki öğrenme potansiyeline odaklan", u:["lead", "hr"]},
+  {n:"Güçlendirme: işini yapış biçiminde özerklik (6.4)", st:"kultur", r:["ic", "dis"], d:"Fiziksel olarak güvenli ve uygun olduğunda, çalışan temsilcileriyle uzlaşıyla özerklik ver", u:["hr", "mgr", "emp"]},
+  {n:"Güçlendirme: duyurulan eğitim ve gelişim erişimi (6.4)", st:"kultur", r:["ic", "dis"], calc:"egitim", d:"Tüm çalışanlara iyi duyurulmuş eğitim ve gelişim etkinliklerine erişim", u:["hr", "mgr", "emp"]},
+  {n:"Güçlendirme: karar alma sürecine danışma (6.4)", st:"kultur", r:["ic", "dis"], d:"Çalışanlara danışma yoluyla kurumsal karar almaya katkı fırsatı", u:["lead", "hr", "emp"]},
+  {n:"Güçlendirme: kendi kendine yönetilen kariyer (6.4)", st:"kultur", r:["ic", "dis"], d:"Yöneticilerin desteğiyle kendi kariyer gelişimini yönetme fırsatları", u:["hr", "mgr", "emp"]},
+  {n:"Güçlendirme: rolü geliştirme ya da yeniden tasarlama (6.4)", st:"kultur", r:["ic", "dis"], d:"Yönetici desteği ve onayıyla çalışanların rollerini geliştirmesi ya da yeniden tasarlaması", u:["hr", "mgr", "emp"]},
+  {n:"Güçlendirme: geri bildirim forumları (6.4)", st:"kultur", r:["ic", "dis"], d:"Çalışanların görüşlerini yöneticilere ve geniş paydaşlara, temsilciler dahil, paylaşacağı forumlar", u:["hr", "mgr", "emp"]},
+  {n:"Temsil: toplu temsilin tanınması (6.5)", st:"kultur", r:["ic", "dis"], d:"Toplu çalışan temsilini, varsa, işgücünün yasal ve/veya meşru sesi olarak tanı ve takdir et", u:["lead", "hr", "emp"]},
+  {n:"Temsil: temsil kapsamının belirlenmesi (6.5)", st:"kultur", r:["ic", "dis"], d:"Resmî temsil yoksa temsilin kapsamı ve görev tanımı (sağlık ve güvenlik dahil) üzerinde uzlaşılır", u:["hr", "emp"]}
+ ]},
+ {g:"Destekleyici liderlik ve örgütsel öğrenme (madde 7–8)", t:"s", items:[
+  {n:"Liderlik: ortak uygulama anlayışı (7)", st:"lider", r:["ic", "dis"], d:"Çalışan bağlılığının kurumda nasıl uygulandığı konusunda çalışanlar ve temsilcileriyle ortak anlayış kur ve ilet", u:["lead", "hr", "emp"]},
+  {n:"Liderlik: stratejilerde vurgu (7)", st:"lider", r:["ic"], d:"Kurumsal strateji, politika, süreç ve uygulamalarda bağlılığı teşvikin önemini vurgula", u:["lead", "hr", "mgr"]},
+  {n:"Liderlik: üst yönetici sorumluluğu (7)", st:"lider", r:["ic"], d:"Üst yöneticileri bağlılığı artıran koşulları iyileştirmeden iş tanımlarının parçası olarak sorumlu kıl", u:["lead", "hr"]},
+  {n:"Liderlik: bağlılığı teşvik politikası (7)", st:"lider", r:["ic"], d:"Bağlılığı artıran koşulların sürekli iyileştirilmesi taahhüdünü içeren politika oluştur, uygula, sürdür", u:["lead", "hr"]},
+  {n:"Liderlik: yöneticiler için kaynak (7)", st:"lider", r:["ic"], d:"Yöneticilere çalışan performansını ve bağlılığını desteklemek için zaman ve bütçe gibi kaynaklar", u:["lead", "hr", "mgr"]},
+  {n:"Liderlik: liderleri geliştirme (7)", st:"lider", r:["ic"], d:"Liderlere bağlılığı artırma becerilerini geliştirme fırsatı", u:["hr", "mgr"]},
+  {n:"Liderlik: açık ve düzenli diyalog (7)", st:"lider", r:["ic", "dis"], d:"Liderlere karar almada çalışanları ve temsilcilerini açık ve düzenli diyalogla dahil etmenin önemini vurgula", u:["lead", "hr", "emp"]},
+  {n:"Öğrenme: işe başlama programı (8)", st:"ogren", r:["ic", "dis"], calc:"onboarding", d:"İşe başlangıçtan itibaren bağlılığı yarat; tüm yeni çalışanlara kurum tanıtımı, sağlık ve güvenlik ve işe özgü bilgi içeren ayrıntılı program", u:["hr", "mgr", "emp"]},
+  {n:"Öğrenme: ihtiyaç belirleme (8)", st:"ogren", r:["ic"], d:"Birey, ekip ve kurum düzeyinde öğrenme ihtiyaçlarını temsilcilerle danışarak belirle", u:["hr", "mgr", "emp"]},
+  {n:"Öğrenme: bütçe ayırma (8)", st:"ogren", r:["ic"], d:"Bağlılığı sürdürmek için öğrenme ve gelişim bütçesi ayır", u:["lead", "hr"]},
+  {n:"Öğrenme: erişilebilir ve kapsayıcı etkinlikler (8)", st:"ogren", r:["ic", "dis"], calc:"egitim", d:"Erişilebilir ve kapsayıcı öğrenme ve gelişim etkinlikleri", u:["hr", "mgr", "emp"]},
+  {n:"Öğrenme: yeni becerileri uygulama (8)", st:"ogren", r:["ic"], d:"Öğrenilen yeni beceri ve bilgiyi uygulama fırsatı", u:["mgr", "emp"]},
+  {n:"Öğrenme: yöneticilerin ekip ihtiyaçlarını belirleme kaynağı (8)", st:"ogren", r:["ic"], d:"Yöneticilere ekiplerinin öğrenme ihtiyaçlarını belirlemek için kaynak, beceri ve gelişim fırsatı", u:["hr", "mgr"]},
+  {n:"Öğrenme: adil ve erişilebilir çeşitlilik eğitimi (8)", st:"ogren", r:["ic", "dis"], d:"Kapsayıcı davranışı destekleyen, önyargı farkındalığı ve ayrımcı davranışlara karşı durmayı öğreten eğitim", u:["hr", "mgr", "emp"]},
+  {n:"Öğrenme: etkinliklerin değerlendirilmesi (8)", st:"ogren", r:["ic"], calc:"olumlu", d:"Tüm öğrenme ve gelişim etkinliklerini, ör. anonim anketlerle değerlendir", u:["hr", "mgr"]},
+  {n:"Öğrenme: değerlendirmenin bağlılık çalışmalarına etkisi (8)", st:"ogren", r:["ic"], d:"Öğrenme değerlendirmesini gelecekteki bağlılık etkinliklerini etkilemek için kullan", u:["hr", "mgr"]},
+  {n:"Öğrenme: öğrenme ihtiyacı analizi ve sonradan değerlendirme (8, giriş)", st:"ogren", r:["ic"], d:"Öğrenme ihtiyaçları analizi ile hedeflerin karşılanıp karşılanmadığının değerlendirilmesi", u:["hr", "mgr"]}
+ ]},
+ {g:"İş içeriği ve iş tasarımı (madde 9)", t:"r", items:[
+  {n:"Genel: bilgi, beceri ve yeteneğe uygun rol (9.1)", st:"is", r:["ic"], d:"Çalışanları bilgi, beceri ve yeteneklerine uygun rollere tahsis et", u:["hr", "mgr"]},
+  {n:"Genel: rollerin düzenli gözden geçirilmesi (9.1)", st:"is", r:["ic"], d:"Rol ve iş faaliyetlerinin gereklerini düzenli gözden geçir; çalışanların tasarıma girdi vermesine izin ver", u:["hr", "mgr", "emp"]},
+  {n:"Genel: gelişim fırsatları bilgisi (9.1)", st:"is", r:["ic", "dis"], d:"Gelişim fırsatlarını düzenli ve net duyur", u:["hr", "mgr", "emp"]},
+  {n:"İş tasarımı: sistematik ve danışmacı yaklaşım (9.2)", st:"is", r:["ic", "dis"], d:"Rolleri tasarlamak ve gözden geçirmek için sistematik ve danışmacı yaklaşım", u:["hr", "mgr", "emp"]},
+  {n:"İş tasarımı: rolün amacının ifadesi (9.2)", st:"is", r:["ic"], d:"Liderlerin her rolün amacını net ifade edebildiği ve çalışanın potansiyeline ulaşmasını desteklediği sistem", u:["hr", "mgr"]},
+  {n:"İş tasarımı: iş şekillendirme (9.2)", st:"is", r:["ic", "dis"], d:"Çalışanları işin yürütülüş biçimine ilişkin fikirler getirmeye teşvik et; görevlerin düzenini önerebildikleri iş şekillendirme (job crafting)", u:["hr", "mgr", "emp"]},
+  {n:"Çalışma ortamı: farklı çalışma alanları (9.3)", st:"is", r:["ic"], d:"Resmî çalışma yerinde işin farklı yönleri için çeşitli çalışma alanları", u:["hr", "mgr"]},
+  {n:"Çalışma ortamı: kaynak ve teknolojiye erişim (9.3)", st:"is", r:["ic"], d:"İşi yapmak için kaynak ve teknolojiye erişimde destek", u:["hr", "mgr", "emp"]},
+  {n:"Çalışma ortamı: güvenlik ve esenlik politikaları (9.3)", st:"is", r:["ic"], d:"Çalışma saatleri ve fazla mesai dahil güvenlik ve esenliği önceleyen kültür", u:["lead", "hr", "mgr"]},
+  {n:"Çalışma ortamı: güvenilir danışman ve koç liderlik (9.3)", st:"is", r:["ic"], d:"Liderleri güvenilir danışman ve koç tarzını benimsemeye teşvik et ve yetkilendir", u:["lead", "hr", "mgr"]},
+  {n:"Çalışma ortamı: esnek saatler ve uzaktan çalışma (9.3)", st:"is", r:["ic", "dis"], calc:"fazla", d:"Uygun, gerekli ve mümkün olduğunda, toplu sözleşmelere uygun esnek saat ve uzaktan çalışma", u:["hr", "mgr", "emp"]},
+  {n:"Çalışma ortamı: sürekli yüksek bağlılık riskleri (9.3)", st:"is", r:["ic"], calc:"fazla", d:"Sürekli yüksek bağlılık düzeylerinin riskini sistematik belirle ve değerlendir; tükenmişliği önle", u:["hr", "mgr"]},
+  {n:"Çalışma ortamı: anonim sağlık, güvenlik ve devamsızlık verileri (9.3)", st:"is", r:["ic"], d:"Bağlılığı ve esenliği olumsuz etkileyebilecek riskler için anonim sağlık, güvenlik ve devamsızlık verilerini gözden geçir", u:["hr", "mgr", "res"]},
+  {n:"Çalışma ortamı: çalışanların risk değerlendirmesine katılımı (9.3)", st:"is", r:["ic", "dis"], d:"Çalışanları ve temsilcilerini risk değerlendirme sürecine dahil et", u:["hr", "emp"]},
+  {n:"Sağlık: ortak geliştirilen sağlık yönetimi yaklaşımı (9.4)", st:"is", r:["ic", "dis"], d:"Çalışanlar, temsilcileri ve ana paydaşlarla birlikte geliştirilmiş sağlık yönetimi yaklaşımı", u:["hr", "emp"]},
+  {n:"Sağlık: destek hizmetlerine erişim (9.4)", st:"is", r:["ic", "dis"], d:"Mümkünse iş sağlığı rehberliği dahil sağlık destek hizmetlerine erişim ya da bilgi", u:["hr", "mgr", "emp"]},
+  {n:"Sağlık: sistematik gözden geçirme (9.4)", st:"is", r:["ic"], d:"Sağlık yönetimi stratejisi, politika ve uygulamalarını düzenli gözden geçirme süreci", u:["hr", "mgr"]},
+  {n:"Sağlık: stratejik uygulama yaklaşımı (9.4)", st:"is", r:["ic"], d:"Sağlık yönetimi politikasını hayata geçirmek için stratejik yaklaşım", u:["lead", "hr"]},
+  {n:"Sağlık: sağlıklı yaşam kaynakları (9.4)", st:"is", r:["ic", "dis"], d:"Sağlıklı yaşam tarzı için kaynaklar; dış sağlık kuruluşlarına yönlendirme, sağlıklı yemek seçenekleri", u:["hr", "mgr", "emp"]},
+  {n:"Sağlık: kapsayıcı yaklaşım (9.4)", st:"is", r:["ic"], d:"Kişisel, çevresel, örgütsel, toplumsal faktörlerin birleşik etkisinin farkında kapsayıcı sağlık geliştirme", u:["hr", "mgr"]},
+  {n:"Sağlık: sağlık sorunu yaşayanlar için bilgi (9.4)", st:"is", r:["ic", "dis"], d:"Sağlık sorunu yaşayan çalışanlara destek hizmetleri hakkında bilgi", u:["hr", "mgr", "emp"]},
+  {n:"Dayanıklılık: esneklik seçeneklerinin duyurulması (9.5)", st:"is", r:["ic", "dis"], d:"Kurumun sunduğu esneklik seçeneklerinden çalışanları haberdar et", u:["hr", "mgr", "emp"]},
+  {n:"Dayanıklılık: esnek saat ve evden çalışma (9.5)", st:"is", r:["ic", "dis"], d:"Çalışanın sağlığı ve yaşam evresini göz önüne alarak esnek saat ve evden çalışmayı düşün", u:["hr", "mgr", "emp"]},
+  {n:"Dayanıklılık: iş-yaşam dengesi (9.5)", st:"is", r:["ic"], calc:"fazla", d:"Çalışanlar arasında iş-yaşam dengesini teşvik et", u:["lead", "hr", "mgr"]}
+ ]},
+ {g:"Ücret ve takdir (madde 10)", t:"o", items:[
+  {n:"Genel: şeffaf ücret çerçevesi (10.1)", st:"odul", r:["ic", "dis"], d:"Mali ve mali olmayan ücret için net, şeffaf ve çalışanlara açık çerçeve", u:["lead", "hr", "emp"]},
+  {n:"Genel: paydaşlarca düzenli değerlendirme (10.1)", st:"odul", r:["ic"], d:"Çerçeve liderleri, çalışanları ve temsilcilerini içeren paydaş grubunca rutin değerlendirilir", u:["lead", "hr", "emp"]},
+  {n:"Genel: ücret belirlemede toplu pazarlık (10.1)", st:"odul", r:["ic"], d:"Ücret belirleme müzakereye, toplu katılıma ve toplu pazarlığa konu olabilir", u:["hr", "emp"]},
+  {n:"Ücret: adil, eşitlikçi ve şeffaf çerçeve (10.2)", st:"odul", r:["ic", "dis"], d:"Çalışanlar ve temsilcileriyle danışarak adil, eşitlikçi ve şeffaf ücret çerçevesi oluştur", u:["lead", "hr", "emp"]},
+  {n:"Ücret: beklenen performans ölçütleri (10.2)", st:"odul", r:["ic", "dis"], d:"Çalışanlarla beklenen performansa ilişkin net ölçütler üzerinde uzlaş", u:["hr", "mgr", "emp"]},
+  {n:"Ücret: ücret programlarına katılım (10.2)", st:"odul", r:["ic", "dis"], d:"Çalışanları ve temsilcilerini ücret programlarının tasarımı, uygulaması, sunumu ve gözden geçirilmesine dahil et", u:["hr", "emp"]},
+  {n:"Ücret: mali güvence (10.2)", st:"odul", r:["ic"], d:"Mümkün olduğunda belirsizliği azaltarak çalışanlara mali güvence sağlamaya çalış", u:["lead", "hr"]},
+  {n:"Takdir: içsel ödüllere ilişkin danışma (10.3)", st:"odul", r:["ic", "dis"], d:"İçsel ödüller için olası yaklaşımları çalışanlar ve temsilcileriyle değerlendir", u:["hr", "emp"]},
+  {n:"Takdir: iş zenginleştirme ve kariyer gelişimi (10.3)", st:"odul", r:["ic", "dis"], d:"Yeni projelerde çalışma ya da yeni ekiplere katılma gibi iş zenginleştirme ve kariyer gelişimi fırsatları", u:["hr", "mgr", "emp"]},
+  {n:"Takdir: koçluk ya da iki yönlü iletişim tarzı (10.3)", st:"odul", r:["ic"], d:"Yöneticilerin çalışanların işini takdir etmede koçluk ya da iki yönlü iletişim tarzını kullanmasını teşvik et", u:["hr", "mgr"]},
+  {n:"Takdir: meslektaş adaylama mekanizması (10.3)", st:"odul", r:["ic", "dis"], d:"Çalışanların meslektaşlarını takdir için aday gösterebileceği mekanizmalar", u:["hr", "emp"]}
+ ]}
+];
+
+var USERS = ["lead","hr","mgr","emp","res"];
+var AILE_AD = {p:"ilke ve çerçeve", c:"kültür ve iletişim", s:"liderlik ve öğrenme", r:"iş içeriği ve tasarımı", o:"ücret ve takdir"};
+var EK_AD = {ctx:"bağlam", tur:"türetilmiş"};
+
+/* --- matris çizimi --- */
+function renderMatrix(){
+  var fu = document.getElementById("fUser").value;
+  var fs = document.getElementById("fStage").value;
+  var ft = document.getElementById("fType").value;
+  var fr = document.getElementById("fRep").value;
+  var fq = document.getElementById("fQ").value.toLocaleLowerCase("tr");
+  var body = document.getElementById("mBody");
+  var html = "", shown = 0;
+
+  METRICS.forEach(function(grp){
+    if(ft && grp.t !== ft) return;
+    var rows = "";
+    grp.items.forEach(function(m){
+      if(fu && m.u.indexOf(fu) === -1) return;
+      if(fs && m.st !== fs) return;
+      if(fr && m.r.indexOf(fr) === -1) return;
+      if(fq && m.n.toLocaleLowerCase("tr").indexOf(fq) === -1) return;
+      shown++;
+      var cells = USERS.map(function(u){
+        if(m.u.indexOf(u) === -1) return '<td class="num"></td>';
+        var mark = '<span class="dot ' + grp.t + '"></span>';
+        return '<td class="num" title="' + m.n + '">' + (m.calc ? '<b>' + mark + '</b>' : mark) + '</td>';
+      }).join("");
+      var tags = '<span class="tag ' + grp.t + '">' + AILE_AD[grp.t] + '</span>' +
+                 (m.k ? ' <span class="tag lvl">' + EK_AD[m.k] + '</span>' : "") +
+                 (m.calc ? ' <span class="tag lvl">hesaplayıcı</span>' : "") +
+                 "";
+      rows += '<tr><td class="name">' + (m.calc ? '<b>' + m.n + '</b>' : m.n) + ' ' + tags +
+              '<em>' + m.d + '</em></td>' + cells + '</tr>';
+    });
+    if(rows){
+      html += '<tr class="group"><td colspan="6">' + grp.g + '</td></tr>' + rows;
+    }
+  });
+
+  body.innerHTML = html || '<tr><td colspan="6">Bu filtre birleşimiyle eşleşen metrik yok.</td></tr>';
+  document.getElementById("mCount").textContent = shown + " metrik ve etken gösteriliyor.";
+}
+["fUser","fStage","fType","fRep","fQ"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", renderMatrix);
+});
+renderMatrix();
+
+/* =========================================================
+   2) ŞEKİL 2: REHBER İFADELERİNİN DAĞILIMI (türetilmiş; madde 6–10)
+   ========================================================= */
+var ALANLAR = [
+  ["6.2","Kültür ve değerler",6,"c"], ["6.3","İletişim",7,"c"], ["6.4","Çalışanların güçlendirilmesi",7,"c"], ["6.5","Çalışan temsili",2,"c"],
+  ["7","Destekleyici liderlik",7,"s"], ["8","Örgütsel öğrenme",9,"s"],
+  ["9.2","İş tasarımı",3,"r"], ["9.3","Çalışma ortamı",8,"r"], ["9.4","İşyerinde sağlığı geliştirme",7,"r"], ["9.5","Dayanıklılık ve iş-yaşam yönetimi",3,"r"],
+  ["10.2","Ücret (dışsal)",4,"o"], ["10.3","Takdir (içsel)",4,"o"]
+];
+(function(){
+  var maks = 0;
+  ALANLAR.forEach(function(a){ if(a[2] > maks) maks = a[2]; });
+  var toplam = 0, h = "";
+  ALANLAR.forEach(function(a){
+    toplam += a[2];
+    h += '<div class="br-row"><span class="br-lab">' + a[0] + ' ' + a[1] + '</span><span class="br-track"><span class="br-bar br-' + a[3] + '" style="width:' + (100 * a[2] / maks) + '%">' + a[2] + '</span></span></div>';
+  });
+  h += '<div class="br-sum">Toplam: ' + toplam + ' rehber ifadesi ("organizations should" maddesi)</div>';
+  document.getElementById("barChart").innerHTML = h;
+})();
+
+/* =========================================================
+   3) ÖZ DEĞERLENDİRME TABLOSU (madde 6–10)
+   ========================================================= */
+var SATIR = ALANLAR.length;
+/* örnek amaçlı: uygulanan, kısmen uygulanan */
+var ORNEK_TBL = [[4,1],[5,1],[3,2],[2,0],[4,2],[5,2],[1,1],[4,2],[3,1],[2,0],[3,0],[1,1]];
+
+function buildTbl(){
+  var html = "";
+  for(var i=0;i<SATIR;i++){
+    var a = ALANLAR[i];
+    html += '<tr><td><b>' + a[0] + '</b></td><td>' + a[1] + '</td><td class="num">' + a[2] + '</td>' +
+      '<td><input type="number" min="0" step="1" id="p_u_' + i + '"></td>' +
+      '<td><input type="number" min="0" step="1" id="p_k_' + i + '"></td>' +
+      '<td class="calc" id="p_kap_' + i + '">—</td><td class="calc" id="p_dur_' + i + '">—</td></tr>';
+  }
+  document.getElementById("pBody").innerHTML = html;
+  document.getElementById("pBody").querySelectorAll("input").forEach(function(el){ el.addEventListener("input", computeTbl); });
+  document.getElementById("tHedef").addEventListener("input", computeTbl);
+}
+
+function pv(k, i){
+  var v = parseFloat(document.getElementById("p_" + k + "_" + i).value);
+  return isNaN(v) ? null : v;
+}
+
+var TBL = {n:0, ok:false, ilk:null};
+
+function computeTbl(){
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var hedef = parseFloat(document.getElementById("tHedef").value);
+  var hedefOk = !isNaN(hedef) && hedef >= 0 && hedef <= 100;
+  var n = 0, hatali = 0, sT = 0, sU = 0, sK = 0, ilk = null, alti = 0, zayif = null, guclu = null;
+
+  for(var i=0;i<SATIR;i++){
+    var a = ALANLAR[i];
+    var u = pv("u", i), k = pv("k", i);
+    var cK = document.getElementById("p_kap_" + i), cD = document.getElementById("p_dur_" + i);
+    cK.textContent = "—"; cD.textContent = "—";
+    if(u === null && k === null) continue;
+    if(u === null) u = 0;
+    if(k === null) k = 0;
+    if(u < 0 || k < 0 || u + k > a[2] || !hedefOk){
+      hatali++; cD.textContent = "tutarsız"; continue;
+    }
+    n++; sT += a[2]; sU += u; sK += k;
+    var kap = 100 * (u + 0.5 * k) / a[2];
+    cK.textContent = f1(kap);
+    if(kap < hedef){ alti++; cD.textContent = "hedefin altında (" + f1(kap - hedef) + " puan)"; }
+    else cD.textContent = "hedefte";
+    if(zayif === null || kap < zayif[0]) zayif = [kap, a[0]];
+    if(guclu === null || kap > guclu[0]) guclu = [kap, a[0]];
+    if(ilk === null) ilk = {toplam:a[2], uygulanan:u, kismen:k};
+  }
+
+  var ok = n > 0;
+  document.getElementById("tTop").textContent = n ? sT : "—";
+  document.getElementById("tUyg").textContent = n ? sU : "—";
+  document.getElementById("tKis").textContent = n ? sK : "—";
+  document.getElementById("tKap").textContent = n ? f1(100 * (sU + 0.5 * sK) / sT) : "—";
+  document.getElementById("tDur").textContent = n ? (alti + " / " + n + " madde hedefin altında") : "—";
+
+  var kart = document.getElementById("pCards");
+  TBL = {n:n, ok:ok, ilk:ilk};
+  if(!ok){
+    kart.innerHTML = "";
+    document.getElementById("pNot").textContent = hatali ? "Tutarsız satır var: sayılar negatif olmamalı, uygulanan ile kısmen uygulananın toplamı ifade sayısını aşmamalı; hedef 0–100 arasında olmalı." :
+      "Her madde için uygulanan ve kısmen uygulanan ifade sayısını girin ya da örnek veriyi yükleyin.";
+    return;
+  }
+  var kartlar = '';
+  kartlar += '<div class="card"><b>' + f1(100 * (sU + 0.5 * sK) / sT) + ' %</b><span>Genel kapsama (değerlendirilen maddeler)</span></div>';
+  kartlar += '<div class="card"><b>' + f1(100 * sU / sT) + ' %</b><span>Yalnızca tam uygulananların payı</span></div>';
+  kartlar += '<div class="card alt"><b>' + n + '</b><span>Değerlendirilen madde</span></div>';
+  kartlar += '<div class="card alt"><b>' + alti + '</b><span>Hedefin altındaki madde</span></div>';
+  kartlar += '<div class="card warn"><b>' + zayif[1] + '</b><span>En düşük kapsama (' + f1(zayif[0]) + ' %)</span></div>';
+  kartlar += '<div class="card"><b>' + guclu[1] + '</b><span>En yüksek kapsama (' + f1(guclu[0]) + ' %)</span></div>';
+  kart.innerHTML = kartlar;
+
+  var not = "Kapsama = (uygulanan + 0,5 × kısmen) ÷ ifade sayısı × 100; bu puanlama ve hedef bu sayfada türetilmiştir, standart eşik ya da puanlama vermez. ";
+  if(alti) not += "Hedefin altındaki maddeler için ilgili rehber ifadelerini matriste süzün (Bölüm ve Madde grubu filtreleri). ";
+  if(hatali) not += hatali + " tutarsız satır hesaba katılmadı. ";
+  not += "Toplam, maddelerin ifadelerinin toplamıdır; madde oranlarının ortalaması değildir.";
+  document.getElementById("pNot").textContent = not;
+}
+
+function loadTblExample(){
+  for(var i=0;i<SATIR;i++){
+    document.getElementById("p_u_" + i).value = ORNEK_TBL[i][0];
+    document.getElementById("p_k_" + i).value = ORNEK_TBL[i][1];
+  }
+  computeTbl();
+}
+
+document.getElementById("btnOrnek").addEventListener("click", loadTblExample);
+document.getElementById("btnTemizle").addEventListener("click", function(){
+  for(var i=0;i<SATIR;i++){
+    document.getElementById("p_u_" + i).value = "";
+    document.getElementById("p_k_" + i).value = "";
+  }
+  computeTbl();
+});
+document.getElementById("btnCsv").addEventListener("click", function(){
+  var satir = ["Madde;Konu;Ifade sayisi;Uygulanan;Kismen;Kapsama %"];
+  for(var i=0;i<SATIR;i++){
+    var a = ALANLAR[i];
+    var u = pv("u", i), k = pv("k", i);
+    if(u === null && k === null) continue;
+    u = u === null ? 0 : u; k = k === null ? 0 : k;
+    if(u < 0 || k < 0 || u + k > a[2]) continue;
+    satir.push([a[0], a[1], a[2], u, k, (100 * (u + 0.5 * k) / a[2]).toFixed(1)].join(";"));
+  }
+  var blob = new Blob(["﻿" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a2 = document.createElement("a");
+  a2.href = URL.createObjectURL(blob);
+  a2.download = "iso23326_oz_degerlendirme.csv";
+  a2.click();
+  URL.revokeObjectURL(a2.href);
+});
+
+/* =========================================================
+   4) FORMÜL TABLOSU + HESAPLAYICI
+   Alan adları gömülü Python modülünün hesapla() imzasıyla birebir aynıdır.
+   ========================================================= */
+function gerek(kosul, mesaj){ if(!kosul) throw new Error("GecersizGirdi: " + mesaj); }
+function bolOk(pay, payda, ad){ gerek(payda > 0, ad + " sıfırdan büyük olmalı"); return pay / payda; }
+function negYok(v, ks){ ks.forEach(function(k){ gerek(v[k] >= 0, k + " negatif olamaz"); }); }
+/* Python round() ile aynı davranış: tam yarım değerlerde en yakın çifte yuvarlar */
+function pyround(x, n){
+  var m = Math.pow(10, n), y = x * m, f = Math.floor(y);
+  if(y - f === 0.5) return (f % 2 === 0 ? f : f + 1) / m;
+  return Math.round(y) / m;
+}
+function r1(x){ return pyround(x, 1); }
+function r2(x){ return pyround(x, 2); }
+function r3(x){ return pyround(x, 3); }
+
+var UWES_ALAN = [
+  {k:"d1",l:"Dinçlik: madde 1 (0–6)",v:5},{k:"d2",l:"Dinçlik: madde 2 (0–6)",v:4},{k:"d3",l:"Dinçlik: madde 3 (0–6)",v:5},
+  {k:"a1",l:"Adanmışlık: madde 1 (0–6)",v:4},{k:"a2",l:"Adanmışlık: madde 2 (0–6)",v:5},{k:"a3",l:"Adanmışlık: madde 3 (0–6)",v:4},
+  {k:"y1",l:"Yoğunlaşma: madde 1 (0–6)",v:3},{k:"y2",l:"Yoğunlaşma: madde 2 (0–6)",v:4},{k:"y3",l:"Yoğunlaşma: madde 3 (0–6)",v:3}
+];
+
+var CALC = [
+ {id:"uwes", name:"UWES benzeri bağlılık puanı (dinçlik, adanmışlık, yoğunlaşma)", grp:"Ölçüm", noHeur:true,
+  formula:"Genel puan = (9 madde puanının toplamı) &divide; 9; boyut puanı = boyuttaki 3 maddenin ortalaması",
+  note:"Madde 4.3 bağlılığı dinçlik, adanmışlık ve yoğunlaşma düzeyiyle ölçülebilir olarak tanımlar; madde 5.3 Utrecht İşe Bağlılık Ölçeği'ni (UWES) örnek bir geçerli araç olarak anar. Standart ölçek, madde sayısı ya da puanlama vermez; 0–6 ölçeği ve üç madde/boyut düzeni ölçeğin kısa formundan alınmıştır ve bu sayfada türetilmiş kabul edilir. Resmî madde metinleri ve karşılaştırma verileri için ölçeğin kılavuzuna bakın.",
+  fields:UWES_ALAN,
+  unit:"puan (0–6 ortalama)",
+  py:"hesapla('uwes', d1=5, d2=4, d3=5, a1=4, a2=5, a3=4, y1=3, y2=4, y3=3)",
+  calc:function(v){
+    var ks = ["d1","d2","d3","a1","a2","a3","y1","y2","y3"];
+    ks.forEach(function(k){ gerek(v[k] >= 0 && v[k] <= 6, k + " puanı 0 ile 6 arasında olmalı"); });
+    var d = (v.d1 + v.d2 + v.d3) / 3, a = (v.a1 + v.a2 + v.a3) / 3, y = (v.y1 + v.y2 + v.y3) / 3;
+    var top = v.d1 + v.d2 + v.d3 + v.a1 + v.a2 + v.a3 + v.y1 + v.y2 + v.y3;
+    var en = ["dinçlik", d];
+    if(a < en[1]) en = ["adanmışlık", a];
+    if(y < en[1]) en = ["yoğunlaşma", y];
+    return {value:top / 9, dec:2, expl:top + " ÷ 9",
+      detail:[["Dinçlik (vigour) ortalaması", r2(d)],
+              ["Adanmışlık (dedication) ortalaması", r2(a)],
+              ["Yoğunlaşma (absorption) ortalaması", r2(y)],
+              ["En düşük boyut", en[0]]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Puanı kendi önceki ölçümlerinizle ve gruplar arasında karşılaştırın; en düşük boyut, hangi koşulun (kültür, liderlik, öğrenme, iş tasarımı, ücret ve takdir) önce incelenebileceğine dair bir ipucudur (Şekil 1)."]]},
+
+ {id:"katilim", name:"Anket katılım oranı", grp:"Ölçüm", noHeur:true,
+  formula:"Katılım = (Yanıt veren &divide; Davet edilen) &times; 100",
+  note:"Madde 5.3: çalışan anketleri bağlılığı ölçmenin yollarındandır. Katılım oranı standartta tanımlı değildir; yanıtların temsil gücünü okumak için bu sayfada türetilmiştir. Anonimlik ve gizlilik birey düzeyinde korunmalıdır (madde 4.1).",
+  fields:[{k:"yanit",l:"Yanıt veren çalışan",v:420},{k:"davet",l:"Ankete davet edilen çalışan",v:600}],
+  unit:"% (yanıt ÷ davet)",
+  py:"hesapla('katilim', yanit=420, davet=600)",
+  calc:function(v){
+    negYok(v, ["yanit"]);
+    gerek(v.yanit <= v.davet, "yanıt sayısı davet edilen sayısını aşamaz");
+    var d = 100 * bolOk(v.yanit, v.davet, "davet edilen sayısı");
+    return {value:d, dec:1, expl:v.yanit + " ÷ " + v.davet + " × 100",
+      detail:[["Yanıt vermeyen", r2(v.davet - v.yanit)],
+              ["Yanıt vermeyenlerin payı (%)", r1(100 - d)]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Düşük katılım, sonuçların tüm çalışanları temsil etmeme riski taşır; kanalları ve güveni gözden geçirin."]]},
+
+ {id:"olumlu", name:"Olumlu yanıt oranı", grp:"Ölçüm", noHeur:true,
+  formula:"Olumlu oran = (Olumlu yanıt &divide; Toplam yanıt) &times; 100",
+  note:"Madde 5.3 ve 8: anketler (ve öğrenme etkinliklerini değerlendiren anonim anketler) bağlılığı anlamak için kullanılabilir. Oran standartta tanımlı değildir; bir ankette 'olumlu' sayılan yanıtın tanımını kurum belirler.",
+  fields:[{k:"olumlu",l:"Olumlu yanıt sayısı",v:310},{k:"toplam",l:"Toplam yanıt sayısı",v:420}],
+  unit:"% (olumlu ÷ toplam yanıt)",
+  py:"hesapla('olumlu', olumlu=310, toplam=420)",
+  calc:function(v){
+    negYok(v, ["olumlu"]);
+    gerek(v.olumlu <= v.toplam, "olumlu yanıt sayısı toplam yanıtı aşamaz");
+    var d = 100 * bolOk(v.olumlu, v.toplam, "toplam yanıt");
+    return {value:d, dec:1, expl:v.olumlu + " ÷ " + v.toplam + " × 100",
+      detail:[["Olumlu olmayan yanıt", r2(v.toplam - v.olumlu)],
+              ["Olumlu olmayanların payı (%)", r1(100 - d)]]}; },
+  bands:[[0,"ok","Standart eşik vermez; hedef ve karşılaştırma ölçütünü kurum belirler. Grup ve konu bazında okuyun, ortalamaya bakmakla yetinmeyin."]]},
+
+ {id:"degisim", name:"Dönemsel değişim (bağlılık hedeflerine karşı ilerleme)", grp:"Ölçüm", noHeur:true,
+  formula:"Değişim = Şimdiki dönem puanı &minus; Önceki dönem puanı",
+  note:"Madde 4.1: kurumlar bağlılık hedeflerine karşı ilerlemeyi düzenli değerlendirmelidir. İlerlemenin puan farkı olarak ifade edilmesi bu sayfada türetilmiştir; aynı aracın ve aynı grubun iki dönemi karşılaştırılmalıdır.",
+  fields:[{k:"onceki",l:"Önceki dönem puanı",v:4.1,step:0.01},{k:"simdiki",l:"Şimdiki dönem puanı",v:4.3,step:0.01}],
+  unit:"puan (şimdiki − önceki)",
+  py:"hesapla('degisim', onceki=4.1, simdiki=4.3)",
+  calc:function(v){
+    negYok(v, ["onceki","simdiki"]);
+    var d = v.simdiki - v.onceki;
+    return {value:d, dec:2, expl:v.simdiki + " − " + v.onceki,
+      detail:[["Önceki döneme göre değişim (%)", r1(100 * bolOk(d, v.onceki, "önceki dönem puanı"))]]}; },
+  bands:[[0.0000001,"ok","Puan arttı: hangi uygulamaların katkı yaptığını belirleyip sürdürün."],
+         [-0.0000001,"warn","Değişim yok: hedefe karşı ilerleme için eylem planını gözden geçirin."],
+         [-1e9,"bad","Puan azaldı: nedenleri anket yorumlarında, odak gruplarında ve çalışan temsilcileriyle araştırın."]]},
+
+ {id:"anonim", name:"Raporlama grubu anonimlik marjı", grp:"Ölçüm", noHeur:true,
+  formula:"Marj = Raporlanan grubun büyüklüğü &minus; Kurumun asgari grup büyüklüğü",
+  note:"Madde 4.1: anketler ve görüşmeler birey düzeyinde anonimlik ve gizlilikle bağlı olmalıdır. Standart bir asgari grup büyüklüğü vermez; küçük gruplarda sonuçların tek tek kişileri ele vermesini önleyen eşiği kurum belirler. Marj bu sayfada türetilmiştir.",
+  fields:[{k:"grup",l:"Raporlanan grubun büyüklüğü (kişi)",v:8},{k:"esik",l:"Kurumun asgari grup büyüklüğü (kişi)",v:5}],
+  unit:"kişi (grup − eşik)",
+  py:"hesapla('anonim', grup=8, esik=5)",
+  calc:function(v){
+    negYok(v, ["grup"]);
+    gerek(v.esik > 0, "asgari grup büyüklüğü sıfırdan büyük olmalı");
+    var d = v.grup - v.esik;
+    return {value:d, dec:0, expl:v.grup + " − " + v.esik,
+      detail:[["Grup büyüklüğü ÷ eşik", r2(v.grup / v.esik)]]}; },
+  bands:[[0,"ok","Grup, kurumun asgari büyüklüğünü karşılıyor; yine de birden fazla kırılımın birleşiminden kimlik çıkarılamadığından emin olun."],
+         [-1e9,"bad","Grup asgari büyüklüğün altında: sonuçları raporlamayın ya da grubu birleştirin (madde 4.1)."]]},
+
+ {id:"fazla", name:"Sözleşme süresinin üstünde çalışma payı (aşırı bağlılık riski göstergesi)", grp:"Uygulama", noHeur:true,
+  formula:"Fazla çalışma payı = ((Gerçek çalışma süresi &minus; Sözleşme süresi) &divide; Sözleşme süresi) &times; 100",
+  note:"Madde 4.1 ve 9.3: uzun süreli aşırı bağlılığın sağlık riskleri, çalışma saatleri ve fazla mesai dahil, düzenli değerlendirilmeli; tükenmişlik önlenmelidir. Bu gösterge standartta tanımlı değildir, fazla çalışmayı yalnızca bir işaret olarak ölçmek için türetilmiştir; anonim devamsızlık ve sağlık verileriyle birlikte okunmalıdır.",
+  fields:[{k:"gercek",l:"Ortalama gerçek haftalık çalışma süresi (saat)",v:44,step:0.5},{k:"sozlesme",l:"Sözleşmedeki haftalık süre (saat)",v:40,step:0.5}],
+  unit:"% (sözleşme süresinin üstü)",
+  py:"hesapla('fazla', gercek=44, sozlesme=40)",
+  calc:function(v){
+    negYok(v, ["gercek"]);
+    var d = 100 * bolOk(v.gercek - v.sozlesme, v.sozlesme, "sözleşme süresi");
+    return {value:d, dec:1, expl:"(" + v.gercek + " − " + v.sozlesme + ") ÷ " + v.sozlesme + " × 100",
+      detail:[["Fark (saat/hafta)", r2(v.gercek - v.sozlesme)]]}; },
+  bands:[[0.0000001,"warn","Sözleşmenin üstünde çalışma var: süreklilik gösteriyorsa aşırı bağlılık ve tükenmişlik riskini değerlendirin (madde 4.1, 9.3); çalışan temsilcileriyle birlikte."],
+         [-1e9,"ok","Sözleşme süresinin üstünde çalışma yok."]]},
+
+ {id:"onboarding", name:"İşe başlama programı tamamlama oranı", grp:"Uygulama", noHeur:true,
+  formula:"Tamamlama = (Programı tamamlayan yeni çalışan &divide; Yeni işe başlayan) &times; 100",
+  note:"Madde 8: bağlılık işe başlangıçtan itibaren yaratılmalı; tüm yeni çalışanlara kurum tanıtımı, sağlık ve güvenlik gereklilikleri ve işe özgü bilgi içeren ayrıntılı bir program sunulmalıdır. Oran standartta tanımlı değildir, uygulamanın kapsamını izlemek için türetilmiştir.",
+  fields:[{k:"tamamlayan",l:"Programı tamamlayan yeni çalışan",v:46},{k:"yeni",l:"Dönemde işe başlayan yeni çalışan",v:50}],
+  unit:"% (tamamlayan ÷ yeni)",
+  py:"hesapla('onboarding', tamamlayan=46, yeni=50)",
+  calc:function(v){
+    negYok(v, ["tamamlayan"]);
+    gerek(v.tamamlayan <= v.yeni, "tamamlayan sayısı yeni işe başlayan sayısını aşamaz");
+    var d = 100 * bolOk(v.tamamlayan, v.yeni, "yeni işe başlayan sayısı");
+    return {value:d, dec:1, expl:v.tamamlayan + " ÷ " + v.yeni + " × 100",
+      detail:[["Programı tamamlamayan", r2(v.yeni - v.tamamlayan)]]}; },
+  bands:[[0,"ok","Standart 'tüm yeni çalışanlar' der; hedef kapsama %100'dür, ancak eşik vermez. Tamamlamayanların nedenini (vardiya, uzaktan çalışma, erişilebilirlik) inceleyin."]]},
+
+ {id:"egitim", name:"Öğrenme ve gelişime erişim oranı", grp:"Uygulama", noHeur:true,
+  formula:"Erişim = (Dönemde en az bir etkinliğe katılan çalışan &divide; Toplam çalışan) &times; 100",
+  note:"Madde 6.4 ve 8: eğitim ve gelişim etkinliklerine erişim 'tüm çalışanlar' için, erişilebilir ve kapsayıcı olmalıdır. Oran standartta tanımlı değildir; erişimin kapsamını izlemek için türetilmiştir. Etkinliğin kalitesi için ISO 30422 gibi standartlara bakılabilir.",
+  fields:[{k:"katilan",l:"Dönemde en az bir etkinliğe katılan çalışan",v:540},{k:"calisan",l:"Toplam çalışan",v:600}],
+  unit:"% (katılan ÷ çalışan)",
+  py:"hesapla('egitim', katilan=540, calisan=600)",
+  calc:function(v){
+    negYok(v, ["katilan"]);
+    gerek(v.katilan <= v.calisan, "katılan sayısı çalışan sayısını aşamaz");
+    var d = 100 * bolOk(v.katilan, v.calisan, "çalışan sayısı");
+    return {value:d, dec:1, expl:v.katilan + " ÷ " + v.calisan + " × 100",
+      detail:[["Etkinliğe katılmayan çalışan", r2(v.calisan - v.katilan)]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Katılmayanları grup bazında (vardiya, konum, sözleşme türü) inceleyin; erişim engelleri adalet ve kapsayıcılık sorunudur."]]},
+
+ {id:"kapsama", name:"Rehber ifadelerinin uygulama kapsaması (öz değerlendirme)", grp:"Uygulama", noHeur:true,
+  formula:"Kapsama = ((Uygulanan + 0,5 &times; Kısmen uygulanan) &divide; İfade sayısı) &times; 100",
+  note:"Madde 6–10'daki 'organizations should' ifadelerinin ne kadarının uygulandığını bir maddenin ya da tüm maddelerin düzeyinde özetler. Standart puanlama ya da eşik vermez; kısmen uygulananın yarım sayılması ve hedef kurumca belirlenir ve bu sayfada türetilmiştir. Bir uygunluk sınaması değildir.",
+  fields:[{k:"toplam",l:"Maddedeki rehber ifadesi sayısı",v:6},{k:"uygulanan",l:"Tam uygulanan ifade",v:4},{k:"kismen",l:"Kısmen uygulanan ifade",v:1}],
+  unit:"% (kapsama)",
+  py:"hesapla('kapsama', toplam=6, uygulanan=4, kismen=1)",
+  calc:function(v){
+    negYok(v, ["uygulanan","kismen"]);
+    gerek(v.uygulanan + v.kismen <= v.toplam, "uygulanan ve kısmen uygulanan toplamı ifade sayısını aşamaz");
+    var d = 100 * bolOk(v.uygulanan + 0.5 * v.kismen, v.toplam, "ifade sayısı");
+    return {value:d, dec:1, expl:"(" + v.uygulanan + " + 0,5 × " + v.kismen + ") ÷ " + v.toplam + " × 100",
+      detail:[["Hiç uygulanmayan ifade", r2(v.toplam - v.uygulanan - v.kismen)],
+              ["Yalnızca tam uygulananların payı (%)", r1(100 * v.uygulanan / v.toplam)]]}; },
+  bands:[[0,"ok","Hedefinizi önceden belirleyin; hedefin altındaki maddelerde eksik ifadeleri matriste süzüp eylem planına dönüştürün (madde 6.2)."]]}
+];
+
+/* --- formül tablosu --- */
+(function(){
+  var rows = CALC.map(function(c){
+    return '<tr><td><b>' + c.name + '</b></td><td><span style="font-family:var(--serif)">' +
+           c.formula + '</span></td><td>' + c.note + '</td></tr>';
+  }).join("");
+  document.getElementById("fBody").innerHTML = rows;
+})();
+
+/* --- hesaplayıcı --- */
+var sel = document.getElementById("cMetric");
+CALC.forEach(function(c, i){
+  var o = document.createElement("option");
+  o.value = i; o.textContent = c.grp + " — " + c.name;
+  sel.appendChild(o);
+});
+
+function buildFields(){
+  var c = CALC[+sel.value];
+  document.getElementById("cFields").innerHTML = c.fields.map(function(f){
+    return '<div class="field"><label for="in_' + f.k + '">' + f.l + '</label>' +
+      '<input type="number" id="in_' + f.k + '" value="" step="' + (f.step || "any") + '" placeholder="' + f.v + '"></div>';
+  }).join("");
+  document.getElementById("cFields").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", run);
+  });
+}
+
+function readVals(){
+  var c = CALC[+sel.value], v = {}, missing = false;
+  c.fields.forEach(function(f){
+    var el = document.getElementById("in_" + f.k);
+    var raw = el && el.value !== "" ? parseFloat(el.value) : NaN;
+    if(isNaN(raw)){ missing = true; v[f.k] = f.v; } else { v[f.k] = raw; }
+  });
+  return {v:v, missing:missing};
+}
+
+function fmt(x, dec){
+  if(!isFinite(x)) return "—";
+  return x.toLocaleString("tr-TR", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+
+/* Hesaplama motoru: Python hazırsa gömülü modül, değilse JS yedeği */
+function compute(c, v){
+  if(PY.ready){
+    try{
+      PY.pyodide.globals.set("_metrik", c.id);
+      PY.pyodide.globals.set("_girdi", JSON.stringify(v));
+      var raw = PY.pyodide.runPython(
+        "import json\n" +
+        "json.dumps(hesapla(_metrik, **json.loads(_girdi)))");
+      var r = JSON.parse(raw);
+      return {value:r.deger, expl:r.ifade, dec:r.ondalik, detail:r.ayrinti,
+              unit:r.birim, durum:r.durum, engine:"python"};
+    }catch(err){
+      var msg = String(err);
+      /* Kullanıcı girdisi kaynaklı hata: motor sorunu değil, yedeğe geçme */
+      if(msg.indexOf("GecersizGirdi") !== -1 || msg.indexOf("ZeroDivisionError") !== -1) throw err;
+      setEngine("off", "Motor: JS yedeği — Python hatası");
+    }
+  }
+  var out = c.calc(v);
+  out.engine = "js";
+  return out;
+}
+
+function run(){
+  var c = CALC[+sel.value];
+  var r = readVals();
+  var out;
+  try { out = compute(c, r.v); } catch(e){ out = null; }
+  var box = document.getElementById("cResult");
+  if(!out || !isFinite(out.value)){
+    box.innerHTML = '<div class="result"><b>Hesaplanamadı.</b> Payda sıfır olamaz, parça bütünden büyük olamaz ve değerler geçerli aralıkta olmalı; alanları kontrol edin.</div>';
+    return;
+  }
+  var dec = (out.dec === undefined) ? 1 : out.dec;
+  var unit = out.unit || c.unit;
+  var html = '<div class="result">';
+  html += '<div class="big">' + fmt(out.value, dec) + ' <span>' + unit + '</span></div>';
+  html += '<div style="font-size:13px;color:var(--ink-soft);margin-top:6px">' + c.name +
+          ' · ' + (out.engine === "python" ? 'Python (Pyodide) ile hesaplandı' : 'JavaScript ile hesaplandı') +
+          (r.missing ? ' · <i>boş alanlar için örnek değer kullanıldı</i>' : '') + '</div>';
+
+  if(document.getElementById("oFormula").checked){
+    html += '<div class="formula">' + c.formula + '<br><span style="color:var(--ink-soft);font-size:15px">= ' +
+            out.expl + ' = <b>' + fmt(out.value, dec) + '</b> ' + unit + '</span></div>';
+  }
+  if(out.detail && out.detail.length){
+    html += '<dl>' + out.detail.map(function(d){
+      var val = (typeof d[1] === "number") ? d[1].toLocaleString("tr-TR") : d[1];
+      return '<dt>' + d[0] + '</dt><dd>' + val + '</dd>';
+    }).join("") + '</dl>';
+  }
+  if(document.getElementById("oInterp").checked){
+    if(c.durumMetin && out.durum){
+      html += '<div class="verdict ' + out.durum + '">' + c.durumMetin[out.durum] + '</div>';
+    } else if(c.bands){
+      var band = c.bands[c.bands.length-1];
+      for(var i=0;i<c.bands.length;i++){ if(out.value >= c.bands[i][0]){ band = c.bands[i]; break; } }
+      html += '<div class="verdict ' + band[1] + '">' + band[2] + '</div>';
+      if(c.bands.length > 1 && !c.noHeur){
+        html += '<div class="note" style="margin-top:12px">Yorum eşikleri standarttan değil, başlangıç varsayımlarından gelir; kendi hedeflerinizle değiştirin.</div>';
+      }
+    }
+    html += '<div class="note" style="margin-top:12px">' + c.note + '</div>';
+  }
+  if(document.getElementById("oPy").checked){
+    var args = c.fields.map(function(f){ return f.k + "=" + r.v[f.k]; }).join(", ");
+    var call = 'hesapla("' + c.id + '", ' + args + ')';
+    html += '<pre style="margin-top:16px"><i>&gt;&gt;&gt; from iso23326_metrikler import hesapla</i>\n' +
+            '&gt;&gt;&gt; ' + call + '["deger"]\n' + out.value + '\n\n' +
+            '<i># eşdeğer doğrudan çağrı</i>\n&gt;&gt;&gt; ' + c.py + '</pre>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+sel.addEventListener("change", function(){ buildFields(); run(); });
+document.getElementById("btnRun").addEventListener("click", run);
+document.getElementById("btnExample").addEventListener("click", function(){
+  var c = CALC[+sel.value];
+  c.fields.forEach(function(f){ document.getElementById("in_" + f.k).value = f.v; });
+  run();
+});
+["oFormula","oInterp","oPy"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", function(){
+    var all = document.getElementById("oFormula").checked &&
+              document.getElementById("oInterp").checked &&
+              document.getElementById("oPy").checked;
+    document.getElementById("oAll").checked = all;
+    run();
+  });
+});
+document.getElementById("oAll").addEventListener("change", function(){
+  var s = this.checked;
+  ["oFormula","oInterp","oPy"].forEach(function(id){ document.getElementById(id).checked = s; });
+  run();
+});
+
+/* --- tablodan hesaplayıcıya aktarma --- */
+document.getElementById("btnAktar").addEventListener("click", function(){
+  if(!TBL.ok){ loadTblExample(); }
+  var idx = CALC.map(function(c){ return c.id; }).indexOf("kapsama");
+  sel.value = idx; buildFields();
+  var ilk = TBL.ilk;
+  if(ilk){
+    document.getElementById("in_toplam").value = ilk.toplam;
+    document.getElementById("in_uygulanan").value = ilk.uygulanan;
+    document.getElementById("in_kismen").value = ilk.kismen;
+  }
+  run();
+  document.getElementById("hesaplayici").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* =========================================================
+   4) PYTHON MOTORU (Pyodide / WebAssembly)
+   Gömülü iso23326_metrikler.py modülü tarayıcı içinde
+   gerçek CPython ile çalıştırılır. Erişim yoksa JS yedeği
+   devrede kalır ve sonuçlar değişmez.
+   ========================================================= */
+var PY = {ready:false, busy:false, pyodide:null};
+
+var PYODIDE_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+  "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"
+];
+
+function setEngine(state, text){
+  var chip = document.getElementById("engStatus");
+  chip.className = "chip" + (state ? " " + state : "");
+  chip.textContent = text;
+}
+
+function loadScript(src){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function(){ resolve(src); };
+    s.onerror = function(){ reject(new Error(src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function pySource(){
+  return document.getElementById("pysrc").textContent;
+}
+
+async function initPython(){
+  if(PY.ready) return true;
+  if(PY.busy) return false;
+  PY.busy = true;
+  document.getElementById("btnPy").disabled = true;
+  setEngine("busy", "Motor: Pyodide indiriliyor…");
+  try{
+    if(typeof loadPyodide === "undefined"){
+      try { await loadScript(PYODIDE_URLS[0]); }
+      catch(e){ await loadScript(PYODIDE_URLS[1]); }
+    }
+    setEngine("busy", "Motor: Python başlatılıyor…");
+    PY.pyodide = await loadPyodide();
+
+    /* Modülü sanal dosya sistemine yazmadan, gerçek bir modül nesnesi olarak kur:
+       böylece __name__ != "__main__" olur ve _demo() kendiliğinden çalışmaz.
+       Kayıt exec'ten ÖNCE yapılır; @dataclass işlenirken modülü sys.modules'te arar. */
+    PY.pyodide.globals.set("_kaynak", pySource());
+    PY.pyodide.runPython(
+      "import sys, types\n" +
+      "_m = types.ModuleType('iso23326_metrikler')\n" +
+      "_m.__file__ = 'iso23326_metrikler.py'\n" +
+      "sys.modules['iso23326_metrikler'] = _m\n" +
+      "exec(compile(_kaynak, 'iso23326_metrikler.py', 'exec'), _m.__dict__)\n" +
+      "from iso23326_metrikler import *\n" +
+      "import iso23326_metrikler as m\n"
+    );
+    var sur = PY.pyodide.runPython(
+      "import sys\n'.'.join(str(x) for x in sys.version_info[:3])");
+    PY.ready = true;
+    setEngine("on", "Motor: Python " + sur + " (Pyodide)");
+    run();
+    return true;
+  }catch(e){
+    setEngine("off", "Motor: tarayıcı (JS) — Pyodide yüklenemedi");
+    document.getElementById("pyOut").textContent =
+      "Python motoru yüklenemedi. Bu genellikle çevrimdışı olmaktan ya da ağ kısıtından kaynaklanır.\n" +
+      "Sayfa çalışmaya devam eder; hesaplamalar JavaScript yedeğiyle aynı sonuçları verir.\n\n" + e;
+    return false;
+  }finally{
+    PY.busy = false;
+    document.getElementById("btnPy").disabled = false;
+  }
+}
+
+document.getElementById("btnPy").addEventListener("click", initPython);
+
+/* --- konsol --- */
+var VARSAYILAN_KOD =
+  'from iso23326_metrikler import *\n' +
+  'import iso23326_metrikler as m\n\n' +
+  '# Ölçüm: UWES benzeri puan (0–6) ve anket katılımı\n' +
+  'u = uwes_puani([5, 4, 5], [4, 5, 4], [3, 4, 3])\n' +
+  'print("Genel puan      :", round(u["toplam"], 2), "| en düşük boyut:", u["en_dusuk"])\n' +
+  'print("Katılım         :", round(katilim_orani(420, 600), 1), "%")\n' +
+  'print("Olumlu yanıt    :", round(olumlu_oran(310, 420), 1), "%")\n' +
+  'print("Dönemsel değişim:", round(donemsel_degisim(4.1, 4.3), 2), "puan")\n\n' +
+  '# Anonimlik ve aşırı bağlılık işareti\n' +
+  'print("Anonimlik marjı :", anonimlik_marji(8, 5), "kişi")\n' +
+  'print("Fazla çalışma   :", round(fazla_calisma_orani(44, 40), 1), "%")\n\n' +
+  '# Öz değerlendirme tablosu (madde 6–10)\n' +
+  't = ornek_tablo()\n' +
+  'for anahtar, deger in t.ozet().items():\n' +
+  '    print(f"{anahtar:<14}: {deger}")\n\n' +
+  '# Dağıtıcı, hesaplayıcının kullandığı arayüzdür:\n' +
+  'print(hesapla("kapsama", toplam=6, uygulanan=4, kismen=1))\n\n' +
+  '# Madde 4.1 ilke denetimi: hangi ilkeler eksik?\n' +
+  'for uyari in ilke_denetimi(iki_yonlu_iletisim_var=True, veri_koruma_yasalarina_uyum=True):\n' +
+  '    print("!", uyari)\n';
+
+document.getElementById("pyCode").value = VARSAYILAN_KOD;
+
+async function runConsole(){
+  var out = document.getElementById("pyOut");
+  if(!PY.ready){
+    out.textContent = "Python motoru hazırlanıyor, ilk çalıştırma biraz sürebilir…";
+    var ok = await initPython();
+    if(!ok) return;
+  }
+  out.textContent = "çalışıyor…";
+  try{
+    PY.pyodide.globals.set("_kod", document.getElementById("pyCode").value);
+    var cikti = PY.pyodide.runPython(
+      "import io, contextlib, traceback\n" +
+      "_tampon = io.StringIO()\n" +
+      "with contextlib.redirect_stdout(_tampon), contextlib.redirect_stderr(_tampon):\n" +
+      "    try:\n" +
+      "        exec(_kod, globals())\n" +
+      "    except Exception:\n" +
+      "        traceback.print_exc()\n" +
+      "_tampon.getvalue()"
+    );
+    out.textContent = cikti && cikti.trim() ? cikti : "(çıktı yok)";
+  }catch(e){
+    out.textContent = "Hata: " + e;
+  }
+}
+
+document.getElementById("btnRunPy").addEventListener("click", runConsole);
+document.getElementById("btnReset").addEventListener("click", function(){
+  document.getElementById("pyCode").value = VARSAYILAN_KOD;
+  document.getElementById("pyOut").textContent = "Kod sıfırlandı.";
+});
+document.getElementById("btnDemo").addEventListener("click", function(){
+  document.getElementById("pyCode").value =
+    "import iso23326_metrikler as m\n\n" +
+    "# Modülün kendi doğrulama çıktısı (komut satırındaki\n" +
+    "# python3 iso23326_metrikler.py ile aynı sonucu verir)\n" +
+    "m._demo()\n";
+  runConsole();
+});
+
+/* modül kaynağını sayfada okunur kıl */
+document.getElementById("srcView").textContent = pySource().trim();
+
+buildTbl();
+loadTblExample();
+buildFields();
+run();
+</script>
+</body>
+</html>
