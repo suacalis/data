@@ -1,8 +1,24 @@
 import csv, os, re, sys
 
-# Kullanım: python3 karsilastir.py <csv_yolu> [pdf_klasoru]
-CSV_YOLU = sys.argv[1]
-PDF_KLASOR = sys.argv[2] if len(sys.argv) > 2 else "/Volumes/toshiba2023/ceko_tezler_son"
+# Kullanım: python3 karsilastir.py [csv_yolu] [pdf_klasoru]
+# Argüman verilmezse yollar sorulur (dosyayı Terminal'e sürükleyip bırakabilirsiniz).
+def temiz(yol):
+    return yol.strip().strip("'\"").replace("\\ ", " ")
+
+if len(sys.argv) > 1:
+    CSV_YOLU = temiz(sys.argv[1])
+else:
+    CSV_YOLU = temiz(input("CSV dosyasının yolu: "))
+
+if len(sys.argv) > 2:
+    PDF_KLASOR = temiz(sys.argv[2])
+else:
+    PDF_KLASOR = temiz(input("PDF klasörü [Enter = /Volumes/toshiba2023/ceko_tezler_son]: ")) \
+        or "/Volumes/toshiba2023/ceko_tezler_son"
+
+for yol, ad in ((CSV_YOLU, "CSV dosyası"), (PDF_KLASOR, "PDF klasörü")):
+    if not os.path.exists(yol):
+        sys.exit(f"{ad} bulunamadı: {yol}")
 
 with open(CSV_YOLU, encoding="utf-8-sig", newline="") as f:
     okuyucu = csv.DictReader(f, delimiter=";")
