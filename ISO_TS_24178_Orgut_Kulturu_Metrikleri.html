@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO/TS 24178 Örgüt Kültürü Metrikleri Kümesi — Sınıflandırma ve Hesaplayıcı</title>
+<style>
+  :root{
+    --ink:#101418;
+    --ink-soft:#59636f;
+    --ink-faint:#8b95a1;
+    --line:#dde3ea;
+    --line-soft:#eef1f5;
+    --bg:#ffffff;
+    --canvas:#f6f8fa;
+    --accent:#0b5c8a;
+    --accent-soft:#e7f0f6;
+    --panel:#0e1520;
+    --panel-2:#16202e;
+    --panel-line:#28394f;
+    --out-ink:#8a3b12;  --out-bg:#fbeee6;
+    --eff-ink:#14615c;  --eff-bg:#e6f2f1;
+    --efc-ink:#33478c;  --efc-bg:#eaedf8;
+    --rea-ink:#7a5c00;  --rea-bg:#f8f1d9;
+    --cos-ink:#8c2f4b;  --cos-bg:#f9e8ee;
+    --ok:#1d6f42; --warn:#8a6100; --bad:#992121;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--canvas);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.62;
+  }
+  .sheet{max-width:1000px;margin:0 auto;background:var(--bg);padding:56px 60px 80px;
+    box-shadow:0 0 0 1px var(--line);}
+  @media(max-width:760px){ .sheet{padding:28px 20px 56px} }
+
+  h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:25px;margin:52px 0 4px;padding-bottom:8px;
+     border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  h3{font-size:17px;margin:32px 0 6px;letter-spacing:.01em}
+  h4{font-size:15px;margin:22px 0 4px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:12px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  small{color:var(--ink-soft)}
+  .lede{font-size:17px;color:var(--ink-soft)}
+
+  .srcbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 0;margin:0 0 26px;font-size:13.5px;color:var(--ink-soft)}
+  .srcbar b{color:var(--ink);font-weight:600}
+
+  .toc{background:var(--canvas);border:1px solid var(--line);padding:16px 20px;margin:26px 0 0;
+    font-size:14px;columns:2;column-gap:34px}
+  @media(max-width:640px){.toc{columns:1}}
+  .toc a{display:block;padding:3px 0;text-decoration:none;color:var(--ink)}
+  .toc a:hover{color:var(--accent);text-decoration:underline}
+  .toc b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 4px}
+
+  .keypoints li{margin:10px 0}
+  .keypoints b{font-weight:650}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink-soft);padding-bottom:6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:var(--canvas);font-weight:650;font-size:13px}
+  tbody tr:nth-child(even){background:#fcfdfe}
+  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;width:66px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink)}
+  .dot.o{background:var(--out-ink)} .dot.s{background:var(--eff-ink)} .dot.p{background:var(--efc-ink)}
+  .dot.r{background:var(--rea-ink)} .dot.c{background:var(--cos-ink)}
+
+  .tag{display:inline-block;font-size:11px;line-height:1.5;padding:1px 7px;border-radius:3px;
+    letter-spacing:.03em;white-space:nowrap;font-weight:600}
+  .tag.o{color:var(--out-ink);background:var(--out-bg)}
+  .tag.s{color:var(--eff-ink);background:var(--eff-bg)}
+  .tag.p{color:var(--efc-ink);background:var(--efc-bg)}
+  .tag.r{color:var(--rea-ink);background:var(--rea-bg)}
+  .tag.c{color:var(--cos-ink);background:var(--cos-bg)}
+  .tag.iso{color:#4a4a4a;background:#eeeeee}
+  .tag.lvl{color:#5a3a86;background:#f0eaf8}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--line-soft);padding:1px 5px;border-radius:3px}
+  pre{background:var(--panel);color:#e7eef6;border-radius:6px;padding:18px 20px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:14px 0}
+  pre b{color:#f0b866;font-weight:400}      /* anahtar kelime */
+  pre i{color:#7f8ea1;font-style:normal}    /* yorum */
+  pre u{color:#9fd28a;text-decoration:none} /* dize/sayı */
+  pre .fn{color:#79c0e8}
+  .filename{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin:14px 0 -8px}
+
+  .formula{font-family:var(--serif);font-size:16.5px;background:var(--canvas);
+    border-left:3px solid var(--accent);padding:12px 16px;margin:12px 0;overflow-x:auto}
+  .formula em{font-style:italic}
+
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 14px;color:var(--ink-soft);font-size:14px;margin:14px 0}
+
+  /* --- panel --- */
+  .panel{background:var(--panel);color:#dbe5f0;border-radius:8px;padding:22px 24px;margin:20px 0}
+  .panel h3{color:#fff;margin:0 0 4px;font-size:16px}
+  .panel .hint{color:#8fa2b8;font-size:13px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#8fa2b8;margin-bottom:5px}
+  .field label .req{color:#e08a5a}
+  select,input[type=number],input[type=text]{
+    width:100%;background:var(--panel-2);border:1px solid var(--panel-line);color:#eef4fb;
+    border-radius:5px;padding:9px 10px;font-family:var(--sans);font-size:14px}
+  input[type=number]{font-family:var(--mono)}
+  select:focus,input:focus{outline:2px solid #4a8fc0;outline-offset:1px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13.5px;color:#b9c7d6}
+  .checks label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .panel-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:5px;cursor:pointer;
+    border:1px solid transparent;padding:9px 18px}
+  .btn-run{background:#1c74ab;color:#fff}
+  .btn-run:hover{background:#2385c2}
+  .btn-ghost{background:transparent;color:#9fb3c9;border-color:var(--panel-line)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9fb3c9;
+    border:1px solid var(--panel-line);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7c8ea3}
+  .chip.busy::before{background:#e0a13c}
+  .chip.on::before{background:#4ec07a}
+  .chip.off::before{background:#c05a5a}
+
+  .console{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+  .console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+    background:var(--canvas);border-bottom:1px solid var(--line);padding:8px 12px;font-size:12.5px;color:var(--ink-soft)}
+  .console textarea{width:100%;border:0;display:block;background:var(--panel);color:#e7eef6;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:16px 20px;resize:vertical;min-height:190px}
+  .console textarea:focus{outline:2px solid #4a8fc0;outline-offset:-2px}
+  .console pre{margin:0;border-radius:0;background:#0a1017;border-top:1px solid var(--panel-line);min-height:64px}
+  .btn-sm{padding:6px 14px;font-size:13px}
+  details.src pre{max-height:420px;overflow:auto}
+  .btn-ghost:hover{color:#fff;border-color:#47607d}
+
+  .result{border:1px solid var(--line);border-top:3px solid var(--accent);padding:18px 20px;margin:18px 0}
+  .result .big{font-family:var(--serif);font-size:32px;line-height:1.1}
+  .result .big span{font-size:16px;color:var(--ink-soft);font-family:var(--sans)}
+  .result dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:14px 0 0;font-size:14px}
+  .result dt{color:var(--ink-soft)}
+  .result dd{margin:0;font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px;padding:10px 12px;font-size:14px;border-radius:4px;background:var(--canvas)}
+  .verdict.ok{color:var(--ok);background:#eef6f1}
+  .verdict.warn{color:var(--warn);background:#fbf5e7}
+  .verdict.bad{color:var(--bad);background:#faeeee}
+
+  /* --- matris --- */
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;
+    background:var(--canvas);border:1px solid var(--line);padding:14px 16px;margin:16px 0}
+  .filters label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .filters select,.filters input{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .matrix{font-size:13.5px}
+  .matrix th.rot{width:72px;text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom}
+  .matrix td.name{font-weight:500}
+  .matrix td.name em{display:block;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .matrix tr.group td{background:#f2f5f8;font-weight:650;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+  .count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+
+  /* --- pozisyon tablosu --- */
+  .postbl{font-size:13.5px}
+  .postbl input[type=text],.postbl input[type=date],.postbl input[type=number]{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .postbl input[type=text]{font-family:var(--sans)}
+  .postbl input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .postbl td.chk{text-align:center}
+  .postbl input[type=number]{text-align:right}
+  .postbl td:first-child{min-width:150px}
+  .postbl th.num,.postbl td.num{width:auto}
+  @media(max-width:760px){table{display:block;overflow-x:auto}}
+  .postbl td.calc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap}
+  .postbl tfoot td{background:var(--canvas);font-weight:650}
+  .tblbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+  .tblbar button{border-color:var(--line);color:var(--ink-soft);background:#fff}
+  .tblbar button:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tblbar .inline{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft)}
+  .tblbar .inline input{width:78px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .card{border:1px solid var(--line);border-top:3px solid var(--eff-ink);padding:12px 14px}
+  .card b{display:block;font-family:var(--serif);font-size:24px;line-height:1.2}
+  .card span{font-size:12px;color:var(--ink-soft)}
+  .card.alt{border-top-color:var(--efc-ink)}
+  .card.warn{border-top-color:var(--out-ink)}
+
+  details{border-bottom:1px solid var(--line);padding:12px 0}
+  summary{cursor:pointer;font-weight:600;font-size:15px}
+  summary::marker{color:var(--accent)}
+  details p{margin:10px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  @media (prefers-reduced-motion:no-preference){
+    .result{transition:border-color .2s}
+  }
+  @media print{
+    body{background:#fff} .sheet{box-shadow:none;max-width:none;padding:0}
+    .panel{background:#fff;color:#000;border:1px solid #000}
+    pre{background:#f4f4f4;color:#000}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>ISO/TS 24178 Örgüt Kültürü Metrikleri Kümesi</h1>
+<div class="srcbar">
+  <span><b>Kaynak:</b> PD ISO/TS 24178:2021 — <i>Human resource management — Organizational culture metrics cluster</i></span>
+  <span><b>Kapsam:</b> 5 kullanıcı · 5 metrik ailesi · 66 metrik ve etken</span>
+  <span><b>Hesaplama:</b> gömülü Python modülü (Pyodide/WebAssembly)</span>
+  <span><b>Sürüm:</b> Ekim 2026</span>
+</div>
+
+<h2 id="genel">Genel Bakış</h2>
+<p>ISO/TS 24178:2021, ISO 30414'ün <b>örgüt kültürü</b> kümesini ayrıntılandıran bir teknik şartnamedir. Örgüt kültürünün unsurlarını
+anlatır ve iç ve dış raporlama için karşılaştırılabilir ölçümlerin formülünü verir; ayrıca kültür verisini yorumlarken, özellikle
+iç müdahalelere karar verirken ve verileri dış paydaşlara (düzenleyiciler, yatırımcılar) raporlarken dikkate alınacak konuları
+vurgular. İki metriği ele alır: <b>bağlılık, memnuniyet ve bağlanma</b> ile <b>tutma oranı</b>. Her biri için genel tanım, amaç,
+formül, bağlam etkenleri ve öngörü etkenlerini sunar. Ek A'da çalışan anketiyle kültürün sağlığını değerlendirmek için 25 ifadelik bir
+temel anket ve puanlama yöntemi verir. Bu sayfa, şartnamenin metrik kümesini filtrelenebilir bir matrise; anket puanlamasını canlı bir
+tabloya; ölçümleri de formül + canlı hesaplayıcı + Python koduna dönüştürür. PD ISO/TS 24178:2021, ISO/TS 24178'in İngiltere
+uyarlamasıdır (yayımlanmış belge) ve BSI tarafından 31 Mart 2021'de yayımlanmıştır. İlişkili belgeler: insan sermayesi raporlaması
+için ISO 30414, insan yönetişimi için ISO 30408, devir ve tutma ölçüleri için ISO/TS 30421, terimler için ISO 30400.</p>
+
+<h3>Önemli Noktalar</h3>
+<ul class="keypoints">
+  <li><b>Kültür "burada işlerin yapılış biçimi"dir.</b> Yapılan şey amaçtan (misyon ya da vizyon), nasıl yapıldığı ise değerlerden (davranışa yön veren
+  ilkeler) oluşur. Kültürü değerlendiren her ölçüm sistemi hem amacı hem değerleri ele almalıdır.</li>
+  <li><b>Ölçümün derinliği kültürel olgunluğa bağlıdır.</b> Şartname dört aşama sayar: gelişmemiş, erken, gelişen, olgun. İlk iki aşamada genel memnuniyet ve
+  istenen kültüre karşı gerçek durum soruları; sonraki aşamalarda kurumun kendi beklentilerine ilişkin özel sorular ve çoklu araç portföyü kullanılır.</li>
+  <li><b>En yaygın araç çalışan anketidir.</b> Anket, genel (üst düzey toplulaştırılmış) bir endeks üretmenin temelidir. Kullanılan her araç çalışanların <b>anonimliğini</b>
+  güvence altına almalı; ülkeler arasında karşılaştırılabilir olması için aynı çağrışım ve anlama sahip terminoloji kullanılmalıdır.</li>
+  <li><b>Bir endeksle yetinilmez; neden aranır.</b> Seçilen sorular, çalışan davranışı, tutum ve inançlarının bilinen belirleyicilerine bağlanmalı ve düşük performansın
+  olası nedenini belirleyip ortadan kaldırmaya imkân vermelidir. Ek A, sonuçların en düşük iki ya da üç ifadeden başlayarak çalışanlarla tartışılmasını önerir.</li>
+  <li><b>Tutma oranı bir istikrar endeksidir.</b> Genel oranın yanında alt kırılımlar (ülke, bölüm, iş kategorisi, hizmet yılı) ve kayıp nedenleri (deneme dönemi, ilk yıllar,
+  gerekçeli fesih, transfer, terfi, emeklilik) önemlidir; çünkü aynı oran farklı kültürel sorunlara işaret edebilir.</li>
+  <li><b>Bağlam olmadan sayı yorumlanmaz.</b> Ulusal ve bölgesel kültür, sektör, kurum büyüklüğü ve yapısı, önemli olaylar (ekonomik daralma, birleşme, sahiplik değişimi),
+  yönetim güvenilirliği ve mevcut bağlılık düzeyi sonuçları etkiler; sonuçlar bu bağlamda okunur.</li>
+  <li><b>Kültür ölçümü gelişen bir alandır.</b> Şartname, etkili, güvenilir ve kabul görmüş kültür metrik yaklaşımlarının henüz emekleme aşamasında olduğunu belirtir;
+  kurumlar anlayışlarını sürekli geliştirmeli ve metrikleri yüksek performanslı kültürü yönlendiren temel bileşenlere bağlamalıdır.</li>
+</ul>
+
+<div class="toc">
+  <b>İçindekiler</b>
+  <a href="#genel">Genel bakış ve önemli noktalar</a>
+  <a href="#nezaman">Ne zaman kullanılır</a>
+  <a href="#cerceve">Çerçeve ve metodoloji</a>
+  <a href="#yontemler">Araç, soru ve tutma analizi</a>
+  <a href="#adimlar">Metrik seçim adımları</a>
+  <a href="#kavramlar">Temel kavramlar</a>
+  <a href="#matris">Metrik matrisi</a>
+  <a href="#tablo">Anket puanlama tablosu</a>
+  <a href="#formuller">Formüller ve tanımlar</a>
+  <a href="#hesaplayici">Hesaplayıcı</a>
+  <a href="#python">Python kod örnekleri</a>
+  <a href="#yorum">Sonuçların yorumlanması</a>
+  <a href="#sinirlamalar">Sınırlamalar</a>
+  <a href="#raporlama">Metriklerin raporlanması</a>
+  <a href="#ilgili">İlgili standartlar</a>
+  <a href="#sss">Sıkça sorulan sorular</a>
+</div>
+
+<h2 id="nezaman">Ne Zaman Kullanılır</h2>
+<ul>
+  <li><b>Bağlılık düzeyi ölçülürken:</b> etkili bir örgüt kültürünün temel çıktılarından biri yüksek çalışan bağlılığıdır; bu metrik çalışanların işine ne ölçüde bağlı olduğuna dair bilgi sağlar.</li>
+  <li><b>Kurumun amaç ve değerlerinin yaşanıp yaşanmadığı sorgulanırken:</b> beyan edilen ile gerçek davranış arasındaki boşluk, düşük bağlılığın ve düşük güvenin tipik göstergesidir.</li>
+  <li><b>Kültür sağlığına dair ilk fotoğraf çekilirken:</b> amaç ve değerler henüz tanımlanmamış ya da yaygınlaştırılmamış kurumlar için Ek A'daki temel anket kullanılabilir.</li>
+  <li><b>Tutma ve devir incelenirken:</b> tutma oranı, çalışma ortamının ya da kültürün istenen işgücünü elde tutmada ne kadar etkili olduğunun göstergesidir.</li>
+  <li><b>Yönetimin performansı değerlendirilirken:</b> dış kullanıcılar bu bilgiyi, yönetimin insan sermayesini hem operasyonel açıdan hem de işgücünden sürdürülebilir rekabet avantajı sağlama açısından ne kadar etkili kullandığını değerlendirmek için kullanabilir.</li>
+  <li><b>Dış raporlamada:</b> düzenleyiciler ve yatırımcılar için karşılaştırılabilir kültür göstergesi üretilir (ISO 30414 ile birlikte).</li>
+</ul>
+<div class="note">Bu belge bir <b>ölçme</b> belgesidir. Şartnamenin kendi ifadesiyle kültür verisi, uygun iç müdahalelere karar verirken ve dış paydaşlara raporlarken dikkatle yorumlanmalıdır;
+sayı nedeni kendisi söylemez, kök neden için çalışanlarla görüşmek gerekir.</div>
+
+<h2 id="cerceve">Çerçeve ve Metodoloji</h2>
+
+<h3>Her metrik için beş bileşen</h3>
+<p>Şartname, ele aldığı her metriği aynı beş başlıkla tanımlar. Kendi kurum içi metrik kartlarınızı da bu yapıda hazırlamak, metriğin sonradan tartışılmasını önler.</p>
+<table>
+  <thead><tr><th>Bileşen</th><th>Yanıtladığı soru</th></tr></thead>
+  <tbody>
+    <tr><td>Genel tanım</td><td>Metrik neyi ölçer, hangi terimlerle anlatılır?</td></tr>
+    <tr><td>Amaç</td><td>Hangi kurumsal soruya hizmet eder, kimler kullanır?</td></tr>
+    <tr><td>Formül</td><td>Neyin, hangi araçla ve hangi soruyla ölçüleceği; nasıl hesaplanacağı</td></tr>
+    <tr><td>Bağlam etkenleri</td><td>Sonucu bugün ne etkiliyor olabilir?</td></tr>
+    <tr><td>Öngörü etkenleri</td><td>Bilinen ve beklenen olaylar sonucu nasıl değiştirecek?</td></tr>
+  </tbody>
+</table>
+
+<h3>Kültürel olgunluk aşamaları (Tablo 1)</h3>
+<p>Neyi ölçeceğinize karar verirken kritik etken, kurumun kendi benzersiz kültürünü belirlemedeki anlayışı ve olgunluğudur. Şartname bunu dört aşamayla gösterir:</p>
+<table>
+  <thead><tr><th style="width:60px">Aşama</th><th style="width:130px">Kültürel olgunluk</th><th>Açıklama</th><th>Kültürü değerlendirme ve ölçme yaklaşımı</th></tr></thead>
+  <tbody>
+    <tr><td><b>1</b></td><td>Gelişmemiş</td>
+      <td>Beklenen kültürü tanımlayan bir amaç, değer ya da ifade yok.</td>
+      <td>Genel işgücü memnuniyeti göstergelerine dayalı sorular.</td></tr>
+    <tr><td><b>2</b></td><td>Erken</td>
+      <td>İstenen kültür geliştirilmiş; istenen kültür, davranış ya da değerler ile mevcut gerçeklik arasındaki boşluk değerlendirilmiş.</td>
+      <td>Geleneksel memnuniyet göstergeleri ile istenen kültüre karşı gerçek performansı karıştıran sorular.</td></tr>
+    <tr><td><b>3</b></td><td>Gelişen</td>
+      <td>İstenen kültür işe alım programlarına, uyum eğitimine, liderlik gelişimine, politika ve prosedürlere, performans geri bildirimine, ücretlendirmeye ve "işimizi nasıl yürüttüğümüzün"
+      diğer tüm yönlerine yerleştirilmiş.</td>
+      <td>Çalışanların belirli faaliyetler içindeki gerçek deneyimlerine karşı kurumun kendi beklentilerinin temel yönlerine özgü sorular.</td></tr>
+    <tr><td><b>4</b></td><td>Olgun</td>
+      <td>Kültür anlaşılmış ve uygulanıyor: stratejik ve iş planlaması, insan sermayesi ile operasyonel çıktılar arasında eşitlik için hizalanmış; insan davranışları operasyonel hedeflerle açıkça uyumlu.</td>
+      <td>Bütüncül kültürü değerlendirmek için anket gibi birden çok aracın portföyü: liderlik 360° değerlendirmeleri, müşteri girdisi, tedarikçi girdisi ve diğerleri.</td></tr>
+  </tbody>
+</table>
+<p>Aşama 1 ve 2'deki kurumlar için Ek A'daki temel anket kullanılabilir. Aşama 3 ve 4 için soruların geliştirilmesine rehberlik eden düşünce, kültürün stratejik vizyonun merkezî bir unsuru olarak nasıl
+geliştirilebileceğini anlatan Ek B ve Şekil B.1'dedir.</p>
+
+<h3>Kırılımlar ve işgücü kategorileri (Giriş)</h3>
+<ul>
+  <li><b>İşgücü</b> kalıcı çalışanları, gündelik çalışanları, koşullu işgücünü ve raporlayan kurumun yönetişim ve liderlik yapısı içine giren tüm çalışanları kapsar. Mümkün ve uygulanabilir olduğunda raporlama ve metrikler
+  işgücü türüne göre kırılım içermelidir.</li>
+  <li>Hem tüm işgücünde kültürün genel değerlendirmesini ölçen <b>toplulaştırılmış ölçüler</b> hem de kültürdeki değişimi etkilemek için harekete geçilebilecek etkenlere bağlanan <b>kırılımlar</b> olmalıdır.
+  Örneğin dış kaynaklı çalışanlar farklı bir liderlik ya da yönetişim yapısı içinde çalışsa da bir ya da daha fazla iş biriminin genel performansını etkileyebilir.</li>
+  <li>Tedarikçi, dağıtıcı ya da diğer üçüncü taraf sözleşmeli kurumun parçası olan kişilerin kültürü, tedarik zinciri ve/veya tedarikçi performans değerlendirmelerinin parçası olarak değerlendirilebilir; bu raporlama şartnamenin kapsamı dışındadır.</li>
+  <li>Her kurum işgücünü oluşturan işçi kategorilerini belgelemeli ve bu tanımı düzenli gözden geçirip güncellemelidir. Örneğin bir dönem çalışan ve gündelik çalışanlar, sonra ek olarak yükleniciler ya da dış kaynaklı emek eklenebilir;
+  bu durumda bu kategorilerin tanımı, metriği ve raporlaması değişir.</li>
+  <li><b>Kırılım örnekleri:</b> bağlı ortaklık, bölüm, departman ya da maliyet merkezi hiyerarşisi; coğrafi konum; işgücü kategorisi veya gruplaması; pozisyon veya düzey (yönetim, gözetim, ön saf);
+  işlev (örneğin teknik uzmanlık); kıdem ya da hizmet süresi; değerlendirme anındaki değerler veya kültür yönelimi.</li>
+</ul>
+
+<h3>Kültürü etkileyen etkenler ve neden–sonuç ilişkisi</h3>
+<p>Kurumlar, bağlı ve istekli bir işgücünün belirleyicilerini anlamalı ve seçilen metrik ve gruplamaların, mevcut performansı değiştirmek için ele alınabilecek etkenlerle nedensel ilişkiye bağlanabilmesini
+sağlamalıdır. Şartnamenin örnekleri:</p>
+<ul>
+  <li>Net tanımlanmış bir kurumsal amacın olmaması çatışan önceliklere yol açabilir.</li>
+  <li>Net tanımlanmış ya da anlaşılmış değerlerin olmaması tutarsız davranışa yol açabilir.</li>
+  <li>Tutarsız amir yönlendirmesi daha düşük bağlılığa yol açabilir.</li>
+  <li>Yetersiz işe alım uygulamaları, kurumsal değerleri paylaşmayan çalışanları getirebilir.</li>
+  <li>Zayıf departman iş güvenliği kayıtları çalışanı elde tutmayı etkileyebilir.</li>
+</ul>
+<p>Kültürün etkin olduğu bir işyeri; bağlılığı, katılımı, bağlanmayı, yeniliği ve kurumsal vizyon ile amacı destekleyen özellikleri teşvik eder. ISO 30414, bağlı çalışanı işiyle tamamen
+özdeşleşmiş ve işine istekli, kurumun itibarı ve çıkarlarını ilerletmek için olumlu eylem alan kişi olarak tanımlar; bağlı çalışanlar çoğunlukla gelişim, işbirliği ve ilerleme fırsatları konusunda da isteklidir.
+ISO 10018'e göre bağlılık, insanların kurumun faaliyetlerine tamamen katıldığı ve daha fazla kişisel doyum yaşadığı durumdur; bağlılık, insanların iletişim, öğrenme ve yönetim gibi faaliyetlerden
+duyduğu memnuniyet düzeyi olarak tanımlanır.</p>
+
+<h2 id="yontemler">Araç, Soru ve Tutma Analizi</h2>
+
+<h3>Araç seçimi (madde 4.3.2)</h3>
+<ul>
+  <li><b>Çalışan anketi:</b> bağlılık bulgularını elde etmek için en yaygın araçtır; genel (toplulaştırılmış) endeks üretmenin temelidir. Anket ya da benzer araçların kullanımı iş modeline, ortama ve kurumun
+  büyüklüğüne göre değişebilir. Kurumlar çalışan anketi yapamıyorsa başka sistematik değerlendirmeler kullanılabilir. Kullanılan her araç çalışanların anonimliğini güvence altına almalıdır.</li>
+  <li><b>Çok ülkeli kurumlarda terminoloji:</b> liderlik ve motivasyon konularında bağlılık ya da iş memnuniyeti verisi toplayan her anket, tüm ülkelerde aynı çağrışım ve anlama sahip bir terminoloji kullanmalıdır; aksi hâlde veri uluslararası düzeyde tam
+  karşılaştırılabilir olmaz.</li>
+  <li><b>Odak grup:</b> toplulaştırılmış sonuçlar, çalışan bağlılığı, memnuniyeti ya da bağlanması düzeyine girdi sağlayabilir; etkili ve etkisiz motivasyon etkenlerini belirlemenin temelini oluşturabilir.</li>
+  <li><b>Dış girdi:</b> çalışanların bağlılığına ilişkin üçüncü taraf bakış açıları sağlar. Hizmet kuruluşlarında müşteri bilgisi bağımsız sonuçlar bakımından çok değerlidir; müşteri girdisi kültürü değerlendirmede kritik olabilir
+  ("bir tedarikçi olarak bizimle çalışmak ne kadar kolay" ya da "kurumumuz sorun çözmede ne kadar yardımcı" gibi sorular).</li>
+  <li><b>360° anketler:</b> liderlik konumundakilerin üstleri, akranları ve astlarınca değerlendirildiği bu araçlar, kurumsal (davranışsal) değerlerin liderlik konumundakilerce ne kadar iyi gösterildiğini anlamada çok yararlıdır.</li>
+</ul>
+
+<h3>Bağlılık endeksi raporlama örneği (Tablo 2)</h3>
+<p>Şartname, 0 ile 100 arasında ölçeklenen bir bağlılık endeksini bölgelere ve yıllara göre raporlamayı örnekler. Örnekte "ortalama bağlılık endeksi" bölge değerlerinin basit ortalamasıdır:</p>
+<table>
+  <thead><tr><th></th><th class="num">2018</th><th class="num">2017</th><th class="num">2016</th></tr></thead>
+  <tbody>
+    <tr><td>Avrupa</td><td class="num">84</td><td class="num">83</td><td class="num">80</td></tr>
+    <tr><td>Asya/Pasifik</td><td class="num">86</td><td class="num">85</td><td class="num">81</td></tr>
+    <tr><td>Kuzey Amerika</td><td class="num">81</td><td class="num">81</td><td class="num">76</td></tr>
+    <tr><td><b>Ortalama bağlılık endeksi (ölçek 0–100)</b></td><td class="num"><b>84</b></td><td class="num"><b>83</b></td><td class="num"><b>79</b></td></tr>
+  </tbody>
+</table>
+
+<h3>Soru seçimi (madde 4.3.3)</h3>
+<p>Çalışan bağlılığı düzeyleri ile örgüt kültürü arasında anlamlı bir bağ kurmak için seçilen sorular, motivasyon ve bağlılıkla sonuçlanan, bilinen çalışan davranışı, tutum ve inanç belirleyicilerine bağlanmalıdır.
+Sorular ve elde edilen sonuçlar, kullanıcıların düşük performansın olası nedenini belirleyip böyle bir nedeni ortadan kaldıracak eylemi alabilmesini sağlamalıdır.</p>
+<ul>
+  <li><b>Amaçla ilgili sorular</b> göreve yöneliktir; kurumun amaçlanan ürün veya hizmet çıktıları ile bireyin faaliyetlere katkısı arasındaki bağı güvence altına alır. Örnekler: kurumun net bir amacı var mı; kurumun amacına ulaşma planları size iletildi mi;
+  sizin özel rolünüz net tanımlı mı; işinizi yapmak için gereken araç ve ekipmana erişiminiz var mı; gerçekleşen sonuçlar ile planlara ilişkin düzenli geri bildirim var mı; geri bildirim liderliğin çalışan katkısını takdirini yansıtıyor mu;
+  işinizde değişiklik ve iyileştirme önerebiliyor musunuz; öneriler duyuluyor ve mümkünse uygulanıyor mu; iş yükünüzün adil ve makul olduğuna inanıyor musunuz.</li>
+  <li><b>Değerlerle ilgili sorular</b> kurumun işgücünden içinde çalışmasını beklediği davranışsal ortamı belirler. Değerler tipik olarak işgücü üyeleri arasında, tüm departmanlar ve düzeyler arasında ve ideal olarak işgücü ile üçüncü taraflar arasındaki
+  etkileşimin her yönüne nüfuz etmelidir. Etkili kültürler genellikle iletişim, işbirliği, kooperasyon ve güven inşası gibi alanlarla bağlılık arar. Örnekler: kurumun net bir davranışsal değerler kümesi var mı; bu değerler karar vermeye yön veriyor mu;
+  doğrudan amirim bu değerleri tutarlı uyguluyor mu; bu değerlerin diğer departmanlarla ilişkilerimi yönlendirdiğini gözlemliyor muyum; kurum bu değerleri dış ilişkilerinde gösteriyor mu.</li>
+  <li><b>Sorular hedeflenen amaçlara göre kurgulanmalıdır.</b> Yüksek bağlılık, işgücü beyan edilen beklentileri bildiğinde, anladığında ve eylemde gözlemlediğinde ortaya çıkar. Düşük bağlılık ve düşük güven, anketler ya da diğer araçlar beyan edilen ve gerçek davranışlar arasındaki
+  boşluğu gösterdiğinde görülür. Bazı ulusal ve kurumsal kültürlerde kurumsal amaçla bağlılık düzeylerine ilişkin sorular daha az uygun olabilir ve kaçınılabilir ya da genel sonuçların daha düşük bir oranına ağırlıklandırılabilir.</li>
+  <li><b>Memnuniyet soruları.</b> Son seri, ücret, teşvik ve prim planları ile çalışan yan hakları gibi alanlardaki memnuniyeti belirler. Bunların motivasyon bakımından sınırlı olmakla birlikte olumsuz tutumlar üzerinde önemli etkisi olabilir.</li>
+</ul>
+
+<h3>Temel kültür anketi: Ek A (olgunluk aşaması 1 ve 2)</h3>
+<p>Ek A, bir kurumda kültür henüz net tanımlanmadan, kodlanmadan ve iş uygulamaları ile karar vermeye yerleştirilmeden önce kullanılan <b>25 ifadelik</b> temel ya da genel bir anket örneğidir. Her ifade için yanıt beşli ölçekle puanlanır:</p>
+<table>
+  <thead><tr><th>Yanıt</th><th class="num">Puan</th></tr></thead>
+  <tbody>
+    <tr><td>Kesinlikle katılıyorum</td><td class="num">5</td></tr>
+    <tr><td>Katılıyorum</td><td class="num">4</td></tr>
+    <tr><td>Ne katılıyorum ne katılmıyorum</td><td class="num">3</td></tr>
+    <tr><td>Katılmıyorum</td><td class="num">2</td></tr>
+    <tr><td>Kesinlikle katılmıyorum</td><td class="num">1</td></tr>
+  </tbody>
+</table>
+<p>Her soru puanlanır; toplam puan 125'e bölünerek genel yüzde sonuç oluşturulur (25 ifade × en fazla 5 puan). Ek A.2.3, 25 ifadenin seçim gerekçesini şöyle verir:</p>
+<table>
+  <thead><tr><th style="width:110px">İfadeler</th><th>Ne belirlemek için</th></tr></thead>
+  <tbody>
+    <tr><td><b>1 ve 2</b></td><td>Bir amaç ifadesinin var olup olmadığını belirlemek.</td></tr>
+    <tr><td><b>3</b></td><td>Bir değer ifadesinin var olup olmadığını belirlemek.</td></tr>
+    <tr><td><b>4–7</b></td><td>Amaca ilişkin ilk çalışan bakış açısını (kendi gerçekliklerini) değerlendirmek.</td></tr>
+    <tr><td><b>8–19</b></td><td>Davranışsal değerlere ilişkin ilk çalışan bakış açısını değerlendirmek.</td></tr>
+    <tr><td><b>20–25</b></td><td>Çalışanın, liderliğin beyan edilen değerlerle hizalanmasına ilişkin görüşünü değerlendirmek.</td></tr>
+  </tbody>
+</table>
+<p>Anketi geliştirenlerin kendi ifadelerini oluşturmada geniş serbestliği vardır; ancak kültürün mevcut durumunu erken aşamalarda değerlendirirken ifadelerin bu <b>beş yönü</b> kapsaması önemlidir. 25 ifadenin tam metni, bu sayfadaki
+anket puanlama tablosunda (özgün Türkçe karşılıklarıyla) verilmiştir.</p>
+
+<h3>Sonuçlarla ne yapılır? (Ek A.2.4)</h3>
+<ul>
+  <li>Etkili bir kültür kurmak ve sürdürmek zaman alır ve adım adım geliştirilmelidir. Anket ve puanlama tamamlandıktan sonra <b>en düşük puanlı iki ya da üç ifadeye</b> bakın ve bunlara odaklanarak başlayın.</li>
+  <li>Örneğin anket 2. ifadede düşük ya da karışık sonuç gösteriyorsa, bir değer ifadesinin daha fazla geliştirilmesi düşünülmelidir. 19. ifade düşük puan alırsa, nedenini anlamak, iyileştirilebilmesi için önemli hâle gelir.</li>
+  <li>Bu tür bir anketin sonuçları her durumda, odak grup, kent toplantısı (town hall) ve çalışma grupları gibi yaklaşımlarla çalışanlarla yapılacak tartışmaların temeli olarak kullanılmalıdır; böylece altta yatan kök nedenler belirlenir ve çalışanların gördüğü
+  sorunları iyileştirecek girişimler geliştirilir.</li>
+  <li>Anketin değeri, yalnızca sorunları keşfetmek için bir araç olarak kullanıp bu zorlukları anlamak, iyileştirmek ya da çözmek için eyleme geçmekten gelir. Kurum net amaç ve değer ifadeleri oluşturup bunları geniş biçimde paylaştığında, anket ifadeleri
+  uygulamanın gerçekliğine daha çok odaklanacak biçimde değiştirilebilir.</li>
+</ul>
+
+<h3>Olgun kurumlar için kültür ifadeleri: Ek B (olgunluk aşaması 3 ve 4)</h3>
+<p>Kurumsal kültürün değerlendirildiği, tanımlandığı ve iletildiği bir kurumda kullanılan özel ifadeler, hem kurumsal amaç hem de değerler konusunda verilen taahhütleri doğrulamaya dayanır. Amacın etkili anlaşılması ve hizalanması, hedef ve amaçlara ulaşma görevine bağlılığı
+pekiştirir; değerlerin etkili anlaşılması ve doğrulanması ise kurumun ve içindekilerin davranışının beklentileri karşılamasını güvence altına alır. Şekil B.1'e göre kurumsal vizyon, kurumsal kültürü (amaç/misyon "ne yapıyoruz"u, değerler davranışı yönlendirir) belirler;
+buradan iki soru kümesi doğar: amacı, bağlılığı, görevi, işi, araçları, yönlendirmeyi ve eğitimi doğrulayan sorular ile liderliği, etiği, iletişimi, kooperasyonu, işbirliğini ve güveni doğrulayan sorular. Bunlar kültür anketinin içeriğini oluşturur.
+İlk anketler genel sorulara dayanabilir, ancak kurum kendi benzersiz kültürünü sürekli geliştirdikçe sorular, mevcut amaç ve değer ifadelerini doğrulamak üzere daha özelleştirilmiş hâle gelmelidir.</p>
+
+<h3>Tutma oranı analitiği (madde 5)</h3>
+<ul>
+  <li><b>Genel tanım.</b> Tutma oranı, kurumsal kültürle ilgili göstergelerden biridir; genel işgücü memnuniyeti düzeyini yansıtabildiği için sıklıkla <i>istikrar endeksi</i> olarak anılır. Tutma oranları, belirli bir dönemin başı ile sonu arasındaki genel
+  değişimlerin yanı sıra nedensel analizi mümkün kılan altta yatan ayrıntıların da yeterli anlaşılmasını sağlamalıdır. Hem tutma hem devirle ilgili metriklerin ayrıntılı tartışması, geliştirilmesi ve uygulanması ISO/TS 30421'dedir.</li>
+  <li><b>Amaç.</b> Tutma oranı metriğinin benimsenmesi, çalışma ortamının ya da kültürün istenen işgücünü elde tutmada ne kadar etkili olduğuna dair bir gösterge sağlar. Kişisel ya da kariyer gelişimi nedenleriyle bir miktar devir ve çalışan kaybı kaçınılmaz olduğundan,
+  olumlu bir kültür işgücü üyelerine kurum içinde kalmaları için teşvik sağlamalıdır.</li>
+  <li><b>Kırılım ve veri toplama gruplamaları (5.3.2).</b> Genel kurumsal tutma oranına ek olarak, hem kayıpların nedenleri hem de işe etkisinin kritikliği üzerinde etkili olabilecek alt kategorilere göre metrikleri anlamak önemlidir. Liderliğin etkili bir kültür geliştirme ve sürdürmedeki rolü
+  önemli olduğundan, tutma düzeylerinin her analizi örgüt yapısı ve raporlama çerçevesiyle hizalanmalıdır. Altta yatan bilgi türleri: ülke, şirket, bağlı ortaklık ya da bölüm bazında genel tutma oranları; bölüm ya da departman bazında; iş kategorisine (nitelikli ya da yarı nitelikli) göre;
+  hizmet yılına göre; kuruma uygun diğer kırılım analitikleri. İnsan davranışı beklentileri, çalışanlar arasındaki ilişkilerle iletilir ve pekiştirilir; çalışanlar bunları günlük etkileşimlerin gerçekliği (özellikle bağlı oldukları kişilerle) üzerinden gözlemler. Belirli bölüm ya da departmanlarda tutma
+  düzeylerinin daha düşük olması, o alanlardaki olası liderlik sorunlarına işaret edebilir.</li>
+</ul>
+<table>
+  <thead><tr><th style="width:310px">Kayıp türü (madde 5.3.3)</th><th>Olası işaret</th></tr></thead>
+  <tbody>
+    <tr><td>Deneme ya da eğitim döneminde kaybedilen çalışanlar</td><td>Olası işe alım sorunları</td></tr>
+    <tr><td>Hizmet süresine göre kayıplar: deneme sonrası ama işe alımdan sonraki bir ila iki yıl içinde</td>
+      <td>Beyan edilen kültürün yaşanan kültür olmadığına işaret edebilir</td></tr>
+    <tr><td>"Gerekçeli" feshedilen çalışanlar</td><td>Nedenlerin alt analizi yapılabilir</td></tr>
+    <tr><td>Farklı tutma oranları sergileyen departmanlara ya da departmanlardan transferler</td><td>Departmanlar arası farklı kültür deneyimi</td></tr>
+    <tr><td>Kurum içinde ama başlangıç grubunun dışında terfi eden çalışanlar</td><td>Olumlu kayıp; grup tutma oranında kayıp görünür</td></tr>
+    <tr><td>Emeklilik nedeniyle gönüllü ya da zorunlu kayıplar</td><td>Normal, çoğunlukla kültürle ilgisiz kayıp</td></tr>
+  </tbody>
+</table>
+<p>İstenen bir örgüt kültürünü sürdürmek, söz ile eylem arasındaki tutarlılığa dayanan temel bir zorluktur. Personel kayıplarının nedenlerinin ayrıntılarını (özellikle ilk deneme dönemlerinden sonra) anlamak, çalışan kurumun zaman içinde ve farklı koşullarda ne kadar
+tutarlı çalıştığına dair daha fazla deneyim kazandıkça ortaya çıkan çatışmaları açığa çıkarabilir.</p>
+
+<h3>Bağlam ve öngörü etkenleri (madde 4.4–4.5, 5.4–5.5)</h3>
+<ul>
+  <li><b>Bağlam (bağlılık).</b> Kültürler hem kurumun faaliyet gösterdiği yer (ulusal ya da bölgesel konum) hem de içinde çalıştığı sektör bakımından benzersizdir. Kurumun büyüklüğü ve yapısı da kültürü etkileyebilir: uluslararası ve çok uluslu kurumlar çoğunlukla
+  kurumsal ve ulusal kültürlerin karışımına sahiptir; kamu kurumlarının kültürü özel kurumlardan, sahibi tarafından yönetilen kurumların halka açık kurumlardan, olgun kurumların yeni girişimci kurumlardan farklıdır. Kurumlar önemli olaylar olduğunda da kültür değişimi yaşar: ekonomik
+  daralmalar, birleşmeler ve devralmalar, kurumsal amaçtaki önemli değişiklikler ve sahiplik değişiklikleri. Mevcut yönetim güvenilirliği düzeyi ve mevcut çalışan bağlılığı düzeyi de sonuçlar üzerinde önemli etkiye sahip olabilir. Hem metriklerin hem veri toplama ve değerlendirme yaklaşımlarının tasarımı ve
+  yönetimi, dengeli ve mümkün olduğunca az taraflı sonuçlar için <b>yüksek katılım oranı</b> hedeflemelidir.</li>
+  <li><b>Öngörü (bağlılık).</b> Kültürdeki değişiklikleri planlamak ve öngörmek, insan duygularından önemli ölçüde etkilendiğinden çoğunlukla zordur. Gerçek sonuçlar düşükse, mevcut yönetime güven eksikliği ya da liderlik değişiklikleri gibi etkenler nedeniyle iyileşme zaman alabilir. Bağlılık kaybı ve etkili kültürdeki azalma, genellikle her türlü
+  değişim sürecine (yeni BT sistemleri, yeni politikalar ya da işi etkileyen mevzuat değişiklikleri) eşlik eder. Bağlılığın mevcut belirleyicilerini ve performanslarına göre metrikleri anlamak, bu tür değişiklikler öngörüldüğünde önleyici eylem planlamaya imkân verir.</li>
+  <li><b>Bağlam (tutma), dış etkenler.</b> Sanayi türü (yeni ortaya çıkan, istikrarlı ya da gerileyen); sanayi, teknoloji ya da sektörün olgunluğu; sektör (özellikle kritik becerilerin tutulmasına odaklanırken); genel yerel istihdam durumu; genel ekonomik ortam (büyüyen, gerileyen, durgunluk);
+  sanayiye ve toplumsal davranışa ilişkin değişen kamuoyu algısı; şirketin pazardaki ya da sektördeki itibarı ya da marka durumu.</li>
+  <li><b>Bağlam (tutma), iç etkenler.</b> Normal tutmanın stratejik düzeyleri (örneğin büyüme durumu için, yönetim kurulu ya da diğerlerince belirlenen sanayi); sektör normuna göre ücret aralığı; kurumun istikrarı (birleşmeler, devralmalar); kurum içinde bir ya da daha fazla düzeydeki liderlik değişiklikleri;
+  işgücünün ortalama kıdemi ya da yaşı. Sektör kıyaslaması ve işveren kuruluşları ile ticaret gruplarından edinilen bilgiler, tutmanın kabul edilebilir olduğu aralıkları belirlemeye yardım eder.</li>
+  <li><b>Öngörü (tutma).</b> Tutmadaki değişiklikler kabul edilebilir kontrollü bir aralıkta kalmalıdır; dönemsel artış ya da azalışlar bağlamsal nedenlerle olabilir ve hedef düzeyler belirlenirken ve olası değişikliklere yanıt planlanırken dikkate alınmalıdır. Tutmayı kötüleştiren olası olayları planlamamak ve bunlara yanıt vermemek,
+  toplam işgücü motivasyonunu etkiler ve personel kaybını tırmandırabilir. Liderlik, artan işgücü stresi, belirsizlik, iş riski ve hayal kırıklığı hissiyle bağlantılı olabilecek etkenlere dikkat etmelidir: iç yeniden yapılanma içeren iş planları; departman liderliğindeki değişiklikler (yeni iç ya da dış gözetim dahil);
+  artan trafik sıkışıklığı ya da toplu taşıma eksikliği gibi toplumsal sorunlar; iş süreci değişikliklerine yol açan yeni ekipman; yeniden beceri kazandırmayı ve performans geri bildirimi bilgisinde değişiklikleri gerektiren yeni BT sistemleri; net halefiyet planı eylem planları ve iletişimlerinin eksikliği;
+  mevsimsel, tanıtım ya da yeni ürün lansmanı gibi artan iş yükü gereken dönemler.</li>
+</ul>
+
+<h3>Kültür ve İK metrikleri (Ek C)</h3>
+<ul>
+  <li><b>Kültürü ölçmenin zorlukları.</b> Kültür bütüncüldür, bu yüzden kurumun tüm faaliyet alanlarına yayılır; nesnel ölçülebilen süreç yönleri (süre, uyum, maliyet) içerir, ama çok daha öznel olan davranışı da temsil eder; çoğunlukla çalışanlar, yöneticiler, müşteriler, tedarikçiler ve düzenleyiciler
+  arasındaki bireysel etkileşimin gözlenen ve deneyimlenen sonucudur; her kurumun bir kültürü vardır ve bu, sahibinin davranışını yansıtabilir, zaman içinde insanlara (özellikle liderlik konumundakilere) göre evrilmiş olabilir ya da planlanmış olabilir; kültür pasif değil, hem iç hem dış faaliyetlere ve olaylara
+  dayanarak bazen yönsüzce evrilen ve değişen bir şeydir; kültürün gerçekliği, iş stratejisinin operasyonelleştirilme biçimine (kâra karşı güvenliğe öncelik; maliyet azaltmaya karşı tedarikçi ilişkileri; "hizmet maliyeti"ne karşı müşteri memnuniyeti) göre değişir; kültür kuruma özgüdür ve çoğunlukla uzun süreli yatırımcı
+  ya da sahip ilkelerine dayanarak benzersizdir; iş stratejisindeki değişiklikler kültürde kaymalar gerektirebilir, ama değişimin insan duyguları ve davranışı üzerindeki etkisinin yönetimi henüz iyi gelişmemiştir.</li>
+  <li><b>Etkili, güvenilir ve kabul görmüş kültür metrik yaklaşımları emekleme aşamasındadır.</b> Kurumsal etkililik, finansal metriklere ağırlıkla dayanmaya devam eder; insan sermayesinin optimizasyon düzeyi ve etkililiği çoğunlukla belirgin değildir. Bu, insan kaynakları maliyetlerini en aza indirmeye
+  odaklanmakla, bu maliyetlerin hız, yaratıcılık, işbirliği, yenilik ve kurumsal değer ile sürdürülebilirliğin diğer sürücüleri yoluyla avantaj için ne kadar etkili kullanıldığını gösteren metrikler aramak arasındaki farkla örneklenir.</li>
+  <li><b>ISO 30408 ve ISO 30414.</b> ISO 30408, insan sermayesini optimize etmek için gereken İK yönetiminin genişliğine ilişkin kılavuz verir; ISO 30414 ise "temel insan sermayesi raporlama alanlarını" kapsayan metrik dizisi önererek onu tamamlar. Örgüt kültürü bu çekirdek alanlardan biri olsa da ISO 30414'teki
+  tüm metrikler, İK yönetişim sisteminin bütüncül performansını gösterdikleri için kurumsal kültürün genel anlaşılmasına katkıda bulunabilir. Daha ileri kültür değerlendirmeleri, iş yönetimi sisteminin, özellikle İK yönetişimine yaklaşımının ne kadar iyi çalıştığının anlaşılmasını gerektirir.</li>
+  <li><b>Basit üst düzey sorular.</b> Çekirdek metrikler benimsendikten sonra, insan sermayesi yönetimine yaklaşımın tüm kurumun işleyişine nasıl entegre olduğunu gösteren diğerleriyle tamamlanmalıdır: kurumumuzun net tanımlı bir amacı var mı; kurumumuzdaki herkes amacımızın ne olduğunu biliyor mu;
+  herkes kendi rolünün, sorumluluklarının ve hesap verebilirliğinin amacımıza nasıl uyduğunu ve neden önemli olduğunu anlıyor mu; tüm insanlar davranışla ilgili değerlerimizi ve bunun kişisel davranış açısından ne anlama geldiğini biliyor mu; liderlik konumundaki herkes bu taahhütlere bağlı mı, onları paylaşıyor ve gösteriyor mu.</li>
+  <li><b>Altı sermaye ve toplumsal beklentiler.</b> Kurumsal raporlamadaki son gelişmeler, üç boyutlu sonuç (insan, gezegen, kâr), kurumsal sosyal sorumluluk (KSS) ile çevre, sosyal ve yönetişim (ESG) kavramlarından geçerek, finansal, insan, üretilmiş, ilişki (ve sosyal), entelektüel ve doğal sermayelerden oluşan altı sermaye modeline
+  ulaşmıştır (IIRC'nin &lt;IR&gt; çerçevesi). İnsan sermayesi, ilişki, sosyal ve entelektüel sermaye gibi diğer sermayelerin yaratıcısı da olabilir. Etkili bir kültürün metrikleri şunları göstermelidir: insan stratejisi ve planlamasının iş planlarıyla ne kadar iyi bütünleştiği; uyumlu, güvenli ve sağlıklı bir işyeri ile riskin nasıl en aza
+  indirildiği; İK maliyetlerine ayrılan finansal kaynakların mevcut sonuçları yaratmak ve gelecek kapasiteyi sürdürmek için ne kadar etkili kullanıldığı; insan sermayesinin finansal olmayan varlıkları (entelektüel sermaye, ilişkiler) korumak için nasıl geliştirildiği ve finanse edildiği; insan davranışı beklentilerinin etik dışı davranış ve marka değeri
+  kaybı, müşteri kayıpları, olumsuz tedarik zinciri etkileri gibi kayıplar yoluyla riski en aza indirmek üzere nasıl yerleştirildiği; kurumun pazardaki toplumsal değişimleri anlayarak gereken becerilere ve kapasitelere sahip yeteneği nasıl çektiği ve elde tuttuğu. Bu metrikler hem nesnel hem öznel yaklaşımların, hızlı memnuniyet ve uyum geri bildirim
+  sistemlerinin ve "anlık" ölçümlerin yanı sıra eğilim ve istatistiklerin benimsenmesini gerektirir. BM'nin yayımladığı 17 sürdürülebilir kalkınma amacı, örgüt kültürünün toplumsal hedeflerin evriminden nasıl etkilenebileceğinin bir örneğidir.</li>
+</ul>
+
+<h2 id="adimlar">Metrik Seçim Adımları</h2>
+<ol>
+  <li><b>Kültürel olgunluk aşamanızı belirleyin.</b> Amaç ve değer ifadeniz var mı, yaygınlaştırılmış mı, işe alım, uyum, liderlik gelişimi ve performans geri bildirimine yerleştirilmiş mi? Aşama 1–4'e göre soru derinliğini seçin.</li>
+  <li><b>Amaç ve değer ifadelerini yazın.</b> Yoksa Ek A'daki temel ankete başlayın; varsa soruları bu ifadelerin gerçekliğini doğrulayacak biçimde özelleştirin (Ek B).</li>
+  <li><b>Aracı seçin ve anonimliği güvence altına alın.</b> Çalışan anketi, odak grup, 360°, müşteri ve tedarikçi girdisi; çok ülkeli kurumda aynı anlam taşıyan terminoloji.</li>
+  <li><b>İşgücü kategorilerini belgeleyin.</b> Kalıcı, gündelik, koşullu ve dış kaynaklı işgücünü hangi gruplarla raporladığınızı yazın ve düzenli güncelleyin.</li>
+  <li><b>Kırılımları seçin.</b> Bağlı ortaklık, bölüm, konum, işgücü kategorisi, düzey, işlev, kıdem; eyleme geçilebilir etkenlere bağlayın.</li>
+  <li><b>Yüksek katılım oranı hedefleyin.</b> Dengeli ve az taraflı sonuç için; yanıt oranını her raporda yazın.</li>
+  <li><b>Endeksi ve ifade bazında sonuçları hesaplayın.</b> Genel yüzde, boyut puanları, en düşük iki ya da üç ifade.</li>
+  <li><b>Tutma oranını kırılımlarıyla ve kayıp nedenleriyle izleyin.</b> Deneme dönemi, ilk yıllar, gerekçeli fesih, transfer, terfi, emeklilik; kabul edilebilir aralığı sektör kıyaslamasıyla belirleyin.</li>
+  <li><b>Sonuçları çalışanlarla tartışın.</b> Odak grup, kent toplantısı, çalışma grubu; kök nedenleri belirleyip girişimleri geliştirin.</li>
+  <li><b>Bağlam ve öngörü etkenlerini yazın.</b> Sayının yanına, o dönemde yönetim değişikliği, birleşme, yeni sistem, mevzuat ve ekonomik koşulları not edin; önleyici eylem planlayın.</li>
+</ol>
+
+<h2 id="kavramlar">Temel Kavramlar</h2>
+<p>Şartname, 3. maddesinde terimleri ISO 30400'e bırakır. Aşağıdaki tablo, metinde geçen ve kullanımı için gerekli temel kavramların kısa özetleridir. Açıklamalar özgün olarak yazılmıştır; bağlayıcı olan şartnamenin kendi metnidir.</p>
+<table>
+  <thead><tr><th style="width:90px">Madde</th><th style="width:230px">Kavram</th><th>Açıklama</th></tr></thead>
+  <tbody>
+    <tr><td><b>Giriş</b></td><td>Örgüt kültürü <small>(organizational culture)</small></td>
+      <td>Kurumun işleyişinin ve beklenen işgücü davranışlarını tanımlayan, destekleyen ve yaratan bir çalışma ortamı yaratma biçiminin yansıması. Etkili kültürün sonucu; bağlılığı, katılımı, bağlanmayı, yeniliği ve kurumsal vizyon ile amacı destekleyen özellikleri teşvik eden bir işyeridir.</td></tr>
+    <tr><td><b>4.3.1</b></td><td>Amaç <small>(purpose, mission, vision)</small></td>
+      <td>Kurumun "ne yaptığı"; bireyin kendi rolünü ve katkısını anlamasını sağlayan, kurumsal performansın ve insan memnuniyetinin temel sürücüsü.</td></tr>
+    <tr><td><b>4.3.1</b></td><td>Değerler <small>(values)</small></td>
+      <td>Davranışa yön veren ilkeler; yasalara uyum ve etik davranış kurallarına bağlılık dahil kişisel davranışın tüm alanlarını yönlendiren temel sürücü.</td></tr>
+    <tr><td><b>4.1</b></td><td>Bağlı çalışan <small>(engaged employee)</small></td>
+      <td>ISO 30414'e göre işiyle tamamen özdeşleşmiş, işine istekli ve kurumun itibarı ve çıkarlarını ilerletmek için olumlu eylem alan kişi.</td></tr>
+    <tr><td><b>4.1</b></td><td>Bağlılık, memnuniyet ve bağlanma <small>(engagement, satisfaction, commitment)</small></td>
+      <td>İnsan sermayesinin kurumda ne ölçüde en uygun potansiyelinde çalıştığını değerlendirmede kullanılan terminoloji; insanların eylemleri ile istenen kurumsal çıktılar arasındaki yüksek hizalamayı gösterir.</td></tr>
+    <tr><td><b>Tablo 1</b></td><td>Kültürel olgunluk <small>(cultural maturity)</small></td>
+      <td>Gelişmemiş, erken, gelişen, olgun; ölçüm yaklaşımının derinliğini belirler.</td></tr>
+    <tr><td><b>Tablo 2</b></td><td>Bağlılık endeksi <small>(engagement index)</small></td>
+      <td>Çalışan anketi bulgularından üretilen, 0–100 ölçekli genel (üst düzey toplulaştırılmış) endeks.</td></tr>
+    <tr><td><b>4.3.2</b></td><td>360° anket</td>
+      <td>Liderlik konumundakilerin üstleri, akranları ve astlarınca değerlendirildiği araç.</td></tr>
+    <tr><td><b>Ek A</b></td><td>Temel kültür anketi</td>
+      <td>25 ifadelik, beşli ölçekli, olgunluk aşaması 1 ve 2 için örnek anket; toplam puan 125'e bölünerek genel yüzde sonuç elde edilir.</td></tr>
+    <tr><td><b>5.1</b></td><td>Tutma oranı <small>(retention rate)</small></td>
+      <td>Kurumsal kültürle ilgili göstergelerden biri; sıklıkla istikrar endeksi olarak anılır. Dönem başı ile sonu arasındaki genel değişimi ve altta yatan ayrıntıları gösterir.</td></tr>
+    <tr><td><b>5.3.3</b></td><td>Kayıp nedenleri <small>(causal analysis)</small></td>
+      <td>Deneme/eğitim dönemi, hizmet süresi, gerekçeli fesih, transfer, iç terfi, emeklilik; her biri farklı eylem gerektirebilir.</td></tr>
+    <tr><td><b>Giriş</b></td><td>İşgücü <small>(workforce)</small></td>
+      <td>Kalıcı çalışanlar, gündelik çalışanlar, koşullu işgücü ve raporlayan kurumun yönetişim ve liderlik yapısı içine giren tüm çalışanlar.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="matris">Metrik Matrisi</h2>
+<p>Aşağıdaki tablo, şartnamenin tanımladığı ve işaret ettiği metrikler ile ölçüm, bağlam ve öngörü etkenlerinin kullanıcı × süreç aşaması × raporlama sınıflandırmasıdır. Kullanıcı ve raporlama sütunları bu sayfanın yazarlık sınıflandırmasıdır; şartnamenin kendisi bunu yapmaz.
+Filtreleri değiştirdiğinizde tablo anında daralır.</p>
+
+<div class="filters">
+  <div><label for="fUser">Kullanıcı</label>
+    <select id="fUser">
+      <option value="">Tümü</option>
+      <option value="hr">İK ve kültür sorumluları</option>
+      <option value="exec">Üst yönetim</option>
+      <option value="line">Hat yöneticileri ve liderler</option>
+      <option value="wrk">Çalışanlar ve temsilcileri</option>
+      <option value="ext">Dış paydaş (düzenleyici, yatırımcı)</option>
+    </select></div>
+  <div><label for="fStage">Süreç aşaması</label>
+    <select id="fStage">
+      <option value="">Tümü</option>
+      <option value="tanim">Tanım ve olgunluk (madde 4.1, 4.3.1)</option>
+      <option value="arac">Araç ve soru seçimi (madde 4.3.2–4.3.3)</option>
+      <option value="tutma">Tutma ve kayıp analizi (madde 5)</option>
+      <option value="baglam">Bağlam ve öngörü (madde 4.4–4.5, 5.4–5.5)</option>
+      <option value="ek">Ek A–C</option>
+    </select></div>
+  <div><label for="fType">Metrik ailesi</label>
+    <select id="fType">
+      <option value="">Tümü</option>
+      <option value="p">Bağlılık, memnuniyet ve bağlanma</option>
+      <option value="s">Amaç ve değerler</option>
+      <option value="c">Tutma</option>
+      <option value="r">Araç, yöntem ve kırılım</option>
+      <option value="o">Bağlam ve öngörü etkenleri</option>
+    </select></div>
+  <div><label for="fRep">Raporlama</label>
+    <select id="fRep">
+      <option value="">Tümü</option>
+      <option value="ic">İç raporlama</option>
+      <option value="dis">Dış raporlama</option>
+    </select></div>
+  <div><label for="fQ">Metrik adında ara</label>
+    <input type="text" id="fQ" placeholder="ör. tutma"></div>
+</div>
+
+<div class="count" id="mCount"></div>
+<table class="matrix">
+  <thead><tr>
+    <th>Metrik</th>
+    <th class="rot">İK / kültür</th>
+    <th class="rot">Üst yönetim</th>
+    <th class="rot">Hat yönetimi</th>
+    <th class="rot">Çalışan / temsilci</th>
+    <th class="rot">Dış paydaş</th>
+  </tr></thead>
+  <tbody id="mBody"></tbody>
+</table>
+<div class="legend">
+  <span><span class="dot p"></span> bağlılık, memnuniyet, bağlanma</span>
+  <span><span class="dot s"></span> amaç ve değerler</span>
+  <span><span class="dot c"></span> tutma</span>
+  <span><span class="dot r"></span> araç, yöntem, kırılım</span>
+  <span><span class="dot o"></span> bağlam ve öngörü</span>
+  <span><span class="tag iso">30414</span> ISO 30414'te tanımlı iki kültür metriğinden biri</span>
+  <span><span class="tag lvl">hesaplayıcı</span> bu sayfada hesaplanabilen metrik</span>
+  <span>Hesaplayıcıya bağlı metrikler <b>koyu</b> işaretlenmiştir.</span>
+</div>
+
+<h2 id="tablo">Anket Puanlama Tablosu</h2>
+<p>Ek A'daki 25 ifadelik temel anketin yanıtlarını girin: her ifade için beş seçeneğin kaç kişi tarafından işaretlendiğini yazın. Madde ortalamaları (1–5), genel kültür yüzdesi (toplam puan ÷ 125 yaklaşımının çok yanıtlıya
+genellemesi), beş boyutun puanı ve Ek A.2.4'ün önerdiği en düşük puanlı ifadeler anında güncellenir. İfade metinleri şartnamedeki 25 ifadenin özgün Türkçe karşılıklarıdır.</p>
+
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnek">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizle">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsv">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktar">Hesaplayıcıya aktar</button>
+</div>
+
+<table class="postbl">
+  <thead><tr>
+    <th>İfade</th>
+    <th class="num">Kes. katılmıyorum (1)</th><th class="num">Katılmıyorum (2)</th>
+    <th class="num">Kararsızım (3)</th><th class="num">Katılıyorum (4)</th>
+    <th class="num">Kes. katılıyorum (5)</th>
+    <th class="calc" style="width:80px">Ortalama</th>
+  </tr></thead>
+  <tbody id="pBody"></tbody>
+  <tfoot><tr>
+    <td>Toplam</td>
+    <td class="calc" id="tS1">—</td><td class="calc" id="tS2">—</td><td class="calc" id="tS3">—</td>
+    <td class="calc" id="tS4">—</td><td class="calc" id="tS5">—</td>
+    <td class="calc" id="tOrt">—</td>
+  </tr></tfoot>
+</table>
+
+<div class="cards" id="pCards"></div>
+<table id="bTbl" style="display:none">
+  <thead><tr><th>Boyut (Ek A.2.3)</th><th>İfadeler</th><th class="num">Ortalama (1–5)</th><th class="num">Puan (%)</th></tr></thead>
+  <tbody id="bBody"></tbody>
+</table>
+<div class="note" id="pNot"></div>
+
+<h2 id="formuller">Formüller ve Tanımlar</h2>
+<p>Şartname, bağlılık için ölçmenin ne olduğunu (amaç ve değerler), araçları ve soruları anlatır; tek bir bağlılık formülü yerine Ek A'daki puanlamayı (toplam puan ÷ 125) verir. Tutma oranının ayrıntılı formülü ISO/TS 30421'dedir. Aşağıdakiler,
+şartnamenin anlattığı ölçümlerin yaygın uygulama tanımlarıdır (bir bölümü doğrudan Ek A ve Tablo 2'den, kalanı türetilmiştir). Kurumunuzun yazılı tanımı bunlardan farklıysa onu kullanın.</p>
+<table>
+  <thead><tr><th>Metrik</th><th>Formül</th><th>Not</th></tr></thead>
+  <tbody id="fBody"></tbody>
+</table>
+
+<h2 id="hesaplayici">Hesaplayıcı</h2>
+<p>Metriği seçin, alanları doldurun; sonuç, formülün yerine konmuş hâli ve yorum aşağıda görünür.
+Kurulum gerekmez, veriler tarayıcıdan çıkmaz.</p>
+
+<div class="panel">
+  <h3>Örgüt Kültürü Metrik Hesaplayıcısı</h3>
+  <p class="hint">Alanlar seçtiğiniz metriğe göre değişir. Puanlar 1–5 ölçeğinde, endeksler 0–100, oranlar yüzde olarak raporlanır.</p>
+  <div class="grid">
+    <div class="field" style="grid-column:1/-1">
+      <label for="cMetric">Metrik <span class="req">*</span></label>
+      <select id="cMetric"></select>
+    </div>
+  </div>
+  <div class="grid" id="cFields" style="margin-top:14px"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="oAll"> Tümünü seç</label>
+    <label><input type="checkbox" id="oFormula" checked> Formülün açık hâli</label>
+    <label><input type="checkbox" id="oInterp" checked> Yorum ve eşik</label>
+    <label><input type="checkbox" id="oPy"> Python karşılığı</label>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-run" id="btnRun">Hesapla</button>
+    <button class="btn-ghost" id="btnExample">Örnek veriyi yükle</button>
+    <button class="btn-ghost" id="btnPy">Python motorunu yükle</button>
+    <span class="chip" id="engStatus">Motor: tarayıcı (JavaScript)</span>
+  </div>
+  <p class="hint" style="margin:14px 0 0">Python motoru seçildiğinde hesaplama, bu sayfaya gömülü
+  <code style="background:#1c2836;color:#cfe0f0">iso24178_metrikler.py</code> modülünün
+  <code style="background:#1c2836;color:#cfe0f0">hesapla()</code> fonksiyonu tarafından, tarayıcı içinde
+  çalışan gerçek bir CPython yorumlayıcısında (Pyodide/WebAssembly) yapılır. İlk yüklemede yaklaşık
+  10–12 MB indirilir; sonrası önbellekten gelir. Çevrimdışıysanız sayfa JavaScript yedeğiyle
+  aynı sonuçları vermeye devam eder.</p>
+</div>
+
+<div id="cResult"></div>
+
+<h2 id="python">Python Kod Örnekleri</h2>
+<p>Bu sayfadaki hesaplamalar JavaScript'te taklit edilmez: modülün tamamı sayfaya gömülüdür ve
+Pyodide (WebAssembly üzerinde CPython) ile tarayıcı içinde çalıştırılır. Hesaplayıcıda Python motorunu
+seçtiğinizde her sonuç <code>hesapla()</code> fonksiyonundan gelir. Aynı dosya
+(<code>iso24178_metrikler.py</code>) komut satırında da bağımsız çalışır; doğrudan çalıştırıldığında
+örnek değerlerle doğrulama çıktısı üretir.</p>
+
+<div class="filename">iso24178_metrikler.py (özet)</div>
+<pre><i># --- Anket puanlaması (Ek A) ---</i>
+
+<b>def</b> <span class="fn">madde_ortalamasi</span>(sd, d, n, a, sa):
+    <i>"""Bir ifadenin ortalama puanı (1–5)."""</i>
+    <b>return</b> (<u>1</u>*sd + <u>2</u>*d + <u>3</u>*n + <u>4</u>*a + <u>5</u>*sa) / (sd + d + n + a + sa)
+
+<b>def</b> <span class="fn">kultur_endeksi</span>(toplam_puan, yanitci, madde_sayisi=<u>25</u>):
+    <i>"""Toplam puan / (5 × madde × yanıtlayan): tek yanıtlıda 125'e bölme."""</i>
+    <b>return</b> <u>100</u> * toplam_puan / (<u>5</u> * madde_sayisi * yanitci)
+
+<b>def</b> <span class="fn">zayif_boyut</span>(ortalamalar):
+    <i>"""Beş boyuttan (amaç, değer, gerçeklik, davranış, liderlik) en düşüğü."""</i>
+    i = min(<b>range</b>(<u>5</u>), key=<b>lambda</b> k: ortalamalar[k])
+    <b>return</b> BOYUTLAR[i][<u>0</u>], ortalamalar[i]
+
+<i># --- Yanıt ve bölge raporlaması ---</i>
+
+<b>def</b> <span class="fn">yanit_orani</span>(yanit, davet):
+    <i>"""Yüksek katılım, taraflılığı azaltır (madde 4.4)."""</i>
+    <b>return</b> <u>100</u> * yanit / davet
+
+<b>def</b> <span class="fn">bolge_endeksi</span>(endeksler):
+    <i>"""Tablo 2: ortalama bağlılık endeksi, bölge değerlerinin basit ortalaması."""</i>
+    <b>return</b> <b>sum</b>(endeksler) / <b>len</b>(endeksler)
+
+<i># --- Tutma ---</i>
+
+<b>def</b> <span class="fn">tutma_orani</span>(baslangic, ayrilan):
+    <i>"""İstikrar endeksi: ayrıntılı formül ISO/TS 30421'dedir."""</i>
+    <b>return</b> <u>100</u> * (baslangic - ayrilan) / baslangic
+
+<b>def</b> <span class="fn">erken_kayip_payi</span>(deneme, ilk_iki_yil, toplam):
+    <i>"""Deneme dönemi ve ilk iki yıldaki kayıp payı (madde 5.3.3)."""</i>
+    <b>return</b> <u>100</u> * (deneme + ilk_iki_yil) / toplam
+</pre>
+
+<h3>Çalıştırılabilir konsol</h3>
+<p>Aşağıdaki kod, sayfaya gömülü modüle karşı çalışır. <b>Kodu çalıştır</b> düğmesi Python motorunu
+(yüklü değilse) indirir, modülü içe aktarır ve çıktıyı altta gösterir. Kodu serbestçe değiştirebilir,
+kendi verinizi yazabilirsiniz; her şey tarayıcıda kalır.</p>
+
+<div class="console">
+  <div class="console-bar">
+    <span>iso24178_metrikler modülüne karşı çalışır · Python 3 (Pyodide)</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button class="btn-run btn-sm" id="btnRunPy">Kodu çalıştır</button>
+      <button class="btn-ghost btn-sm" id="btnDemo" style="border-color:var(--line);color:var(--ink-soft)">Tam demoyu yükle</button>
+      <button class="btn-ghost btn-sm" id="btnReset" style="border-color:var(--line);color:var(--ink-soft)">Sıfırla</button>
+    </span>
+  </div>
+  <textarea id="pyCode" spellcheck="false"></textarea>
+  <pre id="pyOut">Çıktı burada görünecek. İlk çalıştırmada Python motoru indirilir (10–12 MB).</pre>
+</div>
+
+<details class="src"><summary>Gömülü modülün tam kaynağı (iso24178_metrikler.py)</summary>
+  <pre id="srcView">yükleniyor…</pre>
+</details>
+
+<h2 id="yorum">Sonuçların Yorumlanması</h2>
+<ul>
+  <li><b>Genel endeks yüksek ama bazı boyutlar düşükse</b> ortalama yanıltır. Beş boyutu (amaç ifadesi, değer ifadesi, amaç gerçekliği, davranışsal değerler, liderlik hizalaması) ayrı okuyun; şartname sonuçların en düşük iki ya da üç ifadeden başlayarak
+  ele alınmasını önerir.</li>
+  <li><b>Amaç ifadelerinde (1–2) düşük puan</b> net bir amaç ifadesinin yokluğuna ya da yaygınlaştırılmamasına işaret eder; 3. ifade düşükse bir değer ifadesinin geliştirilmesi düşünülmelidir. Ek A'nın verdiği örnek: 2. ifade düşük ya da karışıksa değer
+  ifadesinin daha fazla geliştirilmesi düşünülür.</li>
+  <li><b>Beyan edilen ve gerçek davranış arasında boşluk varsa</b> (değer ifadeleri yüksek, liderlik hizalaması 20–25 düşük), bağlılık ve güven düşer. Amir güveni (20) ile üst yönetim güveni (21) arasındaki fark, sorunun nerede yoğunlaştığını gösterir.</li>
+  <li><b>Düşük yanıt oranı sonucu temsil edilemez kılar.</b> Şartname dengeli ve mümkün olduğunca az taraflı sonuç için yüksek katılım ister; yanıtlamayanların hangi bölüm ya da grupta yoğunlaştığına bakın.</li>
+  <li><b>Bölgeler arası fark büyükse</b> toplam ortalama ayrımı gizler. Basit ortalama (Tablo 2) ile çalışan sayısıyla ağırlıklı ortalama arasındaki fark, büyük bölgelerin sonucu ne kadar etkilediğini gösterir.</li>
+  <li><b>Tutma oranı tek başına yeterli değildir.</b> Aynı oran farklı nedenlere işaret edebilir: deneme dönemindeki kayıp işe alım sorunlarını, ilk bir iki yıldaki kayıp beyan edilen kültürün yaşanmadığını, belirli bölümdeki düşüklük liderlik sorunlarını gösterebilir.</li>
+  <li><b>Kayıplar olumlu da olabilir.</b> İç terfi ve emeklilik kaybı grup tutma oranını düşürse de kültür sorununa işaret etmez; nedenleri ayırmadan oranı yorumlamayın.</li>
+  <li><b>Hedefi sektör kıyaslamasıyla kurun.</b> Şartname, kabul edilebilir tutma aralığını belirlemek için sektör kıyaslamasını ve işveren kuruluşları ile ticaret gruplarının bilgisini önerir; evrensel bir eşik vermez.</li>
+  <li><b>Bağlama bakmadan sonucu kötü ya da iyi ilan etmeyin.</b> Birleşme, yönetim değişikliği, ekonomik daralma, yeni BT sistemi ya da mevzuat değişikliği bağlılığı ve tutmayı etkiler; öngörülebilen olaylar için önleyici eylem planlayın.</li>
+  <li><b>Anketin değeri eyleme dönüşmesindedir.</b> Sonuçları odak grup ve çalışma gruplarıyla tartışıp kök nedenleri belirlemeden iyileştirme beklenmez.</li>
+</ul>
+
+<h2 id="sinirlamalar">Sınırlamalar</h2>
+<ul>
+  <li><b>Şartname formül ve eşik vermez, Ek A'daki puanlama dışında.</b> Bağlılık için "toplam puan ÷ 125" yaklaşımı verilir; bunun dışındaki formüller (kültür endeksi çok yanıtlı genellemesi, boyut puanı, hata payı, bölge ağırlıklı ortalaması) yaygın uygulama tanımlarıdır
+  ya da türetilmiştir. Hesaplayıcının "yorum ve eşik" satırındaki bantlar şartnameden değil, başlangıç varsayımlarından gelir; şartname yorum eşiği vermez.</li>
+  <li>Tutma oranının ayrıntılı formülü şartnamede yoktur; ISO/TS 30421'e bırakılmıştır (yayım sırasında hazırlık aşamasındaydı). Bu sayfadaki tutma oranı, dönem başı grubun dönem sonunda kalan payı olarak <b>basitleştirilmiştir</b>; bu belgenin yerini tutmaz.</li>
+  <li>Ek A'daki 25 ifade, olgunluk aşaması 1 ve 2 için <b>genel örneklerdir</b>. İfadelerin Türkçe karşılıkları özgün çevirilerdir; ölçek geçerliliği ve güvenilirliği sınanmış bir Türkçe form değildir. Anketi kendi kurumunuza uyarlarken psikometrik geçerliği ayrıca sınayın.</li>
+  <li>Boyut puanı (amaç, değer, gerçeklik, davranış, liderlik) Ek A.2.3'teki ifade gruplamasına dayanır; şartname boyutlar için ayrı bir puan ya da bileşik skor tanımlamaz. En zayıf boyut göstergesi türetilmiştir; boyutları ayrı raporlayın.</li>
+  <li>Bölge endeksi, Tablo 2'de basit ortalamadır; çalışan sayısıyla ağırlıklı ortalama türetilmiştir ve dış raporlamada hangisinin kullanıldığı yazılmalıdır.</li>
+  <li>Hata payı hesabı, yanıtların rastgele dağıldığını varsayar; gönüllü yanıt veren anketlerde yanıtlamama taraflılığı (non-response bias) bu hata payının dışındadır. Şartname bu hesabı vermez.</li>
+  <li>Kültür çok boyutlu ve öznel yönler taşır; sayı nedeni söylemez. Ek C'nin belirttiği gibi kültür metrik yaklaşımları emekleme aşamasındadır; anket tek başına kültürü tanımlamaz.</li>
+  <li>Ulusal ve kurumsal kültürler arasında "bağlılık, memnuniyet ve bağlanma" farklı anlamlar taşıyabilir. Uluslararası karşılaştırma için terminolojinin aynı çağrışımı taşıdığından emin olun; amaçla ilgili sorular bazı kültürlerde daha az uygun olabilir.</li>
+  <li>Anonimlik, katılımcıyı belirlemeye olanak veren küçük gruplarda tehlikeye girer; sonuçları çok küçük kırılımlarda raporlamayın.</li>
+  <li>Küçük gruplarda oranlar oynaktır: 10 kişilik bir bölümde tek bir kayıp, tutma oranını on puan değiştirir. Az sayıda vakada mutlak sayıları da verin.</li>
+  <li>Bu sayfadaki örnek veriler uydurmadır; gerçek bir kuruma ait değildir.</li>
+</ul>
+
+<h2 id="raporlama">Metriklerin Raporlanması</h2>
+<table>
+  <thead><tr><th>Alıcı</th><th>Ne görmek ister</th><th>Rapor biçimi</th></tr></thead>
+  <tbody>
+    <tr><td>İK ve kültür sorumluları</td>
+      <td>İfade bazında puanlar, boyut puanları, kırılımlar, yanıt oranı, tutma kırılımları ve kayıp nedenleri, bağlam notları</td>
+      <td>Analitik rapor, anket dönemi başına</td></tr>
+    <tr><td>Üst yönetim</td>
+      <td>Genel endeks ve eğilim, en zayıf boyut, en düşük iki ya da üç ifade, tutma oranı, bölge farkları</td>
+      <td>Skor kartı, dönemsel</td></tr>
+    <tr><td>Hat yöneticileri ve liderler</td>
+      <td>Kendi bölümlerinin sonuçları, 360° geri bildirim, tutma oranı ve ayrılış nedenleri</td>
+      <td>Birim panosu, anket dönemi başına</td></tr>
+    <tr><td>Çalışanlar ve temsilcileri</td>
+      <td>Genel sonuçlar, ifade bazında bulgular, anketten doğan eylem planı</td>
+      <td>Geri bildirim toplantısı (town hall), odak grup</td></tr>
+    <tr><td>Dış paydaş (düzenleyici, yatırımcı)</td>
+      <td>Karşılaştırılabilir bağlılık endeksi ve tutma oranı, yöntem dipnotu (araç, yanıt oranı, ölçek, bağlam)</td>
+      <td>Faaliyet ve sürdürülebilirlik raporu, yıllık</td></tr>
+  </tbody>
+</table>
+<p><b>Her raporda bulunması gerekenler:</b> kullanılan araç ve ölçek, yanıt oranı, işgücü kategorilerinin tanımı, kırılım düzeyi, dönem, kültürel olgunluk aşaması, bağlam etkenleri (birleşme, yönetim değişikliği, ekonomik koşullar) ve karşılaştırma tabanı.
+Şartname, dış paydaşlara raporlarken kültür verisinin dikkatle yorumlanmasını ister; sonucu bağlamıyla sunun.</p>
+
+<h2 id="ilgili">İlgili Standartlar</h2>
+<ul>
+  <li><b>ISO 30414</b> — iç ve dış insan sermayesi raporlaması. Bu şartnamedeki iki metriğin (bağlılık, memnuniyet ve bağlanma; tutma oranı) tanımı oradan gelir; örgüt kültürü ISO 30414'ün 11 çekirdek raporlama alanından biridir.</li>
+  <li><b>ISO 30408</b> — insan yönetişimi rehberi; insan sermayesini optimize etmek için gereken İK yönetiminin genişliğini tanımlar.</li>
+  <li><b>ISO/TS 30421</b> — devir ve tutma metrikleri; tutma oranı ve devrin ayrıntılı yöntemi buradadır.</li>
+  <li><b>ISO 30400</b> — insan kaynakları yönetimi terimler sözlüğü; şartnamenin terimleri oradan gelir.</li>
+  <li><b>ISO 10018</b> — bağlılığın tanımı (insanların kurumun faaliyetlerine tam katıldığı ve daha fazla kişisel doyum yaşadığı durum).</li>
+  <li><b>ISO 56000</b> — yenilik yönetimi: temel ilkeler ve sözlük; bağlılık tanımıyla birlikte anılır.</li>
+  <li><b>BM Sürdürülebilir Kalkınma Amaçları (17 amaç)</b> — örgüt kültürünün toplumsal hedeflerin evriminden nasıl etkilenebileceğinin örneği.</li>
+</ul>
+
+<h2 id="sss">Sıkça Sorulan Sorular</h2>
+<details><summary>Bağlılık, memnuniyet ve bağlanma aynı şey mi?</summary>
+<p>Şartname üçünü, insan sermayesinin kurumda ne ölçüde en uygun potansiyelinde çalıştığını değerlendirmek için kullanılan terminolojinin parçaları olarak ele alır ve bunların farklı ülke ve kültürlerde farklı anlamlar taşıyabildiğini vurgular. Bu yüzden uluslararası bağlam ve karşılaştırılabilirlik
+önemlidir. Pratikte kurumunuzda hangi terimle neyi ölçtüğünüzü yazılı tanımlayın ve tüm ülkelerde aynı çağrışımı taşıyan terminoloji kullanın.</p></details>
+
+<details><summary>Ek A'daki 25 ifade bütün kurumlar için mi?</summary>
+<p>Hayır. Bunlar, amaç ve değerleri henüz geliştirilmemiş ya da yaygınlaştırılmamış kurumlar (olgunluk aşaması 1 ve 2) için genel ifadelerdir. Kurum kültürünü stratejinin bir unsuru olarak geliştirip aşama 3 ya da 4'e ilerledikçe ifadeler istenen ve beyan edilen davranış ve değerlere göre
+şekillenir. Geliştiriciler kendi ifadelerini yazmakta serbesttir, ancak ilk aşamalarda ifadelerin beş yönü (amaç ifadesi, değer ifadesi, amaç gerçekliği, davranışsal değerler, liderlik hizalaması) kapsaması önemlidir.</p></details>
+
+<details><summary>Anket sonuçlarıyla ne yapmalıyım?</summary>
+<p>En düşük puanlı iki ya da üç ifadeye odaklanın. Sonuçları odak grup, kent toplantısı ve çalışma grupları gibi yaklaşımlarla çalışanlarla tartışın; altta yatan kök nedenleri belirleyin ve çalışanların gördüğü sorunları iyileştirecek girişimler başlatın. Şartname, anketin değerinin ancak sorunları keşfetmek için kullanılıp
+sonra bunları anlamak, iyileştirmek ya da çözmek için eyleme geçildiğinde ortaya çıktığını söyler.</p></details>
+
+<details><summary>Anketi yapamıyorsam ne yapabilirim?</summary>
+<p>Şartname, kurumların çalışan anketi yapamadığı durumlarda diğer sistematik değerlendirmelerin kullanılabileceğini söyler. Odak grup sonuçları, müşteri girdisi (hizmet kuruluşlarında) ve 360° anketler diğer araçlardır. Hangi araç olursa olsun, çalışanların anonimliği güvence altına alınmalıdır.</p></details>
+
+<details><summary>Tutma oranını nasıl yorumlamalıyım?</summary>
+<p>Genel oranı hem alt kırılımlar (ülke, şirket, bölüm, departman, iş kategorisi, hizmet yılı) hem de kayıp nedenleriyle birlikte okuyun. Deneme ya da eğitim döneminde kayıp işe alım sorunlarına, deneme sonrası bir ila iki yıl içindeki kayıp beyan edilen kültürün yaşanmadığına işaret edebilir. Belirli bölümlerde düşük tutma, o alanlardaki olası liderlik sorunlarına işaret edebilir.
+Kabul edilebilir aralığı sektör kıyaslaması ve ticaret gruplarının bilgisiyle belirleyin.</p></details>
+
+<details><summary>Tutma oranı yüksek olmak her zaman iyi midir?</summary>
+<p>Hayır. Şartname, kişisel ya da kariyer gelişimi nedenleriyle bir miktar devir ve çalışan kaybının kaçınılmaz olduğunu belirtir; tutmadaki değişiklikler kabul edilebilir kontrollü bir aralıkta kalmalıdır. Aralık, sektörün durumu, ekonomik ortam, ücret aralığı ve kurumun istikrarı gibi
+bağlam etkenleriyle birlikte okunur. Çok yüksek tutma da (örneğin hareketsizlik) sorgulanabilir; bunun için standart bir eşik yoktur.</p></details>
+
+<details><summary>Dış kaynaklı ve sözleşmeli çalışanlar kültür ölçümüne dahil mi?</summary>
+<p>İşgücü, kalıcı çalışanlar, gündelik çalışanlar, koşullu işgücü ve kurumun yönetişim ve liderlik yapısı içine giren tüm çalışanları kapsar; mümkün olduğunda işgücü türüne göre kırılım yapılmalıdır. Tedarikçi, dağıtıcı ya da diğer üçüncü taraf sözleşmeli kurumun parçası olan kişilerin kültürü,
+tedarik zinciri ve/veya tedarikçi performans değerlendirmesinin parçası olarak değerlendirilebilir; bu raporlama şartnamenin kapsamı dışındadır. Her kurum işçi kategorilerini belgelemeli ve düzenli güncellemelidir.</p></details>
+
+<details><summary>Kültürü neden finansal metriklerle ölçemiyoruz?</summary>
+<p>Ek C'ye göre kurumsal etkililik büyük ölçüde finansal metriklere dayanmaya devam eder ve insan sermayesinin etkililiği çoğunlukla belirgin değildir. Kültür bütüncüldür, hem nesnel ölçülebilen süreç yönlerini (süre, uyum, maliyet) hem çok daha öznel davranışı içerir ve zaman içinde evrilir.
+Bu yüzden hem nesnel hem öznel yaklaşımlar, hızlı geri bildirim sistemleri, anlık ölçümler ve eğilimlerin birlikte kullanılması gerekir. Şartname, etkili ve kabul görmüş kültür metriği yaklaşımlarının henüz emekleme aşamasında olduğunu belirtir.</p></details>
+
+<footer>
+  ISO/TS 24178:2021 çerçevesinden üretilmiş çalışma aracı. Metrik adları, anket yapısı ve sınıflandırma şartnameye dayanır; açıklamalar, madde metinlerinin Türkçe karşılıkları, formüller, örnek değerler ve kod özgün olarak yazılmıştır.
+  Şartnamenin kendisi telif korumalıdır ve bu sayfa onun yerine geçmez.
+</footer>
+
+</div>
+<script type="text/x-python" id="pysrc">
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+iso24178_metrikler.py
+=====================
+ISO/TS 24178:2021 (Human resource management — Organizational culture
+metrics cluster) çerçevesindeki örgüt kültürü metriklerinin Python karşılığı.
+
+Teknik şartname, ISO 30414'ün "örgüt kültürü" kümesindeki iki metriği ele
+alır: bağlılık, memnuniyet ve bağlanma ile tutma oranı. Her metrik için
+genel tanım, amaç, formül, bağlam etkenleri ve öngörü etkenlerini anlatır.
+Bağlılık için Ek A'da 25 maddelik bir temel anket ve puanlama örneği
+verir (beşli ölçek, toplam puan 125'e bölünür). Tutma oranının ayrıntılı
+formülü ISO/TS 30421'e bırakılmıştır. Bu modüldeki formüller, şartnamenin
+anlattığı ölçümlerin yaygın uygulama tanımlarıdır ve kurumunuzun kendi
+tanımıyla uyarlanmalıdır. Modül dört bölümden oluşur:
+
+    1) Anket puanlaması — madde puanı, kültür endeksi, boyut puanları
+    2) Yanıt ve bölge raporlaması — yanıt oranı, bölge endeksi (Tablo 2)
+    3) Tutma — tutma oranı ve kayıp nedeni dağılımı
+    4) Yardımcı yapılar — anket tablosu, kültür denetimi, dağıtıcı
+
+Kullanım:
+    from iso24178_metrikler import madde_ortalamasi, kultur_endeksi
+    madde_ortalamasi(6, 20, 48, 84, 42)   ->  3.68
+    kultur_endeksi(18000, 200)            ->  72.0
+
+Doğrudan çalıştırıldığında (python3 iso24178_metrikler.py) tüm fonksiyonlar
+örnek verilerle çalıştırılır ve sonuçlar tablo hâlinde yazdırılır.
+
+Not: Metrik adları, ölçek ve anket yapısı ISO/TS 24178:2021'e dayanır. Kod,
+madde metinlerinin Türkçe karşılıkları, açıklamalar ve örnek değerler özgün
+olarak yazılmıştır; şartnamenin kendisi telif korumalıdır.
+"""
+
+from __future__ import annotations
+
+import math
+from dataclasses import dataclass, field
+
+__all__ = [
+    "GecersizGirdi",
+    # anket puanlaması
+    "madde_ortalamasi", "olumlu_orani", "kultur_endeksi", "boyut_puani", "zayif_boyut",
+    # yanıt ve bölge raporlaması
+    "yanit_orani", "hata_payi", "bolge_endeksi", "agirlikli_bolge_endeksi",
+    # tutma
+    "tutma_orani", "erken_kayip_payi",
+    # yardımcı
+    "MADDELER", "BOYUTLAR", "AnketTablosu", "ornek_tablo", "kultur_denetimi",
+    "hesapla", "METRIK_LISTESI",
+]
+
+
+class GecersizGirdi(ValueError):
+    """Girdiler tutarsız: payda sıfır, parça bütünden büyük vb."""
+
+
+def _bol(pay: float, payda: float, ad: str = "payda") -> float:
+    if payda <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return pay / payda
+
+
+def _oran(parca: float, butun: float, ad: str = "parça") -> float:
+    """Yüzde olarak parça / bütün; parça bütünden büyük olamaz."""
+    if butun <= 0:
+        raise GecersizGirdi("bütün sıfırdan büyük olmalı")
+    if parca < 0 or parca > butun:
+        raise GecersizGirdi(f"{ad} 0 ile bütün arasında olmalı")
+    return 100 * parca / butun
+
+
+# ---------------------------------------------------------------------------
+# 1) Anket puanlaması (Ek A)
+# ---------------------------------------------------------------------------
+
+# Ek A: kesinlikle katılmıyorum = 1 ... kesinlikle katılıyorum = 5
+SECENEKLER = ("Kesinlikle katılmıyorum", "Katılmıyorum", "Ne katılıyorum ne katılmıyorum",
+              "Katılıyorum", "Kesinlikle katılıyorum")
+
+# Ek A'daki 25 temel kültür ifadesinin özgün Türkçe karşılıkları
+MADDELER = [
+    "Kurumumuzun net bir amacı var.",
+    "İşimin bu amaca nasıl hizmet ettiğini anlıyorum.",
+    "Şirketimizin net davranışsal değerleri var.",
+    "Çalışmam karşılığında adil ücret alıyorum.",
+    "İşim için net bir yönlendirme alıyorum.",
+    "İşimi yapmak için gereken araç ve ekipmana sahibim.",
+    "İş yükleri genellikle makul.",
+    "Beyan edilen değerlerimiz karar vermeye yön veriyor.",
+    "Katkım için değer görüyorum.",
+    "İşimi yapacağıma güveniliyor.",
+    "Kurum içi iletişim etkili.",
+    "İşbirliği destekleniyor.",
+    "Kurum bana adil davranıyor.",
+    "Çalışan önerileri teşvik ediliyor.",
+    "Çalışan önerileri uygulanıyor.",
+    "Kurumumuzda insanlar iş birliği yapıyor.",
+    "İnsanlar birbirine yardım etmeye istekli.",
+    "İnsanların gelişme fırsatı var.",
+    "Öğrenme ve gelişim teşvik ediliyor.",
+    "Amirime güveniyorum.",
+    "Üst düzey kurumsal liderliğe güveniyorum.",
+    "Bu kurum etik davranıyor.",
+    "Çalışanlar iyi işleri için takdir ediliyor.",
+    "İş yerimizde stres iyi yönetiliyor.",
+    "Kurumumuz toplumsal olarak sorumlu.",
+]
+
+# (boyut adı, ilk madde, son madde) — Ek A.2.3'teki eşleme
+BOYUTLAR = [
+    ("Amaç ifadesinin varlığı", 1, 2),
+    ("Değer ifadesinin varlığı", 3, 3),
+    ("Amaç: çalışanın gerçekliği", 4, 7),
+    ("Davranışsal değerler", 8, 19),
+    ("Liderlik hizalaması", 20, 25),
+]
+
+
+def madde_ortalamasi(kes_katilmiyor: float, katilmiyor: float, kararsiz: float,
+                     katiliyor: float, kes_katiliyor: float) -> float:
+    """Bir ifadenin ortalama puanı (1–5): puan × yanıt sayısı toplamı / yanıtlayan."""
+    sayilar = (kes_katilmiyor, katilmiyor, kararsiz, katiliyor, kes_katiliyor)
+    if min(sayilar) < 0:
+        raise GecersizGirdi("yanıt sayıları negatif olamaz")
+    n = sum(sayilar)
+    if n <= 0:
+        raise GecersizGirdi("yanıtlayan sayısı sıfırdan büyük olmalı")
+    return sum((i + 1) * s for i, s in enumerate(sayilar)) / n
+
+
+def olumlu_orani(katiliyor: float, kes_katiliyor: float, toplam: float) -> float:
+    """Olumlu yanıt (katılıyorum + kesinlikle katılıyorum) oranı (%)."""
+    return _oran(katiliyor + kes_katiliyor, toplam, "olumlu yanıt")
+
+
+def kultur_endeksi(toplam_puan: float, yanitci: float, madde_sayisi: int = 25) -> float:
+    """Genel kültür yüzdesi = toplam puan / (5 × madde sayısı × yanıtlayan) × 100.
+
+    Ek A: her ifade puanlanır ve toplam puan 125'e bölünerek genel yüzde sonuç
+    elde edilir (25 madde × en fazla 5 puan). Çok yanıtlayanlı veride payda,
+    yanıtlayan sayısıyla çarpılır.
+    """
+    if madde_sayisi <= 0 or yanitci <= 0:
+        raise GecersizGirdi("madde ve yanıtlayan sayısı sıfırdan büyük olmalı")
+    azami = 5 * madde_sayisi * yanitci
+    en_az = madde_sayisi * yanitci
+    if toplam_puan < en_az or toplam_puan > azami:
+        raise GecersizGirdi("toplam puan olası aralığın dışında")
+    return 100 * toplam_puan / azami
+
+
+def boyut_puani(ortalamalar: list) -> list:
+    """Beş boyutun puanını (%) verir: ortalama / 5 × 100 (ortalamalar 1–5)."""
+    if len(ortalamalar) != 5:
+        raise GecersizGirdi("beş boyut ortalaması gerekir")
+    for o in ortalamalar:
+        if not (1 <= o <= 5):
+            raise GecersizGirdi("boyut ortalaması 1 ile 5 arasında olmalı")
+    return [100 * o / 5 for o in ortalamalar]
+
+
+def zayif_boyut(ortalamalar: list) -> tuple:
+    """En düşük puanlı boyut (ad, ortalama). Eşitlikte ilki seçilir."""
+    boyut_puani(ortalamalar)
+    i = min(range(5), key=lambda k: ortalamalar[k])
+    return BOYUTLAR[i][0], ortalamalar[i]
+
+
+# ---------------------------------------------------------------------------
+# 2) Yanıt ve bölge raporlaması (madde 4.3.2, 4.4, Tablo 2)
+# ---------------------------------------------------------------------------
+
+def yanit_orani(yanit: float, davet: float) -> float:
+    """Anket yanıt oranı (%). Şartname, taraflılığı azaltmak için yüksek katılım ister (4.4)."""
+    return _oran(yanit, davet, "yanıt")
+
+
+def hata_payi(yanit: float, davet: float) -> float:
+    """Bir yüzde tahmininde en kötü durum hata payı (± puan, %95 güven).
+
+    1,96 × √(0,25 / n × (N − n) / (N − 1)) × 100; sonlu kitle düzeltmesiyle.
+    Şartname bu hesabı vermez; türetilmiştir ve yanıtların rastgele
+    dağıldığını varsayar.
+    """
+    if davet <= 1 or yanit < 1 or yanit > davet:
+        raise GecersizGirdi("davet 1'den büyük, yanıt 1 ile davet arasında olmalı")
+    return 196 * math.sqrt(0.25 / yanit * (davet - yanit) / (davet - 1))
+
+
+def bolge_endeksi(endeksler: list) -> float:
+    """Bölge endekslerinin basit ortalaması (Tablo 2'deki "ortalama bağlılık endeksi")."""
+    if not endeksler:
+        raise GecersizGirdi("en az bir endeks gerekir")
+    for e in endeksler:
+        if not (0 <= e <= 100):
+            raise GecersizGirdi("endeks 0 ile 100 arasında olmalı")
+    return sum(endeksler) / len(endeksler)
+
+
+def agirlikli_bolge_endeksi(endeksler: list, calisanlar: list) -> float:
+    """Çalışan sayısıyla ağırlıklı bölge endeksi ortalaması (türetilmiş)."""
+    if len(endeksler) != len(calisanlar) or min(calisanlar) < 0 or sum(calisanlar) <= 0:
+        raise GecersizGirdi("çalışan sayıları geçersiz")
+    return sum(e * c for e, c in zip(endeksler, calisanlar)) / sum(calisanlar)
+
+
+# ---------------------------------------------------------------------------
+# 3) Tutma (madde 5)
+# ---------------------------------------------------------------------------
+
+def tutma_orani(baslangic: float, ayrilan: float) -> float:
+    """Tutma oranı (%) = (dönem başı çalışan − aynı gruptan ayrılan) / dönem başı × 100.
+
+    Şartname, tutma oranını "istikrar endeksi" olarak anar ve ayrıntılı
+    formülünü ISO/TS 30421'e bırakır; bu tanım basitleştirilmiştir.
+    """
+    return 100 - _oran(ayrilan, baslangic, "ayrılan")
+
+
+def erken_kayip_payi(deneme: float, ilk_iki_yil: float, toplam: float) -> float:
+    """Kayıpların deneme/eğitim dönemi ve ilk iki yıldaki payı (%).
+
+    Şartname (5.3.3): deneme ya da eğitim döneminde kayıp olası bir işe alım
+    sorununa; deneme sonrası ama bir ila iki yıl içindeki kayıp, beyan edilen
+    kültürün yaşanmadığına işaret edebilir.
+    """
+    return _oran(deneme + ilk_iki_yil, toplam, "erken kayıp")
+
+
+# ---------------------------------------------------------------------------
+# 4) Yardımcı yapılar: anket tablosu
+# ---------------------------------------------------------------------------
+
+@dataclass
+class AnketTablosu:
+    """Her ifade için beş seçeneğin yanıt sayıları (SD, D, N, A, SA)."""
+    sayilar: list = field(default_factory=list)
+
+    def ekle(self, sayilar) -> "AnketTablosu":
+        self.sayilar.append(list(sayilar))
+        return self
+
+    @property
+    def ortalamalar(self) -> list:
+        return [madde_ortalamasi(*s) for s in self.sayilar]
+
+    def ozet(self) -> dict:
+        ort = self.ortalamalar
+        toplam_puan = sum((i + 1) * c for s in self.sayilar for i, c in enumerate(s))
+        yanit = sum(sum(s) for s in self.sayilar)
+        boyutlar = []
+        for ad, ilk, son in BOYUTLAR:
+            dilim = ort[ilk - 1:son]
+            boyutlar.append((ad, round(sum(dilim) / len(dilim), 2)))
+        en_dusuk = sorted(range(len(ort)), key=lambda i: ort[i])[:3]
+        return {
+            "madde_sayisi": len(ort),
+            "genel_endeks": round(100 * toplam_puan / (5 * yanit), 1),
+            "olumlu_orani": round(100 * sum(s[3] + s[4] for s in self.sayilar) / yanit, 1),
+            "boyutlar": boyutlar,
+            "en_zayif_boyut": min(boyutlar, key=lambda b: b[1]),
+            "en_dusuk_uc_madde": [(i + 1, round(ort[i], 2)) for i in en_dusuk],
+        }
+
+
+ORNEK_SAYILAR = [
+    [0, 6, 44, 93, 57],
+    [1, 10, 55, 91, 43],
+    [1, 19, 72, 81, 27],
+    [3, 32, 84, 66, 15],
+    [1, 12, 61, 89, 37],
+    [1, 10, 55, 91, 43],
+    [8, 48, 89, 48, 7],
+    [4, 37, 87, 60, 12],
+    [1, 15, 67, 85, 32],
+    [0, 8, 50, 92, 50],
+    [4, 37, 87, 60, 12],
+    [1, 12, 61, 89, 37],
+    [2, 22, 77, 77, 22],
+    [1, 19, 72, 81, 27],
+    [15, 66, 84, 32, 3],
+    [0, 8, 50, 92, 50],
+    [0, 6, 44, 93, 57],
+    [1, 15, 67, 85, 32],
+    [3, 27, 81, 71, 18],
+    [1, 10, 55, 91, 43],
+    [6, 42, 88, 54, 10],
+    [1, 12, 61, 89, 37],
+    [3, 32, 84, 66, 15],
+    [10, 54, 88, 42, 6],
+    [1, 15, 67, 85, 32]
+]
+
+
+def ornek_tablo() -> AnketTablosu:
+    """25 ifadelik, 200 yanıtlı örnek anket (uydurma veri)."""
+    t = AnketTablosu()
+    for s in ORNEK_SAYILAR:
+        t.ekle(s)
+    return t
+
+
+def kultur_denetimi(amac_ifadesi: bool = False,
+                    deger_ifadesi: bool = False,
+                    olgunluk_belirlendi: bool = False,
+                    anonimlik_guvencesi: bool = False,
+                    yuksek_katilim: bool = False,
+                    kirilimlar_tanimli: bool = False,
+                    sonuclar_tartisildi: bool = False,
+                    tutma_kok_neden: bool = False) -> list:
+    """Bir kültür ölçüm sisteminin, şartnamenin beklentilerine göre eksiklerini sıralar.
+
+    Maddeler ISO/TS 24178'in giriş, 4.3, 4.4, 5.3 ve Ek A bölümlerinden
+    türetilmiştir; bir uygunluk sınaması değil, hazırlık kontrol listesidir.
+    """
+    kontroller = [
+        (amac_ifadesi, "Kurumun net bir amaç (misyon/vizyon) ifadesi yok: amaç soruları çalışanın gerçekliğini ölçemez (4.3.1)."),
+        (deger_ifadesi, "Davranışı yönlendiren değerler yazılı ve duyurulmuş değil: değer sorularının dayanağı yok (4.3.1)."),
+        (olgunluk_belirlendi, "Kültürel olgunluk aşaması (1–4) belirlenmemiş; soruların derinliği buna göre seçilmeli (Tablo 1)."),
+        (anonimlik_guvencesi, "Kullanılan aracın çalışanların anonimliğini güvence altına aldığı belgelenmemiş (4.3.2)."),
+        (yuksek_katilim, "Dengeli ve en az taraflı sonuç için yüksek katılım oranı hedeflenmiyor (4.4)."),
+        (kirilimlar_tanimli, "Kırılımlar (bölüm, konum, işgücü kategorisi, düzey, işlev, kıdem) tanımlanmamış (Giriş)."),
+        (sonuclar_tartisildi, "Sonuçlar odak grup ve toplantılarla çalışanlarla tartışılıp kök nedene inilmiyor (A.2.4)."),
+        (tutma_kok_neden, "Tutma oranı kırılımları ve kayıp nedenleri (deneme dönemi, kıdem, gerekçeli fesih) çözümlenmiyor (5.3)."),
+    ]
+    return [metin for tamam, metin in kontroller if not tamam]
+
+
+# ---------------------------------------------------------------------------
+# 5) Dağıtıcı: hesaplayıcı arayüzünün kullandığı tek giriş noktası
+# ---------------------------------------------------------------------------
+
+METRIK_LISTESI = [
+    "kultur_endeksi", "madde_puani", "boyut", "katilim", "bolge_endeks",
+    "tutma_orani", "kayip_nedeni",
+]
+
+
+def _g(x) -> str:
+    """Sayıyı, bilimsel gösterim kullanmadan en kısa biçimde yazar."""
+    return f"{x:.12g}"
+
+
+def hesapla(metrik: str, **g) -> dict:
+    """Metrik kimliği ve girdilerle hesabı yapar; sözlük döndürür.
+
+    Dönen anahtarlar: deger, ifade (formülün yerine konmuş hâli), ondalik,
+    birim, ayrinti (etiket–değer çiftleri).
+    """
+    if metrik == "kultur_endeksi":
+        d = kultur_endeksi(g["toplam_puan"], g["yanitci"], g["madde_sayisi"])
+        ort = g["toplam_puan"] / (g["madde_sayisi"] * g["yanitci"])
+        return {"deger": d, "ondalik": 1, "birim": "% kültür endeksi",
+                "ifade": f"{_g(g['toplam_puan'])} ÷ (5 × {_g(g['madde_sayisi'])} × {_g(g['yanitci'])}) × 100",
+                "ayrinti": [["Madde başına ortalama puan (1–5)", round(ort, 2)],
+                            ["Azami puan", 5 * g["madde_sayisi"] * g["yanitci"]],
+                            ["Tarafsız düzeye (3 puan) göre fark (puan)", round(ort - 3, 2)]]}
+
+    if metrik == "madde_puani":
+        sayilar = (g["kes_katilmiyor"], g["katilmiyor"], g["kararsiz"], g["katiliyor"], g["kes_katiliyor"])
+        d = madde_ortalamasi(*sayilar)
+        n = sum(sayilar)
+        return {"deger": d, "ondalik": 2, "birim": "puan (1–5)",
+                "ifade": "(" + " + ".join(f"{i + 1}×{_g(s)}" for i, s in enumerate(sayilar)) + f") ÷ {_g(n)}",
+                "ayrinti": [["Yanıtlayan", n],
+                            ["Olumlu yanıt oranı (%)", round(olumlu_orani(g["katiliyor"], g["kes_katiliyor"], n), 1)],
+                            ["Olumsuz yanıt oranı (%)", round(100 * (g["kes_katilmiyor"] + g["katilmiyor"]) / n, 1)],
+                            ["Ölçek yüzdesi (%)", round(100 * d / 5, 1)]]}
+
+    if metrik == "boyut":
+        ort = [g["amac_var"], g["deger_var"], g["amac_gerceklik"], g["deger_davranis"], g["liderlik"]]
+        ad, d = zayif_boyut(ort)
+        return {"deger": 100 * d / 5, "ondalik": 1, "birim": "% (en zayıf boyut)",
+                "ifade": "min(" + ", ".join(_g(x) for x in ort) + ") ÷ 5 × 100",
+                "ayrinti": [["En zayıf boyut", ad],
+                            ["Beş boyutun ortalaması (%)", round(100 * sum(ort) / 25, 1)],
+                            ["En güçlü ile en zayıf arasındaki fark (puan, 1–5)", round(max(ort) - d, 2)]]}
+
+    if metrik == "katilim":
+        d = yanit_orani(g["yanit"], g["davet"])
+        return {"deger": d, "ondalik": 1, "birim": "% yanıt oranı",
+                "ifade": f"({_g(g['yanit'])} ÷ {_g(g['davet'])}) × 100",
+                "ayrinti": [["Yanıtlamayan", g["davet"] - g["yanit"]],
+                            ["Yanıtlamayanların payı (%)", round(100 - d, 1)],
+                            ["Oran tahmininde en kötü durum hata payı (± puan, %95 güven)",
+                             round(hata_payi(g["yanit"], g["davet"]), 1)]]}
+
+    if metrik == "bolge_endeks":
+        e = [g["endeks_1"], g["endeks_2"], g["endeks_3"]]
+        c = [g["calisan_1"], g["calisan_2"], g["calisan_3"]]
+        d = bolge_endeksi(e)
+        if min(c) < 0 or sum(c) <= 0:
+            raise GecersizGirdi("çalışan sayıları geçersiz")
+        w = sum(x * y for x, y in zip(e, c)) / sum(c)
+        return {"deger": d, "ondalik": 1, "birim": "endeks (0–100, basit ortalama)",
+                "ifade": "(" + " + ".join(_g(x) for x in e) + ") ÷ 3",
+                "ayrinti": [["Çalışan sayısıyla ağırlıklı ortalama", round(w, 1)],
+                            ["En yüksek ile en düşük bölge farkı (puan)", round(max(e) - min(e), 1)],
+                            ["Ağırlıklı ile basit ortalama farkı (puan)", round(w - d, 1)]]}
+
+    if metrik == "tutma_orani":
+        d = tutma_orani(g["baslangic"], g["ayrilan"])
+        return {"deger": d, "ondalik": 1, "birim": "% tutma oranı",
+                "ifade": f"(({_g(g['baslangic'])} − {_g(g['ayrilan'])}) ÷ {_g(g['baslangic'])}) × 100",
+                "ayrinti": [["Dönem sonunda kalan", g["baslangic"] - g["ayrilan"]],
+                            ["Ayrılış oranı (%)", round(100 - d, 1)]]}
+
+    if metrik == "kayip_nedeni":
+        kalemler = [g["deneme"], g["ilk_iki_yil"], g["gerekceli_fesih"], g["diger_gonullu"], g["emeklilik"]]
+        if min(kalemler) < 0:
+            raise GecersizGirdi("kayıp kalemleri negatif olamaz")
+        t = sum(kalemler)
+        d = erken_kayip_payi(g["deneme"], g["ilk_iki_yil"], t)
+        return {"deger": d, "ondalik": 1, "birim": "% erken kayıp",
+                "ifade": f"(({_g(g['deneme'])} + {_g(g['ilk_iki_yil'])}) ÷ {_g(t)}) × 100",
+                "ayrinti": [["Toplam kayıp", t],
+                            ["Deneme ve eğitim dönemi payı (%)", round(100 * g["deneme"] / t, 1)],
+                            ["İlk iki yıl payı (%)", round(100 * g["ilk_iki_yil"] / t, 1)],
+                            ["Emeklilik payı (%)", round(100 * g["emeklilik"] / t, 1)]]}
+
+    raise ValueError(f"Bilinmeyen metrik: {metrik}")
+
+
+# ---------------------------------------------------------------------------
+# 6) Doğrulama çıktısı
+# ---------------------------------------------------------------------------
+
+def _demo() -> None:
+    cizgi = "-" * 64
+    print("ISO/TS 24178 — doğrulama çıktısı")
+    print(cizgi)
+
+    t = ornek_tablo()
+    ort = t.ortalamalar
+    print("25 ifadelik temel kültür anketi (200 yanıt; uydurma örnek veri)")
+    print(f"{'No':<4}{'İfade':<54}{'Ort.':>6}")
+    for i, (m, o) in enumerate(zip(MADDELER, ort), 1):
+        print(f"{i:<4}{m[:52]:<54}{o:>6.2f}")
+    print(cizgi)
+    for anahtar, deger in t.ozet().items():
+        print(f"{anahtar:<20}: {deger}")
+    print(cizgi)
+
+    print(f"Yanıt oranı              : {yanit_orani(200, 240):.1f} %"
+          f" (± {hata_payi(200, 240):.1f} puan)")
+    print(f"Bölge endeksi (Tablo 2)  : {bolge_endeksi([84, 86, 81]):.1f}"
+          f" (ağırlıklı {sum(x*y for x, y in zip([84,86,81],[300,500,400]))/1200:.1f})")
+    print(f"Tutma oranı              : {tutma_orani(500, 62):.1f} %")
+    print(f"Erken kayıp payı         : {erken_kayip_payi(9, 21, 62):.1f} %")
+    print(cizgi)
+
+    print("Dağıtıcı örneği:")
+    print(hesapla("kultur_endeksi", toplam_puan=18000, yanitci=200, madde_sayisi=25))
+    print(cizgi)
+
+    print("Ölçüm sistemi denetimi (hiçbir ön koşulu sağlamayan bir kurum için):")
+    for u in kultur_denetimi():
+        print(" !", u)
+
+
+if __name__ == "__main__":
+    _demo()
+</script>
+<script>
+/* =========================================================
+   1) METRİK VERİ TABANI
+   u: kullanıcılar (hr İK ve kültür sorumluları / exec üst yönetim / line hat yöneticileri ve liderler /
+      wrk çalışanlar ve temsilcileri / ext dış paydaş)
+   st: süreç aşaması (tanim, arac, tutma, baglam, ek)
+   r: raporlama (ic, dis)
+   t: aile (p bağlılık, memnuniyet ve bağlanma / s amaç ve değerler / c tutma /
+            r araç, yöntem ve kırılım / o bağlam ve öngörü etkenleri)
+   calc: bu sayfadaki hesaplayıcı kimliği
+   iso: ISO 30414'te tanımlı iki kültür metriğinden biri
+   k: ek etiket (ctx bağlam etkeni, onk ön koşul, tur türetilmiş)
+   ========================================================= */
+var METRICS = [
+ {g:"Bağlılık, memnuniyet ve bağlanma", t:"p", items:[
+  {n:"Bağlılık, memnuniyet ve bağlanma endeksi (0–100 ya da yüzde)", st:"arac", r:["ic","dis"], iso:1, calc:"kultur_endeksi", d:"Çalışan anketinden üretilen genel endeks; Ek A'da toplam puan ÷ 125 (madde 4.3.2, Tablo 2)", u:["hr","exec","line","wrk","ext"]},
+  {n:"Bölge, bölüm ve yıl bazında endeks raporu", st:"arac", r:["ic","dis"], iso:1, calc:"bolge_endeks", d:"Tablo 2 örneği: Avrupa, Asya/Pasifik, Kuzey Amerika; ortalama bağlılık endeksi", u:["hr","exec","ext"]},
+  {n:"İfade bazında ortalama puan (1–5)", st:"ek", r:["ic"], calc:"madde_puani", d:"Her ifadenin beşli ölçekteki puanı; en düşük iki ya da üç ifade önceliklidir (Ek A.2.4)", u:["hr","exec","line","wrk"]},
+  {n:"Genel işgücü memnuniyeti göstergeleri", st:"tanim", r:["ic"], d:"Olgunluk aşaması 1: genel memnuniyet göstergelerine dayalı sorular (Tablo 1)", u:["hr","exec","wrk"]},
+  {n:"Beklenen kültüre karşı gerçek performans", st:"tanim", r:["ic"], d:"Aşama 2: geleneksel memnuniyet göstergeleri ile istenen kültüre karşı gerçeklik karışımı (Tablo 1)", u:["hr","exec","line"]},
+  {n:"Ücret, teşvik, prim ve yan haklardan memnuniyet", st:"arac", r:["ic"], d:"Motivasyon bakımından sınırlı, olumsuz tutum bakımından etkili olabilir (4.3.3)", u:["hr","exec","wrk"]},
+  {n:"Odak grup sonuçları", st:"arac", r:["ic"], d:"Etkili ve etkisiz motivasyon etkenlerini belirlemenin temeli (4.3.2)", u:["hr","line","wrk"]},
+  {n:"Müşteri ve tedarikçi girdisi", st:"arac", r:["ic"], d:"Bağımsız üçüncü taraf bakışı; hizmet kuruluşlarında müşteri bilgisi çok değerlidir (4.3.2)", u:["hr","exec","ext"]},
+  {n:"Liderlik 360° değerlendirmesi", st:"arac", r:["ic"], d:"Üstler, akranlar ve astlarca değerlendirme; davranışsal değerlerin liderlikçe gösterilmesi (4.3.2)", u:["hr","exec","line"]},
+  {n:"Anket yanıt oranı", st:"arac", r:["ic","dis"], calc:"katilim", d:"Dengeli ve en az taraflı sonuç için yüksek katılım hedeflenir (4.4)", u:["hr","exec","line","wrk","ext"]}
+ ]},
+ {g:"Amaç ve değerler", t:"s", items:[
+  {n:"Amaç ifadesinin varlığı (ifade 1–2)", st:"ek", r:["ic"], d:"Kurumun net bir amacı var mı, işim bu amaca nasıl hizmet ediyor (A.2.3)", u:["hr","exec","line","wrk"]},
+  {n:"Değer ifadesinin varlığı (ifade 3)", st:"ek", r:["ic"], d:"Şirketin net davranışsal değerleri var mı (A.2.3)", u:["hr","exec","line","wrk"]},
+  {n:"Amaç: çalışanın gerçekliği (ifade 4–7)", st:"ek", r:["ic"], d:"Adil ücret, net yönlendirme, araç ve ekipman, makul iş yükü (A.2.3)", u:["hr","exec","line","wrk"]},
+  {n:"Davranışsal değerler (ifade 8–19)", st:"ek", r:["ic"], d:"Değerler karar vermeye yön veriyor mu; değer görme, güven, iletişim, işbirliği, adil davranış, öneriler, gelişim (A.2.3)", u:["hr","exec","line","wrk"]},
+  {n:"Liderlik hizalaması (ifade 20–25)", st:"ek", r:["ic"], d:"Amire ve üst yönetime güven, etik, takdir, stres yönetimi, toplumsal sorumluluk (A.2.3)", u:["hr","exec","line","wrk"]},
+  {n:"Boyut puanları ve en zayıf boyut", st:"ek", r:["ic"], k:"tur", calc:"boyut", d:"Beş ifade grubunun ortalaması; bileşik skor şartnamede yoktur, türetilmiştir", u:["hr","exec"]},
+  {n:"Amaçla ilgili sorular (görev odaklı)", st:"arac", r:["ic"], d:"Kurumun çıktıları ile bireyin katkısı arasındaki bağı güvence altına alır; bazı kültürlerde daha az uygundur (4.3.3)", u:["hr","line","wrk"]},
+  {n:"Değerlerle ilgili sorular (davranışsal ortam)", st:"arac", r:["ic"], d:"İletişim, işbirliği, kooperasyon ve güven inşası; işgücü ile üçüncü taraflar dahil (4.3.3)", u:["hr","line","wrk"]},
+  {n:"Beyan edilen ile gerçek davranış arasındaki boşluk", st:"arac", r:["ic"], k:"tur", d:"Düşük bağlılık ve düşük güvenin tipik göstergesi (4.3.3)", u:["hr","exec","line"]},
+  {n:"Rol netliği, araç ve ekipman, geri bildirim, iş yükü adaleti", st:"arac", r:["ic"], d:"Amaçla ilgili örnek sorular (4.3.3)", u:["hr","line","wrk"]},
+  {n:"Önerilerin duyulması ve uygulanması", st:"arac", r:["ic"], d:"Önerilerin ciddiye alınması ve mümkünse uygulanması (4.3.3, ifade 14–15)", u:["hr","line","wrk"]}
+ ]},
+ {g:"Tutma", t:"c", items:[
+  {n:"Genel tutma oranı (istikrar endeksi)", st:"tutma", r:["ic","dis"], iso:1, calc:"tutma_orani", d:"Dönem başı ile sonu arasındaki genel değişim; ayrıntılı formül ISO/TS 30421'dedir (5.1)", u:["hr","exec","line","wrk","ext"]},
+  {n:"Ülke, şirket, bağlı ortaklık ve bölüm bazında tutma", st:"tutma", r:["ic","dis"], d:"Genel kurumsal tutma oranı alt kategorilerle anlaşılır (5.3.2)", u:["hr","exec","ext"]},
+  {n:"Bölüm ve departman bazında tutma", st:"tutma", r:["ic"], d:"Belirli bölümlerde düşük tutma, olası liderlik sorunlarına işaret edebilir (5.3.2)", u:["hr","exec","line"]},
+  {n:"İş kategorisine göre tutma (nitelikli, yarı nitelikli)", st:"tutma", r:["ic"], d:"Kayıpların işe etkisinin kritikliğini gösterir (5.3.2)", u:["hr","exec","line"]},
+  {n:"Hizmet yılına göre tutma", st:"tutma", r:["ic"], d:"Kıdem kırılımı kayıp nedenlerini ayırt etmeye yardım eder (5.3.2)", u:["hr","exec","line"]},
+  {n:"Deneme veya eğitim döneminde kayıp", st:"tutma", r:["ic"], d:"Olası işe alım sorunlarına işaret edebilir (5.3.3)", u:["hr","line"]},
+  {n:"İlk bir iki yılda kayıp (deneme sonrası)", st:"tutma", r:["ic"], calc:"kayip_nedeni", d:"Beyan edilen kültürün yaşanan kültür olmadığına işaret edebilir; erken kayıp payı (5.3.3)", u:["hr","exec","line"]},
+  {n:"Gerekçeli fesih ve alt nedenleri", st:"tutma", r:["ic"], d:"Nedenlerin alt analizi yapılabilir (5.3.3)", u:["hr","line"]},
+  {n:"Departmanlar arası transfer", st:"tutma", r:["ic"], d:"Farklı tutma oranları sergileyen departmanlara ya da departmanlardan transferler (5.3.3)", u:["hr","line"]},
+  {n:"Kurum içi terfi (başlangıç grubunun dışına)", st:"tutma", r:["ic"], d:"Olumlu kayıp; grup tutma oranında kayıp olarak görünür (5.3.3)", u:["hr","line","wrk"]},
+  {n:"Emeklilik kaynaklı kayıp (gönüllü ya da zorunlu)", st:"tutma", r:["ic"], d:"Normal kayıp; çoğunlukla kültürle ilgisiz (5.3.3)", u:["hr","exec"]},
+  {n:"Dönem içi değişim ve altta yatan ayrıntı", st:"tutma", r:["ic","dis"], k:"onk", d:"Nedensel analizi mümkün kılan ayrıntılar (5.1)", u:["hr","exec","ext"]}
+ ]},
+ {g:"Araç, yöntem ve kırılım", t:"r", items:[
+  {n:"Kültürel olgunluk aşaması (1–4)", st:"tanim", r:["ic"], k:"onk", d:"Gelişmemiş, erken, gelişen, olgun; ölçümün derinliğini belirler (Tablo 1)", u:["hr","exec"]},
+  {n:"Anonimlik güvencesi", st:"arac", r:["ic"], k:"onk", d:"Kullanılan her araç çalışanların anonimliğini güvence altına almalıdır (4.3.2)", u:["hr","wrk","ext"]},
+  {n:"Ülkeler arasında aynı anlamı taşıyan terminoloji", st:"arac", r:["ic","dis"], k:"onk", d:"Aksi hâlde veri uluslararası düzeyde tam karşılaştırılamaz (4.3.2)", u:["hr","exec","ext"]},
+  {n:"Çoklu araç portföyü (olgunluk aşaması 4)", st:"arac", r:["ic"], d:"Anket, 360°, müşteri ve tedarikçi girdisi; bütüncül değerlendirme (Tablo 1)", u:["hr","exec"]},
+  {n:"İşgücü kategorisi tanımı ve güncellenmesi", st:"tanim", r:["ic","dis"], k:"onk", d:"Kalıcı, gündelik, koşullu, dış kaynaklı; tanım düzenli gözden geçirilir (Giriş)", u:["hr","exec","ext"]},
+  {n:"Bölüm, bağlı ortaklık ve maliyet merkezi kırılımı", st:"arac", r:["ic"], d:"Hiyerarşiye göre kırılım (Giriş)", u:["hr","exec","line"]},
+  {n:"Coğrafi konum kırılımı", st:"arac", r:["ic","dis"], d:"Ülke ve bölge farkları (Giriş, Tablo 2)", u:["hr","exec","ext"]},
+  {n:"Pozisyon ve düzey kırılımı", st:"arac", r:["ic"], d:"Yönetim, gözetim, ön saf (Giriş)", u:["hr","exec","line"]},
+  {n:"İşlev ve kıdem kırılımı", st:"arac", r:["ic"], d:"Teknik uzmanlık gibi işlevler; hizmet süresi (Giriş)", u:["hr","exec","line"]},
+  {n:"Değerlendirme anındaki değer ya da kültür yönelimi", st:"arac", r:["ic"], d:"Kırılım örneklerinden biri (Giriş)", u:["hr","exec"]},
+  {n:"Tedarik zinciri kültürü (kapsam dışı)", st:"arac", r:["ic"], k:"ctx", d:"Tedarikçi ve dağıtıcı çalışanlarının kültürü tedarikçi performans değerlendirmesinin parçasıdır (Giriş)", u:["hr","exec","ext"]}
+ ]},
+ {g:"Bağlam ve öngörü etkenleri", t:"o", items:[
+  {n:"Ulusal ve bölgesel kültür; sektör", st:"baglam", r:["ic","dis"], k:"ctx", d:"Kültürler faaliyet yerine ve sektöre göre benzersizdir (4.4)", u:["hr","exec","ext"]},
+  {n:"Kurumun büyüklüğü ve yapısı", st:"baglam", r:["ic"], k:"ctx", d:"Çok uluslu, kamu ya da özel, sahibi yönetimli, olgun ya da girişimci kurumlar farklı kültürlere sahiptir (4.4)", u:["hr","exec"]},
+  {n:"Önemli olaylar: ekonomik daralma, birleşme, sahiplik değişimi", st:"baglam", r:["ic","dis"], k:"ctx", d:"Zaman içinde kültür değerlendirilirken dikkate alınır (4.4)", u:["hr","exec","ext"]},
+  {n:"Yönetim güvenilirliği ve mevcut bağlılık düzeyi", st:"baglam", r:["ic"], k:"ctx", d:"Sonuçlar üzerinde önemli etkisi olabilir (4.4)", u:["hr","exec","line"]},
+  {n:"Yüksek katılım oranı için tasarım", st:"baglam", r:["ic"], k:"onk", d:"Veri toplama ve değerlendirme yaklaşımı dengeli ve az taraflı sonuç hedeflemelidir (4.4)", u:["hr","exec"]},
+  {n:"Bağlılık: değişim süreçleri (yeni BT, politika, mevzuat)", st:"baglam", r:["ic"], k:"pre", d:"Bağlılık kaybı ve etkili kültürdeki azalma genellikle değişim süreçlerine eşlik eder (4.5)", u:["hr","exec","line"]},
+  {n:"Bağlılık: yönetime güven eksikliği ve liderlik değişikliği", st:"baglam", r:["ic"], k:"pre", d:"Düşük sonuçlarda iyileşme bu nedenlerle zaman alabilir (4.5)", u:["hr","exec","line"]},
+  {n:"Tutma: sanayi türü ve olgunluğu", st:"baglam", r:["ic","dis"], k:"ctx", d:"Yeni ortaya çıkan, istikrarlı ya da gerileyen; teknoloji ve sektör olgunluğu (5.4)", u:["hr","exec","ext"]},
+  {n:"Tutma: yerel istihdam durumu ve ekonomik ortam", st:"baglam", r:["ic","dis"], k:"ctx", d:"Büyüyen, gerileyen ya da durgunluk (5.4)", u:["hr","exec","ext"]},
+  {n:"Tutma: kamuoyu algısı ve kurum itibarı", st:"baglam", r:["ic","dis"], k:"ctx", d:"Sanayiye ve toplumsal davranışa ilişkin değişen algı; şirketin marka durumu (5.4)", u:["hr","exec","ext"]},
+  {n:"Tutma: ücret aralığı sektör normuna göre", st:"baglam", r:["ic"], k:"ctx", d:"İç etken (5.4)", u:["hr","exec","wrk"]},
+  {n:"Tutma: kurumun istikrarı ve liderlik değişiklikleri", st:"baglam", r:["ic"], k:"ctx", d:"Birleşmeler, devralmalar; bir ya da daha fazla düzeyde liderlik değişikliği (5.4)", u:["hr","exec","line"]},
+  {n:"Tutma: ortalama kıdem ve işgücünün yaşı", st:"baglam", r:["ic"], k:"ctx", d:"İç etken (5.4)", u:["hr","exec"]},
+  {n:"Sektör kıyaslaması ve işveren kuruluşları bilgisi", st:"baglam", r:["ic","dis"], k:"onk", d:"Tutmanın kabul edilebilir olduğu aralıkları belirlemeye yardım eder (5.4)", u:["hr","exec","ext"]},
+  {n:"Öngörü: iç yeniden yapılanma içeren iş planları", st:"baglam", r:["ic"], k:"pre", d:"Artan stres, belirsizlik, iş riski ve hayal kırıklığıyla bağlantılı (5.5)", u:["hr","exec","line"]},
+  {n:"Öngörü: departman liderliğindeki değişiklikler", st:"baglam", r:["ic"], k:"pre", d:"Yeni iç ya da dış gözetim dahil (5.5)", u:["hr","exec","line"]},
+  {n:"Öngörü: yeni ekipman ve yeni BT sistemleri", st:"baglam", r:["ic"], k:"pre", d:"İş süreci değişiklikleri; yeniden beceri kazandırma ve performans geri bildirimi değişiklikleri (5.5)", u:["hr","line","wrk"]},
+  {n:"Öngörü: toplumsal sorunlar (trafik, toplu taşıma)", st:"baglam", r:["ic"], k:"pre", d:"İşe ulaşım koşulları tutmayı etkileyebilir (5.5)", u:["hr","wrk"]},
+  {n:"Öngörü: halefiyet planı eylem ve iletişim eksikliği", st:"baglam", r:["ic"], k:"pre", d:"Belirsizlik duygusunu artırabilir (5.5)", u:["hr","exec","line"]},
+  {n:"Öngörü: yoğun iş dönemleri (mevsimsel, tanıtım, lansman)", st:"baglam", r:["ic"], k:"pre", d:"Artan iş yükü gereken dönemler (5.5)", u:["hr","line","wrk"]},
+  {n:"Kültür ölçümünün güçlükleri", st:"ek", r:["ic"], k:"ctx", d:"Kültür bütüncüldür; nesnel süreç yönleri ve öznel davranış içerir; evrilir ve değişir (Ek C)", u:["hr","exec"]},
+  {n:"Altı sermaye ve toplumsal beklentiler", st:"ek", r:["ic","dis"], k:"ctx", d:"Finansal, insan, üretilmiş, ilişki, entelektüel ve doğal sermaye; BM sürdürülebilir kalkınma amaçları (Ek C)", u:["exec","ext"]}
+ ]}
+];
+
+var USERS = ["hr","exec","line","wrk","ext"];
+var AILE_AD = {p:"bağlılık", s:"amaç ve değerler", c:"tutma", r:"araç ve yöntem", o:"bağlam ve öngörü"};
+var EK_AD = {ctx:"bağlam etkeni", pre:"öngörü etkeni", onk:"ön koşul", tur:"türetilmiş"};
+
+/* --- matris çizimi --- */
+function renderMatrix(){
+  var fu = document.getElementById("fUser").value;
+  var fs = document.getElementById("fStage").value;
+  var ft = document.getElementById("fType").value;
+  var fr = document.getElementById("fRep").value;
+  var fq = document.getElementById("fQ").value.toLocaleLowerCase("tr");
+  var body = document.getElementById("mBody");
+  var html = "", shown = 0;
+
+  METRICS.forEach(function(grp){
+    if(ft && grp.t !== ft) return;
+    var rows = "";
+    grp.items.forEach(function(m){
+      if(fu && m.u.indexOf(fu) === -1) return;
+      if(fs && m.st !== fs) return;
+      if(fr && m.r.indexOf(fr) === -1) return;
+      if(fq && m.n.toLocaleLowerCase("tr").indexOf(fq) === -1) return;
+      shown++;
+      var cells = USERS.map(function(u){
+        if(m.u.indexOf(u) === -1) return '<td class="num"></td>';
+        var mark = '<span class="dot ' + grp.t + '"></span>';
+        return '<td class="num" title="' + m.n + '">' + (m.calc ? '<b>' + mark + '</b>' : mark) + '</td>';
+      }).join("");
+      var tags = '<span class="tag ' + grp.t + '">' + AILE_AD[grp.t] + '</span>' +
+                 (m.k ? ' <span class="tag lvl">' + EK_AD[m.k] + '</span>' : "") +
+                 (m.iso ? ' <span class="tag iso">30414</span>' : "") +
+                 (m.calc ? ' <span class="tag lvl">hesaplayıcı</span>' : "") +
+                 (m.r.indexOf("dis") !== -1 ? ' <span class="tag iso">dış rapor</span>' : "");
+      rows += '<tr><td class="name">' + (m.calc ? '<b>' + m.n + '</b>' : m.n) + ' ' + tags +
+              '<em>' + m.d + '</em></td>' + cells + '</tr>';
+    });
+    if(rows){
+      html += '<tr class="group"><td colspan="6">' + grp.g + '</td></tr>' + rows;
+    }
+  });
+
+  body.innerHTML = html || '<tr><td colspan="6">Bu filtre birleşimiyle eşleşen metrik yok.</td></tr>';
+  document.getElementById("mCount").textContent = shown + " metrik ve etken gösteriliyor.";
+}
+["fUser","fStage","fType","fRep","fQ"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", renderMatrix);
+});
+renderMatrix();
+
+/* =========================================================
+   2) ANKET PUANLAMA TABLOSU (Ek A)
+   ========================================================= */
+var MADDELER = [
+  "Kurumumuzun net bir amacı var.",
+  "İşimin bu amaca nasıl hizmet ettiğini anlıyorum.",
+  "Şirketimizin net davranışsal değerleri var.",
+  "Çalışmam karşılığında adil ücret alıyorum.",
+  "İşim için net bir yönlendirme alıyorum.",
+  "İşimi yapmak için gereken araç ve ekipmana sahibim.",
+  "İş yükleri genellikle makul.",
+  "Beyan edilen değerlerimiz karar vermeye yön veriyor.",
+  "Katkım için değer görüyorum.",
+  "İşimi yapacağıma güveniliyor.",
+  "Kurum içi iletişim etkili.",
+  "İşbirliği destekleniyor.",
+  "Kurum bana adil davranıyor.",
+  "Çalışan önerileri teşvik ediliyor.",
+  "Çalışan önerileri uygulanıyor.",
+  "Kurumumuzda insanlar iş birliği yapıyor.",
+  "İnsanlar birbirine yardım etmeye istekli.",
+  "İnsanların gelişme fırsatı var.",
+  "Öğrenme ve gelişim teşvik ediliyor.",
+  "Amirime güveniyorum.",
+  "Üst düzey kurumsal liderliğe güveniyorum.",
+  "Bu kurum etik davranıyor.",
+  "Çalışanlar iyi işleri için takdir ediliyor.",
+  "İş yerimizde stres iyi yönetiliyor.",
+  "Kurumumuz toplumsal olarak sorumlu."
+];
+/* boyut adı, ilk ifade, son ifade (Ek A.2.3) */
+var BOYUTLAR = [
+  ["Amaç ifadesinin varlığı", 1, 2],
+  ["Değer ifadesinin varlığı", 3, 3],
+  ["Amaç: çalışanın gerçekliği", 4, 7],
+  ["Davranışsal değerler", 8, 19],
+  ["Liderlik hizalaması", 20, 25]
+];
+/* ifade başına beş seçeneğin yanıt sayısı: kesinlikle katılmıyorum … kesinlikle katılıyorum (uydurma örnek veri) */
+var ORNEK_VERI = [[0, 6, 44, 93, 57], [1, 10, 55, 91, 43], [1, 19, 72, 81, 27], [3, 32, 84, 66, 15], [1, 12, 61, 89, 37], [1, 10, 55, 91, 43], [8, 48, 89, 48, 7], [4, 37, 87, 60, 12], [1, 15, 67, 85, 32], [0, 8, 50, 92, 50], [4, 37, 87, 60, 12], [1, 12, 61, 89, 37], [2, 22, 77, 77, 22], [1, 19, 72, 81, 27], [15, 66, 84, 32, 3], [0, 8, 50, 92, 50], [0, 6, 44, 93, 57], [1, 15, 67, 85, 32], [3, 27, 81, 71, 18], [1, 10, 55, 91, 43], [6, 42, 88, 54, 10], [1, 12, 61, 89, 37], [3, 32, 84, 66, 15], [10, 54, 88, 42, 6], [1, 15, 67, 85, 32]];
+var SATIR = MADDELER.length;
+
+function buildTbl(){
+  var html = "";
+  for(var i=0;i<SATIR;i++){
+    html += '<tr><td>' + (i+1) + '. ' + MADDELER[i] + '</td>';
+    for(var k=1;k<=5;k++){
+      html += '<td><input type="number" min="0" step="1" id="p_c' + k + '_' + i + '"></td>';
+    }
+    html += '<td class="calc" id="p_ort_' + i + '">—</td></tr>';
+  }
+  document.getElementById("pBody").innerHTML = html;
+  document.getElementById("pBody").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", computeTbl);
+  });
+}
+
+function pNum(k, i){
+  var v = parseFloat(document.getElementById("p_c" + k + "_" + i).value);
+  return isNaN(v) || v < 0 ? 0 : v;
+}
+
+var TBL = {n:0, puan:0, yanit:0, ok:false};
+
+function computeTbl(){
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var f2 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:2, maximumFractionDigits:2}); };
+  var f0 = function(x){ return x.toLocaleString("tr-TR", {maximumFractionDigits:0}); };
+
+  var n = 0, puan = 0, yanit = 0, olumlu = 0, ort = [], toplamK = [0,0,0,0,0];
+  for(var i=0;i<SATIR;i++){
+    var c = [pNum(1,i), pNum(2,i), pNum(3,i), pNum(4,i), pNum(5,i)];
+    var t = c[0]+c[1]+c[2]+c[3]+c[4];
+    var hucre = document.getElementById("p_ort_" + i);
+    if(!(t > 0)){ hucre.textContent = "—"; ort.push(null); continue; }
+    var s = 1*c[0] + 2*c[1] + 3*c[2] + 4*c[3] + 5*c[4];
+    n++; puan += s; yanit += t; olumlu += c[3] + c[4];
+    for(var k=0;k<5;k++) toplamK[k] += c[k];
+    var m = s / t;
+    ort.push(m);
+    hucre.textContent = f2(m);
+  }
+
+  for(var k=0;k<5;k++) document.getElementById("tS" + (k+1)).textContent = n ? f0(toplamK[k]) : "—";
+  document.getElementById("tOrt").textContent = n ? f2(puan / yanit) : "—";
+
+  var kart = document.getElementById("pCards");
+  var tbl = document.getElementById("bTbl");
+  TBL = {n:n, puan:puan, yanit:yanit, ok:n > 0};
+  if(!n){
+    kart.innerHTML = ""; tbl.style.display = "none";
+    document.getElementById("pNot").textContent =
+      "Tabloya her ifade için yanıt sayılarını girin ya da örnek veriyi yükleyin.";
+    return;
+  }
+
+  /* boyutlar */
+  var boy = BOYUTLAR.map(function(b){
+    var dilim = [];
+    for(var i=b[1]-1;i<=b[2]-1;i++){ if(ort[i] !== null) dilim.push(ort[i]); }
+    var m = dilim.length ? dilim.reduce(function(a,x){ return a+x; }, 0) / dilim.length : null;
+    return {ad:b[0], aralik: b[1] === b[2] ? String(b[1]) : b[1] + "–" + b[2], m:m};
+  });
+  var zayif = null;
+  boy.forEach(function(b){ if(b.m !== null && (zayif === null || b.m < zayif.m)) zayif = b; });
+
+  /* ifade sıralaması */
+  var sira = [];
+  for(var i=0;i<SATIR;i++){ if(ort[i] !== null) sira.push({no:i+1, m:ort[i]}); }
+  sira.sort(function(a,b){ return a.m - b.m; });
+  var dusuk = sira.slice(0, 3), yuksek = sira[sira.length-1];
+
+  var genel = 100 * puan / (5 * yanit);
+  var kartlar = '';
+  kartlar += '<div class="card"><b>' + f1(genel) + ' %</b><span>Genel kültür yüzdesi (toplam puan ÷ azami puan)</span></div>';
+  kartlar += '<div class="card"><b>' + f0(yanit / n) + '</b><span>İfade başına ortalama yanıtlayan</span></div>';
+  kartlar += '<div class="card alt"><b>' + f1(100 * olumlu / yanit) + ' %</b><span>Olumlu yanıt (katılıyorum ve kesinlikle)</span></div>';
+  kartlar += '<div class="card alt"><b>' + f2(puan / yanit) + '</b><span>Genel ortalama puan (1–5)</span></div>';
+  kartlar += '<div class="card warn"><b>' + (zayif ? f1(100 * zayif.m / 5) + ' %' : "—") + '</b><span>En zayıf boyut: ' + (zayif ? zayif.ad : "—") + '</span></div>';
+  kartlar += '<div class="card warn"><b>' + (dusuk.length ? f2(dusuk[0].m) : "—") + '</b><span>En düşük ifade: ' + (dusuk.length ? "No " + dusuk[0].no : "—") + '</span></div>';
+  kart.innerHTML = kartlar;
+
+  tbl.style.display = "";
+  document.getElementById("bBody").innerHTML = boy.map(function(b){
+    return '<tr><td>' + b.ad + '</td><td>' + b.aralik + '</td><td class="num">' + (b.m === null ? "—" : f2(b.m)) +
+           '</td><td class="num">' + (b.m === null ? "—" : f1(100 * b.m / 5)) + '</td></tr>';
+  }).join("");
+
+  var not = "Toplam puan = " + f0(puan) + ", yanıt = " + f0(yanit) + " → genel yüzde = " + f1(genel) + " %. ";
+  not += "Ek A.2.4'e göre en düşük puanlı ifadelerden başlayın: " +
+         dusuk.map(function(d){ return "No " + d.no + " (" + f2(d.m) + ")"; }).join(", ") +
+         "; sonuçları odak grup, kent toplantısı ve çalışma gruplarıyla tartışıp kök nedeni belirleyin. ";
+  if(yuksek) not += "En yüksek: No " + yuksek.no + " (" + f2(yuksek.m) + "). ";
+  if(n < SATIR) not += "Yalnızca " + n + " ifade dolu; yüzde, dolu ifadeler üzerinden hesaplandı.";
+  document.getElementById("pNot").textContent = not;
+}
+
+function loadTblExample(){
+  for(var i=0;i<SATIR;i++){
+    for(var k=1;k<=5;k++){ document.getElementById("p_c" + k + "_" + i).value = ORNEK_VERI[i][k-1]; }
+  }
+  computeTbl();
+}
+
+document.getElementById("btnOrnek").addEventListener("click", loadTblExample);
+document.getElementById("btnTemizle").addEventListener("click", function(){
+  for(var i=0;i<SATIR;i++){
+    for(var k=1;k<=5;k++){ document.getElementById("p_c" + k + "_" + i).value = ""; }
+  }
+  computeTbl();
+});
+document.getElementById("btnCsv").addEventListener("click", function(){
+  var satir = ["No;Ifade;Kes. katilmiyorum;Katilmiyorum;Kararsizim;Katiliyorum;Kes. katiliyorum;Ortalama"];
+  for(var i=0;i<SATIR;i++){
+    var c = [pNum(1,i), pNum(2,i), pNum(3,i), pNum(4,i), pNum(5,i)];
+    var t = c[0]+c[1]+c[2]+c[3]+c[4];
+    if(!(t > 0)) continue;
+    var s = c[0] + 2*c[1] + 3*c[2] + 4*c[3] + 5*c[4];
+    satir.push([i+1, MADDELER[i]].concat(c).concat([(s / t).toFixed(2)]).join(";"));
+  }
+  if(TBL.ok){
+    satir.push(["", "Genel kultur yuzdesi", "", "", "", "", "", (100 * TBL.puan / (5 * TBL.yanit)).toFixed(1)].join(";"));
+  }
+  var blob = new Blob(["﻿" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "iso24178_kultur_anketi.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* =========================================================
+   3) FORMÜL TABLOSU + HESAPLAYICI
+   Alan adları gömülü Python modülünün hesapla() imzasıyla birebir aynıdır.
+   ========================================================= */
+function gerek(kosul, mesaj){ if(!kosul) throw new Error("GecersizGirdi: " + mesaj); }
+function oranOk(parca, butun, ad){
+  gerek(butun > 0, "bütün sıfırdan büyük olmalı");
+  gerek(parca >= 0 && parca <= butun, ad + " 0 ile bütün arasında olmalı");
+  return 100 * parca / butun;
+}
+function r1(x){ return +x.toFixed(1); }
+function r2(x){ return +x.toFixed(2); }
+var BOYUT_AD = ["Amaç ifadesinin varlığı","Değer ifadesinin varlığı","Amaç: çalışanın gerçekliği","Davranışsal değerler","Liderlik hizalaması"];
+
+var CALC = [
+ {id:"kultur_endeksi", name:"Bağlılık, memnuniyet ve bağlanma endeksi (genel kültür yüzdesi)", grp:"Anket",
+  formula:"Kültür endeksi = Toplam puan &divide; (5 &times; İfade sayısı &times; Yanıtlayan) &times; 100",
+  note:"Ek A: her ifade 1–5 puanlanır ve toplam puan 125'e bölünerek genel yüzde sonuç oluşturulur (25 ifade × en fazla 5 puan). Tek yanıtlıda payda 125'tir; çok yanıtlıda yanıtlayan sayısıyla çarpılır (genelleme türetilmiştir).",
+  fields:[{k:"toplam_puan",l:"Toplam puan (tüm ifade ve yanıtlar)",v:18000},{k:"yanitci",l:"Yanıtlayan sayısı",v:200},
+          {k:"madde_sayisi",l:"İfade sayısı",v:25}],
+  unit:"% kültür endeksi",
+  py:"kultur_endeksi(toplam_puan=18000, yanitci=200, madde_sayisi=25)",
+  calc:function(v){ gerek(v.madde_sayisi > 0 && v.yanitci > 0, "madde ve yanıtlayan sayısı sıfırdan büyük olmalı");
+    var azami = 5*v.madde_sayisi*v.yanitci;
+    gerek(v.toplam_puan >= v.madde_sayisi*v.yanitci && v.toplam_puan <= azami, "toplam puan olası aralığın dışında");
+    var d = 100*v.toplam_puan/azami, ort = v.toplam_puan/(v.madde_sayisi*v.yanitci);
+    return {value:d, dec:1, expl:v.toplam_puan + " ÷ (5 × " + v.madde_sayisi + " × " + v.yanitci + ") × 100",
+      detail:[["Madde başına ortalama puan (1–5)", r2(ort)],
+              ["Azami puan", azami],
+              ["Tarafsız düzeye (3 puan) göre fark (puan)", r2(ort-3)]]}; },
+  bands:[[80,"ok","Yüksek genel düzey; asıl soru en düşük iki üç ifade ve boyut kırılımıdır."],
+         [60,"warn","Orta düzey; en düşük puanlı ifadeleri çalışanlarla tartışıp kök nedeni arayın."],
+         [0,"bad","Düşük düzey; amaç ve değer ifadelerinin varlığını ve yaygınlığını gözden geçirin."]]},
+
+ {id:"madde_puani", name:"İfade bazında ortalama puan", grp:"Anket",
+  formula:"Ortalama = (1&times;SD + 2&times;D + 3&times;N + 4&times;A + 5&times;SA) &divide; Yanıtlayan",
+  note:"Ek A'daki puanlama: kesinlikle katılıyorum 5, katılıyorum 4, ne katılıyorum ne katılmıyorum 3, katılmıyorum 2, kesinlikle katılmıyorum 1. En düşük puanlı iki ya da üç ifade, çalışanlarla yapılacak tartışmanın başlangıç noktasıdır (A.2.4).",
+  fields:[{k:"kes_katilmiyor",l:"Kesinlikle katılmıyorum (1)",v:6},{k:"katilmiyor",l:"Katılmıyorum (2)",v:20},
+          {k:"kararsiz",l:"Ne katılıyorum ne katılmıyorum (3)",v:48},{k:"katiliyor",l:"Katılıyorum (4)",v:84},
+          {k:"kes_katiliyor",l:"Kesinlikle katılıyorum (5)",v:42}],
+  unit:"puan (1–5)",
+  py:"madde_ortalamasi(6, 20, 48, 84, 42)",
+  calc:function(v){ var s = [v.kes_katilmiyor, v.katilmiyor, v.kararsiz, v.katiliyor, v.kes_katiliyor];
+    gerek(s.every(function(x){ return x >= 0; }), "yanıt sayıları negatif olamaz");
+    var n = s.reduce(function(a,b){ return a+b; }, 0);
+    gerek(n > 0, "yanıtlayan sayısı sıfırdan büyük olmalı");
+    var d = (1*s[0] + 2*s[1] + 3*s[2] + 4*s[3] + 5*s[4]) / n;
+    return {value:d, dec:2, expl:"(" + s.map(function(x,i){ return (i+1) + "×" + x; }).join(" + ") + ") ÷ " + n,
+      detail:[["Yanıtlayan", n],
+              ["Olumlu yanıt oranı (%)", r1(100*(v.katiliyor+v.kes_katiliyor)/n)],
+              ["Olumsuz yanıt oranı (%)", r1(100*(v.kes_katilmiyor+v.katilmiyor)/n)],
+              ["Ölçek yüzdesi (%)", r1(100*d/5)]]}; },
+  bands:[[4,"ok","İfade çoğunlukla olumlu karşılanıyor."],
+         [3,"warn","Karışık sonuç: nedenini çalışanlarla tartışın; ifade düşük ya da karışıksa ilgili amaç veya değer ifadesinin geliştirilmesini düşünün."],
+         [0,"bad","İfade olumsuz: öncelikli olarak ele alınacak ifadelerden biri; kök nedeni odak grup ve çalışma gruplarıyla belirleyin."]]},
+
+ {id:"boyut", name:"Boyut puanları ve en zayıf boyut", grp:"Anket",
+  formula:"En zayıf boyut = min(Amaç, Değer, Gerçeklik, Davranış, Liderlik) &divide; 5 &times; 100",
+  note:"Ek A.2.3 ifadeleri beş yönü kapsar: 1–2 amaç ifadesi, 3 değer ifadesi, 4–7 amaçla ilgili çalışan gerçekliği, 8–19 davranışsal değerler, 20–25 liderlik hizalaması. Şartname boyutlar için ayrı puan tanımlamaz; en zayıf halka göstergesi türetilmiştir.",
+  fields:[{k:"amac_var",l:"Amaç ifadesi, ifade 1–2 (ortalama)",v:4,step:0.1},{k:"deger_var",l:"Değer ifadesi, ifade 3 (ortalama)",v:3.6,step:0.1},
+          {k:"amac_gerceklik",l:"Amaç gerçekliği, ifade 4–7 (ortalama)",v:3.4,step:0.1},{k:"deger_davranis",l:"Davranışsal değerler, ifade 8–19 (ortalama)",v:3.5,step:0.1},
+          {k:"liderlik",l:"Liderlik hizalaması, ifade 20–25 (ortalama)",v:3.4,step:0.1}],
+  unit:"% (en zayıf boyut)",
+  py:"zayif_boyut([4, 3.6, 3.4, 3.5, 3.4])",
+  calc:function(v){ var o = [v.amac_var, v.deger_var, v.amac_gerceklik, v.deger_davranis, v.liderlik];
+    o.forEach(function(x){ gerek(x >= 1 && x <= 5, "boyut ortalaması 1 ile 5 arasında olmalı"); });
+    var i = 0; for(var k=1;k<5;k++){ if(o[k] < o[i]) i = k; }
+    var top = o.reduce(function(a,b){ return a+b; }, 0);
+    return {value:100*o[i]/5, dec:1, expl:"min(" + o.join(", ") + ") ÷ 5 × 100",
+      detail:[["En zayıf boyut", BOYUT_AD[i]],
+              ["Beş boyutun ortalaması (%)", r1(100*top/25)],
+              ["En güçlü ile en zayıf arasındaki fark (puan, 1–5)", r2(Math.max.apply(null, o) - o[i])]]}; },
+  bands:[[80,"ok","Tüm boyutlar yüksek; yine de kırılımlara (bölüm, konum, kıdem) bakın."],
+         [65,"warn","En az bir boyut zayıf; çalışmayı o boyuta (ve en düşük ifadelere) yöneltin."],
+         [0,"bad","En zayıf boyut düşük; ilgili amaç, değer ya da liderlik hizalaması sorununu öncelikle ele alın."]]},
+
+ {id:"katilim", name:"Anket yanıt oranı", grp:"Araç ve yöntem",
+  formula:"Yanıt oranı = (Yanıt veren &divide; Davet edilen) &times; 100",
+  note:"Şartname, hem metriklerin hem veri toplama ve değerlendirme yaklaşımlarının tasarımında dengeli ve mümkün olduğunca az taraflı sonuç için yüksek katılım oranı hedeflenmesini ister (madde 4.4). Hata payı türetilmiştir: yanıtların rastgele dağıldığını varsayar, yanıtlamama taraflılığını kapsamaz.",
+  fields:[{k:"davet",l:"Ankete davet edilen",v:240},{k:"yanit",l:"Yanıt veren",v:200}],
+  unit:"% yanıt oranı",
+  py:"yanit_orani(yanit=200, davet=240)",
+  calc:function(v){ var d = oranOk(v.yanit, v.davet, "yanıt");
+    gerek(v.davet > 1 && v.yanit >= 1, "davet 1'den büyük, yanıt 1 ile davet arasında olmalı");
+    var hp = 196*Math.sqrt(0.25/v.yanit*(v.davet-v.yanit)/(v.davet-1));
+    return {value:d, dec:1, expl:"(" + v.yanit + " ÷ " + v.davet + ") × 100",
+      detail:[["Yanıtlamayan", v.davet-v.yanit],
+              ["Yanıtlamayanların payı (%)", r1(100-d)],
+              ["Oran tahmininde en kötü durum hata payı (± puan, %95 güven)", r1(hp)]]}; },
+  bands:[[80,"ok","Yüksek katılım; sonuçlar dengeli ve az taraflı olma eğiliminde."],
+         [60,"warn","Orta katılım; yanıtlamayanların hangi bölüm ya da grupta yoğunlaştığına bakın."],
+         [0,"bad","Düşük katılım; sonuç çalışan topluluğunu temsil etmeyebilir."]]},
+
+ {id:"bolge_endeks", name:"Bölge bazında bağlılık endeksi ortalaması", grp:"Raporlama",
+  formula:"Ortalama endeks = (Endeks<sub>1</sub> + Endeks<sub>2</sub> + Endeks<sub>3</sub>) &divide; 3",
+  note:"Tablo 2'de ortalama bağlılık endeksi, 0–100 ölçekli bölge değerlerinin basit ortalamasıdır (örnekte 84, 86, 81 → 84). Çalışan sayısıyla ağırlıklı ortalama türetilmiştir; dış raporlamada hangisinin kullanıldığını yazın.",
+  fields:[{k:"endeks_1",l:"Bölge 1 endeksi (0–100)",v:84},{k:"endeks_2",l:"Bölge 2 endeksi (0–100)",v:86},
+          {k:"endeks_3",l:"Bölge 3 endeksi (0–100)",v:81},
+          {k:"calisan_1",l:"Bölge 1 çalışan sayısı",v:300},{k:"calisan_2",l:"Bölge 2 çalışan sayısı",v:500},
+          {k:"calisan_3",l:"Bölge 3 çalışan sayısı",v:400}],
+  unit:"endeks (0–100, basit ortalama)", noHeur:true,
+  py:"bolge_endeksi([84, 86, 81])",
+  calc:function(v){ var e = [v.endeks_1, v.endeks_2, v.endeks_3], c = [v.calisan_1, v.calisan_2, v.calisan_3];
+    e.forEach(function(x){ gerek(x >= 0 && x <= 100, "endeks 0 ile 100 arasında olmalı"); });
+    var tc = c[0]+c[1]+c[2];
+    gerek(Math.min.apply(null, c) >= 0 && tc > 0, "çalışan sayıları geçersiz");
+    var d = (e[0]+e[1]+e[2])/3, w = (e[0]*c[0]+e[1]*c[1]+e[2]*c[2])/tc;
+    return {value:d, dec:1, expl:"(" + e.join(" + ") + ") ÷ 3",
+      detail:[["Çalışan sayısıyla ağırlıklı ortalama", r1(w)],
+              ["En yüksek ile en düşük bölge farkı (puan)", r1(Math.max.apply(null, e) - Math.min.apply(null, e))],
+              ["Ağırlıklı ile basit ortalama farkı (puan)", r1(w-d)]]}; },
+  bands:[[0,"ok","Bölge farkına ve ağırlıklı ortalamaya birlikte bakın; toplam ortalama bölgeler arasındaki farkı gizleyebilir."]]},
+
+ {id:"tutma_orani", name:"Tutma oranı (istikrar endeksi)", grp:"Tutma", noHeur:true,
+  formula:"Tutma oranı = ((Dönem başı çalışan &minus; Aynı gruptan ayrılan) &divide; Dönem başı çalışan) &times; 100",
+  note:"Şartname, tutma oranını kurumsal kültürle ilgili göstergelerden biri ve çoğunlukla \"istikrar endeksi\" olarak anar; ayrıntılı veri toplama, analiz ve raporlama yöntemlerini ISO/TS 30421'e bırakır. Bu tanım basitleştirilmiştir. Kabul edilebilir aralık sektör kıyaslamasıyla belirlenir.",
+  fields:[{k:"baslangic",l:"Dönem başındaki çalışan",v:500},{k:"ayrilan",l:"Aynı gruptan dönem içinde ayrılan",v:62}],
+  unit:"% tutma oranı",
+  py:"tutma_orani(baslangic=500, ayrilan=62)",
+  calc:function(v){ var a = oranOk(v.ayrilan, v.baslangic, "ayrılan"); var d = 100 - a;
+    return {value:d, dec:1, expl:"((" + v.baslangic + " − " + v.ayrilan + ") ÷ " + v.baslangic + ") × 100",
+      detail:[["Dönem sonunda kalan", v.baslangic-v.ayrilan],
+              ["Ayrılış oranı (%)", r1(100-d)]]}; },
+  bands:[[0,"ok","Şartname evrensel eşik vermez: kabul edilebilir aralığı sektör kıyaslaması ve bağlam etkenleriyle belirleyin; oranı kırılımlar ve kayıp nedenleriyle birlikte okuyun."]]},
+
+ {id:"kayip_nedeni", name:"Kayıp nedeni dağılımı: erken kayıp payı", grp:"Tutma",
+  formula:"Erken kayıp payı = ((Deneme dönemi + İlk iki yıl) &divide; Toplam kayıp) &times; 100",
+  note:"Şartname (madde 5.3.3): deneme ya da eğitim döneminde kayıp olası bir işe alım sorununa, deneme sonrası ama işe alımdan sonraki bir ila iki yıl içindeki kayıp ise beyan edilen kültürün yaşanan kültür olmadığına işaret edebilir. Emeklilik ve iç terfi çoğunlukla kültür dışı kayıplardır.",
+  fields:[{k:"deneme",l:"Deneme veya eğitim döneminde ayrılan",v:9},{k:"ilk_iki_yil",l:"İlk bir iki yılda ayrılan (deneme sonrası)",v:21},
+          {k:"gerekceli_fesih",l:"Gerekçeli feshedilen",v:6},{k:"diger_gonullu",l:"Diğer gönüllü ayrılış",v:18},
+          {k:"emeklilik",l:"Emeklilik",v:8}],
+  unit:"% erken kayıp",
+  py:"erken_kayip_payi(deneme=9, ilk_iki_yil=21, toplam=62)",
+  calc:function(v){ var k = [v.deneme, v.ilk_iki_yil, v.gerekceli_fesih, v.diger_gonullu, v.emeklilik];
+    gerek(k.every(function(x){ return x >= 0; }), "kayıp kalemleri negatif olamaz");
+    var t = k[0]+k[1]+k[2]+k[3]+k[4];
+    var d = oranOk(v.deneme+v.ilk_iki_yil, t, "erken kayıp");
+    return {value:d, dec:1, expl:"((" + v.deneme + " + " + v.ilk_iki_yil + ") ÷ " + t + ") × 100",
+      detail:[["Toplam kayıp", t],
+              ["Deneme ve eğitim dönemi payı (%)", r1(100*v.deneme/t)],
+              ["İlk iki yıl payı (%)", r1(100*v.ilk_iki_yil/t)],
+              ["Emeklilik payı (%)", r1(100*v.emeklilik/t)]]}; },
+  bands:[[50,"bad","Kayıpların yarısı ya da fazlası erken dönemde: işe alım uygulamalarını ve beyan edilen ile yaşanan kültür arasındaki farkı inceleyin."],
+         [30,"warn","Erken kayıp payı kayda değer; deneme sonrası ilk iki yıldaki ayrılış nedenlerini ayrıca çözümleyin."],
+         [0,"ok","Kayıplar çoğunlukla erken dönem dışında; nedenleri yine de kırılımlarla izleyin."]]}
+];
+
+/* --- formül tablosu --- */
+(function(){
+  var rows = CALC.map(function(c){
+    return '<tr><td><b>' + c.name + '</b></td><td><span style="font-family:var(--serif)">' +
+           c.formula + '</span></td><td>' + c.note + '</td></tr>';
+  }).join("");
+  document.getElementById("fBody").innerHTML = rows;
+})();
+
+/* --- hesaplayıcı --- */
+var sel = document.getElementById("cMetric");
+CALC.forEach(function(c, i){
+  var o = document.createElement("option");
+  o.value = i; o.textContent = c.grp + " — " + c.name;
+  sel.appendChild(o);
+});
+
+function buildFields(){
+  var c = CALC[+sel.value];
+  document.getElementById("cFields").innerHTML = c.fields.map(function(f){
+    return '<div class="field"><label for="in_' + f.k + '">' + f.l + '</label>' +
+      '<input type="number" id="in_' + f.k + '" value="" step="' + (f.step || "any") + '" placeholder="' + f.v + '"></div>';
+  }).join("");
+  document.getElementById("cFields").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", run);
+  });
+}
+
+function readVals(){
+  var c = CALC[+sel.value], v = {}, missing = false;
+  c.fields.forEach(function(f){
+    var el = document.getElementById("in_" + f.k);
+    var raw = el && el.value !== "" ? parseFloat(el.value) : NaN;
+    if(isNaN(raw)){ missing = true; v[f.k] = f.v; } else { v[f.k] = raw; }
+  });
+  return {v:v, missing:missing};
+}
+
+function fmt(x, dec){
+  if(!isFinite(x)) return "—";
+  return x.toLocaleString("tr-TR", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+
+/* Hesaplama motoru: Python hazırsa gömülü modül, değilse JS yedeği */
+function compute(c, v){
+  if(PY.ready){
+    try{
+      PY.pyodide.globals.set("_metrik", c.id);
+      PY.pyodide.globals.set("_girdi", JSON.stringify(v));
+      var raw = PY.pyodide.runPython(
+        "import json\n" +
+        "json.dumps(hesapla(_metrik, **json.loads(_girdi)))");
+      var r = JSON.parse(raw);
+      return {value:r.deger, expl:r.ifade, dec:r.ondalik, detail:r.ayrinti,
+              unit:r.birim, durum:r.durum, engine:"python"};
+    }catch(err){
+      var msg = String(err);
+      /* Kullanıcı girdisi kaynaklı hata: motor sorunu değil, yedeğe geçme */
+      if(msg.indexOf("GecersizGirdi") !== -1 || msg.indexOf("ZeroDivisionError") !== -1) throw err;
+      setEngine("off", "Motor: JS yedeği — Python hatası");
+    }
+  }
+  var out = c.calc(v);
+  out.engine = "js";
+  return out;
+}
+
+function run(){
+  var c = CALC[+sel.value];
+  var r = readVals();
+  var out;
+  try { out = compute(c, r.v); } catch(e){ out = null; }
+  var box = document.getElementById("cResult");
+  if(!out || !isFinite(out.value)){
+    box.innerHTML = '<div class="result"><b>Hesaplanamadı.</b> Payda sıfır olamaz, parça bütünden büyük olamaz ve değerler geçerli aralıkta olmalı; alanları kontrol edin.</div>';
+    return;
+  }
+  var dec = (out.dec === undefined) ? 1 : out.dec;
+  var unit = out.unit || c.unit;
+  var html = '<div class="result">';
+  html += '<div class="big">' + fmt(out.value, dec) + ' <span>' + unit + '</span></div>';
+  html += '<div style="font-size:13px;color:var(--ink-soft);margin-top:6px">' + c.name +
+          ' · ' + (out.engine === "python" ? 'Python (Pyodide) ile hesaplandı' : 'JavaScript ile hesaplandı') +
+          (r.missing ? ' · <i>boş alanlar için örnek değer kullanıldı</i>' : '') + '</div>';
+
+  if(document.getElementById("oFormula").checked){
+    html += '<div class="formula">' + c.formula + '<br><span style="color:var(--ink-soft);font-size:15px">= ' +
+            out.expl + ' = <b>' + fmt(out.value, dec) + '</b> ' + unit + '</span></div>';
+  }
+  if(out.detail && out.detail.length){
+    html += '<dl>' + out.detail.map(function(d){
+      var val = (typeof d[1] === "number") ? d[1].toLocaleString("tr-TR") : d[1];
+      return '<dt>' + d[0] + '</dt><dd>' + val + '</dd>';
+    }).join("") + '</dl>';
+  }
+  if(document.getElementById("oInterp").checked){
+    if(c.durumMetin && out.durum){
+      html += '<div class="verdict ' + out.durum + '">' + c.durumMetin[out.durum] + '</div>';
+    } else if(c.bands){
+      var band = c.bands[c.bands.length-1];
+      for(var i=0;i<c.bands.length;i++){ if(out.value >= c.bands[i][0]){ band = c.bands[i]; break; } }
+      html += '<div class="verdict ' + band[1] + '">' + band[2] + '</div>';
+      if(c.bands.length > 1 && !c.noHeur){
+        html += '<div class="note" style="margin-top:12px">Yorum eşikleri standarttan değil, başlangıç varsayımlarından gelir; kendi hedeflerinizle değiştirin.</div>';
+      }
+    }
+    html += '<div class="note" style="margin-top:12px">' + c.note + '</div>';
+  }
+  if(document.getElementById("oPy").checked){
+    var args = c.fields.map(function(f){ return f.k + "=" + r.v[f.k]; }).join(", ");
+    var call = 'hesapla("' + c.id + '", ' + args + ')';
+    html += '<pre style="margin-top:16px"><i>&gt;&gt;&gt; from iso24178_metrikler import hesapla</i>\n' +
+            '&gt;&gt;&gt; ' + call + '["deger"]\n' + out.value + '\n\n' +
+            '<i># eşdeğer doğrudan çağrı</i>\n&gt;&gt;&gt; ' + c.py + '</pre>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+sel.addEventListener("change", function(){ buildFields(); run(); });
+document.getElementById("btnRun").addEventListener("click", run);
+document.getElementById("btnExample").addEventListener("click", function(){
+  var c = CALC[+sel.value];
+  c.fields.forEach(function(f){ document.getElementById("in_" + f.k).value = f.v; });
+  run();
+});
+["oFormula","oInterp","oPy"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", function(){
+    var all = document.getElementById("oFormula").checked &&
+              document.getElementById("oInterp").checked &&
+              document.getElementById("oPy").checked;
+    document.getElementById("oAll").checked = all;
+    run();
+  });
+});
+document.getElementById("oAll").addEventListener("change", function(){
+  var s = this.checked;
+  ["oFormula","oInterp","oPy"].forEach(function(id){ document.getElementById(id).checked = s; });
+  run();
+});
+
+/* --- tablodan hesaplayıcıya aktarma --- */
+document.getElementById("btnAktar").addEventListener("click", function(){
+  if(!TBL.ok){ loadTblExample(); }
+  var idx = CALC.map(function(c){ return c.id; }).indexOf("kultur_endeksi");
+  sel.value = idx; buildFields();
+  document.getElementById("in_toplam_puan").value = TBL.puan;
+  document.getElementById("in_yanitci").value = TBL.yanit / TBL.n;
+  document.getElementById("in_madde_sayisi").value = TBL.n;
+  run();
+  document.getElementById("hesaplayici").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* =========================================================
+   4) PYTHON MOTORU (Pyodide / WebAssembly)
+   Gömülü iso24178_metrikler.py modülü tarayıcı içinde
+   gerçek CPython ile çalıştırılır. Erişim yoksa JS yedeği
+   devrede kalır ve sonuçlar değişmez.
+   ========================================================= */
+var PY = {ready:false, busy:false, pyodide:null};
+
+var PYODIDE_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+  "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"
+];
+
+function setEngine(state, text){
+  var chip = document.getElementById("engStatus");
+  chip.className = "chip" + (state ? " " + state : "");
+  chip.textContent = text;
+}
+
+function loadScript(src){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function(){ resolve(src); };
+    s.onerror = function(){ reject(new Error(src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function pySource(){
+  return document.getElementById("pysrc").textContent;
+}
+
+async function initPython(){
+  if(PY.ready) return true;
+  if(PY.busy) return false;
+  PY.busy = true;
+  document.getElementById("btnPy").disabled = true;
+  setEngine("busy", "Motor: Pyodide indiriliyor…");
+  try{
+    if(typeof loadPyodide === "undefined"){
+      try { await loadScript(PYODIDE_URLS[0]); }
+      catch(e){ await loadScript(PYODIDE_URLS[1]); }
+    }
+    setEngine("busy", "Motor: Python başlatılıyor…");
+    PY.pyodide = await loadPyodide();
+
+    /* Modülü sanal dosya sistemine yazmadan, gerçek bir modül nesnesi olarak kur:
+       böylece __name__ != "__main__" olur ve _demo() kendiliğinden çalışmaz.
+       Kayıt exec'ten ÖNCE yapılır; @dataclass işlenirken modülü sys.modules'te arar. */
+    PY.pyodide.globals.set("_kaynak", pySource());
+    PY.pyodide.runPython(
+      "import sys, types\n" +
+      "_m = types.ModuleType('iso24178_metrikler')\n" +
+      "_m.__file__ = 'iso24178_metrikler.py'\n" +
+      "sys.modules['iso24178_metrikler'] = _m\n" +
+      "exec(compile(_kaynak, 'iso24178_metrikler.py', 'exec'), _m.__dict__)\n" +
+      "from iso24178_metrikler import *\n" +
+      "import iso24178_metrikler as m\n"
+    );
+    var sur = PY.pyodide.runPython(
+      "import sys\n'.'.join(str(x) for x in sys.version_info[:3])");
+    PY.ready = true;
+    setEngine("on", "Motor: Python " + sur + " (Pyodide)");
+    run();
+    return true;
+  }catch(e){
+    setEngine("off", "Motor: tarayıcı (JS) — Pyodide yüklenemedi");
+    document.getElementById("pyOut").textContent =
+      "Python motoru yüklenemedi. Bu genellikle çevrimdışı olmaktan ya da ağ kısıtından kaynaklanır.\n" +
+      "Sayfa çalışmaya devam eder; hesaplamalar JavaScript yedeğiyle aynı sonuçları verir.\n\n" + e;
+    return false;
+  }finally{
+    PY.busy = false;
+    document.getElementById("btnPy").disabled = false;
+  }
+}
+
+document.getElementById("btnPy").addEventListener("click", initPython);
+
+/* --- konsol --- */
+var VARSAYILAN_KOD =
+  'from iso24178_metrikler import *\n' +
+  'import iso24178_metrikler as m\n\n' +
+  '# Anket puanlaması (Ek A)\n' +
+  'print("İfade ortalaması   :", round(madde_ortalamasi(6, 20, 48, 84, 42), 2))\n' +
+  'print("Kültür endeksi     :", round(kultur_endeksi(18000, 200), 1), "%")\n' +
+  'print("Zayıf boyut        :", zayif_boyut([4, 3.6, 3.4, 3.5, 3.4]))\n\n' +
+  '# Yanıt ve bölge raporlaması\n' +
+  'print("Yanıt oranı        :", round(yanit_orani(200, 240), 1), "%")\n' +
+  'print("Hata payı          : ±", round(hata_payi(200, 240), 1), "puan")\n' +
+  'print("Bölge endeksi      :", round(bolge_endeksi([84, 86, 81]), 1))\n\n' +
+  '# Tutma\n' +
+  'print("Tutma oranı        :", round(tutma_orani(500, 62), 1), "%")\n' +
+  'print("Erken kayıp payı   :", round(erken_kayip_payi(9, 21, 62), 1), "%")\n\n' +
+  '# 25 ifadelik örnek anketin özeti\n' +
+  't = ornek_tablo()\n' +
+  'for anahtar, deger in t.ozet().items():\n' +
+  '    print(f"{anahtar:<20}: {deger}")\n\n' +
+  '# Dağıtıcı, hesaplayıcının kullandığı arayüzdür:\n' +
+  'print(hesapla("kultur_endeksi", toplam_puan=18000, yanitci=200, madde_sayisi=25))\n\n' +
+  '# Ölçüm sistemi denetimi: hangi ön koşullar eksik?\n' +
+  'for uyari in kultur_denetimi(amac_ifadesi=True, deger_ifadesi=True):\n' +
+  '    print("!", uyari)\n';
+
+document.getElementById("pyCode").value = VARSAYILAN_KOD;
+
+async function runConsole(){
+  var out = document.getElementById("pyOut");
+  if(!PY.ready){
+    out.textContent = "Python motoru hazırlanıyor, ilk çalıştırma biraz sürebilir…";
+    var ok = await initPython();
+    if(!ok) return;
+  }
+  out.textContent = "çalışıyor…";
+  try{
+    PY.pyodide.globals.set("_kod", document.getElementById("pyCode").value);
+    var cikti = PY.pyodide.runPython(
+      "import io, contextlib, traceback\n" +
+      "_tampon = io.StringIO()\n" +
+      "with contextlib.redirect_stdout(_tampon), contextlib.redirect_stderr(_tampon):\n" +
+      "    try:\n" +
+      "        exec(_kod, globals())\n" +
+      "    except Exception:\n" +
+      "        traceback.print_exc()\n" +
+      "_tampon.getvalue()"
+    );
+    out.textContent = cikti && cikti.trim() ? cikti : "(çıktı yok)";
+  }catch(e){
+    out.textContent = "Hata: " + e;
+  }
+}
+
+document.getElementById("btnRunPy").addEventListener("click", runConsole);
+document.getElementById("btnReset").addEventListener("click", function(){
+  document.getElementById("pyCode").value = VARSAYILAN_KOD;
+  document.getElementById("pyOut").textContent = "Kod sıfırlandı.";
+});
+document.getElementById("btnDemo").addEventListener("click", function(){
+  document.getElementById("pyCode").value =
+    "import iso24178_metrikler as m\n\n" +
+    "# Modülün kendi doğrulama çıktısı (komut satırındaki\n" +
+    "# python3 iso24178_metrikler.py ile aynı sonucu verir)\n" +
+    "m._demo()\n";
+  runConsole();
+});
+
+/* modül kaynağını sayfada okunur kıl */
+document.getElementById("srcView").textContent = pySource().trim();
+
+buildTbl();
+loadTblExample();
+buildFields();
+run();
+</script>
+</body>
+</html>
