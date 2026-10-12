@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO/TS 30431 Liderlik Metrikleri Kümesi — Sınıflandırma ve Hesaplayıcı</title>
+<style>
+  :root{
+    --ink:#101418;
+    --ink-soft:#59636f;
+    --ink-faint:#8b95a1;
+    --line:#dde3ea;
+    --line-soft:#eef1f5;
+    --bg:#ffffff;
+    --canvas:#f6f8fa;
+    --accent:#0b5c8a;
+    --accent-soft:#e7f0f6;
+    --panel:#0e1520;
+    --panel-2:#16202e;
+    --panel-line:#28394f;
+    --out-ink:#8a3b12;  --out-bg:#fbeee6;
+    --eff-ink:#14615c;  --eff-bg:#e6f2f1;
+    --efc-ink:#33478c;  --efc-bg:#eaedf8;
+    --rea-ink:#7a5c00;  --rea-bg:#f8f1d9;
+    --cos-ink:#8c2f4b;  --cos-bg:#f9e8ee;
+    --ok:#1d6f42; --warn:#8a6100; --bad:#992121;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--canvas);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.62;
+  }
+  .sheet{max-width:1000px;margin:0 auto;background:var(--bg);padding:56px 60px 80px;
+    box-shadow:0 0 0 1px var(--line);}
+  @media(max-width:760px){ .sheet{padding:28px 20px 56px} }
+
+  h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:25px;margin:52px 0 4px;padding-bottom:8px;
+     border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  h3{font-size:17px;margin:32px 0 6px;letter-spacing:.01em}
+  h4{font-size:15px;margin:22px 0 4px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:12px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  small{color:var(--ink-soft)}
+  .lede{font-size:17px;color:var(--ink-soft)}
+
+  .srcbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 0;margin:0 0 26px;font-size:13.5px;color:var(--ink-soft)}
+  .srcbar b{color:var(--ink);font-weight:600}
+
+  .toc{background:var(--canvas);border:1px solid var(--line);padding:16px 20px;margin:26px 0 0;
+    font-size:14px;columns:2;column-gap:34px}
+  @media(max-width:640px){.toc{columns:1}}
+  .toc a{display:block;padding:3px 0;text-decoration:none;color:var(--ink)}
+  .toc a:hover{color:var(--accent);text-decoration:underline}
+  .toc b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 4px}
+
+  .keypoints li{margin:10px 0}
+  .keypoints b{font-weight:650}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink-soft);padding-bottom:6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:var(--canvas);font-weight:650;font-size:13px}
+  tbody tr:nth-child(even){background:#fcfdfe}
+  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;width:66px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink)}
+  .dot.o{background:var(--out-ink)} .dot.s{background:var(--eff-ink)} .dot.p{background:var(--efc-ink)}
+  .dot.r{background:var(--rea-ink)} .dot.c{background:var(--cos-ink)}
+
+  .tag{display:inline-block;font-size:11px;line-height:1.5;padding:1px 7px;border-radius:3px;
+    letter-spacing:.03em;white-space:nowrap;font-weight:600}
+  .tag.o{color:var(--out-ink);background:var(--out-bg)}
+  .tag.s{color:var(--eff-ink);background:var(--eff-bg)}
+  .tag.p{color:var(--efc-ink);background:var(--efc-bg)}
+  .tag.r{color:var(--rea-ink);background:var(--rea-bg)}
+  .tag.c{color:var(--cos-ink);background:var(--cos-bg)}
+  .tag.iso{color:#4a4a4a;background:#eeeeee}
+  .tag.lvl{color:#5a3a86;background:#f0eaf8}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--line-soft);padding:1px 5px;border-radius:3px}
+  pre{background:var(--panel);color:#e7eef6;border-radius:6px;padding:18px 20px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:14px 0}
+  pre b{color:#f0b866;font-weight:400}      /* anahtar kelime */
+  pre i{color:#7f8ea1;font-style:normal}    /* yorum */
+  pre u{color:#9fd28a;text-decoration:none} /* dize/sayı */
+  pre .fn{color:#79c0e8}
+  .filename{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin:14px 0 -8px}
+
+  .formula{font-family:var(--serif);font-size:16.5px;background:var(--canvas);
+    border-left:3px solid var(--accent);padding:12px 16px;margin:12px 0;overflow-x:auto}
+  .formula em{font-style:italic}
+
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 14px;color:var(--ink-soft);font-size:14px;margin:14px 0}
+
+  /* --- panel --- */
+  .panel{background:var(--panel);color:#dbe5f0;border-radius:8px;padding:22px 24px;margin:20px 0}
+  .panel h3{color:#fff;margin:0 0 4px;font-size:16px}
+  .panel .hint{color:#8fa2b8;font-size:13px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#8fa2b8;margin-bottom:5px}
+  .field label .req{color:#e08a5a}
+  select,input[type=number],input[type=text]{
+    width:100%;background:var(--panel-2);border:1px solid var(--panel-line);color:#eef4fb;
+    border-radius:5px;padding:9px 10px;font-family:var(--sans);font-size:14px}
+  input[type=number]{font-family:var(--mono)}
+  select:focus,input:focus{outline:2px solid #4a8fc0;outline-offset:1px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13.5px;color:#b9c7d6}
+  .checks label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .panel-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:5px;cursor:pointer;
+    border:1px solid transparent;padding:9px 18px}
+  .btn-run{background:#1c74ab;color:#fff}
+  .btn-run:hover{background:#2385c2}
+  .btn-ghost{background:transparent;color:#9fb3c9;border-color:var(--panel-line)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9fb3c9;
+    border:1px solid var(--panel-line);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7c8ea3}
+  .chip.busy::before{background:#e0a13c}
+  .chip.on::before{background:#4ec07a}
+  .chip.off::before{background:#c05a5a}
+
+  .console{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+  .console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+    background:var(--canvas);border-bottom:1px solid var(--line);padding:8px 12px;font-size:12.5px;color:var(--ink-soft)}
+  .console textarea{width:100%;border:0;display:block;background:var(--panel);color:#e7eef6;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:16px 20px;resize:vertical;min-height:190px}
+  .console textarea:focus{outline:2px solid #4a8fc0;outline-offset:-2px}
+  .console pre{margin:0;border-radius:0;background:#0a1017;border-top:1px solid var(--panel-line);min-height:64px}
+  .btn-sm{padding:6px 14px;font-size:13px}
+  details.src pre{max-height:420px;overflow:auto}
+  .btn-ghost:hover{color:#fff;border-color:#47607d}
+
+  .result{border:1px solid var(--line);border-top:3px solid var(--accent);padding:18px 20px;margin:18px 0}
+  .result .big{font-family:var(--serif);font-size:32px;line-height:1.1}
+  .result .big span{font-size:16px;color:var(--ink-soft);font-family:var(--sans)}
+  .result dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:14px 0 0;font-size:14px}
+  .result dt{color:var(--ink-soft)}
+  .result dd{margin:0;font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px;padding:10px 12px;font-size:14px;border-radius:4px;background:var(--canvas)}
+  .verdict.ok{color:var(--ok);background:#eef6f1}
+  .verdict.warn{color:var(--warn);background:#fbf5e7}
+  .verdict.bad{color:var(--bad);background:#faeeee}
+
+  /* --- matris --- */
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;
+    background:var(--canvas);border:1px solid var(--line);padding:14px 16px;margin:16px 0}
+  .filters label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .filters select,.filters input{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .matrix{font-size:13.5px}
+  .matrix th.rot{width:72px;text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom}
+  .matrix td.name{font-weight:500}
+  .matrix td.name em{display:block;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .matrix tr.group td{background:#f2f5f8;font-weight:650;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+  .count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+
+  /* --- pozisyon tablosu --- */
+  .postbl{font-size:13.5px}
+  .postbl input[type=text],.postbl input[type=date],.postbl input[type=number]{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .postbl input[type=text]{font-family:var(--sans)}
+  .postbl input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .postbl td.chk{text-align:center}
+  .postbl input[type=number]{text-align:right}
+  .postbl td:first-child{min-width:150px}
+  .postbl th.num,.postbl td.num{width:auto}
+  @media(max-width:760px){table{display:block;overflow-x:auto}}
+  .postbl td.calc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap}
+  .postbl tfoot td{background:var(--canvas);font-weight:650}
+  .tblbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+  .tblbar button{border-color:var(--line);color:var(--ink-soft);background:#fff}
+  .tblbar button:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tblbar .inline{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft)}
+  .tblbar .inline input{width:78px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .card{border:1px solid var(--line);border-top:3px solid var(--eff-ink);padding:12px 14px}
+  .card b{display:block;font-family:var(--serif);font-size:24px;line-height:1.2}
+  .card span{font-size:12px;color:var(--ink-soft)}
+  .card.alt{border-top-color:var(--efc-ink)}
+  .card.warn{border-top-color:var(--out-ink)}
+
+  details{border-bottom:1px solid var(--line);padding:12px 0}
+  summary{cursor:pointer;font-weight:600;font-size:15px}
+  summary::marker{color:var(--accent)}
+  details p{margin:10px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  @media (prefers-reduced-motion:no-preference){
+    .result{transition:border-color .2s}
+  }
+  @media print{
+    body{background:#fff} .sheet{box-shadow:none;max-width:none;padding:0}
+    .panel{background:#fff;color:#000;border:1px solid #000}
+    pre{background:#f4f4f4;color:#000}
+  }
+.postbl input[type=number]{min-width:78px}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>ISO/TS 30431 Liderlik Metrikleri Kümesi</h1>
+<div class="srcbar">
+  <span><b>Kaynak:</b> PD ISO/TS 30431:2021 — <i>Human resource management — Leadership metrics cluster</i></span>
+  <span><b>Kapsam:</b> 5 kullanıcı · 4 metrik ailesi · 51 metrik ve etken</span>
+  <span><b>Hesaplama:</b> gömülü Python modülü (Pyodide/WebAssembly)</span>
+  <span><b>Sürüm:</b> Ekim 2026</span>
+</div>
+
+<h2 id="genel">Genel Bakış</h2>
+<p>ISO/TS 30431:2021, ISO 30414'ün <b>liderlik</b> kümesini ayrıntılandıran bir teknik şartnamedir. Kurumlar için liderlik ölçümünün unsurlarını anlatır ve iç ve dış raporlama için karşılaştırılabilir
+ölçümlerin formülünü verir. Ayrıca liderlik verisini yorumlarken, özellikle iç müdahalelere karar verirken ve bunları dış paydaşlara (düzenleyiciler, yatırımcılar) raporlarken dikkate alınacak konuları vurgular. Üç metriği ele alır:
+<b>liderlik güveni</b>, <b>kontrol alanı</b> (bir yöneticiye bağlı çalışan sayısı) ve <b>liderlik gelişimi</b>. Giriş bölümü liderliğin kalitesinin ve sürdürülebilirliğinin kurumun sonuçlarını güçlü biçimde etkilediğini, bunun da
+en uygun liderlerin belirlenmesine ve geliştirilmesine (örneğin üst yönetim liderleri ve yöneticiler olarak ayrıştırılarak) bağlı olduğunu söyler; bu alandaki metrikler liderleri belirleme ve geliştirme sürecine dair ifade üretir. Bu sayfa, şartnamenin metrik kümesini
+filtrelenebilir bir matrise; hesaplanabilir metrikleri de formül + canlı hesaplayıcı + Python koduna dönüştürür. PD ISO/TS 30431:2021, ISO/TS 30431'in İngiltere uyarlamasıdır (yayımlanmış belge) ve BSI tarafından
+31 Mart 2021'de yayımlanmıştır. İlişkili belgeler: insan sermayesi raporlaması için ISO 30414 (madde 4.7.5, liderlik; 4.7.5.1, liderlik güveni), terimler için ISO 30400.</p>
+
+<h3>Önemli Noktalar</h3>
+<ul class="keypoints">
+  <li><b>Üç metrik, yedi bileşen.</b> Şartname her metrik için tanım, amaç, formül, kullanım, hedef kullanıcılar, bağlam etkenleri ve öngörü etkenlerini tarif eder; bu belgede kullanıcı listesi ayrıca verilmez, kullanıcı sütunları bu sayfanın sınıflandırmasıdır.</li>
+  <li><b>Liderlik güveni anketle ölçülür.</b> Üç seçenek sayılır: yönetim ya da liderlik etkinliğiyle ilgili sorulardan 0–100 arası toplam skor; Crawford, LePine ve Rich'in bağlılık derecelendirme ölçeği; 1–5 Likert'in yüzdeliğe çevrilip tüm soruların ortalamasının alınması.
+  Örnek Tablo 1, adalet, dürüstlük ve tutarlılık için 0–100 ölçeğinde puanlar ve bunlardan toplam endeks verir.</li>
+  <li><b>Kontrol alanı iki yöntemle hesaplanır.</b> Genel yöntem: toplam işgücü ÷ toplam yönetici (astı olmayanlar dahil). Özel yöntem: toplam işgücü ÷ doğrudan astı olan yönetici. Şartname örneğinde 10 000 çalışana karşı 1 000 yönetici → 10;
+  yalnızca 800 yöneticinin astı olduğu için 12,5.</li>
+  <li><b>Yüksek oran ikili okunur.</b> Şartnameye göre çalışan/yönetici oranı yükseldikçe yapı daha yalın (daha az yönetim katmanı) olabilir; ancak giderek artan oranlar aşırı yüklenmiş yöneticilere, çalışan iletişiminde ve kariyer gelişiminde azalmaya, çalışan devrinde artışa ve düşük bağlılığa da işaret edebilir.</li>
+  <li><b>Liderlik gelişimi geride kalan bir göstergedir.</b> Kurumun liderleri içeriden geliştirme niyetini yansıtır. İki ölçü önerilir: tanımlı dönemde liderlik gelişim programlarına katılan liderlerin yüzdesi; tanımlı dönemde eğitime katılan liderlerin yüzdesi (örnek: 2019'da %20,0 ve %80,0).</li>
+  <li><b>Kırılım ölçüyü güçlendirir.</b> Kontrol alanı işlevsel gruplara göre ve en yüksek–en düşük değerlerle raporlanmalı (kaç yöneticinin yalnızca bir, kaçının 10'dan, kaçının 30'dan fazla doğrudan astı var); liderlik gelişimi düzey, konum, bölüm ve hizmet yılına göre kırılabilir.</li>
+  <li><b>FTE değişimi bağlamdır.</b> Her ölçüm noktasındaki FTE sayısı, sonuçların anlamını değiştirecek kadar büyüdü ya da küçüldü mü sorusu üç metrik için de ilk bağlam etkenidir.</li>
+</ul>
+
+<div class="toc">
+  <b>İçindekiler</b>
+  <a href="#genel">Genel bakış ve önemli noktalar</a>
+  <a href="#nezaman">Ne zaman kullanılır</a>
+  <a href="#cerceve">Çerçeve ve metodoloji</a>
+  <a href="#ornekler">Şartnamenin rapor örnekleri</a>
+  <a href="#adimlar">Metrik seçim adımları</a>
+  <a href="#kavramlar">Temel kavramlar</a>
+  <a href="#matris">Metrik matrisi</a>
+  <a href="#tablo">Kontrol alanı ve gelişim tablosu</a>
+  <a href="#formuller">Formüller ve tanımlar</a>
+  <a href="#hesaplayici">Hesaplayıcı</a>
+  <a href="#python">Python kod örnekleri</a>
+  <a href="#yorum">Sonuçların yorumlanması</a>
+  <a href="#sinirlamalar">Sınırlamalar</a>
+  <a href="#raporlama">Metriklerin raporlanması</a>
+  <a href="#ilgili">İlgili standartlar</a>
+  <a href="#sss">Sıkça sorulan sorular</a>
+</div>
+
+<h2 id="nezaman">Ne Zaman Kullanılır</h2>
+<ul>
+  <li><b>Çalışanların yöneticilerine ve liderlerine güvenini ölçerken:</b> liderlik güveni, çalışanların yönetici ve liderlere duyduğu güveni değerlendirmek için kullanılır (madde 4.2).</li>
+  <li><b>Yönetim yapısının yalınlığını ya da yüklenmeyi değerlendirirken:</b> kontrol alanı, gözetim ve yönetim kadrosunun çalışanlara ve koşullu işgücüne oranını ölçer (madde 5.2); çalışan iletişimi, kariyer gelişimi, devir ve bağlılıkla ilişkilendirilebilir.</li>
+  <li><b>İşgücü maliyet yönetimini dolaylı izlerken:</b> birçok kurum yönetim kontrol alanını, kurum içinde etkin işgücü maliyet yönetiminin geride kalan, dolaylı bir göstergesi olarak kullanır (madde 5.4).</li>
+  <li><b>Liderleri içeriden geliştirme niyetini izlerken:</b> liderlik gelişimi, kurumun üstlendiği genel liderlik gelişim faaliyetini gösterir (madde 6.2).</li>
+  <li><b>Verimlilik ve elde tutma fırsatı ararken:</b> işlev, kritik iş grupları, performans kategorisi ve kıdem kategorisi gibi ölçüm boyutları eklendiğinde kontrol alanı verimlilik ve elde tutma fırsatlarını belirlemek için kullanılabilir (madde 5.5).</li>
+  <li><b>Dış raporlamada:</b> yatırımcılar ve düzenleyiciler gibi dış paydaşlara karşılaştırılabilir göstergeler üretilir (ISO 30414 ile birlikte).</li>
+</ul>
+<div class="note">Bu belge bir <b>ölçme</b> belgesidir. Metrikler liderliğin <i>kalitesini</i> doğrudan değil, dolaylı göstergelerle (anket, oran, katılım yüzdesi) ölçer. Ayrıca sonuç beklenenden kötü göründüğünde ileri inceleme olumlu göstergeleri de ortaya çıkarabilir.</div>
+
+<h2 id="cerceve">Çerçeve ve Metodoloji</h2>
+
+<h3>Üç metrik, ortak yapı</h3>
+<p>Şartname, ISO 30414'te belgelenen liderlik kümesindeki üç metriği aşağıdaki gibi sıralar. Her metrik için genel tanım, amaç, formül, bağlam ve öngörü etkenleri ve bir hesaplanmış örnek verilir.</p>
+<table>
+  <thead><tr><th>Metrik</th><th>Madde</th><th>Tanım</th><th>Amaç</th></tr></thead>
+  <tbody>
+    <tr><td><b>Liderlik güveni</b></td><td>4</td>
+      <td>ISO 30414:2018, 4.7.5.1'de açıklanan liderlik güveni. Anket, derecelendirme ve ölçeklerle ölçülür: yönetim ya da liderlik etkinliğine dair soruların 0–100 toplam skoru; Crawford, LePine ve Rich bağlılık derecelendirme ölçeği;
+      1–5 Likert'in yüzdeliğe çevrilip soruların ortalamasının alınması.</td>
+      <td>Çalışanların yöneticilerine ve liderlerine duyduğu güveni değerlendirmek.</td></tr>
+    <tr><td><b>Kontrol alanı</b></td><td>5</td>
+      <td>Bir gözetmene ya da yöneticiye bağlı çalışan ve diğer işçi sayısı; iki yöntemle hesaplanır: genel ortalama yöntemi ve özel yöntem.</td>
+      <td>Gözetim ve yönetim kadrosunun çalışanlara ve koşullu işgücüne (işgücüne) oranını ölçmek.</td></tr>
+    <tr><td><b>Liderlik gelişimi</b></td><td>6</td>
+      <td>Kurumun liderleri içeriden geliştirme niyetinin geride kalan göstergesi. İki ölçü: tanımlı dönemde liderlik gelişim programlarına katılan liderlerin yüzdesi; tanımlı dönemde eğitime katılan liderlerin yüzdesi.</td>
+      <td>Kurumun üstlendiği genel liderlik gelişim faaliyetini göstermek; lider grubu düzey, konum, bölüm ve hizmet yılı gibi kategorilere ayrıldığında uygulama güçlenir.</td></tr>
+  </tbody>
+</table>
+
+<h3>Formüller</h3>
+<table>
+  <thead><tr><th>Metrik</th><th>Formül</th><th>Değişkenler</th></tr></thead>
+  <tbody>
+    <tr><td><b>Liderlik güveni</b></td><td>Anket skoru (0–100)</td>
+      <td>Seçenekler: aggregate (toplu) skor; Crawford–LePine–Rich sınıflandırma ölçeği; Likert 1–5'in yüzdeliğe çevrilip ortalaması. Tablo 1: adalet, dürüstlük, tutarlılık ve 0–100 ölçeğinde toplam liderlik güveni endeksi.</td></tr>
+    <tr><td><b>Genel kontrol alanı</b> (Formül 1)</td><td style="font-family:var(--serif)">Toplam işgücü &divide; Toplam yönetici</td>
+      <td>Toplam işgücü: tüm yönetim ve yönetim dışı çalışanlar; toplam yönetici: doğrudan astı olmayan yöneticiler dahil. Örnek: 10 000 ÷ 1 000 = 10.</td></tr>
+    <tr><td><b>Özel kontrol alanı</b> (Formül 2)</td><td style="font-family:var(--serif)">Toplam işgücü &divide; Doğrudan astı olan yönetici</td>
+      <td>Yalnızca çalışanlar, koşullu işgücü ya da ikisi üzerinde gözetim sorumluluğu olan yöneticiler. Örnek: 10 000 ÷ 800 = 12,5.</td></tr>
+    <tr><td><b>Liderlik gelişimi</b></td><td style="font-family:var(--serif)">Katılan lider &divide; Toplam lider &times; 100</td>
+      <td>Madde 6.3 formülü yalnızca 6.6'daki örneğe atıf yapar; yüzde, Tablo 4 ve 5'teki "net yüzde sonucu" satırından okunur. Örnek: 200 ÷ 1 000 = %20,0 (gelişim programı), 800 ÷ 1 000 = %80,0 (eğitim).</td></tr>
+  </tbody>
+</table>
+
+<h3>Kullanım biçimi ve kırılım (madde 5.3, 5.5, 6.2)</h3>
+<ul>
+  <li><b>Kontrol alanı</b> işlevsel gruba göre ve kurum genelindeki en yüksek ve en düşük değerlerle ölçülüp raporlanmalıdır. Örneğin kaç yöneticinin yalnızca bir doğrudan astı, kaçının 10'dan fazla, kaçının 30'dan fazla doğrudan astı olduğu belirtilmelidir.</li>
+  <li><b>Genel yöntem</b> tüm gözetmen ve yönetici düzeylerini unvanından bağımsız katar; bu yüzden gözetim yapan yöneticilerin taşıdığı iş yükü ve sorumluluğu, gözetim yapmayanlarınkiyle karıştırarak yanıltıcı bir oran verebilir. Çalışanların proje, bütçe, sistem ya da müşteri ilişkisi yönetimi sorumluluğuyla yönetici/gözetmen unvanı ve maaşı taşıyıp doğrudan bağlı çalışanı olmaması giderek yaygındır.</li>
+  <li><b>Özel yöntem</b> yalnızca doğrudan gözetim sorumluluğu olan yöneticileri sayar; genel yöntemden her zaman daha yüksek ya da eşit sonuç verir.</li>
+  <li><b>Kontrol alanı</b> düzeye ya da örgütsel katmana göre ayrıldığında daha öğreticidir. Bireysel yöneticiler arasında sektöre, kurum büyüklüğüne, katmana, işlevsel gruba, iş türüne, iş tipine, otomasyon düzeyine ve diğer etkenlere göre önemli farklar olabilir.</li>
+  <li><b>Liderlik gelişimi</b> lider grubu kategorilere (liderlik düzeyi, konum, bölüm, hizmet yılı) bölündüğünde daha anlamlıdır.</li>
+</ul>
+
+<h3>Bağlam etkenleri (madde 4.4, 5.4, 6.4)</h3>
+<p>Birçok etken ölçüm sonucunu önemli ölçüde etkileyebilir. Sonuçların beklenenden düşük ya da kötüleşiyor olduğu durumlar mümkündür; ileri inceleme olumlu iyileşme göstergeleri de bulabilir. Sonuçları destekleyen bağlam düşünülürken şunlar dikkate alınabilir:</p>
+<ul>
+  <li>Her ölçüm noktasındaki FTE sayısı: FTE, metrik sonuçlarının bakış açısını ve anlamını değiştirecek kadar büyüdü ya da küçüldü mü?</li>
+  <li>Kurumun yürüttüğü güncel faaliyetler: artan üretim ya da ürün genişlemesi; yeniden yapılanmalar; işgücünü eğitmeye yönelik güncel faaliyetler.</li>
+  <li>Kültürel değişimler (olumlu ve olumsuz).</li>
+  <li>Kuşak bakış açıları.</li>
+  <li>Bildirim ya da yayın artışına yol açan toplumsal değişim ya da farkındalık (4.4); bildirimlerde artış (5.4, 6.4).</li>
+  <li>Sektör beklentisi.</li>
+  <li>Ekonomik etkenler: daralmalar; genişlemeler.</li>
+</ul>
+<p>Kontrol alanı için ek olarak, birçok kurumun bu metriği işgücü maliyet yönetiminin geride kalan, dolaylı bir göstergesi olarak kullandığı belirtilir (5.4).</p>
+
+<h3>Öngörü etkenleri (madde 4.5, 5.5, 6.5)</h3>
+<p>Mevcut durumdaki olası iyileşme ya da kötüleşmeyi öngörürken kurumlar gelecekteki bilinen ve beklenen olaylara bakabilir:</p>
+<ul>
+  <li>Planlanan örgüt yapısı veya işgücü değişiklikleri.</li>
+  <li>Yaklaşan iş, işlev ya da ürün değişiklikleri.</li>
+  <li>Satın almalar.</li>
+  <li>Ekonomik etkenler: daralmalar; genişlemeler.</li>
+  <li>İşgücü farkındalığı ve eğitimi.</li>
+  <li>Siyasi, sosyal, çevresel ve yasal dinamikler.</li>
+  <li>Sektörel etkiler.</li>
+</ul>
+
+<h2 id="ornekler">Şartnamenin Rapor Örnekleri</h2>
+<p>Şartname, her metrik için hesaplanmış bir örnek verir. Sayılar şartnamedeki örneklerdir; gerçek bir kuruma ait değildir.</p>
+
+<h3>Tablo 1 — Çalışan anketlerine dayalı liderlik güveni raporu</h3>
+<table>
+  <thead><tr><th>Boyut</th><th class="num">2017</th><th class="num">2016</th><th class="num">2015</th><th>Örnek ifade</th></tr></thead>
+  <tbody>
+    <tr><td>Adalet</td><td class="num">73</td><td class="num">69</td><td class="num">65</td><td>"Yöneticim bana ayrımcılık ya da kayırmacılık yapmadan eşit davranır."</td></tr>
+    <tr><td>Dürüstlük</td><td class="num">75</td><td class="num">76</td><td class="num">73</td><td>"Yöneticimin ilkeleri vardır; dürüst ve doğru sözlüdür."</td></tr>
+    <tr><td>Tutarlılık</td><td class="num">81</td><td class="num">79</td><td class="num">77</td><td>"Yöneticim benzer durum ve koşullara zaman içinde aynı biçimde davranır ve karşılık verir."</td></tr>
+    <tr><td><b>Toplam liderlik güveni endeksi (0–100 ölçeği)</b></td><td class="num"><b>76</b></td><td class="num"><b>75</b></td><td class="num"><b>72</b></td><td>Üç boyutun eşit ağırlıklı ortalamasıyla uyumludur (76,3 · 74,7 · 71,7); şartname ağırlığı yazmaz.</td></tr>
+  </tbody>
+</table>
+<p>Örnek ifadeler şartnamedeki anket cümlelerinin Türkçe özetidir; kendi anketinizde kullandığınız maddeleri ve ölçeği raporda belirtin.</p>
+
+<h3>Tablo 2 — Genel kontrol alanının raporlanması</h3>
+<table>
+  <thead><tr><th>Kalem</th><th>İşgücü dökümü</th><th class="num">Özet sonuç</th></tr></thead>
+  <tbody>
+    <tr><td>Toplam işgücü</td><td>9 000 + 900 + 100</td><td class="num">10 000</td></tr>
+    <tr><td>Toplam yönetici</td><td>1 000</td><td class="num">1 000</td></tr>
+    <tr><td><b>Genel kontrol alanı</b></td><td colspan="2" class="num"><b>10 (yönetici başına 10 çalışan)</b></td></tr>
+  </tbody>
+</table>
+<p>Örnekte XYZ kurumunda yıl sonunda 9 000'den fazla tam zamanlı çalışan, 900 geçici işçi ve kuruma tam zamanlı çalışan 100 bağımsız yüklenici vardır. Gözetmenden genel müdüre kadar 1 000 yönetici bulunur; ancak yalnızca 800'ünün çalışanlar üzerinde fiilen gözetim sorumluluğu vardır, diğer 200 yönetici proje, sistem, varlık ve programları yönetir ama doğrudan bağlı personeli yoktur.</p>
+
+<h3>Tablo 3 — Yönetim kontrol alanının raporlanması (özel yöntem)</h3>
+<table>
+  <thead><tr><th>Kalem</th><th>İşgücü dökümü</th><th class="num">Özet sonuç</th></tr></thead>
+  <tbody>
+    <tr><td>Toplam işgücü</td><td>9 000 + 900 + 100</td><td class="num">10 000</td></tr>
+    <tr><td>Doğrudan astı olan yönetici sayısı<sup>a</sup></td><td>800</td><td class="num">800</td></tr>
+    <tr><td><b>Kontrol alanı</b></td><td colspan="2" class="num"><b>12,5 (yönetici başına 12,5 çalışan)</b></td></tr>
+  </tbody>
+</table>
+<p><sup>a</sup> Doğrudan astı olan yönetici sayısı, yalnızca çalışanlar, koşullu işgücü ya da ikisi üzerinde doğrudan gözetim sorumluluğu olan yöneticileri içerir.</p>
+
+<h3>Tablo 4 — Liderlik gelişim programlarına katılım</h3>
+<table>
+  <thead><tr><th>Kalem</th><th class="num">2019</th><th class="num">2018</th></tr></thead>
+  <tbody>
+    <tr><td>Toplam lider</td><td class="num">1 000</td><td class="num">1 000</td></tr>
+    <tr><td>Liderlik gelişim programlarına katılan lider sayısı</td><td class="num">200</td><td class="num">250</td></tr>
+    <tr><td><b>Net yüzde sonucu</b></td><td class="num"><b>20,0</b></td><td class="num"><b>25,0</b></td></tr>
+  </tbody>
+</table>
+
+<h3>Tablo 5 — Liderlik eğitimi</h3>
+<table>
+  <thead><tr><th>Kalem</th><th class="num">2019</th><th class="num">2018</th></tr></thead>
+  <tbody>
+    <tr><td>Eğitim alan lider sayısı</td><td class="num">800</td><td class="num">500</td></tr>
+    <tr><td>Toplam yönetim kadrosu (yönetim popülasyonu)</td><td class="num">1 000</td><td class="num">1 000</td></tr>
+    <tr><td><b>Net yüzde sonucu</b></td><td class="num"><b>80,0</b></td><td class="num"><b>50,0</b></td></tr>
+  </tbody>
+</table>
+<p>Her iki örnekte XYZ kurumunun 2019 ve 2018 takvim yılı sonunda gözetmen, yönetici, direktör, başkan yardımcısı ve genel müdür düzeylerinde 1 000 yönetim kadrosu vardır.</p>
+
+<h2 id="adimlar">Metrik Seçim Adımları</h2>
+<ol>
+  <li><b>Liderlik grubunu tanımlayın.</b> Kimler lider ve yöneticidir? Gözetmenden genel müdüre hangi düzeyler dahil; üst yönetim liderleri ve yöneticiler ayrı mı izlenecek?</li>
+  <li><b>Güven ölçüsünü seçin.</b> Yönetim/liderlik soruları toplu skoru, Crawford–LePine–Rich ölçeği ya da Likert dönüşümü; seçilen yöntemi tüm dönemlerde koruyun ve raporda yazın.</li>
+  <li><b>İşgücü sayısına neyin dahil olduğunu yazın.</b> Kontrol alanı paydası çalışan, geçici işgücü ve bağımsız yüklenicileri kapsar (Tablo 2 örneği: 9 000 + 900 + 100).</li>
+  <li><b>Doğrudan astı olmayan yöneticileri ayırın.</b> Hem genel hem özel yöntemi hesaplayın; astı olmayan yönetici sayısı iki oran arasındaki farkı açıklar.</li>
+  <li><b>Kırılımları seçin.</b> İşlevsel grup, en yüksek ve en düşük kontrol alanı; tek, 10'dan fazla ve 30'dan fazla astı olan yönetici sayıları; düzey/katman.</li>
+  <li><b>Gelişim dönemini tanımlayın.</b> Katılım ve eğitim için tanımlı dönem (ör. takvim yılı) ve ölçüm noktası; hangi programların "liderlik gelişim programı", hangilerinin "eğitim" sayılacağı.</li>
+  <li><b>Karşılaştırma tabanını kurun.</b> Önceki dönem ve yıllar (Tablo 1, 4, 5 üç ya da iki yıl gösterir), varsa sektör verisi.</li>
+  <li><b>Bağlam ve öngörü etkenlerini yazın.</b> FTE değişimi, yeniden yapılanma, satın alma ve ekonomik koşulları sayının yanına not edin.</li>
+</ol>
+
+<h2 id="kavramlar">Temel Kavramlar</h2>
+<p>Şartname, 3. maddesinde kendi terimlerini tanımlamaz; ISO 30400 ve ISO 30414'teki tanımlara atıf yapar. Aşağıdaki tablo, metinde geçen temel kavramların kısa özetleridir. Açıklamalar özgün olarak yazılmıştır; bağlayıcı olan şartnamenin kendi metnidir.</p>
+<table>
+  <thead><tr><th style="width:90px">Madde</th><th style="width:240px">Kavram</th><th>Açıklama</th></tr></thead>
+  <tbody>
+    <tr><td><b>4.1</b></td><td>Liderlik güveni <small>(leadership trust)</small></td>
+      <td>ISO 30414:2018, 4.7.5.1'de tanımlanan; çalışanların yöneticilerine ve liderlerine duyduğu güven.</td></tr>
+    <tr><td><b>4.3</b></td><td>Toplu skor <small>(aggregate score)</small></td>
+      <td>Çalışan bağlılığı anketinin yönetim ya da liderlik etkinliğiyle ilgili soru alt kümesinden %0–%100 aralığında hesaplanan skor.</td></tr>
+    <tr><td><b>4.3</b></td><td>Crawford, LePine ve Rich ölçeği</td>
+      <td>Çalışan bağlılığını sınıflandıran bir derecelendirme ölçeği; şartname yalnızca adını ve kaynakçadaki makaleyi (Journal of Applied Psychology, 2010) verir, puanlamayı açıklamaz.</td></tr>
+    <tr><td><b>4.3</b></td><td>Likert ölçeği</td>
+      <td>1–5 ölçek; yüzdeliğe çevrilir ve liderlik/yönetimle ilgili sorular birleştirilip ortalaması alınarak genel bir liderlik bağlılığı geri bildirim skoru elde edilir.</td></tr>
+    <tr><td><b>5.1</b></td><td>Kontrol alanı <small>(span of control)</small></td>
+      <td>Bir gözetmen ya da yöneticiye bağlı çalışan ve diğer işçi sayısı.</td></tr>
+    <tr><td><b>5.3.1</b></td><td>Genel ortalama yöntemi</td>
+      <td>Toplam işgücünün, doğrudan astı olmayanlar dahil toplam yönetici sayısına oranı.</td></tr>
+    <tr><td><b>5.3.2</b></td><td>Özel yöntem</td>
+      <td>Toplam işgücünün, yalnızca doğrudan astı olan yöneticilere oranı.</td></tr>
+    <tr><td><b>5.2</b></td><td>İşgücü <small>(workforce)</small></td>
+      <td>Çalışanlar ve koşullu işgücü; kontrol alanının payı.</td></tr>
+    <tr><td><b>6.1</b></td><td>Liderlik gelişimi <small>(leadership development)</small></td>
+      <td>Kurumun liderleri içeriden geliştirme niyetinin geride kalan göstergesi; iki ölçü: gelişim programlarına katılım yüzdesi ve eğitime katılım yüzdesi.</td></tr>
+    <tr><td><b>6.2</b></td><td>Kategori kırılımı</td>
+      <td>Liderlik düzeyi, konum, bölüm ve hizmet yılı gibi kategorilere göre lider grubunun ayrılması.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="matris">Metrik Matrisi</h2>
+<p>Aşağıdaki tablo, şartnamenin tanımladığı ve türettiği metrikler ile bağlam–öngörü etkenlerinin kullanıcı × süreç aşaması × raporlama sınıflandırmasıdır. Şartname hedef kullanıcıları bileşen olarak sayar ancak bu belgede ayrı bir kullanıcı listesi vermez;
+kullanıcı, bölüm ve raporlama sınıflandırması bu sayfanın yazarlık sınıflandırmasıdır. Filtreleri değiştirdiğinizde tablo anında daralır.</p>
+
+<div class="filters">
+  <div><label for="fUser">Kullanıcı</label>
+    <select id="fUser">
+      <option value="">Tümü</option>
+      <option value="hr">İK hizmet birimleri</option>
+      <option value="exec">Üst yönetim ve yönetim kurulu</option>
+      <option value="line">Hat yönetimi</option>
+      <option value="rep">Çalışan temsilcileri</option>
+      <option value="ext">Dış paydaş</option>
+    </select></div>
+  <div><label for="fStage">Metrik bölümü</label>
+    <select id="fStage">
+      <option value="">Tümü</option>
+      <option value="guven">Liderlik güveni (madde 4)</option>
+      <option value="alan">Kontrol alanı (madde 5)</option>
+      <option value="gelisim">Liderlik gelişimi (madde 6)</option>
+      <option value="baglam">Ölçüm, bağlam ve öngörü</option>
+    </select></div>
+  <div><label for="fType">Metrik ailesi</label>
+    <select id="fType">
+      <option value="">Tümü</option>
+      <option value="p">Liderlik güveni</option>
+      <option value="c">Kontrol alanı</option>
+      <option value="s">Liderlik gelişimi</option>
+      <option value="o">Ölçüm, bağlam ve öngörü</option>
+    </select></div>
+  <div><label for="fRep">Raporlama</label>
+    <select id="fRep">
+      <option value="">Tümü</option>
+      <option value="ic">İç raporlama</option>
+      <option value="dis">Dış raporlama</option>
+    </select></div>
+  <div><label for="fQ">Metrik adında ara</label>
+    <input type="text" id="fQ" placeholder="ör. kontrol alanı"></div>
+</div>
+
+<div class="count" id="mCount"></div>
+<table class="matrix">
+  <thead><tr>
+    <th>Metrik</th>
+    <th class="rot">İK</th>
+    <th class="rot">Üst yönetim</th>
+    <th class="rot">Hat yönetimi</th>
+    <th class="rot">Çalışan temsilcileri</th>
+    <th class="rot">Dış paydaş</th>
+  </tr></thead>
+  <tbody id="mBody"></tbody>
+</table>
+<div class="legend">
+  <span><span class="dot p"></span> liderlik güveni</span>
+  <span><span class="dot c"></span> kontrol alanı</span>
+  <span><span class="dot s"></span> liderlik gelişimi</span>
+  <span><span class="dot o"></span> ölçüm, bağlam ve öngörü</span>
+  <span><span class="tag iso">30414</span> ISO 30414'te tanımlı liderlik metriği</span>
+  <span><span class="tag lvl">hesaplayıcı</span> bu sayfada hesaplanabilen metrik</span>
+  <span>Hesaplayıcıya bağlı metrikler <b>koyu</b> işaretlenmiştir.</span>
+</div>
+
+<h2 id="tablo">Kontrol Alanı ve Gelişim Tablosu</h2>
+<p>Şartname, kontrol alanının işlevsel gruplara göre raporlanmasını önerir. Aşağıdaki tabloya birimlerinizi girin: her birim için işgücü, toplam yönetici, doğrudan astı olan yönetici, liderlik gelişim programına katılan lider ve eğitim alan lider sayıları;
+genel kontrol alanı, özel kontrol alanı, gelişim ve eğitim yüzdeleri ile toplamlar anında güncellenir. Örnek verinin toplamları şartnamenin Tablo 2–5'teki 2019 sayılarıdır (10 000 · 1 000 · 800 · 200 · 800);
+birimlere dağılım bu sayfaya aittir, şartnamede yoktur. Yüzdelerin paydası toplam yönetici sayısıdır (Tablo 4 ve 5'te lider = yönetim kadrosu).</p>
+
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnek">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizle">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsv">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktar">Hesaplayıcıya aktar</button>
+</div>
+
+<table class="postbl">
+  <thead><tr>
+    <th>Birim</th>
+    <th class="num">İşgücü</th><th class="num">Toplam yönetici</th><th class="num">Astı olan yönetici</th>
+    <th class="num">Gelişim programına katılan</th><th class="num">Eğitim alan</th>
+    <th class="calc" style="width:80px">Genel kontrol alanı</th><th class="calc" style="width:80px">Özel kontrol alanı</th>
+    <th class="calc" style="width:80px">Gelişim (%)</th><th class="calc" style="width:80px">Eğitim (%)</th>
+  </tr></thead>
+  <tbody id="pBody"></tbody>
+  <tfoot><tr>
+    <td>Toplam</td>
+    <td class="calc" id="tIsg">—</td>
+    <td class="calc" id="tYon">—</td>
+    <td class="calc" id="tAst">—</td>
+    <td class="calc" id="tGel">—</td>
+    <td class="calc" id="tEgt">—</td>
+    <td class="calc" id="tGenel">—</td>
+    <td class="calc" id="tOzel">—</td>
+    <td class="calc" id="tGelP">—</td>
+    <td class="calc" id="tEgtP">—</td>
+  </tr></tfoot>
+</table>
+
+<div class="cards" id="pCards"></div>
+<div class="note" id="pNot"></div>
+
+<h2 id="formuller">Formüller ve Tanımlar</h2>
+<p>Şartname iki metrik için açık formül verir: genel ve özel kontrol alanı. Liderlik gelişimi yüzdeleri tablolardaki örnek hesaptan okunur; liderlik güveni anket skorudur. Aşağıda şartnamenin formülleri ile onlardan
+türetilen yardımcı hesaplar bulunur; türetilmiş olanlar notlarında belirtilmiştir.</p>
+<table>
+  <thead><tr><th>Metrik</th><th>Formül</th><th>Not</th></tr></thead>
+  <tbody id="fBody"></tbody>
+</table>
+
+<h2 id="hesaplayici">Hesaplayıcı</h2>
+<p>Metriği seçin, alanları doldurun; sonuç, formülün yerine konmuş hâli ve yorum aşağıda görünür.
+Kurulum gerekmez, veriler tarayıcıdan çıkmaz.</p>
+
+<div class="panel">
+  <h3>Liderlik Metrik Hesaplayıcısı</h3>
+  <p class="hint">Alanlar seçtiğiniz metriğe göre değişir. Güven puanları 0–100 ölçeğinde, kontrol alanı çalışan/yönetici oranı olarak, gelişim ve eğitim yüzde olarak raporlanır.</p>
+  <div class="grid">
+    <div class="field" style="grid-column:1/-1">
+      <label for="cMetric">Metrik <span class="req">*</span></label>
+      <select id="cMetric"></select>
+    </div>
+  </div>
+  <div class="grid" id="cFields" style="margin-top:14px"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="oAll"> Tümünü seç</label>
+    <label><input type="checkbox" id="oFormula" checked> Formülün açık hâli</label>
+    <label><input type="checkbox" id="oInterp" checked> Yorum ve eşik</label>
+    <label><input type="checkbox" id="oPy"> Python karşılığı</label>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-run" id="btnRun">Hesapla</button>
+    <button class="btn-ghost" id="btnExample">Örnek veriyi yükle</button>
+    <button class="btn-ghost" id="btnPy">Python motorunu yükle</button>
+    <span class="chip" id="engStatus">Motor: tarayıcı (JavaScript)</span>
+  </div>
+  <p class="hint" style="margin:14px 0 0">Python motoru seçildiğinde hesaplama, bu sayfaya gömülü
+  <code style="background:#1c2836;color:#cfe0f0">iso30431_metrikler.py</code> modülünün
+  <code style="background:#1c2836;color:#cfe0f0">hesapla()</code> fonksiyonu tarafından, tarayıcı içinde
+  çalışan gerçek bir CPython yorumlayıcısında (Pyodide/WebAssembly) yapılır. İlk yüklemede yaklaşık
+  10–12 MB indirilir; sonrası önbellekten gelir. Çevrimdışıysanız sayfa JavaScript yedeğiyle
+  aynı sonuçları vermeye devam eder.</p>
+</div>
+
+<div id="cResult"></div>
+
+<h2 id="python">Python Kod Örnekleri</h2>
+<p>Bu sayfadaki hesaplamalar JavaScript'te taklit edilmez: modülün tamamı sayfaya gömülüdür ve
+Pyodide (WebAssembly üzerinde CPython) ile tarayıcı içinde çalıştırılır. Hesaplayıcıda Python motorunu
+seçtiğinizde her sonuç <code>hesapla()</code> fonksiyonundan gelir. Aynı dosya
+(<code>iso30431_metrikler.py</code>) komut satırında da bağımsız çalışır; doğrudan çalıştırıldığında
+örnek değerlerle doğrulama çıktısı üretir.</p>
+
+<div class="filename">iso30431_metrikler.py (özet)</div>
+<pre><i># --- Liderlik güveni ---</i>
+
+<b>def</b> <span class="fn">guven_endeksi</span>(*boyutlar):
+    <i>"""Boyut puanlarının (0–100) eşit ağırlıklı ortalaması (Tablo 1 ile uyumlu)."""</i>
+    <b>return</b> sum(boyutlar) / len(boyutlar)
+
+<b>def</b> <span class="fn">likert_yuzde</span>(ortalama, alt=<u>1</u>, ust=<u>5</u>):
+    <i>"""Likert ortalamasını 0–100'e doğrusal çevirir (varsayım)."""</i>
+    <b>return</b> <u>100</u> * (ortalama - alt) / (ust - alt)
+
+<i># --- Kontrol alanı ---</i>
+
+<b>def</b> <span class="fn">kontrol_alani_genel</span>(toplam_isgucu, toplam_yonetici):
+    <i>"""Formül (1): astı olmayanlar dahil tüm yöneticiler."""</i>
+    <b>return</b> toplam_isgucu / toplam_yonetici
+
+<b>def</b> <span class="fn">kontrol_alani_ozel</span>(toplam_isgucu, ast_olan_yonetici):
+    <i>"""Formül (2): yalnızca doğrudan astı olan yöneticiler."""</i>
+    <b>return</b> toplam_isgucu / ast_olan_yonetici
+
+<i># --- Liderlik gelişimi ---</i>
+
+<b>def</b> <span class="fn">yuzde</span>(parca, butun):
+    <i>"""Tablo 4 ve 5: katılan (ya da eğitim alan) lider ÷ toplam lider × 100."""</i>
+    <b>return</b> <u>100</u> * parca / butun
+
+<b>def</b> <span class="fn">puan_degisim</span>(onceki, cari):
+    <i>"""Yüzde puanı farkı: örnek 25,0 → 20,0 = −5,0 puan."""</i>
+    <b>return</b> cari - onceki
+</pre>
+
+<h3>Çalıştırılabilir konsol</h3>
+<p>Aşağıdaki kod, sayfaya gömülü modüle karşı çalışır. <b>Kodu çalıştır</b> düğmesi Python motorunu
+(yüklü değilse) indirir, modülü içe aktarır ve çıktıyı altta gösterir. Kodu serbestçe değiştirebilir,
+kendi verinizi yazabilirsiniz; her şey tarayıcıda kalır.</p>
+
+<div class="console">
+  <div class="console-bar">
+    <span>iso30431_metrikler modülüne karşı çalışır · Python 3 (Pyodide)</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button class="btn-run btn-sm" id="btnRunPy">Kodu çalıştır</button>
+      <button class="btn-ghost btn-sm" id="btnDemo" style="border-color:var(--line);color:var(--ink-soft)">Tam demoyu yükle</button>
+      <button class="btn-ghost btn-sm" id="btnReset" style="border-color:var(--line);color:var(--ink-soft)">Sıfırla</button>
+    </span>
+  </div>
+  <textarea id="pyCode" spellcheck="false"></textarea>
+  <pre id="pyOut">Çıktı burada görünecek. İlk çalıştırmada Python motoru indirilir (10–12 MB).</pre>
+</div>
+
+<details class="src"><summary>Gömülü modülün tam kaynağı (iso30431_metrikler.py)</summary>
+  <pre id="srcView">yükleniyor…</pre>
+</details>
+
+<h2 id="yorum">Sonuçların Yorumlanması</h2>
+<ul>
+  <li><b>Güven endeksi düşüyorsa boyutlara inin.</b> Toplam endeks üç boyutun (adalet, dürüstlük, tutarlılık) bileşimidir; örnekte adalet 65'ten 73'e yükselirken dürüstlük 76'dan 75'e hafifçe gerilemiştir. Toplam sayı boyut hareketlerini gizler.</li>
+  <li><b>Anket yöntemi değişirse dönemler karşılaştırılamaz.</b> Toplu skor, Crawford–LePine–Rich ölçeği ve Likert dönüşümü farklı ölçeklerdir; seri boyunca aynı yöntemi kullanın ve soru kümesini yazın.</li>
+  <li><b>Genel ve özel kontrol alanı arasındaki fark açıklayıcıdır.</b> Şartname örneğinde 10 ile 12,5 arasındaki fark, doğrudan astı olmayan 200 yöneticiden gelir; bu yöneticilerin oranı (%20) iki yöntemin ayrı raporlanmasının nedenidir.</li>
+  <li><b>Yüksek kontrol alanı hem iyi hem kötü olabilir.</b> Şartnameye göre daha yüksek çalışan/yönetici oranı genellikle daha yalın bir yapıya, belki daha az yönetim katmanına işaret eder; ancak giderek büyüyen oranlar fazla yüklenmiş yöneticileri, çalışan iletişiminde ve kariyer gelişiminde azalmayı, çalışan devrinde artışı ve düşük bağlılığı da gösterebilir.</li>
+  <li><b>Ortalamaya değil uçlara bakın.</b> Şartname en yüksek ve en düşük kontrol alanlarını ve yalnızca bir, 10'dan fazla ve 30'dan fazla astı olan yönetici sayılarını raporlamayı önerir. Kurum ortalaması 12,5 iken bazı yöneticilerin 40 astı olabilir.</li>
+  <li><b>Liderlik gelişiminde yüzdelerin yönünü bağlamla okuyun.</b> Gelişim programlarına katılım %25'ten %20'ye inerken eğitim katılımı %50'den %80'e çıkabilir (şartname örneği); biri programın seçiciliğini, diğeri eğitimin yaygınlığını yansıtır. Birini diğerinin yerine kullanmayın.</li>
+  <li><b>Liderlik gelişimi geride kalan göstergedir.</b> Şartname, niyetin yansımasını verir, kalitesini değil. Katılım yüzdesi liderlerin yetkinliğini ya da geliştirme sonucunu göstermez.</li>
+  <li><b>FTE ve yapı değişikliğini bağlam olarak kaydedin.</b> İşgücü büyüdüğünde ya da küçüldüğünde, yeniden yapılanma veya satın alma olduğunda kontrol alanı ve gelişim yüzdesi yeniden yorumlanmalıdır.</li>
+</ul>
+
+<h2 id="sinirlamalar">Sınırlamalar</h2>
+<ul>
+  <li><b>Şartnamenin yayımlanmış örneğinde başlık tutarsızlıkları vardır.</b> Tablo 3'ün başlığı "yönetim kontrol alanı" iken sonuç satırı "Overall span of control result" (genel kontrol alanı) olarak yazılmıştır; oysa 12,5 değeri özel yöntemin sonucudur. Tablo 4'ün başlığı "liderlik gelişimi eğitimi" olsa da içeriği gelişim programı katılımıdır. Bu sayfada sonuçlar yöntem adlarıyla verilmiştir.</li>
+  <li><b>Madde 6.3 (Formül) açık formül içermez</b>; yalnızca 6.6'daki örnek hesaba atıf yapar. Yüzde, Tablo 4 ve 5'teki satırlardan (katılan ÷ toplam lider) okunmuştur. Paydanın "toplam lider" mi, "yönetim popülasyonu" mu olduğu iki tabloda farklı adlandırılır; örnekte ikisi de 1 000'dir.</li>
+  <li><b>Toplam liderlik güveni endeksi için hesap yöntemi yazılı değildir.</b> Tablo 1'deki toplam, üç boyutun eşit ağırlıklı ortalamasıyla uyumludur (76,3 → 76; 74,7 → 75; 71,7 → 72), ancak şartname bunu formül olarak vermez; bu sayfadaki ortalama türetilmiştir.</li>
+  <li><b>Likert yüzdelik dönüşümü tanımlanmamıştır.</b> Şartname "yüzdeliğe çevrilir" der ama yöntemi vermez. Hesaplayıcıdaki doğrusal dönüşüm, (ortalama − 1) ÷ 4 × 100, bu sayfanın varsayımıdır; "yüzdelik sırası" anlamında bir dönüşüm farklı sonuç verir.</li>
+  <li><b>Crawford, LePine ve Rich ölçeği yalnızca adıyla anılır.</b> Puanlama ya da sınıflandırma kuralı şartnamede yoktur; bu ölçek için hesaplayıcı sunulmamıştır.</li>
+  <li><b>Şartname yorum eşiği vermez.</b> Hesaplayıcının "yorum ve eşik" satırlarındaki açıklamalar standarttan değil, bu sayfanın başlangıç yorumlarındandır. İyi/kötü kontrol alanı, hedef gelişim yüzdesi ve kabul edilebilir güven puanı için kurumunuzun hedeflerini ve sektör kıyaslamasını kullanın.</li>
+  <li><b>Kontrol alanının "öngörü etkenleri" bölümü</b> (5.5) tahmin etkenlerinden önce kırılım önerileri içerir (düzeye, işlevsel gruba, iş türüne, otomasyon düzeyine göre ayrıştırma); bu sayfada bu öneriler "kullanım biçimi" altında verilmiştir.</li>
+  <li>Kontrol alanı tek bir sayı olarak yöneticilerin gerçek iş yükünü yansıtmaz: vardiya, uzaktan çalışma, işin karmaşıklığı ve ekip içi yardımcı gözetmenlerin varlığı yorumu değiştirir. Paydadaki "işgücü" tanımı (geçici işçi, bağımsız yüklenici dahil mi?) raporda yazılmalıdır.</li>
+  <li>"Astı olmayan yönetici payı" ve gelişim/eğitim yüzdesindeki "katılmayan" payları şartnamede yoktur, yardımcı olarak türetilmiştir. Birimler arası dağılım örnek verisi şartnamede bulunmaz.</li>
+  <li>Küçük gruplarda oranlar oynaktır: 10 liderlik pozisyonlu bir birimde tek bir kişi yüzdeyi 10 puan oynatır. Az sayıda vakada mutlak sayıları da verin.</li>
+  <li>Bu sayfadaki tablolar şartnamenin örnek sayılarıdır; gerçek bir kuruma ait değildir.</li>
+</ul>
+
+<h2 id="raporlama">Metriklerin Raporlanması</h2>
+<table>
+  <thead><tr><th>Alıcı</th><th>Ne görmek ister</th><th>Rapor biçimi</th></tr></thead>
+  <tbody>
+    <tr><td>İK hizmet birimleri</td>
+      <td>Tüm metrikler; güven boyutları, işlevsel grup ve düzeye göre kontrol alanı, gelişim ve eğitim yüzdeleri, kırılımlar</td>
+      <td>Analitik rapor, çeyreklik</td></tr>
+    <tr><td>Üst yönetim ve yönetim kurulu</td>
+      <td>Toplam güven endeksi eğilimi, genel ve özel kontrol alanı, liderlik gelişim yatırımı ve sorunlu birimler</td>
+      <td>Skor kartı, dönemsel</td></tr>
+    <tr><td>Hat yönetimi</td>
+      <td>Kendi birimlerinin güven puanı, kontrol alanı ve liderlerinin gelişim katılımı</td>
+      <td>Birim panosu, çeyreklik</td></tr>
+    <tr><td>Çalışan temsilcileri</td>
+      <td>Güven anketi sonuçları (yöntem ve boyutlarıyla), kontrol alanı kırılımları ve eğitim katılımı; şartname, liderliğin işgücünü etkilediğini ve çalışanlarla ve temsilcileriyle açık ve düzenli diyalog stratejileri kurulabileceğini belirtir</td>
+      <td>Bilgilendirme raporu, yıllık</td></tr>
+    <tr><td>Dış paydaş (yatırımcı, düzenleyici)</td>
+      <td>Karşılaştırılabilir toplam göstergeler ve yöntem dipnotu: güven endeksi, kontrol alanı, gelişim ve eğitim yüzdeleri</td>
+      <td>Faaliyet ve sürdürülebilirlik raporu, yıllık</td></tr>
+  </tbody>
+</table>
+<p><b>Her raporda bulunması gerekenler:</b> ölçüm noktası ve dönem, liderlik grubu tanımı, güven anketi yöntemi ve ölçeği, işgücü tanımı (paydaya kimler dahil), genel ve özel kontrol alanı ayrımı, kırılım düzeyi, gelişim/eğitim için tanımlı dönem ve karşılaştırma tabanı.</p>
+
+<h2 id="ilgili">İlgili Standartlar</h2>
+<ul>
+  <li><b>ISO 30414</b> — iç ve dış insan sermayesi raporlaması. Bu şartnamedeki metriklerin tanımı oradan gelir (madde 4.7.5, liderlik; 4.7.5.1, liderlik güveni); liderlik, ISO 30414'ün 11 çekirdek raporlama alanından biridir.</li>
+  <li><b>ISO 30400</b> — insan kaynakları yönetimi terimler sözlüğü; bu şartnamenin terim ve tanımları için atıf yaptığı belge.</li>
+  <li><b>ISO/TS 30422, ISO/TS 30425, ISO/TS 24178</b> — öğrenme ve gelişim, işgücü bulunabilirliği (FTE bağlamı) ve örgüt kültürü; liderlik sonuçlarını açıklayan komşu belgeler.</li>
+  <li><b>Crawford, LePine ve Rich (2010)</b> — şartnamenin kaynakçasındaki tek kaynak: iş talepleri ve kaynaklarının çalışan bağlılığı ve tükenmişlikle bağlantısı (Journal of Applied Psychology, 95(5), 834–848).</li>
+</ul>
+
+<h2 id="sss">Sıkça Sorulan Sorular</h2>
+<details><summary>Liderlik güveni nasıl ölçülür?</summary>
+<p>Şartname üç seçenek sayar: çalışan bağlılığı anketinin yönetim ya da liderlik etkinliğiyle ilgili soru alt kümesinden %0–%100 arası toplu skor; Crawford, LePine ve Rich bağlılık derecelendirme ölçeği; 1–5 Likert'in yüzdeliğe çevrilip liderlik ve/veya yönetimle ilgili soruların ortalamasının alınması.
+Örnek Tablo 1, adalet, dürüstlük ve tutarlılık boyutlarını ve 0–100 ölçeğinde toplam endeksi verir.</p></details>
+
+<details><summary>Genel ve özel kontrol alanı arasındaki fark nedir?</summary>
+<p>Genel yöntem (Formül 1) toplam işgücünü, doğrudan astı olmayanlar dahil tüm yöneticilere böler: 10 000 ÷ 1 000 = 10. Özel yöntem (Formül 2) yalnızca doğrudan gözetim sorumluluğu olan yöneticileri sayar: 10 000 ÷ 800 = 12,5.
+Aradaki fark, proje, sistem ya da müşteri ilişkisi yöneten ama astı olmayan yöneticilerden gelir.</p></details>
+
+<details><summary>Kontrol alanı yüksekse iyi midir?</summary>
+<p>Şartname iki yönlü uyarır. Yüksek oran daha yalın bir yapıyı ve daha az yönetim katmanını gösterebilir; ancak giderek büyüyen oranlar aşırı yüklenmiş yöneticilere, çalışan iletişiminde ve kariyer gelişiminde azalmaya, çalışan devrinde artışa ve düşük bağlılığa işaret edebilir.
+Bu yüzden oran, kırılım ve bağlamla birlikte okunur.</p></details>
+
+<details><summary>Kontrol alanı hangi kırılımlarla raporlanmalı?</summary>
+<p>İşlevsel gruba göre, ayrıca kurum genelindeki en yüksek ve en düşük kontrol alanlarıyla. Şartname örnek olarak kaç yöneticinin yalnızca bir doğrudan astı olduğunu, kaçının 10'dan ve kaçının 30'dan fazla doğrudan astı olduğunu raporlamayı önerir.
+Düzey ya da katmana göre ayrıştırma da kullanışlıdır.</p></details>
+
+<details><summary>Liderlik gelişimi için iki ölçü neden var?</summary>
+<p>Biri tanımlı dönemde liderlik gelişim programlarına katılan liderlerin yüzdesi, diğeri eğitime katılan liderlerin yüzdesidir; şartname örneğinde 2019'da %20,0 ve %80,0. Biri programın kapsamını, diğeri eğitimin yaygınlığını yansıtır;
+kurum bir ya da ikisini birden raporlayabilir. Gelişim, kurumun liderleri içeriden geliştirme niyetinin geride kalan göstergesidir.</p></details>
+
+<details><summary>Liderlik gelişimi yüzdesi için payda nedir?</summary>
+<p>Örneklerde toplam lider sayısı, yani tüm liderlik düzeylerinde yönetim kadrosudur: gözetmenler, yöneticiler, direktörler, başkan yardımcıları ve genel müdürler. Lider tanımınızı ve hangi düzeylerin dahil olduğunu raporda yazın.</p></details>
+
+<details><summary>Kırılımlar ve bağlam etkenleri neden önemli?</summary>
+<p>Şartnamenin kendi ifadesiyle sonuç beklenenden düşük ya da kötüleşiyor göründüğünde ileri inceleme olumlu göstergeleri de bulabilir. FTE sayısının değişimi, yeniden yapılanma, kültürel değişim, ekonomik etkenler ve sektör beklentisi sayının anlamını değiştirebilir;
+bu yüzden her metriğin yanında bağlam ve öngörü etkenleri not edilmelidir.</p></details>
+
+<details><summary>Şartname eşik değer veriyor mu?</summary>
+<p>Hayır. Güven puanı, kontrol alanı ya da katılım yüzdesi için kabul edilebilir aralık verilmez. Hedefler kurumun stratejisinden, sektör kıyaslamasından ve önceki dönemlerden gelmelidir.</p></details>
+
+<footer>
+  ISO/TS 30431:2021 çerçevesinden üretilmiş çalışma aracı. Metrik adları, sınıflandırma ve formüller şartnameye dayanır; açıklamalar, örnek değerler ve kod özgün olarak yazılmıştır. Rapor örneklerindeki sayılar şartnameden alınmıştır.
+  Şartnamenin kendisi telif korumalıdır ve bu sayfa onun yerine geçmez.
+</footer>
+
+</div>
+
+<script type="text/x-python" id="pysrc">
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+iso30431_metrikler.py
+=====================
+ISO/TS 30431:2021 (Human resource management — Leadership metrics cluster)
+çerçevesindeki liderlik metriklerinin Python karşılığı.
+
+Teknik şartname, ISO 30414'ün "liderlik" kümesindeki üç metriği ayrıntılandırır:
+liderlik güveni, kontrol alanı (span of control) ve liderlik gelişimi. Açık
+formül verdiği iki yer: kontrol alanı (Formül 1 ve 2) ve liderlik gelişimi
+(Tablo 4 ve 5'teki yüzde örnekleri). Modül üç bölüme ayrılmıştır:
+
+    1) Liderlik güveni    — boyut puanlarından toplam indeks, Likert → yüzde
+    2) Kontrol alanı      — genel yöntem, özel yöntem, astı olmayan yönetici payı
+    3) Liderlik gelişimi  — gelişim programı katılımı, eğitim yüzdesi, değişim
+
+Kullanım:
+    from iso30431_metrikler import kontrol_alani_genel, kontrol_alani_ozel
+    kontrol_alani_genel(10000, 1000)   ->  10.0
+    kontrol_alani_ozel(10000, 800)     ->  12.5
+
+Doğrudan çalıştırıldığında (python3 iso30431_metrikler.py) tüm fonksiyonlar
+örnek verilerle çalıştırılır ve sonuçlar tablo hâlinde yazdırılır.
+
+Not: Metrik adları, sınıflandırma ve formüller ISO/TS 30431:2021'e dayanır.
+Boyut puanlarının eşit ağırlıklı ortalaması ve Likert ölçeğinin doğrusal yüzdeye
+çevrilmesi şartnamede açıkça tanımlı değildir; bu modülde türetilmiş hesaplardır.
+Kod ve açıklamalar özgün olarak yazılmıştır; şartnamenin kendisi telif korumalıdır.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+__all__ = [
+    "GecersizGirdi",
+    # liderlik güveni
+    "guven_endeksi", "likert_yuzde",
+    # kontrol alanı
+    "kontrol_alani_genel", "kontrol_alani_ozel", "astsiz_yonetici_payi",
+    "kontrol_alani_dagilimi",
+    # liderlik gelişimi
+    "yuzde", "puan_degisim", "goreli_degisim",
+    # yardımcı
+    "Birim", "LiderlikTablosu", "ornek_tablo", "liderlik_denetimi",
+    "hesapla", "METRIK_LISTESI",
+]
+
+
+class GecersizGirdi(ValueError):
+    """Girdiler tutarsız: payda sıfır, parça bütünden büyük vb."""
+
+
+def _bol(pay: float, payda: float, ad: str = "payda") -> float:
+    if payda <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return pay / payda
+
+
+def yuzde(parca: float, butun: float, ad: str = "parça") -> float:
+    """Yüzde olarak parça / bütün; parça bütünden büyük olamaz."""
+    if butun <= 0:
+        raise GecersizGirdi("bütün sıfırdan büyük olmalı")
+    if parca < 0 or parca > butun:
+        raise GecersizGirdi(f"{ad} 0 ile bütün arasında olmalı")
+    return 100 * parca / butun
+
+
+# ---------------------------------------------------------------------------
+# 1) Liderlik güveni (madde 4)
+# ---------------------------------------------------------------------------
+
+def guven_endeksi(*boyutlar: float) -> float:
+    """Boyut puanlarının (0–100) eşit ağırlıklı ortalaması.
+
+    Şartnamenin Tablo 1'inde toplam liderlik güveni endeksi 0–100 ölçeğindedir ve
+    adalet, dürüstlük, tutarlılık satırlarının ortalamasıyla uyumludur (2017:
+    73, 75, 81 → 76). Ortalamanın formül olarak yazıldığı bir madde yoktur.
+    """
+    if not boyutlar:
+        raise GecersizGirdi("en az bir boyut puanı gerekir")
+    for b in boyutlar:
+        if b < 0 or b > 100:
+            raise GecersizGirdi("boyut puanı 0 ile 100 arasında olmalı")
+    return sum(boyutlar) / len(boyutlar)
+
+
+def likert_yuzde(ortalama: float, alt: float = 1, ust: float = 5) -> float:
+    """Likert ortalamasını 0–100 ölçeğine doğrusal çevirir: (x − alt) / (ust − alt) × 100.
+
+    Şartname "1–5 Likert ölçeğinin yüzdeliğe çevrilmesinden" söz eder ama yöntemi
+    vermez; doğrusal dönüşüm bu modülün varsayımıdır.
+    """
+    if ust <= alt:
+        raise GecersizGirdi("ölçek üst sınırı alt sınırdan büyük olmalı")
+    if ortalama < alt or ortalama > ust:
+        raise GecersizGirdi("ortalama ölçek sınırları içinde olmalı")
+    return 100 * (ortalama - alt) / (ust - alt)
+
+
+# ---------------------------------------------------------------------------
+# 2) Kontrol alanı (madde 5)
+# ---------------------------------------------------------------------------
+
+def kontrol_alani_genel(toplam_isgucu: float, toplam_yonetici: float) -> float:
+    """Formül (1): toplam işgücü ÷ toplam yönetici (astı olmayanlar dahil)."""
+    return _bol(toplam_isgucu, toplam_yonetici, "toplam yönetici")
+
+
+def kontrol_alani_ozel(toplam_isgucu: float, ast_olan_yonetici: float) -> float:
+    """Formül (2): toplam işgücü ÷ doğrudan astı olan yönetici."""
+    return _bol(toplam_isgucu, ast_olan_yonetici, "astı olan yönetici")
+
+
+def astsiz_yonetici_payi(toplam_yonetici: float, ast_olan_yonetici: float) -> float:
+    """Doğrudan astı olmayan yöneticilerin yönetici içindeki yüzdesi (türetilmiş)."""
+    if toplam_yonetici <= 0:
+        raise GecersizGirdi("toplam yönetici sıfırdan büyük olmalı")
+    if ast_olan_yonetici < 0 or ast_olan_yonetici > toplam_yonetici:
+        raise GecersizGirdi("astı olan yönetici 0 ile toplam yönetici arasında olmalı")
+    return 100 * (toplam_yonetici - ast_olan_yonetici) / toplam_yonetici
+
+
+def kontrol_alani_dagilimi(ast_olan: float, tek_ast: float, uzeri_10: float, uzeri_30: float) -> dict:
+    """Astı olan yöneticiler içinde 1, >10 ve >30 doğrudan astı olanların payı (%).
+
+    Şartname bu üç eşiği örnek olarak ister (5.3.1, 5.3.2); payların yüzde olarak
+    hesaplanması türetilmiştir.
+    """
+    if ast_olan <= 0:
+        raise GecersizGirdi("astı olan yönetici sıfırdan büyük olmalı")
+    for ad, v in (("tek astı olan", tek_ast), ("10'dan fazla astı olan", uzeri_10),
+                  ("30'dan fazla astı olan", uzeri_30)):
+        if v < 0 or v > ast_olan:
+            raise GecersizGirdi(f"{ad} yönetici 0 ile astı olan yönetici arasında olmalı")
+    if uzeri_30 > uzeri_10:
+        raise GecersizGirdi("30'dan fazla astı olanlar 10'dan fazla astı olanların alt kümesidir")
+    return {"tek": 100 * tek_ast / ast_olan,
+            "uzeri_10": 100 * uzeri_10 / ast_olan,
+            "uzeri_30": 100 * uzeri_30 / ast_olan}
+
+
+# ---------------------------------------------------------------------------
+# 3) Liderlik gelişimi (madde 6) ve dönemler arası değişim
+# ---------------------------------------------------------------------------
+
+def puan_degisim(onceki: float, cari: float) -> float:
+    """Cari − önceki (yüzde puanı)."""
+    return cari - onceki
+
+
+def goreli_degisim(onceki: float, cari: float) -> float:
+    """(cari − önceki) ÷ önceki × 100."""
+    if onceki <= 0:
+        raise GecersizGirdi("önceki değer sıfırdan büyük olmalı")
+    if cari < 0:
+        raise GecersizGirdi("cari değer negatif olamaz")
+    return 100 * (cari - onceki) / onceki
+
+
+# ---------------------------------------------------------------------------
+# 4) Yardımcı yapılar: birim tablosu
+# ---------------------------------------------------------------------------
+
+@dataclass
+class Birim:
+    """İşlevsel grup (birim) bazında liderlik verisi."""
+    ad: str
+    isgucu: float = 0          # çalışan + koşullu işgücü
+    yonetici: float = 0        # toplam yönetici (astı olmayanlar dahil)
+    ast_olan: float = 0        # doğrudan astı olan yönetici
+    gelisim: float = 0         # liderlik gelişim programına katılan lider
+    egitim: float = 0          # eğitim alan lider
+
+    def genel(self) -> float:
+        return kontrol_alani_genel(self.isgucu, self.yonetici)
+
+    def ozel(self) -> float:
+        return kontrol_alani_ozel(self.isgucu, self.ast_olan)
+
+
+@dataclass
+class LiderlikTablosu:
+    """Birimlere göre liderlik tablosu."""
+    birimler: list = field(default_factory=list)
+
+    def ekle(self, ad, isgucu, yonetici, ast_olan, gelisim, egitim) -> "LiderlikTablosu":
+        self.birimler.append(Birim(ad, isgucu, yonetici, ast_olan, gelisim, egitim))
+        return self
+
+    def ozet(self) -> dict:
+        isg = sum(b.isgucu for b in self.birimler)
+        yon = sum(b.yonetici for b in self.birimler)
+        ast = sum(b.ast_olan for b in self.birimler)
+        gel = sum(b.gelisim for b in self.birimler)
+        egt = sum(b.egitim for b in self.birimler)
+        en_genis = max(self.birimler, key=lambda b: b.ozel())
+        return {
+            "birim_sayisi": len(self.birimler),
+            "toplam_isgucu": isg,
+            "toplam_yonetici": yon,
+            "ast_olan_yonetici": ast,
+            "genel_kontrol_alani": kontrol_alani_genel(isg, yon),
+            "ozel_kontrol_alani": kontrol_alani_ozel(isg, ast),
+            "astsiz_yonetici_payi": round(astsiz_yonetici_payi(yon, ast), 1),
+            "gelisim_yuzdesi": round(yuzde(gel, yon, "gelişim"), 1),
+            "egitim_yuzdesi": round(yuzde(egt, yon, "eğitim"), 1),
+            "en_genis_birim": (en_genis.ad, round(en_genis.ozel(), 1)),
+        }
+
+
+def ornek_tablo() -> LiderlikTablosu:
+    """Beş birimlik örnek tablo.
+
+    Toplamlar şartnamenin 2019 örneğine uyar (işgücü 10 000, yönetici 1 000,
+    astı olan 800, gelişim 200, eğitim 800); birimlere dağılım bu sayfaya aittir.
+    """
+    t = LiderlikTablosu()
+    for satir in [
+        ("Üretim",              5200, 480, 400, 90, 380),
+        ("Satış",               1800, 200, 170, 40, 160),
+        ("BT",                  1000, 120,  95, 30, 100),
+        ("Merkez işlevler",     1200, 150, 100, 25, 120),
+        ("Araştırma ve geliştirme", 800, 50, 35, 15,  40),
+    ]:
+        t.ekle(*satir)
+    return t
+
+
+def liderlik_denetimi(olcum_noktasi_sabit: bool = False,
+                      anket_yontemi_yazili: bool = False,
+                      iki_yontem_ayri: bool = False,
+                      islevsel_kirilim: bool = False,
+                      uc_nokta_dagilimi: bool = False,
+                      tanimli_donem: bool = False,
+                      liderlik_kirilimi: bool = False,
+                      baglam_notlari: bool = False) -> list:
+    """Bir liderlik raporunun eksiklerini listeler.
+
+    Maddeler ISO/TS 30431'in 4, 5 ve 6. maddelerindeki beklentilerden türetilmiştir;
+    bir uygunluk sınaması değil, hazırlık kontrol listesidir.
+    """
+    kontroller = [
+        (olcum_noktasi_sabit, "Ölçüm noktası ve dönemler sabitlenmemiş; karşılaştırma için aynı noktadan ölçün."),
+        (anket_yontemi_yazili, "Liderlik güveni için anket yöntemi (toplam skor, Crawford–LePine–Rich ölçeği ya da Likert dönüşümü) yazılı değil."),
+        (iki_yontem_ayri, "Genel ve özel kontrol alanı ayrı raporlanmıyor: astı olmayan yöneticiler oranı çarpıtabilir."),
+        (islevsel_kirilim, "Kontrol alanı işlevsel gruplara göre ve en yüksek/en düşük değerlerle raporlanmıyor."),
+        (uc_nokta_dagilimi, "Tek, 10'dan fazla ve 30'dan fazla astı olan yönetici sayıları verilmemiş."),
+        (tanimli_donem, "Liderlik gelişimi için tanımlı bir dönem (ör. takvim yılı) belirtilmemiş."),
+        (liderlik_kirilimi, "Liderlik gelişimi düzey, konum, bölüm ve hizmet yılına göre kırılmamış."),
+        (baglam_notlari, "Sayının yanında bağlam ve öngörü etkenleri (FTE değişimi, yeniden yapılanma, satın alma) yazılmamış."),
+    ]
+    return [metin for tamam, metin in kontroller if not tamam]
+
+
+# ---------------------------------------------------------------------------
+# 5) Dağıtıcı: hesaplayıcı arayüzünün kullandığı tek giriş noktası
+# ---------------------------------------------------------------------------
+
+METRIK_LISTESI = [
+    "guven_endeks", "likert_yuzde", "kontrol_genel", "kontrol_ozel",
+    "kontrol_dagilim", "gelisim", "egitim", "degisim",
+]
+
+
+def _g(x) -> str:
+    """Sayıyı, bilimsel gösterim kullanmadan en kısa biçimde yazar."""
+    return f"{x:.12g}"
+
+
+def hesapla(metrik: str, **g) -> dict:
+    """Metrik kimliği ve girdilerle hesabı yapar; sözlük döndürür.
+
+    Dönen anahtarlar: deger, ifade (formülün yerine konmuş hâli), ondalik,
+    birim, ayrinti (etiket–değer çiftleri).
+    """
+    if metrik == "guven_endeks":
+        d = guven_endeksi(g["adalet"], g["durustluk"], g["tutarlilik"])
+        boy = {"adalet": g["adalet"], "dürüstlük": g["durustluk"], "tutarlılık": g["tutarlilik"]}
+        en_dusuk = min(boy, key=lambda k: boy[k])
+        en_yuksek = max(boy, key=lambda k: boy[k])
+        return {"deger": d, "ondalik": 1, "birim": "puan (0–100 ölçeği)",
+                "ifade": f"({_g(g['adalet'])} + {_g(g['durustluk'])} + {_g(g['tutarlilik'])}) ÷ 3",
+                "ayrinti": [["Tabloda raporlanan (yuvarlanmış) endeks", int(d + 0.5)],
+                            ["En yüksek boyut", f"{en_yuksek} ({_g(boy[en_yuksek])})"],
+                            ["En düşük boyut", f"{en_dusuk} ({_g(boy[en_dusuk])})"]]}
+
+    if metrik == "likert_yuzde":
+        d = likert_yuzde(g["ortalama"], g["alt"], g["ust"])
+        return {"deger": d, "ondalik": 1, "birim": "puan (0–100 ölçeği)",
+                "ifade": f"({_g(g['ortalama'])} − {_g(g['alt'])}) ÷ ({_g(g['ust'])} − {_g(g['alt'])}) × 100",
+                "ayrinti": [["Ham ortalama", g["ortalama"]],
+                            ["Ölçek aralığı", f"{_g(g['alt'])}–{_g(g['ust'])}"]]}
+
+    if metrik == "kontrol_genel":
+        d = kontrol_alani_genel(g["toplam_isgucu"], g["toplam_yonetici"])
+        if g["toplam_yonetici"] > g["toplam_isgucu"]:
+            raise GecersizGirdi("yönetici sayısı toplam işgücünü aşamaz")
+        return {"deger": d, "ondalik": 1, "birim": "çalışan / yönetici",
+                "ifade": f"{_g(g['toplam_isgucu'])} ÷ {_g(g['toplam_yonetici'])}",
+                "ayrinti": [["Yönetici payı (%)", round(100 * g["toplam_yonetici"] / g["toplam_isgucu"], 1)],
+                            ["Yönetici başına yönetici olmayan çalışan",
+                             round((g["toplam_isgucu"] - g["toplam_yonetici"]) / g["toplam_yonetici"], 1)]]}
+
+    if metrik == "kontrol_ozel":
+        d = kontrol_alani_ozel(g["toplam_isgucu"], g["ast_olan"])
+        if g["toplam_yonetici"] <= 0 or g["ast_olan"] > g["toplam_yonetici"]:
+            raise GecersizGirdi("astı olan yönetici 0 ile toplam yönetici arasında olmalı")
+        if g["toplam_yonetici"] > g["toplam_isgucu"]:
+            raise GecersizGirdi("yönetici sayısı toplam işgücünü aşamaz")
+        return {"deger": d, "ondalik": 1, "birim": "çalışan / astı olan yönetici",
+                "ifade": f"{_g(g['toplam_isgucu'])} ÷ {_g(g['ast_olan'])}",
+                "ayrinti": [["Genel yöntemle kontrol alanı", round(kontrol_alani_genel(g["toplam_isgucu"], g["toplam_yonetici"]), 1)],
+                            ["Astı olmayan yönetici sayısı", g["toplam_yonetici"] - g["ast_olan"]],
+                            ["Astı olmayan yönetici payı (%)", round(astsiz_yonetici_payi(g["toplam_yonetici"], g["ast_olan"]), 1)]]}
+
+    if metrik == "kontrol_dagilim":
+        p = kontrol_alani_dagilimi(g["ast_olan"], g["tek_ast"], g["uzeri_10"], g["uzeri_30"])
+        return {"deger": p["uzeri_10"], "ondalik": 1, "birim": "% (10'dan fazla astı olan yönetici)",
+                "ifade": f"{_g(g['uzeri_10'])} ÷ {_g(g['ast_olan'])} × 100",
+                "ayrinti": [["Tek astı olan yönetici payı (%)", round(p["tek"], 1)],
+                            ["10'dan fazla astı olan yönetici payı (%)", round(p["uzeri_10"], 1)],
+                            ["30'dan fazla astı olan yönetici payı (%)", round(p["uzeri_30"], 1)]]}
+
+    if metrik == "gelisim":
+        d = yuzde(g["katilan"], g["toplam_lider"], "katılan lider")
+        return {"deger": d, "ondalik": 1, "birim": "% (gelişim programına katılan lider)",
+                "ifade": f"{_g(g['katilan'])} ÷ {_g(g['toplam_lider'])} × 100",
+                "ayrinti": [["Katılmayan lider sayısı", g["toplam_lider"] - g["katilan"]],
+                            ["Katılmayan lider payı (%)", round(100 - d, 1)]]}
+
+    if metrik == "egitim":
+        d = yuzde(g["egitim_alan"], g["toplam_lider"], "eğitim alan lider")
+        return {"deger": d, "ondalik": 1, "birim": "% (eğitim alan lider)",
+                "ifade": f"{_g(g['egitim_alan'])} ÷ {_g(g['toplam_lider'])} × 100",
+                "ayrinti": [["Eğitim almayan lider sayısı", g["toplam_lider"] - g["egitim_alan"]],
+                            ["Eğitim almayan lider payı (%)", round(100 - d, 1)]]}
+
+    if metrik == "degisim":
+        d = puan_degisim(g["onceki"], g["cari"])
+        return {"deger": d, "ondalik": 1, "birim": "puan",
+                "ifade": f"{_g(g['cari'])} − {_g(g['onceki'])}",
+                "ayrinti": [["Göreli değişim (%)", round(goreli_degisim(g["onceki"], g["cari"]), 1)],
+                            ["Cari değerin öncekine katı", round(g["cari"] / g["onceki"], 2)]]}
+
+    raise ValueError(f"Bilinmeyen metrik: {metrik}")
+
+
+# ---------------------------------------------------------------------------
+# 6) Doğrulama çıktısı
+# ---------------------------------------------------------------------------
+
+def _demo() -> None:
+    cizgi = "-" * 64
+    print("ISO/TS 30431 — doğrulama çıktısı")
+    print(cizgi)
+
+    print("Liderlik güveni (Tablo 1: adalet, dürüstlük, tutarlılık)")
+    for yil, b in ((2017, (73, 75, 81)), (2016, (69, 76, 79)), (2015, (65, 73, 77))):
+        print(f"  {yil}: {guven_endeksi(*b):.2f}  -> raporlanan {round(guven_endeksi(*b))}")
+    print(f"  Likert 4,2 / 5 -> %{likert_yuzde(4.2):.1f}")
+    print(cizgi)
+
+    print(f"Genel kontrol alanı (Tablo 2) : {kontrol_alani_genel(10000, 1000):.1f}")
+    print(f"Özel kontrol alanı  (Tablo 3) : {kontrol_alani_ozel(10000, 800):.1f}")
+    print(f"Astı olmayan yönetici payı    : %{astsiz_yonetici_payi(1000, 800):.1f}")
+    print(cizgi)
+
+    print(f"Liderlik gelişimi (Tablo 4)   : 2019 %{yuzde(200, 1000):.1f}, 2018 %{yuzde(250, 1000):.1f}")
+    print(f"Liderlik eğitimi  (Tablo 5)   : 2019 %{yuzde(800, 1000):.1f}, 2018 %{yuzde(500, 1000):.1f}")
+    print(f"Gelişim değişimi              : {puan_degisim(25.0, 20.0):+.1f} puan"
+          f" (göreli %{goreli_degisim(25.0, 20.0):.0f})")
+    print(cizgi)
+
+    t = ornek_tablo()
+    print("Birimlere göre kontrol alanı (toplamlar Tablo 2–5'in 2019 sayıları)")
+    print(f"{'Birim':<26}{'İşgücü':>8}{'Yön.':>6}{'Astlı':>7}{'Genel':>7}{'Özel':>7}")
+    for b in t.birimler:
+        print(f"{b.ad:<26}{b.isgucu:>8}{b.yonetici:>6}{b.ast_olan:>7}{b.genel():>7.1f}{b.ozel():>7.1f}")
+    print(cizgi)
+    for anahtar, deger in t.ozet().items():
+        print(f"{anahtar:<22}: {deger}")
+    print(cizgi)
+
+    print("Dağıtıcı örneği:")
+    print(hesapla("kontrol_ozel", toplam_isgucu=10000, ast_olan=800, toplam_yonetici=1000))
+    print(cizgi)
+
+    print("Rapor denetimi (hiçbir ön koşulu sağlamayan bir kurum için):")
+    for u in liderlik_denetimi():
+        print(" !", u)
+
+
+if __name__ == "__main__":
+    _demo()
+</script>
+<script>
+/* =========================================================
+   1) METRİK VERİ TABANI
+   u: kullanıcılar (hr İK hizmet birimleri / exec üst yönetim ve yönetim kurulu / line hat yönetimi /
+      rep çalışan temsilcileri / ext dış paydaş)
+   st: metrik bölümü (guven madde 4, alan madde 5, gelisim madde 6, baglam)
+   r: raporlama (ic, dis)
+   t: aile (p liderlik güveni / c kontrol alanı / s liderlik gelişimi / o ölçüm, bağlam ve öngörü)
+   calc: bu sayfadaki hesaplayıcı kimliği
+   iso: ISO 30414'te tanımlı liderlik metriği
+   k: ek etiket (ctx bağlam etkeni, pre öngörü etkeni, onk ön koşul, tur türetilmiş)
+   ========================================================= */
+var METRICS = [
+ {g:"Liderlik güveni", t:"p", items:[
+  {n:"Liderlik güveni (toplam endeks, 0–100)", st:"guven", r:["ic","dis"], iso:1, calc:"guven_endeks", d:"Çalışanların yöneticilerine ve liderlerine duyduğu güven; ISO 30414:2018, 4.7.5.1 (4.1, Tablo 1)", u:["hr","exec","line","rep","ext"]},
+  {n:"Yönetim/liderlik soruları toplu skoru (%0–%100)", st:"guven", r:["ic","dis"], iso:1, d:"Bağlılık anketinin yönetim ya da liderlik etkinliği soru alt kümesi (4.3)", u:["hr","exec","line","rep"]},
+  {n:"Crawford, LePine ve Rich bağlılık derecelendirme ölçeği", st:"guven", r:["ic"], iso:1, d:"Bağlılık sınıflandırma ölçeği; şartname yalnızca adını verir (4.3)", u:["hr","exec"]},
+  {n:"Likert 1–5 ölçeğinin yüzdeliğe çevrilmesi", st:"guven", r:["ic"], iso:1, calc:"likert_yuzde", d:"Liderlik/yönetim soruları birleştirilir, ortalaması alınır (4.3)", u:["hr","exec","line"]},
+  {n:"Adalet boyutu", st:"guven", r:["ic"], d:"\"Yöneticim ayrımcılık ya da kayırmacılık yapmadan eşit davranır\" (Tablo 1)", u:["hr","exec","line","rep"]},
+  {n:"Dürüstlük boyutu", st:"guven", r:["ic"], d:"\"Yöneticimin ilkeleri vardır; dürüst ve doğru sözlüdür\" (Tablo 1)", u:["hr","exec","line","rep"]},
+  {n:"Tutarlılık boyutu", st:"guven", r:["ic"], d:"\"Benzer durumlara zaman içinde aynı biçimde karşılık verir\" (Tablo 1)", u:["hr","exec","line","rep"]},
+  {n:"Boyutlardan toplam endeks (eşit ağırlıklı ortalama)", st:"guven", r:["ic"], k:"tur", d:"Tablo 1 toplamı üç boyutun ortalamasıyla uyumlu; şartname ağırlığı yazmaz", u:["hr","exec"]},
+  {n:"Güven endeksinin yıllar arası seyri", st:"guven", r:["ic","dis"], calc:"degisim", d:"Tablo 1: 2015–2017; örnekte 72 → 75 → 76", u:["hr","exec","ext"]},
+  {n:"Birim/yönetici bazında güven kırılımı", st:"guven", r:["ic"], k:"tur", d:"Toplam sayı birimler arası farkı gizleyebilir", u:["hr","exec","line"]}
+ ]},
+ {g:"Kontrol alanı (span of control)", t:"c", items:[
+  {n:"Genel kontrol alanı (Formül 1)", st:"alan", r:["ic","dis"], iso:1, calc:"kontrol_genel", d:"Toplam işgücü ÷ toplam yönetici (astı olmayanlar dahil); örnek 10 (5.3.1, Tablo 2)", u:["hr","exec","line","ext"]},
+  {n:"Özel kontrol alanı (Formül 2)", st:"alan", r:["ic","dis"], iso:1, calc:"kontrol_ozel", d:"Toplam işgücü ÷ doğrudan astı olan yönetici; örnek 12,5 (5.3.2, Tablo 3)", u:["hr","exec","line","ext"]},
+  {n:"Toplam işgücü (çalışan + geçici + bağımsız yüklenici)", st:"alan", r:["ic"], k:"onk", d:"Örnek: 9 000 + 900 + 100 = 10 000 (Tablo 2)", u:["hr","exec"]},
+  {n:"Toplam yönetici (astı olmayanlar dahil)", st:"alan", r:["ic"], k:"onk", d:"Gözetmenden genel müdüre; örnek 1 000 (5.6)", u:["hr","exec"]},
+  {n:"Doğrudan astı olan yönetici sayısı", st:"alan", r:["ic"], k:"onk", d:"Çalışan, koşullu işgücü ya da ikisi üzerinde gözetim sorumluluğu; örnek 800 (Tablo 3)", u:["hr","exec","line"]},
+  {n:"Doğrudan astı olmayan yönetici payı", st:"alan", r:["ic"], k:"tur", calc:"kontrol_ozel", d:"Proje, sistem, varlık ve program yöneten yöneticiler; örnekte 200 kişi, %20 (5.6)", u:["hr","exec"]},
+  {n:"İşlevsel gruba göre kontrol alanı", st:"alan", r:["ic"], d:"Ölçülmesi ve raporlanması önerilir (5.3.1, 5.3.2)", u:["hr","exec","line"]},
+  {n:"En yüksek ve en düşük kontrol alanları", st:"alan", r:["ic"], d:"Kurum genelinde uç değerler (5.3.1)", u:["hr","exec"]},
+  {n:"Yalnızca bir doğrudan astı olan yönetici sayısı", st:"alan", r:["ic"], calc:"kontrol_dagilim", d:"Raporlanması önerilen dağılım noktası (5.3.1)", u:["hr","exec","line"]},
+  {n:"10'dan fazla doğrudan astı olan yönetici sayısı", st:"alan", r:["ic"], calc:"kontrol_dagilim", d:"Raporlanması önerilen dağılım noktası (5.3.1)", u:["hr","exec","line"]},
+  {n:"30'dan fazla doğrudan astı olan yönetici sayısı", st:"alan", r:["ic"], calc:"kontrol_dagilim", d:"Raporlanması önerilen dağılım noktası (5.3.1)", u:["hr","exec","line"]},
+  {n:"Düzey ya da örgütsel katmana göre kontrol alanı", st:"alan", r:["ic"], d:"Katmana göre ayrıştırıldığında daha öğretici (5.5)", u:["hr","exec"]},
+  {n:"Kontrol alanı ile yönetim maliyeti ilişkisi", st:"alan", r:["ic"], k:"ctx", d:"Birçok kurum bunu işgücü maliyet yönetiminin geride kalan, dolaylı göstergesi sayar (5.4)", u:["hr","exec","ext"]},
+  {n:"Verimlilik ve elde tutma fırsatları", st:"alan", r:["ic"], k:"pre", d:"İşlev, kritik iş grupları, performans ve kıdem boyutları eklendiğinde (5.5)", u:["hr","exec","line"]}
+ ]},
+ {g:"Liderlik gelişimi", t:"s", items:[
+  {n:"Gelişim programlarına katılan liderlerin yüzdesi", st:"gelisim", r:["ic","dis"], iso:1, calc:"gelisim", d:"Tanımlı dönemde liderlik gelişim programlarına katılan lider ÷ toplam lider; örnek %20,0 (6.1, Tablo 4)", u:["hr","exec","line","rep","ext"]},
+  {n:"Eğitime katılan liderlerin yüzdesi", st:"gelisim", r:["ic","dis"], iso:1, calc:"egitim", d:"Tanımlı dönemde eğitim alan lider ÷ yönetim popülasyonu; örnek %80,0 (6.1, Tablo 5)", u:["hr","exec","line","rep","ext"]},
+  {n:"Toplam lider sayısı (yönetim kadrosu)", st:"gelisim", r:["ic"], k:"onk", d:"Gözetmen, yönetici, direktör, başkan yardımcısı ve genel müdür düzeylerini kapsar (6.6)", u:["hr","exec"]},
+  {n:"Gelişim ve eğitim yüzdesinin yıllar arası değişimi", st:"gelisim", r:["ic"], k:"tur", calc:"degisim", d:"Örnek: gelişim 25,0 → 20,0; eğitim 50,0 → 80,0 (Tablo 4 ve 5)", u:["hr","exec"]},
+  {n:"Liderlik düzeyine göre gelişim kırılımı", st:"gelisim", r:["ic"], d:"Lider grubu kategorilere bölününce uygulama güçlenir (6.2)", u:["hr","exec","line"]},
+  {n:"Konuma göre gelişim kırılımı", st:"gelisim", r:["ic"], d:"Kategori kırılımı (6.2)", u:["hr","exec","line"]},
+  {n:"Bölüme göre gelişim kırılımı", st:"gelisim", r:["ic"], d:"Kategori kırılımı (6.2)", u:["hr","exec","line"]},
+  {n:"Hizmet yılına göre gelişim kırılımı", st:"gelisim", r:["ic"], d:"Kategori kırılımı (6.2)", u:["hr","exec"]},
+  {n:"Geride kalan gösterge: içeriden lider geliştirme niyeti", st:"gelisim", r:["ic","dis"], k:"ctx", d:"Gelişim, kurumun liderleri içeriden geliştirme niyetini yansıtır (6.1)", u:["hr","exec","ext"]}
+ ]},
+ {g:"Ölçüm, bağlam ve öngörü", t:"o", items:[
+  {n:"Tanımlı ölçüm dönemi ve noktası", st:"baglam", r:["ic"], k:"onk", d:"Takvim yılı sonu gibi sabit nokta; dönemler arası karşılaştırma için (6.6)", u:["hr","exec"]},
+  {n:"İşgücü katılımı: çalışanlarla ve temsilcileriyle diyalog", st:"baglam", r:["ic"], k:"onk", d:"Liderlik işgücünü etkilediği için danışma ve katılım stratejileri kurulabilir (Giriş)", u:["hr","exec","rep"]},
+  {n:"FTE sayısı değişimi", st:"baglam", r:["ic"], k:"ctx", d:"FTE, metrik sonuçlarının anlamını değiştirecek kadar büyüdü ya da küçüldü mü? (4.4, 5.4, 6.4)", u:["hr","exec","line"]},
+  {n:"Artan üretim ya da ürün genişlemesi", st:"baglam", r:["ic"], k:"ctx", d:"Güncel faaliyet bağlamı (4.4, 5.4, 6.4)", u:["hr","exec","line"]},
+  {n:"Yeniden yapılanmalar", st:"baglam", r:["ic"], k:"ctx", d:"Güncel faaliyet bağlamı (4.4, 5.4, 6.4)", u:["hr","exec","line","rep"]},
+  {n:"İşgücünü eğitmeye yönelik güncel faaliyetler", st:"baglam", r:["ic"], k:"ctx", d:"Güncel faaliyet bağlamı (4.4, 5.4, 6.4)", u:["hr","line"]},
+  {n:"Kültürel değişimler (olumlu ve olumsuz)", st:"baglam", r:["ic"], k:"ctx", d:"Bağlam etkeni", u:["hr","exec","rep"]},
+  {n:"Kuşak bakış açıları", st:"baglam", r:["ic"], k:"ctx", d:"Bağlam etkeni", u:["hr","rep"]},
+  {n:"Bildirimlerde artışa yol açan toplumsal değişim ya da farkındalık", st:"baglam", r:["ic","dis"], k:"ctx", d:"Bağlam etkeni", u:["hr","exec","rep","ext"]},
+  {n:"Sektör beklentisi", st:"baglam", r:["ic","dis"], k:"ctx", d:"Bağlam etkeni; kıyaslamanın anlamlı olduğu aralığı belirler", u:["hr","exec","ext"]},
+  {n:"Ekonomik etkenler: daralma ve genişleme", st:"baglam", r:["ic","dis"], k:"ctx", d:"Bağlam etkeni", u:["hr","exec","ext"]},
+  {n:"Planlanan örgüt yapısı veya işgücü değişiklikleri", st:"baglam", r:["ic"], k:"pre", d:"Bilinen ve beklenen olaylar üzerinden öngörü (4.5, 5.5, 6.5)", u:["hr","exec","rep"]},
+  {n:"Yaklaşan iş, işlev veya ürün değişiklikleri", st:"baglam", r:["ic"], k:"pre", d:"Öngörü etkeni", u:["hr","exec","line"]},
+  {n:"Satın almalar", st:"baglam", r:["ic","dis"], k:"pre", d:"Öngörü etkeni; yönetici sayısını ve katmanları değiştirir", u:["hr","exec","ext"]},
+  {n:"Ekonomik etkenler (öngörü): daralma ve genişleme", st:"baglam", r:["ic","dis"], k:"pre", d:"Öngörü etkeni", u:["hr","exec","ext"]},
+  {n:"İşgücü farkındalığı ve eğitimi", st:"baglam", r:["ic"], k:"pre", d:"Öngörü etkeni", u:["hr","line"]},
+  {n:"Siyasi, sosyal, çevresel ve yasal dinamikler", st:"baglam", r:["ic","dis"], k:"pre", d:"Öngörü etkeni", u:["hr","exec","ext"]},
+  {n:"Sektörel etkiler", st:"baglam", r:["ic","dis"], k:"pre", d:"Öngörü etkeni", u:["hr","exec","ext"]}
+ ]}
+];
+
+var USERS = ["hr","exec","line","rep","ext"];
+var AILE_AD = {p:"liderlik güveni", c:"kontrol alanı", s:"liderlik gelişimi", o:"ölçüm ve bağlam"};
+var EK_AD = {ctx:"bağlam etkeni", pre:"öngörü etkeni", onk:"ön koşul", tur:"türetilmiş"};
+
+/* --- matris çizimi --- */
+function renderMatrix(){
+  var fu = document.getElementById("fUser").value;
+  var fs = document.getElementById("fStage").value;
+  var ft = document.getElementById("fType").value;
+  var fr = document.getElementById("fRep").value;
+  var fq = document.getElementById("fQ").value.toLocaleLowerCase("tr");
+  var body = document.getElementById("mBody");
+  var html = "", shown = 0;
+
+  METRICS.forEach(function(grp){
+    if(ft && grp.t !== ft) return;
+    var rows = "";
+    grp.items.forEach(function(m){
+      if(fu && m.u.indexOf(fu) === -1) return;
+      if(fs && m.st !== fs) return;
+      if(fr && m.r.indexOf(fr) === -1) return;
+      if(fq && m.n.toLocaleLowerCase("tr").indexOf(fq) === -1) return;
+      shown++;
+      var cells = USERS.map(function(u){
+        if(m.u.indexOf(u) === -1) return '<td class="num"></td>';
+        var mark = '<span class="dot ' + grp.t + '"></span>';
+        return '<td class="num" title="' + m.n + '">' + (m.calc ? '<b>' + mark + '</b>' : mark) + '</td>';
+      }).join("");
+      var tags = '<span class="tag ' + grp.t + '">' + AILE_AD[grp.t] + '</span>' +
+                 (m.k ? ' <span class="tag lvl">' + EK_AD[m.k] + '</span>' : "") +
+                 (m.iso ? ' <span class="tag iso">30414</span>' : "") +
+                 (m.calc ? ' <span class="tag lvl">hesaplayıcı</span>' : "") +
+                 (m.r.indexOf("dis") !== -1 ? ' <span class="tag iso">dış rapor</span>' : "");
+      rows += '<tr><td class="name">' + (m.calc ? '<b>' + m.n + '</b>' : m.n) + ' ' + tags +
+              '<em>' + m.d + '</em></td>' + cells + '</tr>';
+    });
+    if(rows){
+      html += '<tr class="group"><td colspan="6">' + grp.g + '</td></tr>' + rows;
+    }
+  });
+
+  body.innerHTML = html || '<tr><td colspan="6">Bu filtre birleşimiyle eşleşen metrik yok.</td></tr>';
+  document.getElementById("mCount").textContent = shown + " metrik ve etken gösteriliyor.";
+}
+["fUser","fStage","fType","fRep","fQ"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", renderMatrix);
+});
+renderMatrix();
+
+/* =========================================================
+   2) KONTROL ALANI VE GELİŞİM TABLOSU
+   ========================================================= */
+var SATIR = 8;
+/* birim, işgücü, toplam yönetici, astı olan yönetici, gelişim programına katılan, eğitim alan
+   (toplamlar şartnamenin 2019 örneğine uyar; birimlere dağılım bu sayfaya aittir) */
+var ORNEK_TBL = [
+  ["Üretim",                  5200, 480, 400, 90, 380],
+  ["Satış",                   1800, 200, 170, 40, 160],
+  ["BT",                      1000, 120,  95, 30, 100],
+  ["Merkez işlevler",         1200, 150, 100, 25, 120],
+  ["Araştırma ve geliştirme",  800,  50,  35, 15,  40],
+  ["", 0, 0, 0, 0, 0],
+  ["", 0, 0, 0, 0, 0],
+  ["", 0, 0, 0, 0, 0]
+];
+var ALANLAR = ["isg","yon","ast","gel","egt"];
+
+function buildTbl(){
+  var html = "";
+  for(var i=0;i<SATIR;i++){
+    html += '<tr><td><input type="text" id="p_ad_' + i + '" placeholder="Birim ' + (i+1) + '"></td>';
+    ALANLAR.forEach(function(k){
+      html += '<td><input type="number" min="0" step="1" id="p_' + k + '_' + i + '"></td>';
+    });
+    ["genel","ozel","gelp","egtp"].forEach(function(k){
+      html += '<td class="calc" id="p_' + k + '_' + i + '">—</td>';
+    });
+    html += '</tr>';
+  }
+  document.getElementById("pBody").innerHTML = html;
+  document.getElementById("pBody").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", computeTbl);
+  });
+}
+
+function pNum(k, i){
+  var v = parseFloat(document.getElementById("p_" + k + "_" + i).value);
+  return isNaN(v) || v < 0 ? 0 : v;
+}
+
+var TBL = {n:0, isg:0, yon:0, ast:0, gel:0, egt:0, ok:false};
+
+function computeTbl(){
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var f0 = function(x){ return x.toLocaleString("tr-TR", {maximumFractionDigits:2}); };
+  var n = 0, t = {isg:0, yon:0, ast:0, gel:0, egt:0}, enGenis = null, hatali = 0;
+
+  for(var i=0;i<SATIR;i++){
+    var ad = document.getElementById("p_ad_" + i).value.trim() || ("Birim " + (i+1));
+    var s = {};
+    ALANLAR.forEach(function(k){ s[k] = pNum(k, i); });
+    var cells = {};
+    ["genel","ozel","gelp","egtp"].forEach(function(k){ cells[k] = document.getElementById("p_" + k + "_" + i); });
+    var bos = !(s.isg > 0 || s.yon > 0 || s.ast > 0 || s.gel > 0 || s.egt > 0);
+    if(bos){ for(var k in cells) cells[k].textContent = "—"; continue; }
+    /* tutarsız satırı toplamlara katma: yönetici işgücünü aşamaz; astı olan ≤ yönetici; katılım ≤ yönetici */
+    if(s.yon > s.isg || s.ast > s.yon || s.gel > s.yon || s.egt > s.yon){
+      hatali++;
+      for(var k2 in cells) cells[k2].textContent = "tutarsız";
+      continue;
+    }
+    n++;
+    ALANLAR.forEach(function(k){ t[k] += s[k]; });
+    cells.genel.textContent = s.yon > 0 ? f1(s.isg / s.yon) : "—";
+    cells.ozel.textContent = s.ast > 0 ? f1(s.isg / s.ast) : "—";
+    cells.gelp.textContent = s.yon > 0 ? f1(100 * s.gel / s.yon) : "—";
+    cells.egtp.textContent = s.yon > 0 ? f1(100 * s.egt / s.yon) : "—";
+    if(s.ast > 0 && (enGenis === null || s.isg / s.ast > enGenis.v)) enGenis = {ad:ad, v:s.isg / s.ast};
+  }
+
+  var ok = n > 0 && t.yon > 0 && t.ast > 0;
+  document.getElementById("tIsg").textContent = n ? f0(t.isg) : "—";
+  document.getElementById("tYon").textContent = n ? f0(t.yon) : "—";
+  document.getElementById("tAst").textContent = n ? f0(t.ast) : "—";
+  document.getElementById("tGel").textContent = n ? f0(t.gel) : "—";
+  document.getElementById("tEgt").textContent = n ? f0(t.egt) : "—";
+  document.getElementById("tGenel").textContent = ok ? f1(t.isg / t.yon) : "—";
+  document.getElementById("tOzel").textContent = ok ? f1(t.isg / t.ast) : "—";
+  document.getElementById("tGelP").textContent = ok ? f1(100 * t.gel / t.yon) : "—";
+  document.getElementById("tEgtP").textContent = ok ? f1(100 * t.egt / t.yon) : "—";
+
+  var kart = document.getElementById("pCards");
+  TBL = {n:n, isg:t.isg, yon:t.yon, ast:t.ast, gel:t.gel, egt:t.egt, ok:ok};
+  if(!ok){
+    kart.innerHTML = "";
+    document.getElementById("pNot").textContent = hatali ?
+      "Tutarsız satır var: yönetici işgücünü, astı olan yönetici ve katılımlar da toplam yöneticiyi aşamaz. Toplamlar yalnızca tutarlı satırlardan hesaplanır." :
+      "Tabloya birimleri girin ya da örnek veriyi yükleyin. Kontrol alanı için toplam yönetici ve astı olan yönetici sıfırdan büyük olmalı.";
+    return;
+  }
+
+  var kartlar = '';
+  kartlar += '<div class="card"><b>' + f1(t.isg / t.yon) + '</b><span>Genel kontrol alanı (toplam yönetici)</span></div>';
+  kartlar += '<div class="card"><b>' + f1(t.isg / t.ast) + '</b><span>Özel kontrol alanı (astı olan yönetici)</span></div>';
+  kartlar += '<div class="card alt"><b>' + f1(100 * (t.yon - t.ast) / t.yon) + ' %</b><span>Astı olmayan yönetici payı</span></div>';
+  kartlar += '<div class="card alt"><b>' + f1(100 * t.gel / t.yon) + ' %</b><span>Gelişim programına katılan lider</span></div>';
+  kartlar += '<div class="card warn"><b>' + f1(100 * t.egt / t.yon) + ' %</b><span>Eğitim alan lider</span></div>';
+  kartlar += '<div class="card warn"><b>' + (enGenis ? f1(enGenis.v) : "—") + '</b><span>En geniş özel kontrol alanı: ' + (enGenis ? enGenis.ad : "—") + '</span></div>';
+  kart.innerHTML = kartlar;
+
+  var not = "Genel: " + f0(t.isg) + " ÷ " + f0(t.yon) + " = " + f1(t.isg / t.yon) + "; özel: " + f0(t.isg) + " ÷ " + f0(t.ast) + " = " + f1(t.isg / t.ast) + ". ";
+  not += "Gelişim ve eğitim yüzdelerinin paydası toplam yöneticidir (lider = yönetim kadrosu). ";
+  if(hatali) not += hatali + " tutarsız satır toplamlara katılmadı. ";
+  not += "Tablodaki toplamlar birimlerin toplamıdır; birim ortalamalarının ortalaması değildir.";
+  document.getElementById("pNot").textContent = not;
+}
+
+function loadTblExample(){
+  for(var i=0;i<SATIR;i++){
+    var s = ORNEK_TBL[i];
+    document.getElementById("p_ad_" + i).value = s[0];
+    ALANLAR.forEach(function(k, j){ document.getElementById("p_" + k + "_" + i).value = s[j+1] ? s[j+1] : ""; });
+  }
+  computeTbl();
+}
+
+document.getElementById("btnOrnek").addEventListener("click", loadTblExample);
+document.getElementById("btnTemizle").addEventListener("click", function(){
+  for(var i=0;i<SATIR;i++){
+    document.getElementById("p_ad_" + i).value = "";
+    ALANLAR.forEach(function(k){ document.getElementById("p_" + k + "_" + i).value = ""; });
+  }
+  computeTbl();
+});
+document.getElementById("btnCsv").addEventListener("click", function(){
+  var satir = ["Birim;Isgucu;Toplam yonetici;Asti olan yonetici;Gelisim programina katilan;Egitim alan;Genel kontrol alani;Ozel kontrol alani;Gelisim %;Egitim %"];
+  var gecerli = function(s){ return (s.isg > 0 || s.yon > 0 || s.ast > 0 || s.gel > 0 || s.egt > 0) &&
+                              !(s.yon > s.isg || s.ast > s.yon || s.gel > s.yon || s.egt > s.yon); };
+  for(var i=0;i<SATIR;i++){
+    var s = {};
+    ALANLAR.forEach(function(k){ s[k] = pNum(k, i); });
+    if(!gecerli(s)) continue;
+    var ad = document.getElementById("p_ad_" + i).value.trim() || ("Birim " + (i+1));
+    satir.push([ad, s.isg, s.yon, s.ast, s.gel, s.egt,
+      s.yon > 0 ? (s.isg / s.yon).toFixed(1) : "", s.ast > 0 ? (s.isg / s.ast).toFixed(1) : "",
+      s.yon > 0 ? (100 * s.gel / s.yon).toFixed(1) : "", s.yon > 0 ? (100 * s.egt / s.yon).toFixed(1) : ""].join(";"));
+  }
+  if(TBL.ok){
+    satir.push(["Toplam", TBL.isg, TBL.yon, TBL.ast, TBL.gel, TBL.egt,
+      (TBL.isg / TBL.yon).toFixed(1), (TBL.isg / TBL.ast).toFixed(1),
+      (100 * TBL.gel / TBL.yon).toFixed(1), (100 * TBL.egt / TBL.yon).toFixed(1)].join(";"));
+  }
+  var blob = new Blob(["﻿" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "iso30431_liderlik_tablosu.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* =========================================================
+   3) FORMÜL TABLOSU + HESAPLAYICI
+   Alan adları gömülü Python modülünün hesapla() imzasıyla birebir aynıdır.
+   ========================================================= */
+function gerek(kosul, mesaj){ if(!kosul) throw new Error("GecersizGirdi: " + mesaj); }
+function oranOk(parca, butun, ad){
+  gerek(butun > 0, "bütün sıfırdan büyük olmalı");
+  gerek(parca >= 0 && parca <= butun, ad + " 0 ile bütün arasında olmalı");
+  return 100 * parca / butun;
+}
+function bolOk(pay, payda, ad){ gerek(payda > 0, ad + " sıfırdan büyük olmalı"); return pay / payda; }
+function goreli(onceki, cari){
+  gerek(onceki > 0, "önceki değer sıfırdan büyük olmalı");
+  gerek(cari >= 0, "cari değer negatif olamaz");
+  return 100 * (cari - onceki) / onceki;
+}
+function r1(x){ return +x.toFixed(1); }
+function r2(x){ return +x.toFixed(2); }
+
+var CALC = [
+ {id:"guven_endeks", name:"Liderlik güveni toplam endeksi", grp:"Liderlik güveni", noHeur:true,
+  formula:"Endeks = (Adalet + Dürüstlük + Tutarlılık) &divide; 3",
+  note:"Şartname Tablo 1'de 0–100 ölçeğinde üç boyut ve toplam liderlik güveni endeksi verir (2017: 73, 75, 81 → 76). Toplamın üç boyutun eşit ağırlıklı ortalaması olduğu şartnamede yazılı değildir; Tablo 1'in sayıları bu ortalamayla uyumlu olduğu için türetilmiştir. Kendi anketinizde ağırlıklar farklıysa kendi ağırlıklarınızı kullanın.",
+  fields:[{k:"adalet",l:"Adalet (0–100)",v:73},{k:"durustluk",l:"Dürüstlük (0–100)",v:75},{k:"tutarlilik",l:"Tutarlılık (0–100)",v:81}],
+  unit:"puan (0–100 ölçeği)",
+  py:"guven_endeksi(73, 75, 81)",
+  calc:function(v){
+    gerek(v.adalet >= 0 && v.adalet <= 100 && v.durustluk >= 0 && v.durustluk <= 100 && v.tutarlilik >= 0 && v.tutarlilik <= 100, "boyut puanı 0 ile 100 arasında olmalı");
+    var d = (v.adalet + v.durustluk + v.tutarlilik) / 3;
+    var boy = [["adalet", v.adalet], ["dürüstlük", v.durustluk], ["tutarlılık", v.tutarlilik]];
+    var dus = boy[0], yuk = boy[0];
+    boy.forEach(function(b){ if(b[1] < dus[1]) dus = b; if(b[1] > yuk[1]) yuk = b; });
+    return {value:d, dec:1, expl:"(" + v.adalet + " + " + v.durustluk + " + " + v.tutarlilik + ") ÷ 3",
+      detail:[["Tabloda raporlanan (yuvarlanmış) endeks", Math.round(d)],
+              ["En yüksek boyut", yuk[0] + " (" + yuk[1] + ")"],
+              ["En düşük boyut", dus[0] + " (" + dus[1] + ")"]]}; },
+  bands:[[0,"ok","Şartname eşik vermez: endeksi önceki dönemlerle ve boyut boyut okuyun; toplam sayı tek bir boyutun düşüşünü gizleyebilir (Tablo 1)."]]},
+
+ {id:"likert_yuzde", name:"Likert ortalamasının yüzdeye çevrilmesi", grp:"Liderlik güveni", noHeur:true,
+  formula:"Yüzde = (Ortalama &minus; Alt sınır) &divide; (Üst sınır &minus; Alt sınır) &times; 100",
+  note:"Şartname, 1–5 Likert ölçeğinin yüzdeliğe çevrilmesinden ve liderlik/yönetimle ilgili soruların ortalamasının alınmasından söz eder ama dönüşümü tanımlamaz. Burada doğrusal dönüşüm kullanılmıştır: ölçek 1 → 0, ölçek 5 → 100. Bu bir varsayımdır; farklı bir yöntem seçerseniz raporda yazın.",
+  fields:[{k:"ortalama",l:"Soruların Likert ortalaması",v:4.2,step:0.01},{k:"alt",l:"Ölçek alt sınırı",v:1,step:0.5},{k:"ust",l:"Ölçek üst sınırı",v:5,step:0.5}],
+  unit:"puan (0–100 ölçeği)",
+  py:"likert_yuzde(ortalama=4.2, alt=1, ust=5)",
+  calc:function(v){
+    gerek(v.ust > v.alt, "ölçek üst sınırı alt sınırdan büyük olmalı");
+    gerek(v.ortalama >= v.alt && v.ortalama <= v.ust, "ortalama ölçek sınırları içinde olmalı");
+    var d = 100 * (v.ortalama - v.alt) / (v.ust - v.alt);
+    return {value:d, dec:1, expl:"(" + v.ortalama + " − " + v.alt + ") ÷ (" + v.ust + " − " + v.alt + ") × 100",
+      detail:[["Ham ortalama", v.ortalama],
+              ["Ölçek aralığı", v.alt + "–" + v.ust]]}; },
+  bands:[[0,"ok","Yöntem, seri boyunca aynı kalmalıdır: farklı dönüşümlerle üretilen yüzdeler birbirleriyle karşılaştırılamaz."]]},
+
+ {id:"kontrol_genel", name:"Genel kontrol alanı (Formül 1)", grp:"Kontrol alanı", noHeur:true,
+  formula:"Genel kontrol alanı = Toplam işgücü &divide; Toplam yönetici",
+  note:"Şartname Formül (1): toplam işgücü, tüm yönetim ve yönetim dışı çalışanları içerir; toplam yönetici, doğrudan astı olmayan yöneticileri de içerir. Örnek: 9 000 + 900 + 100 = 10 000 işgücü ve 1 000 yönetici → 10. Bu yöntem, gözetim yapan ve yapmayan yöneticilerin yükünü karıştırarak yanıltıcı olabilir.",
+  fields:[{k:"toplam_isgucu",l:"Toplam işgücü (çalışan + koşullu)",v:10000},{k:"toplam_yonetici",l:"Toplam yönetici (astı olmayanlar dahil)",v:1000}],
+  unit:"çalışan / yönetici",
+  py:"kontrol_alani_genel(toplam_isgucu=10000, toplam_yonetici=1000)",
+  calc:function(v){
+    var d = bolOk(v.toplam_isgucu, v.toplam_yonetici, "toplam yönetici");
+    gerek(v.toplam_yonetici <= v.toplam_isgucu, "yönetici sayısı toplam işgücünü aşamaz");
+    return {value:d, dec:1, expl:v.toplam_isgucu + " ÷ " + v.toplam_yonetici,
+      detail:[["Yönetici payı (%)", r1(100 * v.toplam_yonetici / v.toplam_isgucu)],
+              ["Yönetici başına yönetici olmayan çalışan", r1((v.toplam_isgucu - v.toplam_yonetici) / v.toplam_yonetici)]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Yüksek oran daha yalın bir yapıyı gösterebilir; giderek büyüyen oranlar aşırı yüklenmiş yöneticilere işaret edebilir (madde 5.2)."]]},
+
+ {id:"kontrol_ozel", name:"Özel kontrol alanı (Formül 2)", grp:"Kontrol alanı", noHeur:true,
+  formula:"Kontrol alanı = Toplam işgücü &divide; Doğrudan astı olan yönetici",
+  note:"Şartname Formül (2): yalnızca çalışanlar, koşullu işgücü ya da ikisi üzerinde doğrudan gözetim sorumluluğu olan yöneticiler sayılır. Örnek: 10 000 ÷ 800 = 12,5. Astı olmayan yönetici sayısı ve payı türetilmiştir; iki yöntem arasındaki farkı açıklar.",
+  fields:[{k:"toplam_isgucu",l:"Toplam işgücü",v:10000},{k:"ast_olan",l:"Doğrudan astı olan yönetici",v:800},{k:"toplam_yonetici",l:"Toplam yönetici",v:1000}],
+  unit:"çalışan / astı olan yönetici",
+  py:"kontrol_alani_ozel(toplam_isgucu=10000, ast_olan_yonetici=800)",
+  calc:function(v){
+    var d = bolOk(v.toplam_isgucu, v.ast_olan, "astı olan yönetici");
+    gerek(v.toplam_yonetici > 0 && v.ast_olan <= v.toplam_yonetici, "astı olan yönetici 0 ile toplam yönetici arasında olmalı");
+    gerek(v.toplam_yonetici <= v.toplam_isgucu, "yönetici sayısı toplam işgücünü aşamaz");
+    return {value:d, dec:1, expl:v.toplam_isgucu + " ÷ " + v.ast_olan,
+      detail:[["Genel yöntemle kontrol alanı", r1(v.toplam_isgucu / v.toplam_yonetici)],
+              ["Astı olmayan yönetici sayısı", v.toplam_yonetici - v.ast_olan],
+              ["Astı olmayan yönetici payı (%)", r1(100 * (v.toplam_yonetici - v.ast_olan) / v.toplam_yonetici)]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Ortalamayla yetinmeyin: işlevsel grup, en yüksek/en düşük değer ve 1, 10, 30 astı olan yönetici sayılarını raporlayın (madde 5.3.2)."]]},
+
+ {id:"kontrol_dagilim", name:"Kontrol alanı dağılım payları", grp:"Kontrol alanı", noHeur:true,
+  formula:"Pay = (Eşiği aşan yönetici &divide; Astı olan yönetici) &times; 100",
+  note:"Şartname, kaç yöneticinin yalnızca bir, kaçının 10'dan ve kaçının 30'dan fazla doğrudan astı olduğunun raporlanmasını önerir (5.3.1, 5.3.2); yüzde olarak payların hesaplanması türetilmiştir. Varsayılan sayılar örnek amaçlıdır, şartnamede yoktur.",
+  fields:[{k:"ast_olan",l:"Doğrudan astı olan yönetici",v:800},{k:"tek_ast",l:"Yalnızca bir doğrudan astı olan yönetici",v:40},
+          {k:"uzeri_10",l:"10'dan fazla doğrudan astı olan yönetici",v:300},{k:"uzeri_30",l:"30'dan fazla doğrudan astı olan yönetici",v:20}],
+  unit:"% (10'dan fazla astı olan yönetici)",
+  py:"kontrol_alani_dagilimi(ast_olan=800, tek_ast=40, uzeri_10=300, uzeri_30=20)",
+  calc:function(v){
+    gerek(v.ast_olan > 0, "astı olan yönetici sıfırdan büyük olmalı");
+    gerek(v.tek_ast >= 0 && v.tek_ast <= v.ast_olan, "tek astı olan yönetici 0 ile astı olan yönetici arasında olmalı");
+    gerek(v.uzeri_10 >= 0 && v.uzeri_10 <= v.ast_olan, "10'dan fazla astı olan yönetici 0 ile astı olan yönetici arasında olmalı");
+    gerek(v.uzeri_30 >= 0 && v.uzeri_30 <= v.ast_olan, "30'dan fazla astı olan yönetici 0 ile astı olan yönetici arasında olmalı");
+    gerek(v.uzeri_30 <= v.uzeri_10, "30'dan fazla astı olanlar 10'dan fazla astı olanların alt kümesidir");
+    var p10 = 100 * v.uzeri_10 / v.ast_olan;
+    return {value:p10, dec:1, expl:v.uzeri_10 + " ÷ " + v.ast_olan + " × 100",
+      detail:[["Tek astı olan yönetici payı (%)", r1(100 * v.tek_ast / v.ast_olan)],
+              ["10'dan fazla astı olan yönetici payı (%)", r1(p10)],
+              ["30'dan fazla astı olan yönetici payı (%)", r1(100 * v.uzeri_30 / v.ast_olan)]]}; },
+  bands:[[0,"ok","Uç değerler ortalamanın gizlediği sorunları gösterir: çok geniş kontrol alanı aşırı yüklenmeye, tek astlı yöneticiler fazla katmana işaret edebilir."]]},
+
+ {id:"gelisim", name:"Liderlik gelişim programlarına katılım", grp:"Liderlik gelişimi", noHeur:true,
+  formula:"Gelişim yüzdesi = (Programlara katılan lider &divide; Toplam lider) &times; 100",
+  note:"Şartname, tanımlı dönemde liderlik gelişim programlarına katılan liderlerin yüzdesini önerir. Madde 6.3 yalnızca 6.6'daki örneğe atıf yapar: 1 000 liderden 200'ü katıldı → %20,0 (2019); 250 → %25,0 (2018).",
+  fields:[{k:"toplam_lider",l:"Toplam lider (yönetim kadrosu)",v:1000},{k:"katilan",l:"Gelişim programlarına katılan lider",v:200}],
+  unit:"% (gelişim programına katılan lider)",
+  py:"yuzde(parca=200, butun=1000)",
+  calc:function(v){ var d = oranOk(v.katilan, v.toplam_lider, "katılan lider");
+    return {value:d, dec:1, expl:v.katilan + " ÷ " + v.toplam_lider + " × 100",
+      detail:[["Katılmayan lider sayısı", v.toplam_lider - v.katilan],
+              ["Katılmayan lider payı (%)", r1(100 - d)]]}; },
+  bands:[[0,"ok","Eşik yok: gelişim, kurumun liderleri içeriden geliştirme niyetinin geride kalan göstergesidir. Düzey, konum, bölüm ve hizmet yılına göre kırın (madde 6.1, 6.2)."]]},
+
+ {id:"egitim", name:"Liderlerin eğitime katılımı", grp:"Liderlik gelişimi", noHeur:true,
+  formula:"Eğitim yüzdesi = (Eğitim alan lider &divide; Toplam yönetim kadrosu) &times; 100",
+  note:"Şartname, tanımlı dönemde eğitime katılan liderlerin yüzdesini ikinci ölçü olarak verir. Örnek (Tablo 5): 1 000 yönetim kadrosundan 800'ü eğitim aldı → %80,0 (2019); 500 → %50,0 (2018).",
+  fields:[{k:"toplam_lider",l:"Toplam yönetim kadrosu (yönetim popülasyonu)",v:1000},{k:"egitim_alan",l:"Eğitim alan lider",v:800}],
+  unit:"% (eğitim alan lider)",
+  py:"yuzde(parca=800, butun=1000)",
+  calc:function(v){ var d = oranOk(v.egitim_alan, v.toplam_lider, "eğitim alan lider");
+    return {value:d, dec:1, expl:v.egitim_alan + " ÷ " + v.toplam_lider + " × 100",
+      detail:[["Eğitim almayan lider sayısı", v.toplam_lider - v.egitim_alan],
+              ["Eğitim almayan lider payı (%)", r1(100 - d)]]}; },
+  bands:[[0,"ok","Eşik yok: eğitime katılım programa katılımdan ayrı bir ölçüdür; ikisini birbirinin yerine kullanmayın (madde 6.1)."]]},
+
+ {id:"degisim", name:"Dönemler arası değişim (puan ve göreli)", grp:"Dönemler arası", noHeur:true,
+  formula:"Puan değişimi = Cari &minus; Önceki; Göreli değişim = ((Cari &minus; Önceki) &divide; Önceki) &times; 100",
+  note:"Güven endeksi, gelişim ya da eğitim yüzdesi gibi bir göstergenin iki dönem arasındaki değişimini verir. Şartname bu hesabı yapmaz; örneklerdeki yıllar (Tablo 1, 4, 5) karşılaştırma içindir. Varsayılan değerler Tablo 4'ten gelir: %25,0 → %20,0 (−5,0 puan, göreli −%20).",
+  fields:[{k:"onceki",l:"Önceki dönem değeri",v:25,step:0.1},{k:"cari",l:"Cari dönem değeri",v:20,step:0.1}],
+  unit:"puan",
+  py:"puan_degisim(onceki=25, cari=20)",
+  calc:function(v){
+    gerek(v.onceki > 0, "önceki değer sıfırdan büyük olmalı");
+    gerek(v.cari >= 0, "cari değer negatif olamaz");
+    return {value:v.cari - v.onceki, dec:1, expl:v.cari + " − " + v.onceki,
+      detail:[["Göreli değişim (%)", r1(goreli(v.onceki, v.cari))],
+              ["Cari değerin öncekine katı", r2(v.cari / v.onceki)]]}; },
+  bands:[[0,"ok","Değişimin yönünü bağlamla okuyun: FTE değişimi, yeniden yapılanma ve yöntem farkları sayıyı etkileyebilir (madde 4.4, 5.4, 6.4)."]]}
+];
+
+/* --- formül tablosu --- */
+(function(){
+  var rows = CALC.map(function(c){
+    return '<tr><td><b>' + c.name + '</b></td><td><span style="font-family:var(--serif)">' +
+           c.formula + '</span></td><td>' + c.note + '</td></tr>';
+  }).join("");
+  document.getElementById("fBody").innerHTML = rows;
+})();
+
+/* --- hesaplayıcı --- */
+var sel = document.getElementById("cMetric");
+CALC.forEach(function(c, i){
+  var o = document.createElement("option");
+  o.value = i; o.textContent = c.grp + " — " + c.name;
+  sel.appendChild(o);
+});
+
+function buildFields(){
+  var c = CALC[+sel.value];
+  document.getElementById("cFields").innerHTML = c.fields.map(function(f){
+    return '<div class="field"><label for="in_' + f.k + '">' + f.l + '</label>' +
+      '<input type="number" id="in_' + f.k + '" value="" step="' + (f.step || "any") + '" placeholder="' + f.v + '"></div>';
+  }).join("");
+  document.getElementById("cFields").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", run);
+  });
+}
+
+function readVals(){
+  var c = CALC[+sel.value], v = {}, missing = false;
+  c.fields.forEach(function(f){
+    var el = document.getElementById("in_" + f.k);
+    var raw = el && el.value !== "" ? parseFloat(el.value) : NaN;
+    if(isNaN(raw)){ missing = true; v[f.k] = f.v; } else { v[f.k] = raw; }
+  });
+  return {v:v, missing:missing};
+}
+
+function fmt(x, dec){
+  if(!isFinite(x)) return "—";
+  return x.toLocaleString("tr-TR", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+
+/* Hesaplama motoru: Python hazırsa gömülü modül, değilse JS yedeği */
+function compute(c, v){
+  if(PY.ready){
+    try{
+      PY.pyodide.globals.set("_metrik", c.id);
+      PY.pyodide.globals.set("_girdi", JSON.stringify(v));
+      var raw = PY.pyodide.runPython(
+        "import json\n" +
+        "json.dumps(hesapla(_metrik, **json.loads(_girdi)))");
+      var r = JSON.parse(raw);
+      return {value:r.deger, expl:r.ifade, dec:r.ondalik, detail:r.ayrinti,
+              unit:r.birim, durum:r.durum, engine:"python"};
+    }catch(err){
+      var msg = String(err);
+      /* Kullanıcı girdisi kaynaklı hata: motor sorunu değil, yedeğe geçme */
+      if(msg.indexOf("GecersizGirdi") !== -1 || msg.indexOf("ZeroDivisionError") !== -1) throw err;
+      setEngine("off", "Motor: JS yedeği — Python hatası");
+    }
+  }
+  var out = c.calc(v);
+  out.engine = "js";
+  return out;
+}
+
+function run(){
+  var c = CALC[+sel.value];
+  var r = readVals();
+  var out;
+  try { out = compute(c, r.v); } catch(e){ out = null; }
+  var box = document.getElementById("cResult");
+  if(!out || !isFinite(out.value)){
+    box.innerHTML = '<div class="result"><b>Hesaplanamadı.</b> Payda sıfır olamaz, parça bütünden büyük olamaz ve değerler geçerli aralıkta olmalı; alanları kontrol edin.</div>';
+    return;
+  }
+  var dec = (out.dec === undefined) ? 1 : out.dec;
+  var unit = out.unit || c.unit;
+  var html = '<div class="result">';
+  html += '<div class="big">' + fmt(out.value, dec) + ' <span>' + unit + '</span></div>';
+  html += '<div style="font-size:13px;color:var(--ink-soft);margin-top:6px">' + c.name +
+          ' · ' + (out.engine === "python" ? 'Python (Pyodide) ile hesaplandı' : 'JavaScript ile hesaplandı') +
+          (r.missing ? ' · <i>boş alanlar için örnek değer kullanıldı</i>' : '') + '</div>';
+
+  if(document.getElementById("oFormula").checked){
+    html += '<div class="formula">' + c.formula + '<br><span style="color:var(--ink-soft);font-size:15px">= ' +
+            out.expl + ' = <b>' + fmt(out.value, dec) + '</b> ' + unit + '</span></div>';
+  }
+  if(out.detail && out.detail.length){
+    html += '<dl>' + out.detail.map(function(d){
+      var val = (typeof d[1] === "number") ? d[1].toLocaleString("tr-TR") : d[1];
+      return '<dt>' + d[0] + '</dt><dd>' + val + '</dd>';
+    }).join("") + '</dl>';
+  }
+  if(document.getElementById("oInterp").checked){
+    if(c.durumMetin && out.durum){
+      html += '<div class="verdict ' + out.durum + '">' + c.durumMetin[out.durum] + '</div>';
+    } else if(c.bands){
+      var band = c.bands[c.bands.length-1];
+      for(var i=0;i<c.bands.length;i++){ if(out.value >= c.bands[i][0]){ band = c.bands[i]; break; } }
+      html += '<div class="verdict ' + band[1] + '">' + band[2] + '</div>';
+      if(c.bands.length > 1 && !c.noHeur){
+        html += '<div class="note" style="margin-top:12px">Yorum eşikleri standarttan değil, başlangıç varsayımlarından gelir; kendi hedeflerinizle değiştirin.</div>';
+      }
+    }
+    html += '<div class="note" style="margin-top:12px">' + c.note + '</div>';
+  }
+  if(document.getElementById("oPy").checked){
+    var args = c.fields.map(function(f){ return f.k + "=" + r.v[f.k]; }).join(", ");
+    var call = 'hesapla("' + c.id + '", ' + args + ')';
+    html += '<pre style="margin-top:16px"><i>&gt;&gt;&gt; from iso30431_metrikler import hesapla</i>\n' +
+            '&gt;&gt;&gt; ' + call + '["deger"]\n' + out.value + '\n\n' +
+            '<i># eşdeğer doğrudan çağrı</i>\n&gt;&gt;&gt; ' + c.py + '</pre>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+sel.addEventListener("change", function(){ buildFields(); run(); });
+document.getElementById("btnRun").addEventListener("click", run);
+document.getElementById("btnExample").addEventListener("click", function(){
+  var c = CALC[+sel.value];
+  c.fields.forEach(function(f){ document.getElementById("in_" + f.k).value = f.v; });
+  run();
+});
+["oFormula","oInterp","oPy"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", function(){
+    var all = document.getElementById("oFormula").checked &&
+              document.getElementById("oInterp").checked &&
+              document.getElementById("oPy").checked;
+    document.getElementById("oAll").checked = all;
+    run();
+  });
+});
+document.getElementById("oAll").addEventListener("change", function(){
+  var s = this.checked;
+  ["oFormula","oInterp","oPy"].forEach(function(id){ document.getElementById(id).checked = s; });
+  run();
+});
+
+/* --- tablodan hesaplayıcıya aktarma --- */
+document.getElementById("btnAktar").addEventListener("click", function(){
+  if(!TBL.ok){ loadTblExample(); }
+  var idx = CALC.map(function(c){ return c.id; }).indexOf("kontrol_ozel");
+  sel.value = idx; buildFields();
+  document.getElementById("in_toplam_isgucu").value = TBL.isg;
+  document.getElementById("in_ast_olan").value = TBL.ast;
+  document.getElementById("in_toplam_yonetici").value = TBL.yon;
+  run();
+  document.getElementById("hesaplayici").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* =========================================================
+   4) PYTHON MOTORU (Pyodide / WebAssembly)
+   Gömülü iso30431_metrikler.py modülü tarayıcı içinde
+   gerçek CPython ile çalıştırılır. Erişim yoksa JS yedeği
+   devrede kalır ve sonuçlar değişmez.
+   ========================================================= */
+var PY = {ready:false, busy:false, pyodide:null};
+
+var PYODIDE_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+  "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"
+];
+
+function setEngine(state, text){
+  var chip = document.getElementById("engStatus");
+  chip.className = "chip" + (state ? " " + state : "");
+  chip.textContent = text;
+}
+
+function loadScript(src){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function(){ resolve(src); };
+    s.onerror = function(){ reject(new Error(src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function pySource(){
+  return document.getElementById("pysrc").textContent;
+}
+
+async function initPython(){
+  if(PY.ready) return true;
+  if(PY.busy) return false;
+  PY.busy = true;
+  document.getElementById("btnPy").disabled = true;
+  setEngine("busy", "Motor: Pyodide indiriliyor…");
+  try{
+    if(typeof loadPyodide === "undefined"){
+      try { await loadScript(PYODIDE_URLS[0]); }
+      catch(e){ await loadScript(PYODIDE_URLS[1]); }
+    }
+    setEngine("busy", "Motor: Python başlatılıyor…");
+    PY.pyodide = await loadPyodide();
+
+    /* Modülü sanal dosya sistemine yazmadan, gerçek bir modül nesnesi olarak kur:
+       böylece __name__ != "__main__" olur ve _demo() kendiliğinden çalışmaz.
+       Kayıt exec'ten ÖNCE yapılır; @dataclass işlenirken modülü sys.modules'te arar. */
+    PY.pyodide.globals.set("_kaynak", pySource());
+    PY.pyodide.runPython(
+      "import sys, types\n" +
+      "_m = types.ModuleType('iso30431_metrikler')\n" +
+      "_m.__file__ = 'iso30431_metrikler.py'\n" +
+      "sys.modules['iso30431_metrikler'] = _m\n" +
+      "exec(compile(_kaynak, 'iso30431_metrikler.py', 'exec'), _m.__dict__)\n" +
+      "from iso30431_metrikler import *\n" +
+      "import iso30431_metrikler as m\n"
+    );
+    var sur = PY.pyodide.runPython(
+      "import sys\n'.'.join(str(x) for x in sys.version_info[:3])");
+    PY.ready = true;
+    setEngine("on", "Motor: Python " + sur + " (Pyodide)");
+    run();
+    return true;
+  }catch(e){
+    setEngine("off", "Motor: tarayıcı (JS) — Pyodide yüklenemedi");
+    document.getElementById("pyOut").textContent =
+      "Python motoru yüklenemedi. Bu genellikle çevrimdışı olmaktan ya da ağ kısıtından kaynaklanır.\n" +
+      "Sayfa çalışmaya devam eder; hesaplamalar JavaScript yedeğiyle aynı sonuçları verir.\n\n" + e;
+    return false;
+  }finally{
+    PY.busy = false;
+    document.getElementById("btnPy").disabled = false;
+  }
+}
+
+document.getElementById("btnPy").addEventListener("click", initPython);
+
+/* --- konsol --- */
+var VARSAYILAN_KOD =
+  'from iso30431_metrikler import *\n' +
+  'import iso30431_metrikler as m\n\n' +
+  '# Liderlik güveni (Tablo 1, 2017)\n' +
+  'print("Güven endeksi      :", round(guven_endeksi(73, 75, 81), 1))\n' +
+  'print("Likert 4,2 / 5     :", likert_yuzde(4.2), "%")\n\n' +
+  '# Kontrol alanı (Tablo 2 ve 3)\n' +
+  'print("Genel yöntem       :", kontrol_alani_genel(10000, 1000))\n' +
+  'print("Özel yöntem        :", kontrol_alani_ozel(10000, 800))\n' +
+  'print("Astı olmayan pay   :", astsiz_yonetici_payi(1000, 800), "%")\n\n' +
+  '# Liderlik gelişimi (Tablo 4 ve 5)\n' +
+  'print("Gelişim 2019/2018  :", yuzde(200, 1000), yuzde(250, 1000))\n' +
+  'print("Eğitim 2019/2018   :", yuzde(800, 1000), yuzde(500, 1000))\n' +
+  'print("Gelişim değişimi   :", puan_degisim(25.0, 20.0), "puan")\n\n' +
+  '# Birim tablosu (toplamlar Tablo 2-5 sayıları)\n' +
+  't = ornek_tablo()\n' +
+  'for anahtar, deger in t.ozet().items():\n' +
+  '    print(f"{anahtar:<22}: {deger}")\n\n' +
+  '# Dağıtıcı, hesaplayıcının kullandığı arayüzdür:\n' +
+  'print(hesapla("kontrol_ozel", toplam_isgucu=10000, ast_olan=800, toplam_yonetici=1000))\n\n' +
+  '# Rapor denetimi: hangi ön koşullar eksik?\n' +
+  'for uyari in liderlik_denetimi(olcum_noktasi_sabit=True, tanimli_donem=True):\n' +
+  '    print("!", uyari)\n';
+
+document.getElementById("pyCode").value = VARSAYILAN_KOD;
+
+async function runConsole(){
+  var out = document.getElementById("pyOut");
+  if(!PY.ready){
+    out.textContent = "Python motoru hazırlanıyor, ilk çalıştırma biraz sürebilir…";
+    var ok = await initPython();
+    if(!ok) return;
+  }
+  out.textContent = "çalışıyor…";
+  try{
+    PY.pyodide.globals.set("_kod", document.getElementById("pyCode").value);
+    var cikti = PY.pyodide.runPython(
+      "import io, contextlib, traceback\n" +
+      "_tampon = io.StringIO()\n" +
+      "with contextlib.redirect_stdout(_tampon), contextlib.redirect_stderr(_tampon):\n" +
+      "    try:\n" +
+      "        exec(_kod, globals())\n" +
+      "    except Exception:\n" +
+      "        traceback.print_exc()\n" +
+      "_tampon.getvalue()"
+    );
+    out.textContent = cikti && cikti.trim() ? cikti : "(çıktı yok)";
+  }catch(e){
+    out.textContent = "Hata: " + e;
+  }
+}
+
+document.getElementById("btnRunPy").addEventListener("click", runConsole);
+document.getElementById("btnReset").addEventListener("click", function(){
+  document.getElementById("pyCode").value = VARSAYILAN_KOD;
+  document.getElementById("pyOut").textContent = "Kod sıfırlandı.";
+});
+document.getElementById("btnDemo").addEventListener("click", function(){
+  document.getElementById("pyCode").value =
+    "import iso30431_metrikler as m\n\n" +
+    "# Modülün kendi doğrulama çıktısı (komut satırındaki\n" +
+    "# python3 iso30431_metrikler.py ile aynı sonucu verir)\n" +
+    "m._demo()\n";
+  runConsole();
+});
+
+/* modül kaynağını sayfada okunur kıl */
+document.getElementById("srcView").textContent = pySource().trim();
+
+buildTbl();
+loadTblExample();
+buildFields();
+run();
+</script>
+</body>
+</html>
