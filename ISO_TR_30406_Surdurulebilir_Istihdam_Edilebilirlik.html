@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO/TR 30406 Sürdürülebilir İstihdam Edilebilirlik Yönetimi — Sınıflandırma ve Hesaplayıcı</title>
+<style>
+  :root{
+    --ink:#101418;
+    --ink-soft:#59636f;
+    --ink-faint:#8b95a1;
+    --line:#dde3ea;
+    --line-soft:#eef1f5;
+    --bg:#ffffff;
+    --canvas:#f6f8fa;
+    --accent:#0b5c8a;
+    --accent-soft:#e7f0f6;
+    --panel:#0e1520;
+    --panel-2:#16202e;
+    --panel-line:#28394f;
+    --out-ink:#8a3b12;  --out-bg:#fbeee6;
+    --eff-ink:#14615c;  --eff-bg:#e6f2f1;
+    --efc-ink:#33478c;  --efc-bg:#eaedf8;
+    --rea-ink:#7a5c00;  --rea-bg:#f8f1d9;
+    --cos-ink:#8c2f4b;  --cos-bg:#f9e8ee;
+    --ok:#1d6f42; --warn:#8a6100; --bad:#992121;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--canvas);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.62;
+  }
+  .sheet{max-width:1000px;margin:0 auto;background:var(--bg);padding:56px 60px 80px;
+    box-shadow:0 0 0 1px var(--line);}
+  @media(max-width:760px){ .sheet{padding:28px 20px 56px} }
+
+  h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:25px;margin:52px 0 4px;padding-bottom:8px;
+     border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  h3{font-size:17px;margin:32px 0 6px;letter-spacing:.01em}
+  h4{font-size:15px;margin:22px 0 4px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:12px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  small{color:var(--ink-soft)}
+  .lede{font-size:17px;color:var(--ink-soft)}
+
+  .srcbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 0;margin:0 0 26px;font-size:13.5px;color:var(--ink-soft)}
+  .srcbar b{color:var(--ink);font-weight:600}
+
+  .toc{background:var(--canvas);border:1px solid var(--line);padding:16px 20px;margin:26px 0 0;
+    font-size:14px;columns:2;column-gap:34px}
+  @media(max-width:640px){.toc{columns:1}}
+  .toc a{display:block;padding:3px 0;text-decoration:none;color:var(--ink)}
+  .toc a:hover{color:var(--accent);text-decoration:underline}
+  .toc b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 4px}
+
+  .keypoints li{margin:10px 0}
+  .keypoints b{font-weight:650}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink-soft);padding-bottom:6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:var(--canvas);font-weight:650;font-size:13px}
+  tbody tr:nth-child(even){background:#fcfdfe}
+  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;width:66px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink)}
+  .dot.o{background:var(--out-ink)} .dot.s{background:var(--eff-ink)} .dot.p{background:var(--efc-ink)}
+  .dot.r{background:var(--rea-ink)} .dot.c{background:var(--cos-ink)}
+
+  .tag{display:inline-block;font-size:11px;line-height:1.5;padding:1px 7px;border-radius:3px;
+    letter-spacing:.03em;white-space:nowrap;font-weight:600}
+  .tag.o{color:var(--out-ink);background:var(--out-bg)}
+  .tag.s{color:var(--eff-ink);background:var(--eff-bg)}
+  .tag.p{color:var(--efc-ink);background:var(--efc-bg)}
+  .tag.r{color:var(--rea-ink);background:var(--rea-bg)}
+  .tag.c{color:var(--cos-ink);background:var(--cos-bg)}
+  .tag.iso{color:#4a4a4a;background:#eeeeee}
+  .tag.lvl{color:#5a3a86;background:#f0eaf8}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--line-soft);padding:1px 5px;border-radius:3px}
+  pre{background:var(--panel);color:#e7eef6;border-radius:6px;padding:18px 20px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:14px 0}
+  pre b{color:#f0b866;font-weight:400}      /* anahtar kelime */
+  pre i{color:#7f8ea1;font-style:normal}    /* yorum */
+  pre u{color:#9fd28a;text-decoration:none} /* dize/sayı */
+  pre .fn{color:#79c0e8}
+  .filename{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin:14px 0 -8px}
+
+  .formula{font-family:var(--serif);font-size:16.5px;background:var(--canvas);
+    border-left:3px solid var(--accent);padding:12px 16px;margin:12px 0;overflow-x:auto}
+  .formula em{font-style:italic}
+
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 14px;color:var(--ink-soft);font-size:14px;margin:14px 0}
+
+  /* --- panel --- */
+  .panel{background:var(--panel);color:#dbe5f0;border-radius:8px;padding:22px 24px;margin:20px 0}
+  .panel h3{color:#fff;margin:0 0 4px;font-size:16px}
+  .panel .hint{color:#8fa2b8;font-size:13px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#8fa2b8;margin-bottom:5px}
+  .field label .req{color:#e08a5a}
+  select,input[type=number],input[type=text]{
+    width:100%;background:var(--panel-2);border:1px solid var(--panel-line);color:#eef4fb;
+    border-radius:5px;padding:9px 10px;font-family:var(--sans);font-size:14px}
+  input[type=number]{font-family:var(--mono)}
+  select:focus,input:focus{outline:2px solid #4a8fc0;outline-offset:1px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13.5px;color:#b9c7d6}
+  .checks label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .panel-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:5px;cursor:pointer;
+    border:1px solid transparent;padding:9px 18px}
+  .btn-run{background:#1c74ab;color:#fff}
+  .btn-run:hover{background:#2385c2}
+  .btn-ghost{background:transparent;color:#9fb3c9;border-color:var(--panel-line)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9fb3c9;
+    border:1px solid var(--panel-line);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7c8ea3}
+  .chip.busy::before{background:#e0a13c}
+  .chip.on::before{background:#4ec07a}
+  .chip.off::before{background:#c05a5a}
+
+  .console{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+  .console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+    background:var(--canvas);border-bottom:1px solid var(--line);padding:8px 12px;font-size:12.5px;color:var(--ink-soft)}
+  .console textarea{width:100%;border:0;display:block;background:var(--panel);color:#e7eef6;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:16px 20px;resize:vertical;min-height:190px}
+  .console textarea:focus{outline:2px solid #4a8fc0;outline-offset:-2px}
+  .console pre{margin:0;border-radius:0;background:#0a1017;border-top:1px solid var(--panel-line);min-height:64px}
+  .btn-sm{padding:6px 14px;font-size:13px}
+  details.src pre{max-height:420px;overflow:auto}
+  .btn-ghost:hover{color:#fff;border-color:#47607d}
+
+  .result{border:1px solid var(--line);border-top:3px solid var(--accent);padding:18px 20px;margin:18px 0}
+  .result .big{font-family:var(--serif);font-size:32px;line-height:1.1}
+  .result .big span{font-size:16px;color:var(--ink-soft);font-family:var(--sans)}
+  .result dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:14px 0 0;font-size:14px}
+  .result dt{color:var(--ink-soft)}
+  .result dd{margin:0;font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px;padding:10px 12px;font-size:14px;border-radius:4px;background:var(--canvas)}
+  .verdict.ok{color:var(--ok);background:#eef6f1}
+  .verdict.warn{color:var(--warn);background:#fbf5e7}
+  .verdict.bad{color:var(--bad);background:#faeeee}
+
+  /* --- matris --- */
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;
+    background:var(--canvas);border:1px solid var(--line);padding:14px 16px;margin:16px 0}
+  .filters label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .filters select,.filters input{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .matrix{font-size:13.5px}
+  .matrix th.rot{width:72px;text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom}
+  .matrix td.name{font-weight:500}
+  .matrix td.name em{display:block;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .matrix tr.group td{background:#f2f5f8;font-weight:650;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+  .count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+
+  /* --- pozisyon tablosu --- */
+  .postbl{font-size:13.5px}
+  .postbl input[type=text],.postbl input[type=date],.postbl input[type=number]{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .postbl input[type=text]{font-family:var(--sans)}
+  .postbl input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .postbl td.chk{text-align:center}
+  .postbl input[type=number]{text-align:right}
+  .postbl td:first-child{min-width:150px}
+  .postbl th.num,.postbl td.num{width:auto}
+  @media(max-width:760px){table{display:block;overflow-x:auto}}
+  .postbl td.calc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap}
+  .postbl tfoot td{background:var(--canvas);font-weight:650}
+  .tblbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+  .tblbar button{border-color:var(--line);color:var(--ink-soft);background:#fff}
+  .tblbar button:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tblbar .inline{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft)}
+  .tblbar .inline input{width:78px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .card{border:1px solid var(--line);border-top:3px solid var(--eff-ink);padding:12px 14px}
+  .card b{display:block;font-family:var(--serif);font-size:24px;line-height:1.2}
+  .card span{font-size:12px;color:var(--ink-soft)}
+  .card.alt{border-top-color:var(--efc-ink)}
+  .card.warn{border-top-color:var(--out-ink)}
+
+  details{border-bottom:1px solid var(--line);padding:12px 0}
+  summary{cursor:pointer;font-weight:600;font-size:15px}
+  summary::marker{color:var(--accent)}
+  details p{margin:10px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  @media (prefers-reduced-motion:no-preference){
+    .result{transition:border-color .2s}
+  }
+  @media print{
+    body{background:#fff} .sheet{box-shadow:none;max-width:none;padding:0}
+    .panel{background:#fff;color:#000;border:1px solid #000}
+    pre{background:#f4f4f4;color:#000}
+  }
+.postbl select{width:100%;padding:5px 3px;border:1px solid var(--line);border-radius:6px;font:inherit;font-size:13px;background:transparent;color:inherit}
+.postbl input[type=text]{min-width:120px}
+.clus{margin:14px 0}.cl-row{display:flex;gap:10px;flex-wrap:wrap}
+.cl-box{flex:1 1 220px;border:2px solid var(--ink,#222);border-radius:6px;padding:10px 12px;background:var(--paper,#fff);font-size:13px}
+.cl-box ul{margin:8px 0 0;padding-left:18px}
+.cl-box li{margin:2px 0}
+.cl-arrow{text-align:center;font-size:20px;color:var(--ink-soft);margin:6px 0}
+.cl-wide{border:2px solid var(--ink,#222);border-radius:6px;padding:8px 12px;text-align:center;font-weight:700;background:var(--paper,#fff)}
+.pyr{margin:14px auto;display:flex;flex-direction:column;align-items:center;gap:6px}
+.py-lay{width:var(--w);min-width:260px;border:1px solid var(--line);border-radius:8px;padding:8px 12px;text-align:center;background:rgba(70,120,200,.12);font-size:13px}
+.py-lay b{display:block;font-size:14px}
+.py-lay span{color:var(--ink-soft)}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>ISO/TR 30406 Sürdürülebilir İstihdam Edilebilirlik Yönetimi</h1>
+<div class="srcbar">
+  <span><b>Kaynak:</b> PD ISO/TR 30406:2017 — <i>Human resource management — Sustainable employability management for organizations</i></span>
+  <span><b>Kapsam:</b> 5 kullanıcı · 5 ifade grubu · 120 ifade ve unsur</span>
+  <span><b>Hesaplama:</b> gömülü Python modülü (Pyodide/WebAssembly)</span>
+  <span><b>Sürüm:</b> Ekim 2026</span>
+</div>
+
+<h2 id="genel">Genel Bakış</h2>
+<p>ISO/TR 30406:2017, <b>sürdürülebilir istihdam edilebilirlik</b> politikalarını geliştirmek ve uygulamak için yol gösterici ilkeler veren bir <b>teknik rapordur</b> (Technical Report). Önceki belgelerin aksine formül ya da sayısal metrik tanımlamaz; kurumun mevcut performansını belirlemek için bir araç sunar:
+üç faktör kümesi (toplam 20 faktör), her faktör için kurumun uyguladığı durumu tarif eden ifadeler ve bir uygulama süreci (Ek A). Giriş bölümüne göre sürdürülebilir istihdam edilebilirlik, bir kişinin çalışma yaşamı boyunca kaliteli iş edinme ya da sürdürme ve bilgi, beceri ve yeteneklerini (KSA) başka bir işe, kuruma ya da gelecekteki role aktarabilme yeteneğidir;
+kurum açısından ise işgücünün iyi oluşu ile iş gereksinimlerini dengeleme taahhüdüdür. Rapor yalnızca <b>kurumsal düzeye</b> odaklanır (hükümet, kurum ve birey düzeyleri anılır). Bu sayfa, raporun ifadelerini filtrelenebilir bir matrise;
+Tablo A.1'deki faz modelini (tepkisel, planlı, proaktif, bütünleşik) canlı bir değerlendirme tablosuna; ve türetilmiş yardımcı hesapları hesaplayıcı + Python koduna dönüştürür. PD ISO/TR 30406:2017, ISO/TR 30406'nın İngiltere uyarlamasıdır (yayımlanmış belge; ISO ilk baskısı Mayıs 2017)
+ve BSI tarafından 31 Temmuz 2017'de yayımlanmıştır. İlişkili belgeler: terimler için ISO 30400, işe alım başına maliyet için ISO/TS 30407, kalite yönetim sistemlerinin iyileştirme döngüsü için ISO 9001.</p>
+
+<h3>Önemli Noktalar</h3>
+<ul class="keypoints">
+  <li><b>Tanım.</b> Sürdürülebilir istihdam edilebilirlik, çalışma yaşamını edinme ya da yaratma ve sürdürmeye yönelik uzun dönemli yetenektir; sorumluluğu insanlara, kurumlara ya da hükümetlere ait olabilir (3.1). Çalıştıran kurum için bu, işgücünü edinme, yaratma, geliştirme ve eğitme, elde tutma, yeniden görevlendirme ve destekleme konusunda uzun dönemli ve çevik bir yaklaşımdır (3.3).</li>
+  <li><b>Üç küme, 20 faktör.</b> Küme 1: politikaya bütünleştirme (7 faktör); Küme 2: iş yetkinlikleri, içerik, karmaşıklık, ilişkiler ve koşullar (6); Küme 3: canlılık ve sağlık (7). Her faktör, kurumun uyguladığı durumu tarif eden ifadelerle (a, b, c…) anlatılır; toplam 74 ifade vardır.</li>
+  <li><b>Dört adımlı yöntem.</b> Adım 1: faktörlerin kurum için önemini belirleme; Adım 2: mevcut uygulama düzeyini ölçme; Adım 3: mevcut ile istenen durum arasındaki farkı belirleme; Adım 4: sürekli iyileştirme döngüsü. Yöntem ISO 9001 gibi kalite yönetim sistemi standartlarındaki sürekli iyileştirme döngüsüyle ilişkilidir.</li>
+  <li><b>Tablo A.1 dört faz sayar.</b> Her faktör için mevcut durum, istenen durum ve öncelik; politika fazı <b>tepkisel, planlı, proaktif ya da bütünleşik</b>; ayrıca mevcut politika, araç ve gereçler. Rapor fazların tanımını vermez; bu sayfadaki 1–4 sayısal karşılık ve sayısal açık hesabı türetilmiştir.</li>
+  <li><b>Önkoşullar vardır.</b> Güvenli çalışma koşulları ve ortak sorumluluk; yapısal iş görüşmesi ve yıllık değerlendirmeli bir İK politikası; sürekli iyileştirmeyi hedefleyen aktif İK ve iş sağlığı ve güvenliği politikası; işgücü katkısını içeren yapısal politika için üst yönetim desteği varsayılır.</li>
+  <li><b>Yararlar geniş.</b> Devamsızlık, tükenmişlik, işe alım ve işten çıkarma maliyetleri, iş kazaları ve yükümlülüklerde azalma; tercih edilen kurum konumu, bağlılık, esneklik, yenilik, çeviklik, verimlilik, ürün kalitesi, doğru yeteneğin doğru zamanda bulunması, elde tutma ve iş ilişkilerinde iyileşme (0.2).</li>
+  <li><b>İK ile diğer birimler arasında köprü.</b> Rapor, İK ile yönetim kurulu, yönetim, operasyon ve iş sağlığı ve güvenliği arasında bir konuşma başlatmak ve stratejik ve taktik (kısa–orta vadeli) hedeflerle bağlamak için kullanılabilir (0.3).</li>
+</ul>
+
+<div class="toc">
+  <b>İçindekiler</b>
+  <a href="#genel">Genel bakış ve önemli noktalar</a>
+  <a href="#nezaman">Ne zaman kullanılır</a>
+  <a href="#cerceve">Çerçeve ve yöntem</a>
+  <a href="#ornekler">Ek A: uygulama süreci ve Tablo A.1</a>
+  <a href="#adimlar">Uygulama adımları</a>
+  <a href="#kavramlar">Temel kavramlar</a>
+  <a href="#matris">İfade matrisi</a>
+  <a href="#tablo">Faktör değerlendirme tablosu</a>
+  <a href="#formuller">Hesaplar ve tanımlar</a>
+  <a href="#hesaplayici">Hesaplayıcı</a>
+  <a href="#python">Python kod örnekleri</a>
+  <a href="#yorum">Sonuçların yorumlanması</a>
+  <a href="#sinirlamalar">Sınırlamalar</a>
+  <a href="#raporlama">Sonuçların raporlanması</a>
+  <a href="#ilgili">İlgili standartlar</a>
+  <a href="#sss">Sıkça sorulan sorular</a>
+</div>
+
+<h2 id="nezaman">Ne Zaman Kullanılır</h2>
+<ul>
+  <li><b>Çalışma yaşamının değişimine hazırlanırken:</b> demografik kaymalar, teknolojik gelişmeler, iş türlerinin değişmesi, küreselleşme, bireylerin çalışma yeri ve saatini seçme isteği ve bazı sektörlerin zayıflaması nedeniyle "ömür boyu iş" kavramı her sektör ve birey için geçerli değildir; çevik, yeni beceriler öğrenmeye uyumlu işgücü gerekir (0.1).</li>
+  <li><b>KSA eksikliği ya da fazlasının maliyetini azaltmak için:</b> kurumlar ihtiyaç duyduklarında gereken KSA'ya sahip olmayabilir, ya da artık ihtiyaç duymadıkları KSA fazlasına sahip olabilir; ikisi de aşırı işe alım ve yetenek satın alma harcamalarına, pahalı işten çıkarmalara ve pazarda geri kalmaya yol açar (0.2).</li>
+  <li><b>Pazar gereksinimlerini değerlendirip işgücünü planlarken:</b> işgücünün KSA ihtiyaçlarını planlama, işgücünü yeniden eğitme ve yeniden görevlendirme, bireysel yaşam döngüsü ve yaşam tarzı gereksinimlerini göz önünde bulundurma (0.2).</li>
+  <li><b>İşin talepleri ile bireyin yetenekleri arasındaki dengeyi kurarken:</b> işin fiziksel ve zihinsel talepleri ile işgücünün fiziksel ve zihinsel yetenekleri arasındaki denge (0.2).</li>
+  <li><b>Kurum içi ortak anlayış kurmak ve kapasite geliştirmek için:</b> rapor, sürdürülebilir istihdam edilebilirliğin ortak anlaşılmasını kolaylaştırmak ve kapasite ve yetkinlik oluşturmak amacıyla her büyüklük ve türdeki kuruma aktarılabilir bir yöntem anlatır (0.3).</li>
+  <li><b>Sürdürülebilirlik raporlaması ve değer yönetiminde:</b> işten çıkarma, yeni işe alım ve kurumsal sürekliliğin kaybı gibi maliyetler nedeniyle sürdürülebilir istihdam edilebilirliğin yarattığı değeri belirleyen ölçüler daha somuttur; çevresel, sosyal ve yönetişim (ESG) göstergeleri de kullanılabilir (0.2).</li>
+</ul>
+<div class="note">Bu belge bir <b>teknik rapordur</b>: gereklilik koymaz, uygunluk sınaması vermez ve kurumun kendi durumunu değerlendirmesine yardım eder. İnsan kaynakları metrikleri başka ISO/TC 260 belgelerinde ele alınır (ISO/TS 30407 gibi). Bu sayfadaki sayısal hesaplar (faz karşılıkları, açık, öncelik puanı) raporun parçası değil, değerlendirmeyi sayıya dökmek için türetilmiş yardımcılardır.</div>
+
+<h2 id="cerceve">Çerçeve ve Yöntem</h2>
+
+<h3>Üç düzey ve esnek çalışma (madde 4)</h3>
+<table>
+  <thead><tr><th style="width:190px">Düzey</th><th>Madde</th><th>Tanım</th></tr></thead>
+  <tbody>
+    <tr><td><b>Hükümet düzeyi</b></td><td>4.2</td>
+      <td>Siyasi ve ekonomik gerçeklik ile işgücü piyasasının işleyişi kritiktir; hükümetler sürdürülebilir istihdam edilebilirlik politika, uygulama ve programlarını sıklıkla geliştirir ve uygular. Şekil 2 (aşağıda) makro düzeyi gösterir.</td></tr>
+    <tr><td><b>Sektör, endüstri ya da kurum düzeyi</b></td><td>4.3</td>
+      <td>Girişimler sektörün, endüstrinin ya da kurumun gereksinimlerine ve gelişim evresine bağlıdır: belirli anahtar sorunların (teknoloji, pazar, mevzuat) ele alınması; gelecek beklentilerinin öngörülmesi (işgücü planlaması, birleşme/satın alma, yeni teknoloji); yetkinlik geliştirme (eğitim).</td></tr>
+    <tr><td><b>Bireysel düzey</b></td><td>4.4</td>
+      <td>Motivasyon, beceriler, sağlık ve sosyal beceriler gibi unsurların bileşimi. Kurum dış çevreyi etkileyecek konumda olmayabilir, ama bu unsurların gelişiminde kolaylaştırıcı rol oynayabilir.</td></tr>
+    <tr><td><b>Esnek çalışma ve esnek işgücü</b></td><td>4.5</td>
+      <td>Esnek çalışma, bireysel çalışanların günlük çalışma düzeni (farklı saatlerde başlayıp bitirme, evden çalışma, karma düzen) için geçerlidir. Esnek işgücü çok sayıda sektörde (tarım, çağrı merkezleri, inşaat, el sanatları, konaklama, madencilik, petrol ve gaz, imalat, perakende, turizm, ofis sektörleri) mevsimlik, parça başı, proje, belirli süreli, geçici ve yedek çalışma biçimlerini kapsar.</td></tr>
+  </tbody>
+</table>
+
+<h3>Şekil 1 — Kurum, kişi ve iş performansı ilişkisi</h3>
+<p>Üç küme, işgücünün istihdam edilebilirliği ile karşılıklı ilişki içindedir; istihdam edilebilirlik de iş performansıyla karşılıklı ilişki içindedir. Tüm faktörlere (etkili işgücü planlaması, çalışma ortamının sunduğu fırsatlar ve kurumların ve bireylerin beceri gelişimi ve iyi oluş konularına gösterdiği özen) dikkat edilirse hem kuruma ve bireye hem de daha geniş olarak ekonomiye yararlı etki oluşur (0.3).</p>
+<div class="clus">
+  <div class="cl-row">
+    <div class="cl-box"><b>Küme 1: Politikaya bütünleştirme</b>
+      <ul><li>Misyon / vizyon / hedefler</li><li>Liderlik</li><li>Sahiplenme</li><li>İşgücü planlaması</li><li>Uygulama</li><li>İletişim</li><li>Kültür</li></ul></div>
+    <div class="cl-box"><b>Küme 2: İş yetkinlikleri, içerik, karmaşıklık, ilişkiler ve koşullar</b>
+      <ul><li>İşgücü yetkinlikleriyle ilgili vizyon ve politika</li><li>İş içeriği</li><li>Karmaşıklık</li><li>Beceri gelişimi</li><li>İşyeri ilişkileri</li><li>Çalışma koşulları</li></ul></div>
+    <div class="cl-box"><b>Küme 3: Canlılık ve sağlık</b>
+      <ul><li>Sağlık yönetimi</li><li>Sağlıklı ve güvenli çalışma ortamı</li><li>Sağlıklı yaşam biçimleri</li><li>Fiziksel sağlık</li><li>Ruh sağlığı</li><li>İyi oluş</li><li>İş–yaşam dengesi</li></ul></div>
+  </div>
+  <div class="cl-arrow">&harr;</div>
+  <div class="cl-wide">İşgücünün istihdam edilebilirliği</div>
+  <div class="cl-arrow">&harr;</div>
+  <div class="cl-wide">İş performansı</div>
+</div>
+
+<h3>Şekil 2 — Makro düzeyde sürdürülebilir istihdam edilebilirlik</h3>
+<div class="pyr">
+  <div class="py-lay" style="--w:46%"><b>Toplumsal dinamikler</b><span>Ekonomik koşulların, toplumsal değişimin ve siyasi iklimin etkisi</span></div>
+  <div class="py-lay" style="--w:62%"><b>İşgücü piyasası özellikleri</b><span>Farklılaşma, beceri ihtiyaçları, segmentasyon, dinamikler, erişim, kıtlık, fazlalık ve hareketlilik</span></div>
+  <div class="py-lay" style="--w:78%"><b>İş ve örgüt özellikleri</b><span>Örgütsel liderlik, iş ilişkileri, istihdam koşulları, iş içeriği, çalışma koşulları, örgütsel değerler ve amaç</span></div>
+  <div class="py-lay" style="--w:94%"><b>Bireysel özellikler</b><span>Bilgi, beceri, tutum, yetkinlik, canlılık ve sağlık, bireysel değerler ve inançlar, iş–yaşam dengesi</span></div>
+</div>
+
+<h3>Yol gösterici ilkeler: dört adım (madde 5)</h3>
+<ol>
+  <li><b>Adım 1 — önemi belirleyin.</b> Tüm faktörler her sektör ya da kurum için aynı değere sahip olmadığı için sürdürülebilir istihdam edilebilirliği kuruma yerleştirmek, tüm farklı faktörlerin (Küme 1, 2 ve 3) kuruma önemini belirlemekle başlar.</li>
+  <li><b>Adım 2 — mevcut durumu ölçün.</b> Kurum, sürdürülebilir istihdam edilebilirlik faktörlerinin kuruma ne ölçüde uygulandığını ölçerek mevcut durumunu belirler.</li>
+  <li><b>Adım 3 — farkı belirleyin.</b> Kurum, mevcut durumunun istenen durumdan ne kadar farklı olduğuna karar verir.</li>
+  <li><b>Adım 4 — sürekli iyileştirme.</b> Kurum iyileştirme döngüsü içinde sürekli ilerler; bu yöntem, sorun odaklı yönetimden (örn. sınırlı gelecek ihtiyacı olan bir işte sıkışıp kalmış birey) sürdürülebilir istihdam edilebilirliğin tutarlı biçimde desteklendiği sistematik bir yaklaşıma geçişi sağlar.</li>
+</ol>
+<p>Varsayılan koşullar: (a) güvenli çalışma koşulları uygulanır ve işgücü bu sorumluluğu paylaşır; (b) kurum, yapısal iş danışması ve yıllık değerlendirmeler (performans ve değerlendirme görüşmeleri) içeren bir İK politikası yürütür; (c) sürekli iyileştirmeyi hedefleyen, işgücünün aktif katkısını gerektiren aktif bir İK ve iş sağlığı ve güvenliği politikası vardır; (d) sürdürülebilir istihdam edilebilirlik ve canlılığı yerleştirecek, işgücünün katkısını içeren yapısal bir politikaya üst yönetimin desteği vardır.</p>
+
+<h3>Faktörler ve ifadeler (madde 6, 7 ve 8)</h3>
+<p>Her faktör altında, kurumun ne durumda olduğunu tarif eden 3–5 ifade vardır. Aşağıdaki tablo her faktörün konusunu özetler; ifadelerin tümü <a href="#matris">ifade matrisinde</a> filtrelenebilir.</p>
+<table>
+  <thead><tr><th style="width:70px">Madde</th><th style="width:230px">Faktör</th><th style="width:60px" class="num">İfade</th><th>Konu</th></tr></thead>
+  <tbody>
+    <tr><td colspan="4"><b>Küme 1: Politikaya bütünleştirme</b> — kurumun sürdürülebilir istihdam edilebilirliği politikalarına ne ölçüde bütünleştirdiği: strateji, vizyon, misyon, değerler ve hedeflerle uyum; liderlik ve yönetim tarzı, iletişim, kültür ve işin organizasyonu (uygulama ve işgücü planlaması); işgücünün kendi sürdürülebilir istihdam edilebilirliği için sorumluluk alabilme düzeyi; kurum satılırsa ya da kapanırsa işgücünün istihdam edilebilirliğinin güvencesi (6.1).</td></tr>
+    <tr><td>6.2</td><td>Misyon, vizyon, hedefler</td><td class="num">4</td><td>Strateji ile uyum; SMART hedefler; iç ve dış gelişmelerin işgücüne etkisini bilme; iyi tanımlı yaklaşım.</td></tr>
+    <tr><td>6.3</td><td>Liderlik</td><td class="num">4</td><td>Üst yönetimin gündemi sahiplenmesi; her düzeyde KPI; doğru ölçülerin bilinmesi; bölümler arası işbirliği.</td></tr>
+    <tr><td>6.4</td><td>Sahiplenme</td><td class="num">1</td><td>İç ve dış ilgili taraflarla birlikte çalışma.</td></tr>
+    <tr><td>6.5</td><td>İşgücü planlaması</td><td class="num">4</td><td>Arz–talep riskleri; KSA'ların düzenli değerlendirmesi; işgücünün bilgilendirilmesi; öğrenme potansiyeli olanların işe alınması.</td></tr>
+    <tr><td>6.6</td><td>Uygulama</td><td class="num">4</td><td>Toplantılarda standart madde; somut uygulama; işgücü planlaması ile uyum; İK desteği.</td></tr>
+    <tr><td>6.7</td><td>İletişim</td><td class="num">4</td><td>Özel iletişim aracı; katılım platformları; tüm işgücünün rolünü anlaması; performans görüşmelerinde standart madde.</td></tr>
+    <tr><td>6.8</td><td>Kültür</td><td class="num">4</td><td>Güven ve bağlılık kültürü; öğrenme ortamı; KSA kullanımına katılım; görüş bildirme mekanizması.</td></tr>
+    <tr><td colspan="4"><b>Küme 2: İş yetkinlikleri, içerik, karmaşıklık, ilişkiler ve koşullar</b> — kurum varlık nedeni olan ürün ve hizmetleri üretir; bu iş için gereken KSA'ları iyi anlamalı ve gelecek pazar koşulları için gerekecek KSA'ların farkında olmalıdır; işgücü de KSA'larının genişliğini ve derinliğini anlamalı, bunları geliştirmek için kurumla ortaklık kurmalıdır (7.1).</td></tr>
+    <tr><td>7.2</td><td>Yetkinlik vizyonu ve politikası</td><td class="num">4</td><td>Mevcut KSA'ların korunması/yükseltilmesi; bilginin paylaşılması; değişen KSA ihtiyaçları; yönetici–işgücü KSA görüşmesi.</td></tr>
+    <tr><td>7.3</td><td>İş içeriği</td><td class="num">4</td><td>İşin zorluğu üzerine görüşme; rol içeriğini zorlama; yeni rollere KSA aktarımı; kişisel durumlara uyarlama.</td></tr>
+    <tr><td>7.4</td><td>Karmaşıklık</td><td class="num">3</td><td>Sorumlulukların KSA'ya uygunluğu; bilgi desteği; karmaşık görevlerde yüksek kalite.</td></tr>
+    <tr><td>7.5</td><td>Beceri gelişimi</td><td class="num">4</td><td>Kaynak ayırma; koçluk, mentorluk ve eğitim; beceri kayıtları ve envanter; sektörün gelecekteki becerileri.</td></tr>
+    <tr><td>7.6</td><td>İşyeri ilişkileri</td><td class="num">4</td><td>Şeffaflık; karşılıklı saygı; amirlerin kariyer desteğiyle değerlendirilmesi; teşvik.</td></tr>
+    <tr><td>7.7</td><td>Çalışma koşulları</td><td class="num">4</td><td>Sağlık ve iş–yaşam dengesi; esnek düzenlemeler; iç hareketlilik; güvenli ve ergonomik koşullar.</td></tr>
+    <tr><td colspan="4"><b>Küme 3: Canlılık ve sağlık</b> — canlılık; şevk, enerji, ilham ve işgücünün motivasyonu gibi unsurları içerir; kurum ve işgücü canlılığı artırmada ortak çıkar ve sorumluluğa sahiptir (8.1).</td></tr>
+    <tr><td>8.2</td><td>Sağlık yönetimi</td><td class="num">4</td><td>İşgücü katılımı; iş sağlığı desteği; periyodik değerlendirme; devamsızlık yönetimi ve hızlı işe dönüş.</td></tr>
+    <tr><td>8.3</td><td>Sağlıklı ve güvenli ortam</td><td class="num">4</td><td>Risk değerlendirmeleri ve denetimler; güvensiz koşulları bildirme; yerleşik sistemler; yaşam evrelerinde sağlık.</td></tr>
+    <tr><td>8.4</td><td>Sağlıklı yaşam biçimleri</td><td class="num">3</td><td>Sistematik ve ölçülebilir yaklaşım; teşvik; destek mekanizmaları.</td></tr>
+    <tr><td>8.5</td><td>Fiziksel sağlık</td><td class="num">4</td><td>Destek; teşvik; işin fiziksel talepleri ile denge; yönetici–çalışan görüşmesi.</td></tr>
+    <tr><td>8.6</td><td>Ruh sağlığı</td><td class="num">5</td><td>Destek; teşvik; zihinsel talepler ile denge; VUCA koşullarında ruh sağlığı; yönetici–çalışan görüşmesi.</td></tr>
+    <tr><td>8.7</td><td>İyi oluş</td><td class="num">3</td><td>Destek; teşvik; işyerinde destek mekanizmaları.</td></tr>
+    <tr><td>8.8</td><td>İş–yaşam dengesi</td><td class="num">3</td><td>Sonuç odaklılık ve esnek saatler; geçici olarak evde kalması gerekenlere uyum; kendi dengesini kurma fırsatı.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="ornekler">Ek A: Uygulama Süreci ve Tablo A.1</h2>
+<p>Ek A (bilgilendirici) kurumların sürdürülebilir istihdam edilebilirliğin pratik uygulama düzeyi konusunda uzlaşmasına yardım eder. Süreci çoğunlukla işletme sahipleri, üst yönetim ya da İK sahiplenir; dış danışmanlar da ilgili paydaşlarla yakın işbirliğiyle yürütebilir. Büyük kurumlarda adımlar bölümler için ayrı izlenebilir ve sonuçlar birleştirilebilir (A.6 notu). Adımlar kısmen Queensland Üniversitesi ve Avustralya Ulusal Üniversitesi'nin "People at Work" projesine dayanır.</p>
+<table>
+  <thead><tr><th style="width:200px">Adım</th><th>İçerik</th></tr></thead>
+  <tbody>
+    <tr><td><b>1. Planlama ve tasarım</b> (A.2)</td><td>
+      Girdi verebilecek paydaş gruplarını belirleyin (kurul üyeleri, işletme sahipleri, üst yönetim, hat yönetimi, İK, iş sağlığı hizmetleri, eğitim bölümü, sendikalar/iş konseyleri/işgücü temsilcileri); çalışma grubu kurun; zaman çizelgesi, kilometre taşları, görevler ve sorumluluklarla proje yönetim planı hazırlayın;
+      iletişim planı (kavramın tanıtımı) geliştirin; bölümlerde şampiyonlar belirleyin; Küme 1, 2 ve 3 unsurlarını puanlamak için anket metrikleri geliştirin; gerekirse ek unsurlar (ör. demografi) ekleyin; faktörleri ve ek unsurları sınamak için pilot uygulama yapın.</td></tr>
+    <tr><td><b>2. Aracı ölçme ve paydaşlara dağıtma</b> (A.3)</td><td>
+      İletişim ve proje planını uygulayın; şampiyonlar paydaşlara ele alınması gereken faktörleri belirlemede yardım eder; geri bildirim mekanizmaları kurun; anketi başlatın (ör. e-posta daveti); anahtar paydaşlara iki hatırlatma gönderin; çalışma grubu yanıt oranlarını izler; anketi kapatın; tüm anahtar paydaşlara teşekkür edin.</td></tr>
+    <tr><td><b>3. Faktörleri analiz etme ve paydaşlar için rapor hazırlama</b> (A.4)</td><td>
+      Çalışma grubu veriyi temizler, ara raporlar üretir ve veriyi analiz eder. Rapor: faktörlerin kuruma bütünleşme düzeyinin <b>mevcut</b> ve <b>istenen</b> durumunu; anahtar paydaşların belirlediği faktörlerin <b>önceliklerini</b>; paydaşlarca yüksek yatırım getirisi sağlayan faktörleri belirler.</td></tr>
+    <tr><td><b>4. Anahtar paydaşlarla toplantı / bilgilendirme</b> (A.5)</td><td>
+      Çalışma grubu toplantıyı düzenler ve sonuç özetini sunar; çeşitli paydaş gruplarının anket sonuçları (ör. İK ve operasyonel yöneticiler) tartışılır, benzerlikler ve farklılıklar vurgulanır; toplantı <b>ortak bir vizyona</b> (kurumdaki durum) ve <b>istenen durum ile belirli bir sürede ele alınacak önceliklere dair uzlaşmaya</b> yol açmalıdır. Tablo A.1 modeli bu süreçte kullanılabilir; toplantıdan sonra rapor hazırlanır, çalışma grubu sonuçları tartışıp bir eylem planı geliştirir.</td></tr>
+    <tr><td><b>5. Uygulama</b> (A.6)</td><td>Eylem planını uygulayın; sonuçları değerlendirin. Bu değerlendirme, Adım 1'e dönmek için yeni durumun başlangıcı olabilir.</td></tr>
+  </tbody>
+</table>
+
+<h3>Tablo A.1 — Sürdürülebilir istihdam edilebilirlik politikasının fazı</h3>
+<table>
+  <thead><tr><th style="width:170px">Faktör</th><th class="num">Tepkisel</th><th class="num">Planlı</th><th class="num">Proaktif</th><th class="num">Bütünleşik</th><th>Mevcut politikalar, araçlar ve gereçler</th></tr></thead>
+  <tbody>
+    <tr><td><b>Mevcut durum</b></td><td class="num">☐</td><td class="num">☐</td><td class="num">☐</td><td class="num">☐</td><td>…</td></tr>
+    <tr><td><b>İstenen durum</b></td><td class="num">☐</td><td class="num">☐</td><td class="num">☐</td><td class="num">☐</td><td>…</td></tr>
+    <tr><td><b>Öncelik</b></td><td class="num" colspan="4">…</td><td>…</td></tr>
+  </tbody>
+</table>
+<p>Tablo, her faktör için mevcut ve istenen fazı ile önceliği kaydeden bir şablondur; şartname örnek doldurma ya da faz tanımı vermez. Bu sayfada şablon <a href="#tablo">faktör değerlendirme tablosuna</a> dönüştürülmüştür.</p>
+
+<h2 id="adimlar">Uygulama Adımları</h2>
+<ol>
+  <li><b>Önkoşulları gözden geçirin.</b> Güvenli çalışma koşulları, yapısal iş danışması ve yıllık değerlendirmeler, aktif İK ve İSG politikası, üst yönetim desteği.</li>
+  <li><b>Çalışma grubu ve paydaşları belirleyin.</b> Kurul, işletme sahipleri, üst yönetim, hat yönetimi, İK, iş sağlığı, eğitim, işgücü temsilcileri; proje planı ve iletişim planı.</li>
+  <li><b>Faktörlerin önemini belirleyin (Adım 1).</b> 20 faktörden hangileri kurumunuzun sektörü ve durumu için daha önemli? Önceliği (düşük, orta, yüksek) belirleyin.</li>
+  <li><b>Anketi tasarlayın ve pilotlayın.</b> Şartname anket metrikleri için seçenek vermez; ifadeleri (matristeki 74 ifade) kendi ölçeğinizle puanlayın ve pilot uygulama yapın.</li>
+  <li><b>Mevcut durumu ölçün (Adım 2).</b> Her faktör için tepkisel, planlı, proaktif ya da bütünleşik fazı belirleyin; yanıt oranını izleyin.</li>
+  <li><b>İstenen durumu belirleyin ve farkı hesaplayın (Adım 3).</b> Mevcut ve istenen faz arasındaki farkı ve önceliği birlikte okuyun.</li>
+  <li><b>Paydaşlarla toplantı yapın.</b> Paydaş gruplarının benzerlik ve farklılıklarını tartışın; ortak vizyon ve öncelikler üzerinde uzlaşın.</li>
+  <li><b>Eylem planını uygulayın ve döngüyü sürdürün (Adım 4).</b> Sonuçları değerlendirin, Adım 1'e dönün.</li>
+</ol>
+
+<h2 id="kavramlar">Temel Kavramlar</h2>
+<p>Rapor 3. maddesinde ISO 30400'e ek olarak dört terim verir. Aşağıdaki tablo bu terimlerin ve metinde geçen diğer kavramların kısa özetleridir. Açıklamalar özgün olarak yazılmıştır; bağlayıcı olan raporun kendi metnidir.</p>
+<table>
+  <thead><tr><th style="width:90px">Madde</th><th style="width:260px">Kavram</th><th>Açıklama</th></tr></thead>
+  <tbody>
+    <tr><td><b>3.1</b></td><td>Sürdürülebilir istihdam edilebilirlik <small>(sustainable employability)</small></td>
+      <td>Çalışma yaşamını edinme ya da yaratma ve sürdürmeye yönelik uzun dönemli yetenek; sorumluluk insanlara, kurumlara ya da hükümetlere ait olabilir.</td></tr>
+    <tr><td><b>3.2</b></td><td>Birey için</td>
+      <td>Farklı yaşam evrelerinde değişen istihdam, ekonomik ve kişisel koşullara uyum sağlayarak istihdam edinme, yaratma ve sürdürme yönündeki uzun dönemli yetenek.</td></tr>
+    <tr><td><b>3.3</b></td><td>Çalıştıran kurumlar için</td>
+      <td>Değişen ekonomik, yasal ve pazar gereksinimlerini karşılamak için işgücünü edinme, yaratma, geliştirme ve eğitme, elde tutma, yeniden görevlendirme ve destekleme konusunda uzun dönemli ve çevik yaklaşım; özel ve kamu tüm sektörler için geçerlidir.</td></tr>
+    <tr><td><b>3.4</b></td><td>Kamu sektörleri için</td>
+      <td>Seçmenlere, çalıştıran kurumlara, ekonomik gelişmeye ve ilgili tüm paydaşlara yarar sağlayan değer odaklı istihdamı teşvik eden, destekleyen uzun dönemli yaklaşımlar ve girişimler (çerçeveler, finansman, ayrımcılık ve sömürü karşıtı mevzuat, esnek çalışma, işe dönüş yolları, kariyer danışmanlığı, beceri geliştirme, doğrudan yabancı yatırım teşvikleri, uzun vadeli işgücü yatırımı yapan kuruluşlara vergi teşvikleri).</td></tr>
+    <tr><td><b>0.1</b></td><td>KSA</td>
+      <td>Bilgi, beceri ve yetenekler (knowledge, skills, abilities); işgücünün ve işin ihtiyaç duyduğu niteliklerin ortak adı.</td></tr>
+    <tr><td><b>0.2</b></td><td>"Yetenek savaşı" <small>(war for talent)</small></td>
+      <td>Terim 1997'de McKinsey'den Hankin tarafından ortaya atılmış, 2001'de Michaels, Handfield-Jones ve Axelrod'un kitap başlığı olmuştur; yeteneğin (KSA) kurum başarısındaki önemini ve belirli bir zamanda belirli KSA'lara olan talebi vurgular.</td></tr>
+    <tr><td><b>5, A.5</b></td><td>Politika fazı</td>
+      <td>Tablo A.1'in dört fazı: tepkisel, planlı, proaktif ve bütünleşik. Rapor bu fazları tanımlamaz.</td></tr>
+    <tr><td><b>6.2</b></td><td>SMART hedefler</td>
+      <td>Belirli, ölçülebilir, ulaşılabilir, gerçekçi ve süreli hedefler.</td></tr>
+    <tr><td><b>8.6</b></td><td>VUCA</td>
+      <td>Oynaklık (volatility), belirsizlik (uncertainty), karmaşıklık (complexity) ve muğlaklık (ambiguity) koşulları.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="matris">İfade Matrisi</h2>
+<p>Aşağıdaki tablo, raporun faktör ifadeleri ile ilke, tanım ve uygulama süreci unsurlarının kullanıcı × bölüm × raporlama sınıflandırmasıdır. Rapor ayrı bir hedef kullanıcı listesi vermez; kullanıcı sütunları Ek A.2'deki paydaş gruplarına dayanır
+(kurul ve üst yönetim, hat yönetimi, İK ve eğitim, iş sağlığı hizmetleri, işgücü temsilcileri). Hangi ifadenin hangi paydaşı ilgilendirdiği ile bölüm ve raporlama sınıflandırması bu sayfanın yazarlık sınıflandırmasıdır. Filtreleri değiştirdiğinizde tablo anında daralır.</p>
+
+<div class="filters">
+  <div><label for="fUser">Kullanıcı</label>
+    <select id="fUser">
+      <option value="">Tümü</option>
+      <option value="hr">İK ve eğitim</option>
+      <option value="exec">Kurul ve üst yönetim</option>
+      <option value="line">Hat yönetimi</option>
+      <option value="ohs">İş sağlığı ve güvenliği</option>
+      <option value="rep">Çalışan temsilcileri ve çalışanlar</option>
+    </select></div>
+  <div><label for="fStage">Bölüm</label>
+    <select id="fStage">
+      <option value="">Tümü</option>
+      <option value="k1">Küme 1: Politikaya bütünleştirme (madde 6)</option>
+      <option value="k2">Küme 2: İş yetkinlikleri ve koşulları (madde 7)</option>
+      <option value="k3">Küme 3: Canlılık ve sağlık (madde 8)</option>
+      <option value="ilke">İlkeler, düzeyler ve tanımlar</option>
+      <option value="ek">Uygulama süreci (Ek A) ve yararlar</option>
+    </select></div>
+  <div><label for="fType">İfade grubu</label>
+    <select id="fType">
+      <option value="">Tümü</option>
+      <option value="p">Küme 1</option>
+      <option value="c">Küme 2</option>
+      <option value="s">Küme 3</option>
+      <option value="r">İlkeler, düzeyler ve tanımlar</option>
+      <option value="o">Uygulama süreci ve yararlar</option>
+    </select></div>
+  <div><label for="fRep">Raporlama</label>
+    <select id="fRep">
+      <option value="">Tümü</option>
+      <option value="ic">İç kullanım</option>
+      <option value="dis">Dış raporlama / kamuya açık</option>
+    </select></div>
+  <div><label for="fQ">İfade adında ara</label>
+    <input type="text" id="fQ" placeholder="ör. liderlik"></div>
+</div>
+
+<div class="count" id="mCount"></div>
+<table class="matrix">
+  <thead><tr>
+    <th>İfade / unsur</th>
+    <th class="rot">İK ve eğitim</th>
+    <th class="rot">Kurul ve üst yönetim</th>
+    <th class="rot">Hat yönetimi</th>
+    <th class="rot">İş sağlığı ve güvenliği</th>
+    <th class="rot">Temsilciler ve çalışanlar</th>
+  </tr></thead>
+  <tbody id="mBody"></tbody>
+</table>
+<div class="legend">
+  <span><span class="dot p"></span> küme 1</span>
+  <span><span class="dot c"></span> küme 2</span>
+  <span><span class="dot s"></span> küme 3</span>
+  <span><span class="dot r"></span> ilke, düzey ve tanım</span>
+  <span><span class="dot o"></span> uygulama süreci ve yararlar</span>
+  <span><span class="tag lvl">hesaplayıcı</span> bu sayfada hesaplanabilen unsur</span>
+  <span>Hesaplayıcıya bağlı unsurlar <b>koyu</b> işaretlenmiştir.</span>
+</div>
+
+<h2 id="tablo">Faktör Değerlendirme Tablosu</h2>
+<p>Tablo A.1'in modelini uygulayın: her faktör için <b>mevcut</b> ve <b>istenen</b> politika fazını (1 tepkisel, 2 planlı, 3 proaktif, 4 bütünleşik) ve <b>önceliği</b> (1 düşük, 2 orta, 3 yüksek) seçin; istersen mevcut politika ve araçları not edin.
+Faz açığı, hedefe göre ilerleme, öncelik puanı, küme ortalamaları ve en yüksek öncelikli faktörler anında güncellenir. Raporun kendisi fazların sayısal karşılığını ve puanlamayı tanımlamaz; bu değerlendirme bu sayfanın türetmesidir.
+Örnek veri <b>örnek amaçlıdır</b> (rapor sayı vermez): çoğu faktör "planlı", hedef "proaktif"; liderlik, ruh sağlığı ve işgücü planlaması öncelikli.</p>
+
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnek">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizle">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsv">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktar">Hesaplayıcıya aktar</button>
+</div>
+
+<table class="postbl">
+  <thead><tr>
+    <th>Faktör</th>
+    <th style="width:110px">Mevcut</th><th style="width:110px">İstenen</th><th style="width:90px">Öncelik</th>
+    <th>Mevcut politika, araç ve gereçler</th>
+    <th class="calc" style="width:70px">Açık</th><th class="calc" style="width:80px">İlerleme (%)</th><th class="calc" style="width:80px">Öncelik puanı</th>
+  </tr></thead>
+  <tbody id="pBody"></tbody>
+  <tfoot>
+    <tr><td>Küme 1 ortalaması</td><td class="calc" id="k1m">—</td><td class="calc" id="k1i">—</td><td class="calc">—</td><td class="calc">—</td><td class="calc" id="k1a">—</td><td class="calc">—</td><td class="calc">—</td></tr>
+    <tr><td>Küme 2 ortalaması</td><td class="calc" id="k2m">—</td><td class="calc" id="k2i">—</td><td class="calc">—</td><td class="calc">—</td><td class="calc" id="k2a">—</td><td class="calc">—</td><td class="calc">—</td></tr>
+    <tr><td>Küme 3 ortalaması</td><td class="calc" id="k3m">—</td><td class="calc" id="k3i">—</td><td class="calc">—</td><td class="calc">—</td><td class="calc" id="k3a">—</td><td class="calc">—</td><td class="calc">—</td></tr>
+    <tr><td>Genel ortalama</td><td class="calc" id="gm">—</td><td class="calc" id="gi">—</td><td class="calc">—</td><td class="calc">—</td><td class="calc" id="ga">—</td><td class="calc">—</td><td class="calc">—</td></tr>
+  </tfoot>
+</table>
+
+<div class="cards" id="pCards"></div>
+<div class="note" id="pNot"></div>
+
+<h2 id="formuller">Hesaplar ve Tanımlar</h2>
+<p>Rapor hiçbir formül vermez; ölçmeyi bir değerlendirme ve uzlaşma süreci olarak tarif eder. Aşağıdaki hesaplar, Tablo A.1 değerlendirmesini ve Ek A anket sürecini sayıya dökmek için <b>bu sayfada türetilmiştir</b>; her birinin notunda bu belirtilir.</p>
+<table>
+  <thead><tr><th>Hesap</th><th>Formül</th><th>Not</th></tr></thead>
+  <tbody id="fBody"></tbody>
+</table>
+
+<h2 id="hesaplayici">Hesaplayıcı</h2>
+<p>Hesabı seçin, alanları doldurun; sonuç, formülün yerine konmuş hâli ve yorum aşağıda görünür.
+Kurulum gerekmez, veriler tarayıcıdan çıkmaz.</p>
+
+<div class="panel">
+  <h3>Sürdürülebilir İstihdam Edilebilirlik Değerlendirme Hesaplayıcısı</h3>
+  <p class="hint">Alanlar seçtiğiniz hesaba göre değişir. Fazlar 1 (tepkisel) – 4 (bütünleşik) olarak girilir; öncelik 1 (düşük) – 3 (yüksek). Tüm hesaplar türetilmiştir.</p>
+  <div class="grid">
+    <div class="field" style="grid-column:1/-1">
+      <label for="cMetric">Hesap <span class="req">*</span></label>
+      <select id="cMetric"></select>
+    </div>
+  </div>
+  <div class="grid" id="cFields" style="margin-top:14px"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="oAll"> Tümünü seç</label>
+    <label><input type="checkbox" id="oFormula" checked> Formülün açık hâli</label>
+    <label><input type="checkbox" id="oInterp" checked> Yorum ve eşik</label>
+    <label><input type="checkbox" id="oPy"> Python karşılığı</label>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-run" id="btnRun">Hesapla</button>
+    <button class="btn-ghost" id="btnExample">Örnek veriyi yükle</button>
+    <button class="btn-ghost" id="btnPy">Python motorunu yükle</button>
+    <span class="chip" id="engStatus">Motor: tarayıcı (JavaScript)</span>
+  </div>
+  <p class="hint" style="margin:14px 0 0">Python motoru seçildiğinde hesaplama, bu sayfaya gömülü
+  <code style="background:#1c2836;color:#cfe0f0">iso30406_metrikler.py</code> modülünün
+  <code style="background:#1c2836;color:#cfe0f0">hesapla()</code> fonksiyonu tarafından, tarayıcı içinde
+  çalışan gerçek bir CPython yorumlayıcısında (Pyodide/WebAssembly) yapılır. İlk yüklemede yaklaşık
+  10–12 MB indirilir; sonrası önbellekten gelir. Çevrimdışıysanız sayfa JavaScript yedeğiyle
+  aynı sonuçları vermeye devam eder.</p>
+</div>
+
+<div id="cResult"></div>
+
+<h2 id="python">Python Kod Örnekleri</h2>
+<p>Bu sayfadaki hesaplamalar JavaScript'te taklit edilmez: modülün tamamı sayfaya gömülüdür ve
+Pyodide (WebAssembly üzerinde CPython) ile tarayıcı içinde çalıştırılır. Hesaplayıcıda Python motorunu
+seçtiğinizde her sonuç <code>hesapla()</code> fonksiyonundan gelir. Aynı dosya
+(<code>iso30406_metrikler.py</code>) komut satırında da bağımsız çalışır; doğrudan çalıştırıldığında
+örnek değerlerle doğrulama çıktısı üretir.</p>
+
+<div class="filename">iso30406_metrikler.py (özet)</div>
+<pre><i># --- Fazlar ve açık ---</i>
+
+FAZLAR = [<span class="fn">"Tepkisel"</span>, <span class="fn">"Planlı"</span>, <span class="fn">"Proaktif"</span>, <span class="fn">"Bütünleşik"</span>]   <i># Tablo A.1; 1–4 karşılığı türetilmiştir</i>
+
+<b>def</b> <span class="fn">faz_acigi</span>(mevcut, istenen):
+    <i>"""İstenen − mevcut faz (adım)."""</i>
+    <b>return</b> istenen - mevcut
+
+<b>def</b> <span class="fn">ilerleme_yuzde</span>(mevcut, istenen):
+    <i>"""Mevcut ÷ istenen × 100 (türetilmiş)."""</i>
+    <b>return</b> <u>100</u> * mevcut / istenen
+
+<i># --- Öncelik ve küme ---</i>
+
+<b>def</b> <span class="fn">oncelik_puani</span>(acik, oncelik):
+    <i>"""Açık × öncelik ağırlığı (1 düşük, 3 yüksek): sıralama için."""</i>
+    <b>return</b> acik * oncelik
+
+<b>def</b> <span class="fn">kume_ortalamasi</span>(toplam_faz, faktor_sayisi):
+    <i>"""Bir kümedeki faktörlerin faz ortalaması (1–4)."""</i>
+    <b>return</b> toplam_faz / faktor_sayisi
+
+<b>def</b> <span class="fn">yanit_orani</span>(davetli, yanit):
+    <i>"""Ek A.3: anket yanıt oranı (%)."""</i>
+    <b>return</b> <u>100</u> * yanit / davetli
+</pre>
+
+<h3>Çalıştırılabilir konsol</h3>
+<p>Aşağıdaki kod, sayfaya gömülü modüle karşı çalışır. <b>Kodu çalıştır</b> düğmesi Python motorunu
+(yüklü değilse) indirir, modülü içe aktarır ve çıktıyı altta gösterir. Kodu serbestçe değiştirebilir,
+kendi verinizi yazabilirsiniz; her şey tarayıcıda kalır.</p>
+
+<div class="console">
+  <div class="console-bar">
+    <span>iso30406_metrikler modülüne karşı çalışır · Python 3 (Pyodide)</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button class="btn-run btn-sm" id="btnRunPy">Kodu çalıştır</button>
+      <button class="btn-ghost btn-sm" id="btnDemo" style="border-color:var(--line);color:var(--ink-soft)">Tam demoyu yükle</button>
+      <button class="btn-ghost btn-sm" id="btnReset" style="border-color:var(--line);color:var(--ink-soft)">Sıfırla</button>
+    </span>
+  </div>
+  <textarea id="pyCode" spellcheck="false"></textarea>
+  <pre id="pyOut">Çıktı burada görünecek. İlk çalıştırmada Python motoru indirilir (10–12 MB).</pre>
+</div>
+
+<details class="src"><summary>Gömülü modülün tam kaynağı (iso30406_metrikler.py)</summary>
+  <pre id="srcView">yükleniyor…</pre>
+</details>
+
+<h2 id="yorum">Sonuçların Yorumlanması</h2>
+<ul>
+  <li><b>Önce önemi, sonra düzeyi okuyun.</b> Rapor, tüm faktörlerin her sektör ve kurum için aynı değere sahip olmadığını söyler (Adım 1); bu yüzden büyük bir faz açığı, öncelik düşükse acil olmayabilir. Açığı öncelikle birlikte okuyun.</li>
+  <li><b>Fazlar bir ölçek değil, olgunluk sırasıdır.</b> Tepkisel → planlı → proaktif → bütünleşik sıralaması bir ilerleme yönünü anlatır; aralarındaki mesafenin eşit olduğu raporda belirtilmez. 1–4 sayısal karşılığı bir yaklaşımdır; küme ortalamaları kaba bir özettir.</li>
+  <li><b>Paydaş farklarına bakın.</b> Rapor, paydaş gruplarının (ör. İK ve operasyonel yöneticiler) sonuçları arasındaki benzerlik ve farklılıkların tartışılmasını önerir; aynı faktör için farklı fazlar işaret edilmesi uyuşmazlığı değil, görüş farkını gösterir ve konuşmayı başlatır.</li>
+  <li><b>Kümeleri birlikte düşünün.</b> Şekil 1'e göre üç küme işgücünün istihdam edilebilirliği ile, o da iş performansıyla karşılıklı ilişki içindedir; yalnızca tek bir kümede yüksek düzey yeterli değildir (ör. güçlü beceri gelişimi ama zayıf ruh sağlığı desteği).</li>
+  <li><b>Önkoşullar zayıfsa temel atın.</b> Güvenli koşullar, yapısal danışma ve üst yönetim desteği olmadan "proaktif" ya da "bütünleşik" faz anlamlı olmaz; rapor bunları varsayım olarak koyar.</li>
+  <li><b>İfade ile uygulamayı ayırın.</b> Bazı ifadeler kurumun bir şeyi "kabul ettiğini" (6.8, 7.2), bazıları somut bir şeye "sahip olduğunu" (6.7, 8.3) söyler; ilk grup için kanıt (karar, politika metni, uygulama) isteyin.</li>
+  <li><b>Yanıt oranını ve katılımı izleyin.</b> Düşük yanıt oranı bazı paydaş gruplarının sesini kaybettirir; sonuçları yorumlarken hangi grupların temsil edildiğini yazın.</li>
+  <li><b>İyileştirme döngüsünü kapatın.</b> Ek A.6, değerlendirmeyi yeni bir başlangıç noktası olarak görür; aynı ölçümü periyodik tekrarlayarak ilerlemeyi izleyin.</li>
+</ul>
+
+<h2 id="sinirlamalar">Sınırlamalar</h2>
+<ul>
+  <li><b>Rapor bir metrik belgesi değildir.</b> Formül, birim, puanlama ya da eşik içermez; bu sayfadaki faz karşılıkları, açık, ilerleme yüzdesi, öncelik puanı, küme ortalaması, madde uygulama yüzdesi ve yanıt oranı bu sayfanın türetmesidir ve raporun parçası değildir.</li>
+  <li><b>Ek A.2 "anket metrikleri… (seçenekler aşağıda verilmiştir)" der, ama seçenekler belgede yoktur.</b> İfadeleri hangi ölçekle puanlayacağınız (ör. katılma derecesi, uygulama düzeyi) ve faz belirlemenin nasıl yapılacağı raporda tanımlanmamıştır.</li>
+  <li><b>Tablo A.1'in fazları tanımlanmaz.</b> Tepkisel, planlı, proaktif ve bütünleşik fazların ne anlama geldiği ve bir faktörün hangi koşulda hangi fazda sayılacağı belirtilmez. Ayrıca tablo yalnızca bir şablondur: sütun başlıkları, "mevcut durum", "istenen durum" ve "öncelik" satırları var, ama öncelik ölçeği (düşük/orta/yüksek ya da sıra) tanımlanmamıştır; bu sayfa 1–3'ü varsaymıştır.</li>
+  <li><b>İfadeler iki tür karışıktır.</b> Bazıları kurumun bir şeye sahip olduğunu ya da yaptığını ("sahiptir", "sağlar"), bazıları bir şeyi "kabul ettiğini" ("recognizes") ya da yapabileceğini ("may") söyler (ör. 8.2 a–b, 8.3 d). "Uygulanıyor" demek için gereken kanıt düzeyi belirsizdir; madde uygulama yüzdesi hesabı bu farkı gözetmez.</li>
+  <li><b>Faktörler arası ağırlık verilmez.</b> Adım 1 faktörlerin önemini kurumun belirlemesini ister, ama ağırlıklandırma yöntemi yoktur. Küme ve genel ortalamalar tüm faktörleri eşit sayar; bu bir varsayımdır.</li>
+  <li><b>Faktörlerin ifade sayısı eşit değildir.</b> 6.4'te tek, 8.6'da beş ifade vardır; ifade sayısını faktör "ağırlığı" olarak okumayın.</li>
+  <li><b>6.1 bir ifade vermez.</b> Giriş maddesi, kurumlar satılır ya da kapanırsa da işgücünün sürdürülebilir istihdam edilebilirliğinin sağlanmasını amaçladığını söyler; ama bu amaca karşılık gelen bir ifade yoktur.</li>
+  <li><b>Şekil 2 ve Şekil 1 metin değil çizimdir.</b> Bu sayfada çizimlerin içeriği yeniden çizilerek verilmiştir; çizimdeki oklar ve yerleşim yaklaşıktır.</li>
+  <li>Rapor, kamu sektörü ve hükümet düzeyini yalnızca tanımlar ve çizimle anar; yalnızca kurumsal düzeye odaklanır (Kapsam). Bu yüzden kamu politikası kararları bu belgenin kapsamı dışındadır.</li>
+  <li>Bu sayfadaki örnek değerlendirme verisi (fazlar, öncelikler, yanıt sayıları) örnek amaçlıdır; raporda sayısal örnek yoktur.</li>
+</ul>
+
+<h2 id="raporlama">Sonuçların Raporlanması</h2>
+<table>
+  <thead><tr><th>Alıcı</th><th>Ne görmek ister</th><th>Rapor biçimi</th></tr></thead>
+  <tbody>
+    <tr><td>Kurul ve üst yönetim</td>
+      <td>Küme düzeyi özet, en yüksek öncelikli faktörler ve faz açıkları, stratejiyle ilişki, eylem planı</td>
+      <td>Skor kartı, yıllık; paydaş toplantısı özeti</td></tr>
+    <tr><td>İK ve eğitim</td>
+      <td>Faktör düzeyinde mevcut ve istenen faz, anket yanıt oranı, paydaş farkları, eğitim ve beceri envanteri</td>
+      <td>Analitik rapor; Tablo A.1 doldurulmuş hâli</td></tr>
+    <tr><td>Hat yönetimi</td>
+      <td>Kendi birimlerinin sonuçları, yönetici–işgücü görüşme konuları (KSA, iş içeriği, sağlık dengesi)</td>
+      <td>Birim raporu, yıllık</td></tr>
+    <tr><td>İş sağlığı ve güvenliği</td>
+      <td>Küme 3 faktörleri: sağlık yönetimi, güvenli ortam, fiziksel ve ruh sağlığı, iyi oluş</td>
+      <td>Sağlık profili raporu, yıllık</td></tr>
+    <tr><td>Çalışan temsilcileri ve çalışanlar</td>
+      <td>Anketin amacı ve sonuçlarının özeti; paydaş toplantısında vurgulanan benzerlik ve farklar; eylem planı</td>
+      <td>Bilgilendirme raporu</td></tr>
+  </tbody>
+</table>
+<p><b>Her raporda bulunması gerekenler:</b> kullanılan faz ölçeği ve öncelik ölçeği, anketin kapsamı ve yanıt oranı, hangi paydaş gruplarının yanıtladığı, mevcut ve istenen durum, öncelikler, faktör ağırlıklama yöntemi (varsa), önkoşulların durumu, eylem planı ve bir sonraki değerlendirme dönemi.
+Sürdürülebilirlik raporlamasında çevresel, sosyal ve yönetişim (ESG) göstergeleri sürdürülebilir istihdam edilebilirlikle bağlantılı kullanılabilir.</p>
+
+<h2 id="ilgili">İlgili Standartlar</h2>
+<ul>
+  <li><b>ISO 30400</b> — insan kaynakları yönetimi terimler sözlüğü; bu raporun terim tanımları için atıf yaptığı belge.</li>
+  <li><b>ISO 9001</b> — kalite yönetim sistemleri; sürekli iyileştirme döngüsü bu raporun dört adımlı yönteminin dayanağıdır.</li>
+  <li><b>ISO/TS 30407</b> — işe alım başına maliyet; insan kaynakları metrikleri başka ISO/TC 260 belgelerinde ele alınır.</li>
+  <li><b>ISO 30409</b> — işgücü planlaması; faktör 6.5 ve 7.2 ile ilişkili.</li>
+  <li><b>ISO/TS 30422</b> — öğrenme ve gelişim; Küme 2 beceri gelişimi (7.5) için ilgili.</li>
+  <li><b>ISO/TS 24178 ve ISO/TS 30425</b> — örgüt kültürü ve işgücü bulunabilirliği (devamsızlık); sırasıyla Kültür (6.8) ve sağlık yönetimi (8.2) ile ilişkili.</li>
+  <li><b>Küresel Raporlama Girişimi (GRI) ve diğer ESG çerçeveleri</b> — sürdürülebilirlik için çevresel, sosyal ve yönetişim faktörleri ve ölçüleri; sürdürülebilir istihdam edilebilirliğe de uyarlanabilir (0.2).</li>
+  <li><b>Raporun kaynakçası</b> — Pit ve Haydon (2013), van der Klink ve ark. (2016), Michaels, Handfield-Jones ve Axelrod (2001), "Sustainability Value Management" (Accenture, 2015), Savitz ve Weber (2013), People at Work Project (2013).</li>
+</ul>
+
+<h2 id="sss">Sıkça Sorulan Sorular</h2>
+<details><summary>Sürdürülebilir istihdam edilebilirlik nedir?</summary>
+<p>Çalışma yaşamını edinme ya da yaratma ve sürdürmeye yönelik uzun dönemli yetenek. Birey için, değişen istihdam, ekonomik ve kişisel koşullara yaşam evreleri boyunca uyum sağlayarak istihdam edinme ve sürdürme yeteneğidir; kurum için işgücünü edinme, geliştirme, elde tutma, yeniden görevlendirme ve destekleme konusunda uzun dönemli, çevik bir yaklaşımdır.</p></details>
+
+<details><summary>Bu rapor bir standart mı, bir metrik belgesi mi?</summary>
+<p>Hiçbiri tam olarak değil: bir teknik rapordur. Gereklilik koymaz ve formül ya da sayısal metrik tanımlamaz; kurumun mevcut performansını belirlemesine yardım eden bir araçtır. Ölçme, faktörlerin uygulanma düzeyinin belirlenmesi ve mevcut ile istenen durum arasındaki farkın uzlaşıyla saptanması biçimindedir.</p></details>
+
+<details><summary>Üç küme neleri kapsar?</summary>
+<p>Küme 1 politikaya bütünleştirmedir (misyon/vizyon/hedefler, liderlik, sahiplenme, işgücü planlaması, uygulama, iletişim, kültür). Küme 2 iş yetkinlikleri, içerik, karmaşıklık, ilişkiler ve koşullardır (yetkinlik vizyonu, iş içeriği, karmaşıklık, beceri gelişimi, işyeri ilişkileri, çalışma koşulları). Küme 3 canlılık ve sağlıktır (sağlık yönetimi, güvenli ortam, sağlıklı yaşam, fiziksel ve ruh sağlığı, iyi oluş, iş–yaşam dengesi).</p></details>
+
+<details><summary>Dört adım nedir?</summary>
+<p>Adım 1: faktörlerin kurum için önemini belirleme. Adım 2: mevcut durumu (faktörlerin uygulanma düzeyini) ölçme. Adım 3: mevcut durumun istenen durumdan farkını belirleme. Adım 4: sürekli iyileştirme döngüsünde ilerleme ve sorun odaklı yönetimden sistematik yaklaşıma geçme.</p></details>
+
+<details><summary>Tablo A.1'deki fazlar nedir?</summary>
+<p>Her faktör için politikanın fazı: tepkisel, planlı, proaktif ya da bütünleşik. Tablo ayrıca mevcut durum, istenen durum ve öncelik satırları ile mevcut politika, araç ve gereç sütunu içerir. Rapor fazları tanımlamaz; bu sayfa bunları 1–4 olarak sıralamıştır ve bu sıralama bir yaklaşımdır.</p></details>
+
+<details><summary>Ek A'daki süreci kim yürütür?</summary>
+<p>Süreci çoğunlukla işletme sahipleri, üst yönetim ya da İK sahiplenir; dış danışmanlar da anahtar paydaşlarla yakın işbirliğiyle yürütebilir. Bir çalışma grubu kurulur, bölümlerde şampiyonlar belirlenir, anket yapılır, sonuçlar analiz edilir ve paydaşlarla bir toplantıda tartışılır.</p></details>
+
+<details><summary>Faz açığı ve öncelik puanı rapordan mı geliyor?</summary>
+<p>Hayır. Rapor yalnızca mevcut ve istenen durumun ve önceliğin belirlenmesini ister; açığın sayıya dökülmesi (istenen − mevcut) ve öncelik puanı (açık × öncelik ağırlığı) bu sayfanın türetmesidir. Başka bir yöntem seçerseniz raporda belirtin.</p></details>
+
+<details><summary>Küçük kurumlar için uygun mu?</summary>
+<p>Evet. Rapor, her büyüklük ve türdeki kuruma aktarılabilir bir yöntem tanımlar. Büyük kurumlarda adımlar bölüm bazında ayrı izlenip birleştirilebilir.</p></details>
+
+<footer>
+  ISO/TR 30406:2017 çerçevesinden üretilmiş çalışma aracı. Faktör adları, ifadeler ve kavramlar rapora dayanır; açıklamalar, örnek değerler, faz karşılıkları ve kod özgün olarak yazılmıştır. Raporun kendisi telif korumalıdır ve bu sayfa onun yerine geçmez.
+</footer>
+
+</div>
+
+<script type="text/x-python" id="pysrc">
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+iso30406_metrikler.py
+=====================
+ISO/TR 30406:2017 (Human resource management — Sustainable employability
+management for organizations) için kendi kendini değerlendirme araçları.
+
+Teknik rapor, formül ya da metrik tanımlamaz; kurumların sürdürülebilir
+istihdam edilebilirlik politikasını geliştirmesi ve uygulaması için yol gösterici
+ilkeler, üç faktör kümesi (20 faktör) ve bir uygulama süreci (Ek A) verir.
+Kurumun 'mevcut' ve 'istenen' durumunu Tablo A.1'deki dört fazla (tepkisel,
+planlı, proaktif, bütünleşik) belirleyip öncelik vermesi önerilir. Bu modül,
+o değerlendirmeyi sayıya döker. Fazların 1–4 sayısal karşılığı, açık, ilerleme,
+öncelik puanı ve küme ortalaması şartnamede yoktur; hepsi bu modülde türetilmiştir.
+
+    1) Fazlar ve açık   — faz adları, mevcut–istenen açığı, ilerleme
+    2) Öncelik ve küme  — öncelik puanı, küme ortalaması, madde uygulama yüzdesi
+    3) Yapılar          — 20 faktörlü değerlendirme tablosu, denetim, dağıtıcı
+
+Kullanım:
+    from iso30406_metrikler import faz_acigi, oncelik_puani
+    faz_acigi(2, 4)         ->  2
+    oncelik_puani(2, 3)     ->  6
+
+Doğrudan çalıştırıldığında (python3 iso30406_metrikler.py) tüm fonksiyonlar
+örnek verilerle çalıştırılır ve sonuçlar tablo hâlinde yazdırılır.
+
+Not: Faktör adları ve kümeler ISO/TR 30406:2017'ye dayanır. Kod ve açıklamalar
+özgün olarak yazılmıştır; teknik raporun kendisi telif korumalıdır.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+__all__ = [
+    "GecersizGirdi", "FAZLAR", "KUMELER", "FAKTORLER",
+    "faz_adi", "faz_acigi", "ilerleme_yuzde", "oncelik_puani",
+    "kume_ortalamasi", "uygulama_yuzdesi", "yanit_orani",
+    "Faktor", "DegerlendirmeTablosu", "ornek_tablo", "uygulama_denetimi",
+    "hesapla", "METRIK_LISTESI",
+]
+
+
+class GecersizGirdi(ValueError):
+    """Girdiler tutarsız: faz ölçek dışında, payda sıfır vb."""
+
+
+FAZLAR = ["Tepkisel", "Planlı", "Proaktif", "Bütünleşik"]   # Tablo A.1: reactive, planned, proactive, integral
+KUMELER = {1: "Politikaya bütünleştirme", 2: "İş yetkinlikleri, içerik, karmaşıklık, ilişkiler ve koşullar", 3: "Canlılık ve sağlık"}
+
+# (küme, madde, ad)
+FAKTORLER = [
+    (1, "6.2", "Misyon / vizyon / sürdürülebilir istihdam edilebilirlik hedefleri"),
+    (1, "6.3", "Liderlik"),
+    (1, "6.4", "Sahiplenme"),
+    (1, "6.5", "İşgücü planlaması"),
+    (1, "6.6", "Uygulama"),
+    (1, "6.7", "İletişim"),
+    (1, "6.8", "Kültür"),
+    (2, "7.2", "İşgücü yetkinlikleriyle ilgili vizyon ve politika"),
+    (2, "7.3", "İş içeriği"),
+    (2, "7.4", "Karmaşıklık"),
+    (2, "7.5", "Beceri gelişimi"),
+    (2, "7.6", "İşyeri ilişkileri"),
+    (2, "7.7", "Çalışma koşulları"),
+    (3, "8.2", "Sağlık yönetimi"),
+    (3, "8.3", "Sağlıklı ve güvenli çalışma ortamı"),
+    (3, "8.4", "Sağlıklı yaşam biçimleri"),
+    (3, "8.5", "Fiziksel sağlık"),
+    (3, "8.6", "Ruh sağlığı"),
+    (3, "8.7", "İyi oluş (well-being)"),
+    (3, "8.8", "İş–yaşam dengesi (bakım rolleri / kendine bakım)"),
+]
+
+
+def _faz_kontrol(deger: float, ad: str = "faz") -> None:
+    if deger < 1 or deger > 4:
+        raise GecersizGirdi(f"{ad} 1 (tepkisel) ile 4 (bütünleşik) arasında olmalı")
+
+
+def faz_adi(deger: float) -> str:
+    """1–4 arası fazın adı (en yakın tamsayıya yuvarlanır)."""
+    _faz_kontrol(deger)
+    return FAZLAR[int(deger + 0.5) - 1]
+
+
+# ---------------------------------------------------------------------------
+# 1) Fazlar ve açık
+# ---------------------------------------------------------------------------
+
+def faz_acigi(mevcut: float, istenen: float) -> float:
+    """İstenen − mevcut faz (adım): pozitif değer, hedefe ulaşmak için gereken ilerlemeyi gösterir."""
+    _faz_kontrol(mevcut, "mevcut faz")
+    _faz_kontrol(istenen, "istenen faz")
+    return istenen - mevcut
+
+
+def ilerleme_yuzde(mevcut: float, istenen: float) -> float:
+    """Mevcut ÷ istenen × 100: hedef faza göre ulaşılan düzey (türetilmiş)."""
+    _faz_kontrol(mevcut, "mevcut faz")
+    _faz_kontrol(istenen, "istenen faz")
+    return 100 * mevcut / istenen
+
+
+# ---------------------------------------------------------------------------
+# 2) Öncelik, küme ve uygulama
+# ---------------------------------------------------------------------------
+
+def oncelik_puani(acik: float, oncelik: float) -> float:
+    """Açık × öncelik ağırlığı (1 düşük, 2 orta, 3 yüksek): sıralama için basit bir puan (türetilmiş)."""
+    if oncelik < 1 or oncelik > 3:
+        raise GecersizGirdi("öncelik 1 (düşük) ile 3 (yüksek) arasında olmalı")
+    if acik < 0:
+        raise GecersizGirdi("açık negatif olamaz")
+    return acik * oncelik
+
+
+def kume_ortalamasi(toplam_faz: float, faktor_sayisi: float) -> float:
+    """Bir kümedeki faktörlerin faz ortalaması (1–4)."""
+    if faktor_sayisi <= 0:
+        raise GecersizGirdi("faktör sayısı sıfırdan büyük olmalı")
+    ort = toplam_faz / faktor_sayisi
+    _faz_kontrol(ort, "ortalama faz")
+    return ort
+
+
+def uygulama_yuzdesi(uygulanan: float, toplam: float) -> float:
+    """Bir madde (ör. 6.3) altındaki ifadelerden uygulananların yüzdesi (türetilmiş)."""
+    if toplam <= 0:
+        raise GecersizGirdi("toplam ifade sayısı sıfırdan büyük olmalı")
+    if uygulanan < 0 or uygulanan > toplam:
+        raise GecersizGirdi("uygulanan 0 ile toplam arasında olmalı")
+    return 100 * uygulanan / toplam
+
+
+def yanit_orani(davetli: float, yanit: float) -> float:
+    """Ek A.3: anket yanıt oranı (%) = yanıt ÷ davetli × 100 (çalışma grubu yanıt oranını izler)."""
+    if davetli <= 0:
+        raise GecersizGirdi("davetli sayısı sıfırdan büyük olmalı")
+    if yanit < 0 or yanit > davetli:
+        raise GecersizGirdi("yanıt sayısı 0 ile davetli sayısı arasında olmalı")
+    return 100 * yanit / davetli
+
+
+# ---------------------------------------------------------------------------
+# 3) Yapılar: değerlendirme tablosu (Tablo A.1 modeli)
+# ---------------------------------------------------------------------------
+
+@dataclass
+class Faktor:
+    """Tek bir faktörün mevcut/istenen fazı ve önceliği."""
+    kume: int
+    madde: str
+    ad: str
+    mevcut: float | None = None
+    istenen: float | None = None
+    oncelik: float | None = None
+
+    def acik(self) -> float:
+        return faz_acigi(self.mevcut, self.istenen)
+
+    def puan(self) -> float:
+        return oncelik_puani(max(self.acik(), 0), self.oncelik)
+
+
+@dataclass
+class DegerlendirmeTablosu:
+    """20 faktörlü değerlendirme tablosu."""
+    faktorler: list = field(default_factory=lambda: [Faktor(k, m, a) for k, m, a in FAKTORLER])
+
+    def ata(self, madde: str, mevcut: float, istenen: float, oncelik: float) -> "DegerlendirmeTablosu":
+        for f in self.faktorler:
+            if f.madde == madde:
+                _faz_kontrol(mevcut, "mevcut faz"); _faz_kontrol(istenen, "istenen faz")
+                f.mevcut, f.istenen, f.oncelik = mevcut, istenen, oncelik
+                return self
+        raise GecersizGirdi(f"bilinmeyen madde: {madde}")
+
+    def ozet(self) -> dict:
+        dolu = [f for f in self.faktorler if f.mevcut is not None and f.istenen is not None]
+        if not dolu:
+            raise GecersizGirdi("en az bir faktör değerlendirilmeli")
+        out = {"degerlendirilen": len(dolu)}
+        for k in (1, 2, 3):
+            kd = [f for f in dolu if f.kume == k]
+            if kd:
+                out[f"kume{k}_mevcut"] = round(kume_ortalamasi(sum(f.mevcut for f in kd), len(kd)), 2)
+                out[f"kume{k}_istenen"] = round(kume_ortalamasi(sum(f.istenen for f in kd), len(kd)), 2)
+        oncelikli = sorted((f for f in dolu if f.oncelik), key=lambda f: -f.puan())[:3]
+        out["ilk_oncelikler"] = [(f.madde, f.ad, f.puan()) for f in oncelikli]
+        return out
+
+
+def ornek_tablo() -> DegerlendirmeTablosu:
+    """Örnek amaçlı değerlendirme (teknik rapor sayı vermez): çoğu faktör 'planlı', hedef 'proaktif'."""
+    t = DegerlendirmeTablosu()
+    ornek = {"6.2": (2, 3, 2), "6.3": (2, 4, 3), "6.5": (2, 3, 3), "7.5": (3, 4, 2), "8.6": (1, 3, 3), "8.3": (3, 3, 1)}
+    for f in t.faktorler:
+        m, i, o = ornek.get(f.madde, (2, 3, 1))
+        t.ata(f.madde, m, i, o)
+    return t
+
+
+def uygulama_denetimi(onem_belirlendi: bool = False,
+                      mevcut_durum_olculdu: bool = False,
+                      fark_belirlendi: bool = False,
+                      iyilestirme_dongusu: bool = False,
+                      calisma_grubu_var: bool = False,
+                      iletisim_plani_var: bool = False,
+                      pilot_yapildi: bool = False,
+                      paydas_toplantisi_yapildi: bool = False) -> list:
+    """Bir uygulamanın eksiklerini listeler.
+
+    Maddeler ISO/TR 30406'nın 5. maddesindeki dört adımdan ve Ek A süreçlerinden
+    türetilmiştir; bir uygunluk sınaması değil, hazırlık kontrol listesidir.
+    """
+    kontroller = [
+        (onem_belirlendi, "Adım 1: faktörlerin kurum için önemi belirlenmemiş (sektöre ve kuruma göre değişir)."),
+        (mevcut_durum_olculdu, "Adım 2: faktörlerin uygulanma düzeyi (mevcut durum) ölçülmemiş."),
+        (fark_belirlendi, "Adım 3: mevcut durum ile istenen durum arasındaki fark belirlenmemiş."),
+        (iyilestirme_dongusu, "Adım 4: sürekli iyileştirme döngüsü kurulmamış; sorun odaklı yönetimden sistematik yaklaşıma geçilmemiş."),
+        (calisma_grubu_var, "Ek A.2: sürdürülebilir istihdam edilebilirlik çalışma grubu kurulmamış."),
+        (iletisim_plani_var, "Ek A.2: iletişim planı ve bölüm şampiyonları belirlenmemiş."),
+        (pilot_yapildi, "Ek A.2: faktörleri ve ek unsurları sınamak için pilot uygulama yapılmamış."),
+        (paydas_toplantisi_yapildi, "Ek A.5: paydaşlarla sonuçları tartışan ve öncelikleri uzlaştıran toplantı yapılmamış."),
+    ]
+    return [metin for tamam, metin in kontroller if not tamam]
+
+
+# ---------------------------------------------------------------------------
+# 4) Dağıtıcı: hesaplayıcı arayüzünün kullandığı tek giriş noktası
+# ---------------------------------------------------------------------------
+
+METRIK_LISTESI = ["acik", "oncelik", "kume", "uygulama", "yanit"]
+
+
+def _g(x) -> str:
+    """Sayıyı, bilimsel gösterim kullanmadan en kısa biçimde yazar."""
+    return f"{x:.12g}"
+
+
+def hesapla(metrik: str, **g) -> dict:
+    """Metrik kimliği ve girdilerle hesabı yapar; sözlük döndürür.
+
+    Dönen anahtarlar: deger, ifade (formülün yerine konmuş hâli), ondalik,
+    birim, ayrinti (etiket–değer çiftleri).
+    """
+    if metrik == "acik":
+        d = faz_acigi(g["mevcut"], g["istenen"])
+        return {"deger": d, "ondalik": 1, "birim": "faz adımı (istenen − mevcut)",
+                "ifade": f"{_g(g['istenen'])} − {_g(g['mevcut'])}",
+                "ayrinti": [["Mevcut faz", faz_adi(g["mevcut"])],
+                            ["İstenen faz", faz_adi(g["istenen"])],
+                            ["İlerleme (mevcut ÷ istenen, %)", round(ilerleme_yuzde(g["mevcut"], g["istenen"]), 1)]]}
+
+    if metrik == "oncelik":
+        a = faz_acigi(g["mevcut"], g["istenen"])
+        d = oncelik_puani(max(a, 0), g["oncelik"])
+        return {"deger": d, "ondalik": 1, "birim": "öncelik puanı (açık × ağırlık)",
+                "ifade": f"maks({_g(g['istenen'])} − {_g(g['mevcut'])}, 0) × {_g(g['oncelik'])}",
+                "ayrinti": [["Faz açığı", a],
+                            ["En yüksek olası puan (açık 3 × ağırlık 3)", 9]]}
+
+    if metrik == "kume":
+        d = kume_ortalamasi(g["toplam_faz"], g["faktor_sayisi"])
+        return {"deger": d, "ondalik": 2, "birim": "ortalama faz (1–4)",
+                "ifade": f"{_g(g['toplam_faz'])} ÷ {_g(g['faktor_sayisi'])}",
+                "ayrinti": [["En yakın faz", faz_adi(d)],
+                            ["Bütünleşik faza uzaklık (adım)", round(4 - d, 2)]]}
+
+    if metrik == "uygulama":
+        d = uygulama_yuzdesi(g["uygulanan"], g["toplam"])
+        return {"deger": d, "ondalik": 1, "birim": "% (uygulanan ifade)",
+                "ifade": f"{_g(g['uygulanan'])} ÷ {_g(g['toplam'])} × 100",
+                "ayrinti": [["Uygulanmayan ifade sayısı", g["toplam"] - g["uygulanan"]],
+                            ["Uygulanmayan pay (%)", round(100 - d, 1)]]}
+
+    if metrik == "yanit":
+        d = yanit_orani(g["davetli"], g["yanit"])
+        return {"deger": d, "ondalik": 1, "birim": "% (yanıt oranı)",
+                "ifade": f"{_g(g['yanit'])} ÷ {_g(g['davetli'])} × 100",
+                "ayrinti": [["Yanıt vermeyen sayısı", g["davetli"] - g["yanit"]],
+                            ["Yanıt vermeyen pay (%)", round(100 - d, 1)]]}
+
+    raise ValueError(f"Bilinmeyen metrik: {metrik}")
+
+
+# ---------------------------------------------------------------------------
+# 5) Doğrulama çıktısı
+# ---------------------------------------------------------------------------
+
+def _demo() -> None:
+    cizgi = "-" * 64
+    print("ISO/TR 30406 — doğrulama çıktısı")
+    print(cizgi)
+
+    print("Fazlar: " + " → ".join(f"{i + 1}={f}" for i, f in enumerate(FAZLAR)))
+    print(f"Açık (mevcut 2, istenen 4)  : {faz_acigi(2, 4)} adım, ilerleme %{ilerleme_yuzde(2, 4):.0f}")
+    print(f"Öncelik puanı (açık 2, yüksek): {oncelik_puani(2, 3)}")
+    print(f"Anket yanıt oranı (84/120)  : %{yanit_orani(120, 84):.0f}")
+    print(cizgi)
+
+    t = ornek_tablo()
+    for anahtar, deger in t.ozet().items():
+        print(f"{anahtar:<18}: {deger}")
+    print(cizgi)
+
+    print("Dağıtıcı örneği:")
+    print(hesapla("acik", mevcut=2, istenen=4))
+    print(cizgi)
+
+    print("Uygulama denetimi (hiçbir ön koşulu sağlamayan bir kurum için):")
+    for u in uygulama_denetimi():
+        print(" !", u)
+
+
+if __name__ == "__main__":
+    _demo()
+</script>
+<script>
+/* =========================================================
+   1) FAKTÖR VERİ TABANI
+   u: kullanıcılar (hr İK ve eğitim / exec kurul ve üst yönetim / line hat yönetimi /
+      ohs iş sağlığı ve güvenliği / rep çalışan temsilcileri ve çalışanlar)
+   st: bölüm (k1 küme 1, k2 küme 2, k3 küme 3, ilke ilkeler ve düzeyler, ek Ek A uygulama süreci)
+   r: raporlama (ic, dis)
+   t: aile (p küme 1 / c küme 2 / s küme 3 / r ilkeler, düzeyler ve tanımlar / o uygulama süreci ve yararlar)
+   calc: bu sayfadaki hesaplayıcı kimliği
+   k: ek etiket (onk ön koşul, tur türetilmiş, ctx bağlam)
+   ========================================================= */
+var METRICS = [
+ {g:"Küme 1: Politikaya bütünleştirme (madde 6)", t:"p", items:[
+  {n:"Misyon, vizyon ve hedefler: Strateji ile uyum", st:"k1", r:["ic"], d:"Sürdürülebilir istihdam edilebilirlik yaklaşımı iş stratejisiyle uyumludur. (6.2 a))", u:["exec","hr"]},
+  {n:"Misyon, vizyon ve hedefler: Net misyon/vizyon ve SMART hedefler", st:"k1", r:["ic"], d:"Kurum, şimdi ve gelecekte istihdam edilebilirliği sürdürmek ve geliştirmek için net bir misyon/vizyon ve belirli, ölçülebilir, ulaşılabilir, gerçekçi, süreli (SMART) hedefler belirler. (6.2 b))", u:["exec","hr"]},
+  {n:"Misyon, vizyon ve hedefler: İç ve dış gelişmelerin etkisini bilme", st:"k1", r:["ic"], d:"Kurum, iç ve dış gelişmelerin işgücünün niceliğini, niteliğini (KSA) ve iyi oluşunu nasıl etkilediğini bilir ve anlar. (6.2 c))", u:["exec","hr"]},
+  {n:"Misyon, vizyon ve hedefler: İyi tanımlı yaklaşım", st:"k1", r:["ic"], d:"Kurum, kendisi ve işgücü için sürdürülebilir istihdam edilebilirliği geliştirmek ve başarmak için iyi tanımlı bir yaklaşıma sahiptir. (6.2 d))", u:["exec","hr"]},
+  {n:"Liderlik: Üst yönetim gündemin sahibi", st:"k1", r:["ic"], d:"Üst yönetim sürdürülebilir istihdam edilebilirlik gündemini sahiplenir, uygulamaları etkin biçimde destekler ve teşvik eder. (6.3 a))", u:["exec","line","hr"]},
+  {n:"Liderlik: Her düzeyde KPI", st:"k1", r:["ic"], d:"Yönetimin her düzeyi sürdürülebilir istihdam edilebilirlikle ilgili anahtar performans göstergeleri (KPI) geliştirir ve izler. (6.3 b))", u:["exec","line","hr"]},
+  {n:"Liderlik: Doğru ölçülerin bilinmesi", st:"k1", r:["ic"], d:"Yönetimin her düzeyi, işgücünün ve işgücü için sürdürülebilir istihdam edilebilirliği sağlamak ve geliştirmek için hangi ölçülerin kullanılacağını anlar. (6.3 c))", u:["exec","line","hr"]},
+  {n:"Liderlik: Bölümler arası işbirliği", st:"k1", r:["ic"], d:"Yönetimin her düzeyi, iyi uygulamayı beslemek için bölümlerin işbirliği yapmasını destekler. (6.3 d))", u:["exec","line","hr"]},
+  {n:"Sahiplenme: İç ve dış ilgili taraflarla çalışma", st:"k1", r:["ic"], d:"Kurum, sürdürülebilir istihdam edilebilirliği geliştirmek ve sürdürmek için ilgili iç ve dış ilgili taraflarla çalışır. (6.4 a))", u:["exec","hr","ohs","rep"]},
+  {n:"İşgücü planlaması: Arz–talep riskleri ve azaltma", st:"k1", r:["ic"], d:"Kurum, mevcut, geçiş ve gelecekteki işgücü için KSA dahil işgücü arz ve talep risklerini anlar ve stratejik hedefler için gereken risk azaltma stratejilerini uygular. (6.5 a))", u:["hr","exec","line"]},
+  {n:"İşgücü planlaması: KSA'ların düzenli değerlendirilmesi", st:"k1", r:["ic"], d:"Kurum, işgücünün KSA'larını düzenli olarak değerlendirir ve gereken iyileştirmeler için geri bildirim verir. (6.5 b))", u:["hr","exec","line"]},
+  {n:"İşgücü planlaması: İşgücünün bilgilendirilmesi ve yönlendirilmesi", st:"k1", r:["ic"], d:"İşgücü, istihdam edilebilirliğini artırmak için gereken önlemler hakkında bilgilendirilir ve fırsatlardan yararlanmak için yönlendirilir. (6.5 c))", u:["hr","exec","line"]},
+  {n:"İşgücü planlaması: Öğrenme potansiyeli olanları işe alma", st:"k1", r:["ic"], d:"Kurum yalnızca mevcut ihtiyaçlara KSA sunanları değil, öğrenme ve gelişme potansiyeli gösterenleri ve sürekli öğrenmeye bağlı olanları da işe alır. (6.5 d))", u:["hr","exec","line"]},
+  {n:"Uygulama: Toplantılarda standart gündem maddesi", st:"k1", r:["ic"], d:"Sürdürülebilir istihdam edilebilirlik stratejisi ve politikası yönetim ve personel toplantılarında standart bir gündem maddesidir. (6.6 a))", u:["hr","exec","line"]},
+  {n:"Uygulama: İşyerinde somut uygulama", st:"k1", r:["ic"], d:"Politika işyerinde somut ve pratik biçimlerde uygulanır. (6.6 b))", u:["hr","exec","line"]},
+  {n:"Uygulama: Stratejik işgücü planlaması ile uyum", st:"k1", r:["ic"], d:"Stratejik işgücü planlaması, sürdürülebilir istihdam edilebilirlik hedefleri ve planlarıyla uyumludur. (6.6 c))", u:["hr","exec","line"]},
+  {n:"Uygulama: İK'nın destek rolü", st:"k1", r:["ic"], d:"İnsan kaynakları; liderliği, yöneticileri ve işgücünü herkes için sürdürülebilir istihdam edilebilirliğe ulaşmada destekler. (6.6 d))", u:["hr","exec","line"]},
+  {n:"İletişim: Özel iletişim aracı", st:"k1", r:["ic"], d:"Kurum, fırsatları keşfetmek, gözden geçirmek ve paylaşmak için özel bir iletişim aracına sahiptir. (6.7 a))", u:["hr","line","rep"]},
+  {n:"İletişim: Aktif işgücü katılımı platformları", st:"k1", r:["ic"], d:"Aktif işgücü katılımının norm olduğu platformlar vardır; eylem maddeleri yönetimce dahil edilir ve gözden geçirilir. (6.7 b))", u:["hr","line","rep"]},
+  {n:"İletişim: Tüm işgücünün rolünü anlaması", st:"k1", r:["ic"], d:"Tüm işgücü (kalıcı, geçici, interim, yarı zamanlı vb.) rollerinin, KSA'larının, performansının ve davranışının sürdürülebilir istihdam edilebilirliğe ve planlamasına nasıl uyduğunu anlar. (6.7 c))", u:["hr","line","rep"]},
+  {n:"İletişim: Performans görüşmelerinde standart madde", st:"k1", r:["ic"], d:"Sürdürülebilir istihdam edilebilirlik performans görüşmelerinde standart bir maddedir. (6.7 d))", u:["hr","line","rep"]},
+  {n:"Kültür: Güven, bağlılık ve verimlilik kültürü", st:"k1", r:["ic"], d:"Kurum, böyle bir kültürün güveni, işgücü bağlılığını, sadakati, verimliliği, girişimciliği, yaratıcılığı ve genel fiziksel ve ruhsal sağlığı desteklediğini kabul eder. (6.8 a))", u:["exec","hr","rep","line"]},
+  {n:"Kültür: Öğrenme ve gelişim ortamı", st:"k1", r:["ic"], d:"Kurum, pratik ve teşvik edici bir öğrenme ve gelişim ortamının işgücünün sürdürülebilir istihdam edilebilirliği için şart olduğunu kabul eder. (6.8 b))", u:["exec","hr","rep","line"]},
+  {n:"Kültür: KSA kullanımına katılım", st:"k1", r:["ic"], d:"Kurum, işgücünün KSA'larının işyerinde nasıl kullanılacağına karar verirken işgücünü dahil etmenin ve isteyenlere yeni yönlerde gelişme fırsatı vermenin değerini kabul eder. (6.8 c))", u:["exec","hr","rep","line"]},
+  {n:"Kültür: Görüş bildirme mekanizması", st:"k1", r:["ic"], d:"Kurum, işgücünün görüşlerini ve iyileştirme fikirlerini ifade edebilmesi ve harekete geçebilmesi için mekanizma sağlamanın değerini kabul eder. (6.8 d))", u:["exec","hr","rep","line"]}
+ ]},
+ {g:"Küme 2: İş yetkinlikleri, içerik, karmaşıklık, ilişkiler ve koşullar (madde 7)", t:"c", items:[
+  {n:"İşgücü yetkinlikleri vizyonu ve politikası: Mevcut KSA'ların korunması ve yükseltilmesi", st:"k2", r:["ic"], d:"Kurum, mevcut KSA'ları kurumsal hedefler için sürdürmek ya da yükseltmek üzere eğitim ve gelişimi anlamaya ve uygulamaya çalışır. (7.2 a))", u:["hr","line","rep"]},
+  {n:"İşgücü yetkinlikleri vizyonu ve politikası: Bilginin oluşturulması ve paylaşılması", st:"k2", r:["ic"], d:"Kurum, bilginin oluşturulması, geliştirilmesi ve paylaşılmasının sürdürülebilir işgücü için ön koşul olduğunu kabul eder. (7.2 b))", u:["hr","line","rep"]},
+  {n:"İşgücü yetkinlikleri vizyonu ve politikası: Sürekli değişen KSA ihtiyaçları", st:"k2", r:["ic"], d:"Kurum, KSA ihtiyaçlarının iş ve pazar koşullarıyla sürekli geliştiğini kabul eder ve işgücünün istihdam edilebilir kalması için KSA'larını geliştirmesine yardım eder. (7.2 c))", u:["hr","line","rep"]},
+  {n:"İşgücü yetkinlikleri vizyonu ve politikası: Yönetici–işgücü KSA görüşmesi", st:"k2", r:["ic"], d:"Yönetici ve işgücü, işgücünün mevcut ve kullanılabilir KSA'larını ve bunların kurumsal hedeflerle uyumunu düzenli olarak tartışır. (7.2 d))", u:["hr","line","rep"]},
+  {n:"İş içeriği: İşin zorluğu üzerine görüşme", st:"k2", r:["ic"], d:"Yönetimin her düzeyi işgücüyle işlerin ve görevlerin ne kadar zorlayıcı olduğunu ve KSA'ları geliştirmek için eğitim seçeneklerini periyodik olarak tartışır. (7.3 a))", u:["line","hr","rep"]},
+  {n:"İş içeriği: Rol içeriği ve KSA'ları zorlama", st:"k2", r:["ic"], d:"Kurumun her düzeyi rol içeriğini ve KSA'larını zorlamayı düşünmeye teşvik edilir; amirler bu gelişmeyi desteklemek için yetkilendirilir. (7.3 b))", u:["line","hr","rep"]},
+  {n:"İş içeriği: Yeni rollere KSA aktarımı", st:"k2", r:["ic"], d:"İş ve örgütsel ihtiyaçlar değişirken işgücü, mevcut KSA'ları farklı içerikli yeni rollere nasıl katacağını planlamaya katılır. (7.3 c))", u:["line","hr","rep"]},
+  {n:"İş içeriği: Kişisel durumlara uyarlama", st:"k2", r:["ic"], d:"Kurum, fiziksel/ruhsal durum ya da bakım ihtiyacı gibi kişisel koşullardan doğabilecek iş içeriği uyarlamalarını işgücüyle birlikte geliştirir. (7.3 d))", u:["line","hr","rep"]},
+  {n:"Karmaşıklık: Sorumlulukların KSA'ya uygunluğu", st:"k2", r:["ic"], d:"Kurum, işgücünün sorumluluklarının bireysel KSA'lara uygun olmasını ve zihinsel olarak uyarıcı görevler içerebilmesini sağlar. (7.4 a))", u:["line","hr","rep"]},
+  {n:"Karmaşıklık: İşyerinde bilgi desteği", st:"k2", r:["ic"], d:"İşgücünü görevlerinde desteklemek için işyerinde bilgi sağlanır. (7.4 b))", u:["line","hr","rep"]},
+  {n:"Karmaşıklık: Karmaşık görevlerde yüksek kalite", st:"k2", r:["ic"], d:"Kurum, işgücünün karmaşık görevleri yüksek kalitede yapma yönündeki KSA'larını destekler. (7.4 c))", u:["line","hr","rep"]},
+  {n:"Beceri gelişimi: Eğitim ve gelişim kaynağı ayırma", st:"k2", r:["ic"], d:"Kurum, işgücünü eğitmek ve geliştirmek için kaynak ayırır. (7.5 a))", u:["hr","line","rep"]},
+  {n:"Beceri gelişimi: Koçluk, mentorluk ve eğitim", st:"k2", r:["ic"], d:"Kurum, işgücünün mevcut becerilerini koçluk, mentorluk ve eğitim (sınıf, çevrimiçi, uygulamalı) kanallarıyla geliştirmeyi taahhüt eder. (7.5 b))", u:["hr","line","rep"]},
+  {n:"Beceri gelişimi: Beceri kayıtları ve kurum envanteri", st:"k2", r:["ic"], d:"İşgücünün iş becerileri hem bireysel kayıtlarda hem kurum çapında bir envanterde belgelenir; envanter ilgili dış paydaşlarla paylaşılabilir. (7.5 c))", u:["hr","line","rep"]},
+  {n:"Beceri gelişimi: Sektörün gelecekteki becerilerini izleme", st:"k2", r:["ic"], d:"Kurum, sektörde ileride gerekecek becerileri izler ve belgeler; işgücüne bu becerileri tanıtma ve öğretme planları yapar ve uygular. (7.5 d))", u:["hr","line","rep"]},
+  {n:"İşyeri ilişkileri: Şeffaflık", st:"k2", r:["ic"], d:"Kurum, iş yapmak için gereken KSA'ları, iş tasarımını ve gelecekte iş içeriğinin nasıl etkilenebileceğine bakışını açıklamada şeffaftır. (7.6 a))", u:["line","hr","rep"]},
+  {n:"İşyeri ilişkileri: Karşılıklı saygı", st:"k2", r:["ic"], d:"Yöneticiler ve işgücü statülerinden bağımsız birbirine saygı gösterir. (7.6 b))", u:["line","hr","rep"]},
+  {n:"İşyeri ilişkileri: Amir değerlendirmesinde kariyer desteği", st:"k2", r:["ic"], d:"Amirlerin değerlendirmesi, doğrudan bağlı işgücünün kariyer potansiyelini geliştirmesini ne kadar desteklediğine kısmen dayanır. (7.6 c))", u:["line","hr","rep"]},
+  {n:"İşyeri ilişkileri: Güçlü ve zayıf yönleri gözeterek teşvik", st:"k2", r:["ic"], d:"Yöneticiler ve işgücü bireylerin güçlü ve zayıf yönlerini hesaba katarak birbirini performansı artırmaya teşvik eder. (7.6 d))", u:["line","hr","rep"]},
+  {n:"Çalışma koşulları: Sağlık ve iş–yaşam dengesini destekleme", st:"k2", r:["ic"], d:"Kurum, bireysel sağlığı ve iş–yaşam dengesini sürdürmek ve geliştirmek için aktif bir yaklaşım benimser. (7.7 a))", u:["hr","ohs","line","rep"]},
+  {n:"Çalışma koşulları: Esnek çalışma düzenlemeleri", st:"k2", r:["ic"], d:"Kurum makul ve uygulanabilir olduğunda çalışma saati, yer, ücret, performans ile öğrenme ve gelişim bakımından esnek düzenlemelere izin verir. (7.7 b))", u:["hr","ohs","line","rep"]},
+  {n:"Çalışma koşulları: İç hareketliliği teşvik", st:"k2", r:["ic"], d:"Kurum, işgücünün mevcut ya da gelecekteki işlerinde, kurum içinde ve dışında sürekli öğrenip gelişmesine olanak veren iç hareketliliği teşvik eder. (7.7 c))", u:["hr","ohs","line","rep"]},
+  {n:"Çalışma koşulları: Güvenli, ergonomik ve bakımlı koşullar", st:"k2", r:["ic"], d:"Kurum, etkililiği, verimliliği ve iyi oluşu destekleyen güvenli, ergonomik ve iyi bakımlı çalışma koşulları sağlar. (7.7 d))", u:["hr","ohs","line","rep"]}
+ ]},
+ {g:"Küme 3: Canlılık ve sağlık (madde 8)", t:"s", items:[
+  {n:"Sağlık yönetimi: İşgücünün sağlık politikalarına katılımı", st:"k3", r:["ic"], d:"İşgücü, en iyi fiziksel ve ruhsal sağlığı yaratmak ve sürdürmek için gönüllü politika ve uygulamaların planlanmasına ve uygulanmasına etkin biçimde katılabilir. (8.2 a))", u:["ohs","hr","rep"]},
+  {n:"Sağlık yönetimi: İş sağlığı desteği", st:"k3", r:["ic"], d:"Fiziksel/ruhsal sağlık sorunu ya da yaralanması işini yapabilme yeteneğini etkileyen çalışanlara iş sağlığı desteği sağlanabilir. (8.2 b))", u:["ohs","hr","rep"]},
+  {n:"Sağlık yönetimi: Sağlık yönetiminin değerlendirilmesi", st:"k3", r:["ic"], d:"Sağlık yönetimi periyodik olarak değerlendirilir ve gerekirse en iyilenir. (8.2 c))", u:["ohs","hr","rep"]},
+  {n:"Sağlık yönetimi: Devamsızlık yönetimi ve hızlı işe dönüş", st:"k3", r:["ic"], d:"İK politikası devamsızlığı yönetmeyi ve hızlı işe dönüşü teşvik etmeyi hedefler. (8.2 d))", u:["ohs","hr","rep"]},
+  {n:"Sağlıklı ve güvenli çalışma ortamı: Risk değerlendirmeleri ve denetimler", st:"k3", r:["ic"], d:"Kurum, sistematik risk değerlendirmeleri ve denetimlerle tespit edilen riskleri ele alarak ya da kontrol ederek güvenli ve sağlıklı ortamı güvence altına alır. (8.3 a))", u:["ohs","line","rep"]},
+  {n:"Sağlıklı ve güvenli çalışma ortamı: Güvensiz koşulları bildirme", st:"k3", r:["ic"], d:"İşgücü güvensiz ve sağlıksız çalışma koşullarını belirleyip bildirir ve iş sağlığı ve güvenliğinin iyileştirilmesine yeteneği ölçüsünde etkin katkı verir. (8.3 b))", u:["ohs","line","rep"]},
+  {n:"Sağlıklı ve güvenli çalışma ortamı: Yerleşik sistem ve prosedürler", st:"k3", r:["ic"], d:"Kurum, güvenli ve sağlıklı çalışma ortamına götüren net ve yerleşik sistem ve prosedürlere sahiptir. (8.3 c))", u:["ohs","line","rep"]},
+  {n:"Sağlıklı ve güvenli çalışma ortamı: Yaşam evrelerinde sağlık ve denge", st:"k3", r:["ic"], d:"Kurum, işgücünün yaşam evreleri boyunca bireysel sağlığın ve iyi bir iş–yaşam dengesinin sürdürülmesini ve teşvikini destekleyebilir. (8.3 d))", u:["ohs","line","rep"]},
+  {n:"Sağlıklı yaşam biçimleri: Sistematik ve ölçülebilir yaklaşım", st:"k3", r:["ic"], d:"Kurum, sağlıklı yaşam davranışını teşvik etmek için sistematik ve ölçülebilir bir yaklaşıma sahiptir ve gerektiğinde ilgili konularda harekete geçer. (8.4 a))", u:["ohs","hr","rep"]},
+  {n:"Sağlıklı yaşam biçimleri: Bireysel ya da grup düzeyinde teşvik", st:"k3", r:["ic"], d:"Kurum, işgücünü sağlıklı yaşam davranışını bireysel ya da grup düzeyinde geliştirmeye teşvik eder. (8.4 b))", u:["ohs","hr","rep"]},
+  {n:"Sağlıklı yaşam biçimleri: Destek mekanizmaları", st:"k3", r:["ic"], d:"Kurum, sağlıklı yaşam biçimine ulaşmak için destek mekanizmaları sağlar. (8.4 c))", u:["ohs","hr","rep"]},
+  {n:"Fiziksel sağlık: Fiziksel sağlığı destekleme", st:"k3", r:["ic"], d:"Kurum, işgücünün fiziksel sağlığını destekler ve gerektiğinde ilgili konularda harekete geçer. (8.5 a))", u:["ohs","line","rep"]},
+  {n:"Fiziksel sağlık: Fiziksel sağlığı geliştirmeye teşvik", st:"k3", r:["ic"], d:"Kurum, işgücünü fiziksel sağlığını bireysel ya da grup düzeyinde geliştirmeye teşvik eder. (8.5 b))", u:["ohs","line","rep"]},
+  {n:"Fiziksel sağlık: İşin fiziksel talepleri ile sağlık dengesi", st:"k3", r:["ic"], d:"Kurum, işin fiziksel talepleri ile çalışanın fiziksel yetenekleri/sağlığı arasında denge kurmak için destek mekanizmaları sağlar. (8.5 c))", u:["ohs","line","rep"]},
+  {n:"Fiziksel sağlık: Yönetici–çalışan görüşmesi", st:"k3", r:["ic"], d:"Yönetici ve çalışan, işin fiziksel talepleri ile çalışanın fiziksel yetenekleri/sağlığı arasındaki dengenin nasıl korunacağını düzenli tartışır. (8.5 d))", u:["ohs","line","rep"]},
+  {n:"Ruh sağlığı: Ruh sağlığını destekleme", st:"k3", r:["ic"], d:"Kurum, işgücünün ruh sağlığını destekler ve gerektiğinde ilgili konularda harekete geçer. (8.6 a))", u:["ohs","line","rep"]},
+  {n:"Ruh sağlığı: Ruh sağlığını geliştirmeye teşvik", st:"k3", r:["ic"], d:"Kurum, işgücünü ruh sağlığını bireysel ya da grup düzeyinde geliştirmeye teşvik eder. (8.6 b))", u:["ohs","line","rep"]},
+  {n:"Ruh sağlığı: İşin zihinsel talepleri ile sağlık dengesi", st:"k3", r:["ic"], d:"Kurum, olağan koşullarda işin zihinsel talepleri ile çalışanın zihinsel yetenekleri/sağlığı arasında denge kurmak için destek mekanizmaları sağlar. (8.6 c))", u:["ohs","line","rep"]},
+  {n:"Ruh sağlığı: VUCA koşullarında ruh sağlığı", st:"k3", r:["ic"], d:"Kurum, işgücünün oynaklık, belirsizlik, karmaşıklık ve muğlaklık (VUCA) koşullarında ruh sağlığını/yeteneklerini korumasına ve artırmasına yardım edecek yolları araştırır ve uygular. (8.6 d))", u:["ohs","line","rep"]},
+  {n:"Ruh sağlığı: Yönetici–çalışan görüşmesi", st:"k3", r:["ic"], d:"Yönetici ve çalışan, işin zihinsel talepleri ile çalışanın zihinsel yetenekleri/sağlığı arasındaki dengenin nasıl korunacağını düzenli tartışır. (8.6 e))", u:["ohs","line","rep"]},
+  {n:"İyi oluş: İyi oluşu destekleme", st:"k3", r:["ic"], d:"Kurum, işgücünün iyi oluşunu destekler ve gerektiğinde harekete geçer. (8.7 a))", u:["hr","ohs","rep"]},
+  {n:"İyi oluş: İyi oluşu geliştirmeye teşvik", st:"k3", r:["ic"], d:"Kurum, işgücünü iyi oluşunu bireysel ya da grup düzeyinde geliştirmeye teşvik eder. (8.7 b))", u:["hr","ohs","rep"]},
+  {n:"İyi oluş: İşyerinde iyi oluş destek mekanizmaları", st:"k3", r:["ic"], d:"Kurum, işgücünün işyerinde iyi oluşuna ulaşması için destek mekanizmaları sağlar. (8.7 c))", u:["hr","ohs","rep"]},
+  {n:"İş–yaşam dengesi: Sonuç odaklılık ve esnek saatler", st:"k3", r:["ic"], d:"Kurum sonuçlara odaklanır ve mümkün olduğunda çalışanın kişisel yaşam ihtiyaçlarına uyum için çalışma saatlerinde ve çizelgelerde esneklik tanır. (8.8 a))", u:["hr","line","rep"]},
+  {n:"İş–yaşam dengesi: Geçici olarak evde kalması gerekenler", st:"k3", r:["ic"], d:"Kurum ve çalışanlar, kişisel koşullar nedeniyle (geçici olarak) evde daha fazla zaman geçirmesi gereken çalışanlara uyum sağlamayı hedefler. (8.8 b))", u:["hr","line","rep"]},
+  {n:"İş–yaşam dengesi: Kendi dengesini kurma fırsatı", st:"k3", r:["ic"], d:"Çalışanlara iş ve ev yaşamı arasında kendi dengelerini kurma fırsatı verilir. (8.8 c))", u:["hr","line","rep"]}
+ ]},
+ {g:"İlkeler, düzeyler ve tanımlar (madde 3–5)", t:"r", items:[
+  {n:"Sürdürülebilir istihdam edilebilirlik", st:"ilke", r:["ic"], d:"Çalışma yaşamının uzun dönemli yaratma/sürdürme yeteneği; birey, kurum ya da hükümetin sorumluluğu olabilir (3.1)", u:["exec","hr","line","rep","ohs"]},
+  {n:"Birey için sürdürülebilir istihdam edilebilirlik", st:"ilke", r:["ic"], d:"Değişen istihdam, ekonomik ve kişisel koşullara uyumla yaşam evreleri boyunca istihdam edinme/yaratma/sürdürme yeteneği (3.2)", u:["rep","hr","line"]},
+  {n:"Çalıştıran kurum için sürdürülebilir istihdam edilebilirlik", st:"ilke", r:["ic","dis"], d:"İşgücünü edinme, yaratma, geliştirme ve eğitme, elde tutma, yeniden görevlendirme ve destekleme konusunda uzun dönemli ve çevik yaklaşım (3.3)", u:["exec","hr","line"]},
+  {n:"Kamu sektörü için sürdürülebilir istihdam edilebilirlik", st:"ilke", r:["dis"], d:"Değer odaklı istihdamı teşvik eden uzun dönemli yaklaşımlar: çerçeveler, finansman, mevzuat, işe dönüş yolları vb. (3.4)", u:["exec","rep"]},
+  {n:"Hükümet düzeyi (Şekil 2)", st:"ilke", r:["dis"], d:"Toplumsal dinamikler, işgücü piyasası, iş ve örgüt ve bireysel özellikler katmanları (4.2)", u:["exec","hr","rep"]},
+  {n:"Sektör, endüstri ya da kurum düzeyi", st:"ilke", r:["ic"], d:"Anahtar sorunlar, gelecek beklentileri ve yetkinlik geliştirme (4.3)", u:["exec","hr"]},
+  {n:"Bireysel düzey", st:"ilke", r:["ic"], d:"Motivasyon, beceriler, sağlık ve sosyal beceriler; kurumun kolaylaştırıcı rolü (4.4)", u:["hr","line","rep"]},
+  {n:"Esnek çalışma", st:"ilke", r:["ic"], d:"Günlük çizelgeleme düzenleri, evden çalışma ve karma düzen (4.5)", u:["hr","line","rep"]},
+  {n:"Esnek işgücü", st:"ilke", r:["ic"], d:"Mevsimlik, parça başı, proje, belirli süreli, geçici ve yedek çalışma (4.5)", u:["hr","exec","line"]},
+  {n:"İlke 1: faktörlerin kurum için önemini belirleme", st:"ilke", r:["ic"], k:"onk", d:"Tüm faktörlerin değeri her sektör ve kurum için aynı değildir (5, Adım 1)", u:["exec","hr"]},
+  {n:"İlke 2: mevcut durumu ölçme", st:"ilke", r:["ic"], d:"Faktörlerin uygulanma düzeyini ölçmek (5, Adım 2)", u:["hr","exec","line"]},
+  {n:"İlke 3: istenen durumdan farkı belirleme", st:"ilke", r:["ic"], calc:"acik", d:"Mevcut durumun istenen durumdan ne kadar farklı olduğuna karar verme (5, Adım 3)", u:["exec","hr"]},
+  {n:"İlke 4: sürekli iyileştirme döngüsü", st:"ilke", r:["ic"], d:"ISO 9001 gibi yönetim sistemi standartlarındaki sürekli iyileştirme döngüsüyle ilişkili; sorun odaklı yönetimden sistematik yaklaşıma geçiş (5, Adım 4)", u:["exec","hr","line"]},
+  {n:"Varsayım: güvenli çalışma koşulları ve ortak sorumluluk", st:"ilke", r:["ic"], k:"onk", d:"Güvenli çalışma koşulları uygulanır, işgücü sorumluluğu paylaşır (5, a)", u:["ohs","line","rep"]},
+  {n:"Varsayım: yapısal iş görüşmesi ve yıllık değerlendirmeler", st:"ilke", r:["ic"], k:"onk", d:"İK politikası; yapısal çalışma danışması ve yıllık performans/değerlendirme görüşmeleri (5, b)", u:["hr","line","rep"]},
+  {n:"Varsayım: aktif İK ve İSG politikası", st:"ilke", r:["ic"], k:"onk", d:"Sürekli iyileştirmeyi hedefleyen, işgücünün aktif katkısını gerektiren politika (5, c)", u:["hr","ohs","rep"]},
+  {n:"Varsayım: üst yönetim desteği", st:"ilke", r:["ic"], k:"onk", d:"Sürdürülebilir istihdam edilebilirliği ve canlılığı yapısal olarak yerleştirecek politikaya üst yönetim desteği (5, d)", u:["exec","hr"]},
+  {n:"Üç faktör kümesi ve Şekil 1", st:"ilke", r:["ic"], d:"Politikaya bütünleştirme; iş yetkinlikleri ve koşulları; canlılık ve sağlık; işgücünün istihdam edilebilirliği ve iş performansıyla ilişki (Giriş, Şekil 1)", u:["exec","hr","line","ohs","rep"]},
+  {n:"Kapsam: yalnızca kurumsal düzey", st:"ilke", r:["ic"], k:"onk", d:"Hükümet, kurum ve birey düzeyleri anılır; rapor yalnızca kurumsal düzeye odaklanır (Kapsam)", u:["exec","hr"]}
+ ]},
+ {g:"Uygulama süreci (Ek A) ve yararlar", t:"o", items:[
+  {n:"Ek A.2: paydaş gruplarının belirlenmesi", st:"ek", r:["ic"], d:"Kurul üyeleri, işletme sahipleri, üst yönetim, hat yönetimi, İK, iş sağlığı hizmetleri, eğitim, sendikalar/iş konseyleri (A.2)", u:["exec","hr","line","ohs","rep"]},
+  {n:"Ek A.2: çalışma grubu ve proje planı", st:"ek", r:["ic"], d:"Zaman çizelgesi, kilometre taşları, görevler, sorumluluklar (A.2)", u:["hr","exec"]},
+  {n:"Ek A.2: iletişim planı ve şampiyonlar", st:"ek", r:["ic"], d:"Kavramın tanıtımı; bölümlerde sürdürülebilir istihdam edilebilirlik şampiyonları (A.2)", u:["hr","line"]},
+  {n:"Ek A.2: anket metrikleri ve ek unsurlar", st:"ek", r:["ic"], d:"Küme 1, 2 ve 3 unsurlarını puanlamak için anket metrikleri; demografi gibi ek unsurlar; şartnamede seçenekler verilmez (A.2)", u:["hr","exec"]},
+  {n:"Ek A.2: pilot uygulama", st:"ek", r:["ic"], d:"Faktörleri ve ek unsurları sınamak için pilot (A.2)", u:["hr"]},
+  {n:"Ek A.3: anketin dağıtımı ve geri bildirim", st:"ek", r:["ic"], d:"İletişim ve proje planı, hatırlatmalar, geri bildirim mekanizmaları, teşekkür (A.3)", u:["hr","line","rep"]},
+  {n:"Ek A.3: anket yanıt oranı", st:"ek", r:["ic"], k:"tur", calc:"yanit", d:"Çalışma grubu yanıt oranlarını izler (A.3); oran formülü şartnamede yok", u:["hr","exec"]},
+  {n:"Ek A.4: veri temizleme, ara raporlar ve analiz", st:"ek", r:["ic"], d:"Çalışma grubu veriyi temizler, ara rapor üretir ve analiz eder (A.4)", u:["hr"]},
+  {n:"Ek A.4: mevcut ve istenen entegrasyon düzeyi", st:"ek", r:["ic"], calc:"acik", d:"Faktörlerin mevcut ve istenen entegrasyon düzeyinin belirlenmesi (A.4)", u:["hr","exec"]},
+  {n:"Ek A.4: faktör öncelikleri ve yatırım getirisi yüksek faktörler", st:"ek", r:["ic"], calc:"oncelik", d:"Paydaşların belirlediği öncelikler ve yüksek getiri sağlayan faktörler (A.4)", u:["hr","exec"] },
+  {n:"Ek A.5: paydaş toplantısı", st:"ek", r:["ic"], d:"Sonuçlar tartışılır; paydaş gruplarının benzerlik ve farklılıkları vurgulanır; ortak vizyon ve istenen durum üzerinde uzlaşma (A.5)", u:["hr","exec","line","rep"]},
+  {n:"Tablo A.1: politika fazları (tepkisel, planlı, proaktif, bütünleşik)", st:"ek", r:["ic"], calc:"acik", d:"Her faktör için mevcut durum, istenen durum, öncelik ve mevcut politika/araçlar (A.5)", u:["hr","exec","line"]},
+  {n:"Faz ortalaması (küme düzeyi)", st:"ek", r:["ic"], k:"tur", calc:"kume", d:"Kümedeki faktörlerin faz ortalaması; şartnamede yok, türetilmiştir", u:["hr","exec"]},
+  {n:"Madde uygulama yüzdesi", st:"ek", r:["ic"], k:"tur", calc:"uygulama", d:"Bir maddedeki ifadelerden uygulananların yüzdesi; şartnamede yok, türetilmiştir", u:["hr","line"]},
+  {n:"Ek A.6: eylem planının uygulanması ve değerlendirme", st:"ek", r:["ic"], d:"Sonuçlar değerlendirilir; yeniden Adım 1'e dönülebilir (A.6)", u:["exec","hr","line"]},
+  {n:"Departman ya da bölüm bazında ayrı uygulama", st:"ek", r:["ic"], k:"ctx", d:"Büyük kurumlarda adımlar bölüm bazında izlenip birleştirilebilir (A.6 notu)", u:["hr","exec","line"]},
+  {n:"Azalma: devamsızlık, tükenmişlik, kazalar", st:"ek", r:["ic"], d:"Devamsızlık, tükenmişlik, işe alım/devamsızlık/yükümlülük/işten çıkarma maliyetleri, iş kazaları (0.2)", u:["exec","hr","ohs"]},
+  {n:"Azalma: eksik istihdam, işsizlik, yükümlülük", st:"ek", r:["ic","dis"], d:"Yararlar (0.2)", u:["exec","hr"]},
+  {n:"İyileşme: tercih edilen kurum konumu, bağlılık, tutum, sadakat", st:"ek", r:["ic","dis"], d:"Yararlar (0.2)", u:["exec","hr","rep"]},
+  {n:"İyileşme: esneklik, yenilik, çeviklik, planlama", st:"ek", r:["ic"], d:"Yararlar (0.2)", u:["exec","hr","line"]},
+  {n:"İyileşme: verimlilik, performans, ürün kalitesi, doğru yetenek", st:"ek", r:["ic"], d:"Yararlar (0.2)", u:["exec","hr","line"]},
+  {n:"İyileşme: elde tutma, moral, iş ilişkileri", st:"ek", r:["ic"], d:"Yararlar (0.2)", u:["hr","rep","exec"]},
+  {n:"Kalite iyileştirme programları: genel ve sağlık profili izleme", st:"ek", r:["ic"], d:"Genel sürdürülebilir istihdam edilebilirliği ve kurumun uzun dönemli sağlık profilini haritalayıp izleme (0.2)", u:["hr","ohs","exec"]},
+  {n:"İnsan kaynakları ile diğer birimler arasında köprü", st:"ek", r:["ic"], d:"Yönetim kurulu, yönetim, operasyon ve iş sağlığı ve güvenliği ile bağlantı (0.3)", u:["hr","exec","ohs"]},
+  {n:"Sürdürülebilirlik göstergeleri: ESG ve GRI", st:"ek", r:["dis"], d:"Küresel Raporlama Girişimi çevresel, sosyal ve yönetişim faktörleri sürdürülebilir istihdam edilebilirlik için de kullanılabilir (0.2)", u:["exec"]},
+  {n:"KSA envanteri: mevcut ve gerekli", st:"ek", r:["ic","dis"], d:"Rekabetçi kurumlar KSA'ları izler ve envanterini tutar; sektör ve yetkili kurumlarla KSA envanterleri üzerinde çalışır (0.2)", u:["hr","exec"]},
+  {n:"\"Yetenek savaşı\": KSA fazlası ve eksikliği", st:"ek", r:["ic"], d:"KSA eksikliği ya da fazlasının işe alım, işten çıkarma ve pazar kaybı maliyeti (0.2)", u:["hr","exec"]}
+ ]}
+];
+
+var USERS = ["hr","exec","line","ohs","rep"];
+var AILE_AD = {p:"küme 1", c:"küme 2", s:"küme 3", r:"ilke ve düzey", o:"uygulama süreci"};
+var EK_AD = {ctx:"bağlam etkeni", onk:"ön koşul", tur:"türetilmiş", ilke:"ilke"};
+
+/* --- matris çizimi --- */
+function renderMatrix(){
+  var fu = document.getElementById("fUser").value;
+  var fs = document.getElementById("fStage").value;
+  var ft = document.getElementById("fType").value;
+  var fr = document.getElementById("fRep").value;
+  var fq = document.getElementById("fQ").value.toLocaleLowerCase("tr");
+  var body = document.getElementById("mBody");
+  var html = "", shown = 0;
+
+  METRICS.forEach(function(grp){
+    if(ft && grp.t !== ft) return;
+    var rows = "";
+    grp.items.forEach(function(m){
+      if(fu && m.u.indexOf(fu) === -1) return;
+      if(fs && m.st !== fs) return;
+      if(fr && m.r.indexOf(fr) === -1) return;
+      if(fq && m.n.toLocaleLowerCase("tr").indexOf(fq) === -1) return;
+      shown++;
+      var cells = USERS.map(function(u){
+        if(m.u.indexOf(u) === -1) return '<td class="num"></td>';
+        var mark = '<span class="dot ' + grp.t + '"></span>';
+        return '<td class="num" title="' + m.n + '">' + (m.calc ? '<b>' + mark + '</b>' : mark) + '</td>';
+      }).join("");
+      var tags = '<span class="tag ' + grp.t + '">' + AILE_AD[grp.t] + '</span>' +
+                 (m.k ? ' <span class="tag lvl">' + EK_AD[m.k] + '</span>' : "") +
+                 (m.calc ? ' <span class="tag lvl">hesaplayıcı</span>' : "") +
+                 (m.r.indexOf("dis") !== -1 ? ' <span class="tag iso">dış rapor</span>' : "");
+      rows += '<tr><td class="name">' + (m.calc ? '<b>' + m.n + '</b>' : m.n) + ' ' + tags +
+              '<em>' + m.d + '</em></td>' + cells + '</tr>';
+    });
+    if(rows){
+      html += '<tr class="group"><td colspan="6">' + grp.g + '</td></tr>' + rows;
+    }
+  });
+
+  body.innerHTML = html || '<tr><td colspan="6">Bu filtre birleşimiyle eşleşen metrik yok.</td></tr>';
+  document.getElementById("mCount").textContent = shown + " metrik ve etken gösteriliyor.";
+}
+["fUser","fStage","fType","fRep","fQ"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", renderMatrix);
+});
+renderMatrix();
+
+/* =========================================================
+   2) FAKTÖR DEĞERLENDİRME TABLOSU (Tablo A.1 modeli)
+   ========================================================= */
+var FAZ_AD = ["Tepkisel", "Planlı", "Proaktif", "Bütünleşik"];
+/* küme, madde, ad — gömülü Python modülündeki FAKTORLER ile aynı sıra */
+var FAKTORLER = [
+  [1, "6.2", "Misyon / vizyon / sürdürülebilir istihdam edilebilirlik hedefleri"],
+  [1, "6.3", "Liderlik"],
+  [1, "6.4", "Sahiplenme"],
+  [1, "6.5", "İşgücü planlaması"],
+  [1, "6.6", "Uygulama"],
+  [1, "6.7", "İletişim"],
+  [1, "6.8", "Kültür"],
+  [2, "7.2", "İşgücü yetkinlikleriyle ilgili vizyon ve politika"],
+  [2, "7.3", "İş içeriği"],
+  [2, "7.4", "Karmaşıklık"],
+  [2, "7.5", "Beceri gelişimi"],
+  [2, "7.6", "İşyeri ilişkileri"],
+  [2, "7.7", "Çalışma koşulları"],
+  [3, "8.2", "Sağlık yönetimi"],
+  [3, "8.3", "Sağlıklı ve güvenli çalışma ortamı"],
+  [3, "8.4", "Sağlıklı yaşam biçimleri"],
+  [3, "8.5", "Fiziksel sağlık"],
+  [3, "8.6", "Ruh sağlığı"],
+  [3, "8.7", "İyi oluş (well-being)"],
+  [3, "8.8", "İş–yaşam dengesi (bakım rolleri / kendine bakım)"]
+];
+/* örnek amaçlı: madde → [mevcut, istenen, öncelik]; diğerleri [2, 3, 1] */
+var ORNEK = {"6.2":[2,3,2], "6.3":[2,4,3], "6.5":[2,3,3], "7.5":[3,4,2], "8.6":[1,3,3], "8.3":[3,3,1]};
+var KUME_AD = {1:"Küme 1", 2:"Küme 2", 3:"Küme 3"};
+
+function sec(id, secenekler){
+  var h = '<select id="' + id + '"><option value="">—</option>';
+  secenekler.forEach(function(s, i){ h += '<option value="' + (i + 1) + '">' + (i + 1) + ' ' + s + '</option>'; });
+  return h + '</select>';
+}
+
+function buildTbl(){
+  var html = "", son = 0;
+  FAKTORLER.forEach(function(f, i){
+    if(f[0] !== son){
+      son = f[0];
+      html += '<tr class="group"><td colspan="8"><b>' + KUME_AD[f[0]] + '</b></td></tr>';
+    }
+    html += '<tr><td>' + f[1] + ' ' + f[2] + '</td>' +
+      '<td>' + sec("p_m_" + i, FAZ_AD) + '</td><td>' + sec("p_i_" + i, FAZ_AD) + '</td><td>' + sec("p_o_" + i, ["düşük","orta","yüksek"]) + '</td>' +
+      '<td><input type="text" id="p_n_' + i + '" placeholder="isteğe bağlı"></td>' +
+      '<td class="calc" id="p_a_' + i + '">—</td><td class="calc" id="p_p_' + i + '">—</td><td class="calc" id="p_s_' + i + '">—</td></tr>';
+  });
+  document.getElementById("pBody").innerHTML = html;
+  document.getElementById("pBody").querySelectorAll("input,select").forEach(function(el){
+    el.addEventListener("input", computeTbl); el.addEventListener("change", computeTbl);
+  });
+}
+
+function sv(id){
+  var v = parseInt(document.getElementById(id).value, 10);
+  return isNaN(v) ? null : v;
+}
+
+var TBL = {n:0, ok:false, ilk:null};
+
+function computeTbl(){
+  var f2 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:2, maximumFractionDigits:2}); };
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var kn = {1:{n:0,m:0,i:0}, 2:{n:0,m:0,i:0}, 3:{n:0,m:0,i:0}}, g = {n:0,m:0,i:0};
+  var liste = [], n = 0;
+
+  FAKTORLER.forEach(function(f, i){
+    var m = sv("p_m_" + i), ist = sv("p_i_" + i), o = sv("p_o_" + i);
+    var ca = document.getElementById("p_a_" + i), cp = document.getElementById("p_p_" + i), cs = document.getElementById("p_s_" + i);
+    ca.textContent = cp.textContent = cs.textContent = "—";
+    if(m === null || ist === null) return;
+    n++;
+    var acik = ist - m;
+    ca.textContent = (acik > 0 ? "+" : "") + acik;
+    cp.textContent = f1(100 * m / ist);
+    kn[f[0]].n++; kn[f[0]].m += m; kn[f[0]].i += ist; g.n++; g.m += m; g.i += ist;
+    if(o !== null){
+      var puan = Math.max(acik, 0) * o;
+      cs.textContent = puan;
+      liste.push({madde:f[1], ad:f[2], puan:puan, acik:acik, m:m, i:ist, o:o});
+    }
+  });
+
+  [1,2,3].forEach(function(k){
+    var x = kn[k];
+    document.getElementById("k" + k + "m").textContent = x.n ? f2(x.m / x.n) : "—";
+    document.getElementById("k" + k + "i").textContent = x.n ? f2(x.i / x.n) : "—";
+    document.getElementById("k" + k + "a").textContent = x.n ? (x.i - x.m >= 0 ? "+" : "") + f2((x.i - x.m) / x.n) : "—";
+  });
+  document.getElementById("gm").textContent = g.n ? f2(g.m / g.n) : "—";
+  document.getElementById("gi").textContent = g.n ? f2(g.i / g.n) : "—";
+  document.getElementById("ga").textContent = g.n ? (g.i - g.m >= 0 ? "+" : "") + f2((g.i - g.m) / g.n) : "—";
+
+  var kart = document.getElementById("pCards");
+  var ok = n > 0;
+  liste.sort(function(a, b){ return b.puan - a.puan || a.madde.localeCompare(b.madde); });
+  TBL = {n:n, ok:ok, ilk: liste.length ? liste[0] : null};
+  if(!ok){
+    kart.innerHTML = "";
+    document.getElementById("pNot").textContent = "Her faktör için mevcut ve istenen fazı seçin ya da örnek veriyi yükleyin.";
+    return;
+  }
+  var kartlar = '';
+  kartlar += '<div class="card"><b>' + f2(g.m / g.n) + '</b><span>Genel ortalama: mevcut faz</span></div>';
+  kartlar += '<div class="card"><b>' + f2(g.i / g.n) + '</b><span>Genel ortalama: istenen faz</span></div>';
+  kartlar += '<div class="card alt"><b>' + f1(100 * g.m / g.i) + ' %</b><span>Hedefe göre ilerleme</span></div>';
+  kartlar += '<div class="card alt"><b>' + n + ' / ' + FAKTORLER.length + '</b><span>Değerlendirilen faktör</span></div>';
+  kartlar += '<div class="card warn"><b>' + (liste[0] ? liste[0].puan : "—") + '</b><span>En yüksek öncelik puanı' + (liste[0] ? ': ' + liste[0].madde + ' ' + liste[0].ad : "") + '</span></div>';
+  kartlar += '<div class="card warn"><b>' + liste.filter(function(x){ return x.puan > 0; }).length + '</b><span>Öncelikli ve açığı olan faktör</span></div>';
+  kart.innerHTML = kartlar;
+
+  var not = "";
+  if(liste.length){
+    not += "Öncelik sırası (açık × öncelik): " + liste.filter(function(x){ return x.puan > 0; }).slice(0, 5).map(function(x){
+      return x.madde + " " + x.ad + " (" + x.puan + ": " + FAZ_AD[x.m - 1] + " → " + FAZ_AD[x.i - 1] + ", öncelik " + ["düşük","orta","yüksek"][x.o - 1] + ")";
+    }).join("; ") + ". ";
+  } else {
+    not += "Öncelik puanı için faktörlere öncelik de seçin. ";
+  }
+  not += "Fazların 1–4 sayısal karşılığı, açık ve öncelik puanı rapordan değil, bu sayfadan gelir; kümeler faktörleri eşit ağırlıkla ortalar.";
+  document.getElementById("pNot").textContent = not;
+}
+
+function loadTblExample(){
+  FAKTORLER.forEach(function(f, i){
+    var o = ORNEK[f[1]] || [2, 3, 1];
+    document.getElementById("p_m_" + i).value = o[0];
+    document.getElementById("p_i_" + i).value = o[1];
+    document.getElementById("p_o_" + i).value = o[2];
+    document.getElementById("p_n_" + i).value = "";
+  });
+  computeTbl();
+}
+
+document.getElementById("btnOrnek").addEventListener("click", loadTblExample);
+document.getElementById("btnTemizle").addEventListener("click", function(){
+  FAKTORLER.forEach(function(f, i){
+    ["m","i","o"].forEach(function(k){ document.getElementById("p_" + k + "_" + i).value = ""; });
+    document.getElementById("p_n_" + i).value = "";
+  });
+  computeTbl();
+});
+document.getElementById("btnCsv").addEventListener("click", function(){
+  var satir = ["Kume;Madde;Faktor;Mevcut;Istenen;Oncelik;Acik;Ilerleme %;Oncelik puani;Mevcut politika"];
+  FAKTORLER.forEach(function(f, i){
+    var m = sv("p_m_" + i), ist = sv("p_i_" + i), o = sv("p_o_" + i);
+    if(m === null && ist === null && o === null) return;
+    var acik = (m !== null && ist !== null) ? ist - m : "";
+    satir.push([f[0], f[1], f[2], m === null ? "" : FAZ_AD[m - 1], ist === null ? "" : FAZ_AD[ist - 1], o === null ? "" : ["dusuk","orta","yuksek"][o - 1],
+      acik, (m !== null && ist !== null) ? (100 * m / ist).toFixed(1) : "", (acik !== "" && o !== null) ? Math.max(acik, 0) * o : "",
+      document.getElementById("p_n_" + i).value.replace(/;/g, ",")].join(";"));
+  });
+  var blob = new Blob(["\ufeff" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "iso30406_faktor_degerlendirme.csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
+/* =========================================================
+   3) FORMÜL TABLOSU + HESAPLAYICI
+   Alan adları gömülü Python modülünün hesapla() imzasıyla birebir aynıdır.
+   ========================================================= */
+function gerek(kosul, mesaj){ if(!kosul) throw new Error("GecersizGirdi: " + mesaj); }
+/* Python round() ile aynı davranış: tam yarım değerlerde en yakın çifte yuvarlar */
+function pyround(x, n){
+  var m = Math.pow(10, n), y = x * m, f = Math.floor(y);
+  if(y - f === 0.5) return (f % 2 === 0 ? f : f + 1) / m;
+  return Math.round(y) / m;
+}
+function r1(x){ return pyround(x, 1); }
+function r2(x){ return pyround(x, 2); }
+function fazOk(x, ad){ gerek(x >= 1 && x <= 4, ad + " 1 (tepkisel) ile 4 (bütünleşik) arasında olmalı"); }
+function fazAdi(x){ fazOk(x, "faz"); return FAZ_AD[Math.floor(x + 0.5) - 1]; }
+
+var CALC = [
+ {id:"acik", name:"Faz açığı (istenen − mevcut)", grp:"Tablo A.1", noHeur:true,
+  formula:"Açık = İstenen faz &minus; Mevcut faz",
+  note:"Rapor (A.4, A.5) her faktör için mevcut ve istenen durumun belirlenmesini ister; sayısal açık raporda yoktur ve bu sayfada türetilmiştir. Fazlar 1 tepkisel, 2 planlı, 3 proaktif, 4 bütünleşik olarak sıralanmıştır (Tablo A.1); aralıkların eşit olduğu varsayılmıştır. Pozitif açık hedefe ulaşmak için gereken ilerlemeyi gösterir. Varsayılan değerler örnek amaçlıdır.",
+  fields:[{k:"mevcut",l:"Mevcut faz (1–4)",v:2,step:1},{k:"istenen",l:"İstenen faz (1–4)",v:4,step:1}],
+  unit:"faz adımı (istenen − mevcut)",
+  py:"faz_acigi(mevcut=2, istenen=4)",
+  calc:function(v){
+    fazOk(v.mevcut, "mevcut faz"); fazOk(v.istenen, "istenen faz");
+    var d = v.istenen - v.mevcut;
+    return {value:d, dec:1, expl:v.istenen + " − " + v.mevcut,
+      detail:[["Mevcut faz", fazAdi(v.mevcut)],
+              ["İstenen faz", fazAdi(v.istenen)],
+              ["İlerleme (mevcut ÷ istenen, %)", r1(100 * v.mevcut / v.istenen)]]}; },
+  bands:[[0,"ok","Açığı faktörün önceliğiyle birlikte okuyun: rapora göre tüm faktörler her kurum için aynı değerde değildir (madde 5, Adım 1)."]]},
+
+ {id:"oncelik", name:"Öncelik puanı (açık × öncelik)", grp:"Tablo A.1", noHeur:true,
+  formula:"Öncelik puanı = maks(İstenen &minus; Mevcut, 0) &times; Öncelik ağırlığı",
+  note:"Rapor, A.4'te paydaşların belirlediği öncelikleri ve yüksek yatırım getirisi sağlayan faktörleri saptamayı ister; puanlama yöntemi vermez. Bu sayfada açık ile öncelik ağırlığının (1 düşük, 2 orta, 3 yüksek) çarpımı basit bir sıralama puanı olarak türetilmiştir; en yüksek olası puan 9'dur.",
+  fields:[{k:"mevcut",l:"Mevcut faz (1–4)",v:2,step:1},{k:"istenen",l:"İstenen faz (1–4)",v:4,step:1},{k:"oncelik",l:"Öncelik ağırlığı (1 düşük – 3 yüksek)",v:3,step:1}],
+  unit:"öncelik puanı (açık × ağırlık)",
+  py:"oncelik_puani(acik=2, oncelik=3)",
+  calc:function(v){
+    fazOk(v.mevcut, "mevcut faz"); fazOk(v.istenen, "istenen faz");
+    var a = v.istenen - v.mevcut;
+    gerek(v.oncelik >= 1 && v.oncelik <= 3, "öncelik 1 (düşük) ile 3 (yüksek) arasında olmalı");
+    var d = Math.max(a, 0) * v.oncelik;
+    return {value:d, dec:1, expl:"maks(" + v.istenen + " − " + v.mevcut + ", 0) × " + v.oncelik,
+      detail:[["Faz açığı", a],
+              ["En yüksek olası puan (açık 3 × ağırlık 3)", 9]]}; },
+  bands:[[0,"ok","Puan yalnızca sıralama içindir; yüksek puanlı faktörleri paydaş toplantısında (Ek A.5) tartışın ve uzlaşılan öncelikleri belirleyin."]]},
+
+ {id:"kume", name:"Küme faz ortalaması", grp:"Küme", noHeur:true,
+  formula:"Küme ortalaması = &Sigma; faz &divide; faktör sayısı",
+  note:"Rapor kümeler için bir toplam puan vermez; kümedeki faktörlerin faz ortalaması bu sayfada türetilmiştir ve faktörleri eşit ağırlıkla sayar. Varsayılan değerler örnek amaçlıdır: Küme 1'de yedi faktör, fazların toplamı 14 → ortalama 2,00 (planlı).",
+  fields:[{k:"toplam_faz",l:"Faktörlerin faz toplamı (1–4)",v:14,step:1},{k:"faktor_sayisi",l:"Değerlendirilen faktör sayısı",v:7,step:1}],
+  unit:"ortalama faz (1–4)",
+  py:"kume_ortalamasi(toplam_faz=14, faktor_sayisi=7)",
+  calc:function(v){
+    gerek(v.faktor_sayisi > 0, "faktör sayısı sıfırdan büyük olmalı");
+    var d = v.toplam_faz / v.faktor_sayisi;
+    fazOk(d, "ortalama faz");
+    return {value:d, dec:2, expl:v.toplam_faz + " ÷ " + v.faktor_sayisi,
+      detail:[["En yakın faz", fazAdi(d)],
+              ["Bütünleşik faza uzaklık (adım)", r2(4 - d)]]}; },
+  bands:[[0,"ok","Kümeleri birlikte okuyun: Şekil 1'e göre üç küme işgücünün istihdam edilebilirliği ve iş performansıyla karşılıklı ilişki içindedir; tek bir kümede yüksek düzey yeterli değildir."]]},
+
+ {id:"uygulama", name:"Madde uygulama yüzdesi", grp:"İfade", noHeur:true,
+  formula:"Uygulama = (Uygulanan ifade &divide; Toplam ifade) &times; 100",
+  note:"Rapor her faktör altında 1–5 ifade verir; kaçının uygulandığının yüzdesi bu sayfada türetilmiştir. Rapor ifadelerin bir kısmının kurumun bir şeyi 'kabul ettiğini' ya da yapabileceğini söylediğini içerir; 'uygulanıyor' kararında kanıt düzeyini kendiniz belirleyin. Varsayılan değerler örnektir: 6.3 (4 ifade) için 3 uygulanıyor.",
+  fields:[{k:"uygulanan",l:"Uygulanan ifade sayısı",v:3,step:1},{k:"toplam",l:"Maddedeki toplam ifade sayısı",v:4,step:1}],
+  unit:"% (uygulanan ifade)",
+  py:"uygulama_yuzdesi(uygulanan=3, toplam=4)",
+  calc:function(v){
+    gerek(v.toplam > 0, "toplam ifade sayısı sıfırdan büyük olmalı");
+    gerek(v.uygulanan >= 0 && v.uygulanan <= v.toplam, "uygulanan 0 ile toplam arasında olmalı");
+    var d = 100 * v.uygulanan / v.toplam;
+    return {value:d, dec:1, expl:v.uygulanan + " ÷ " + v.toplam + " × 100",
+      detail:[["Uygulanmayan ifade sayısı", v.toplam - v.uygulanan],
+              ["Uygulanmayan pay (%)", r1(100 - d)]]}; },
+  bands:[[0,"ok","Eksik ifadeler eylem planının girdisidir; hangi ifadelerin eksik olduğunu faktör sahibiyle tartışın (Ek A.5)."]]},
+
+ {id:"yanit", name:"Anket yanıt oranı", grp:"Ek A.3", noHeur:true,
+  formula:"Yanıt oranı = (Yanıt &divide; Davetli) &times; 100",
+  note:"Ek A.3: çalışma grubu yanıt oranlarını izler (iki hatırlatma sonrası anket kapatılır); oran formülü raporda yoktur ve türetilmiştir. Hangi paydaş gruplarının temsil edildiğini ayrıca yazın. Varsayılan değerler örnek amaçlıdır.",
+  fields:[{k:"davetli",l:"Davet edilen paydaş sayısı",v:120,step:1},{k:"yanit",l:"Yanıt veren sayısı",v:84,step:1}],
+  unit:"% (yanıt oranı)",
+  py:"yanit_orani(davetli=120, yanit=84)",
+  calc:function(v){
+    gerek(v.davetli > 0, "davetli sayısı sıfırdan büyük olmalı");
+    gerek(v.yanit >= 0 && v.yanit <= v.davetli, "yanıt sayısı 0 ile davetli sayısı arasında olmalı");
+    var d = 100 * v.yanit / v.davetli;
+    return {value:d, dec:1, expl:v.yanit + " ÷ " + v.davetli + " × 100",
+      detail:[["Yanıt vermeyen sayısı", v.davetli - v.yanit],
+              ["Yanıt vermeyen pay (%)", r1(100 - d)]]}; },
+  bands:[[0,"ok","Standart eşik vermez: düşük yanıt, bazı paydaş gruplarının sesini kaybettirir; hatırlatmalar ve şampiyonlar yanıtı artırabilir (Ek A.3)."]]}
+];
+
+/* --- formül tablosu --- */
+(function(){
+  var rows = CALC.map(function(c){
+    return '<tr><td><b>' + c.name + '</b></td><td><span style="font-family:var(--serif)">' +
+           c.formula + '</span></td><td>' + c.note + '</td></tr>';
+  }).join("");
+  document.getElementById("fBody").innerHTML = rows;
+})();
+
+/* --- hesaplayıcı --- */
+var sel = document.getElementById("cMetric");
+CALC.forEach(function(c, i){
+  var o = document.createElement("option");
+  o.value = i; o.textContent = c.grp + " — " + c.name;
+  sel.appendChild(o);
+});
+
+function buildFields(){
+  var c = CALC[+sel.value];
+  document.getElementById("cFields").innerHTML = c.fields.map(function(f){
+    return '<div class="field"><label for="in_' + f.k + '">' + f.l + '</label>' +
+      '<input type="number" id="in_' + f.k + '" value="" step="' + (f.step || "any") + '" placeholder="' + f.v + '"></div>';
+  }).join("");
+  document.getElementById("cFields").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", run);
+  });
+}
+
+function readVals(){
+  var c = CALC[+sel.value], v = {}, missing = false;
+  c.fields.forEach(function(f){
+    var el = document.getElementById("in_" + f.k);
+    var raw = el && el.value !== "" ? parseFloat(el.value) : NaN;
+    if(isNaN(raw)){ missing = true; v[f.k] = f.v; } else { v[f.k] = raw; }
+  });
+  return {v:v, missing:missing};
+}
+
+function fmt(x, dec){
+  if(!isFinite(x)) return "—";
+  return x.toLocaleString("tr-TR", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+
+/* Hesaplama motoru: Python hazırsa gömülü modül, değilse JS yedeği */
+function compute(c, v){
+  if(PY.ready){
+    try{
+      PY.pyodide.globals.set("_metrik", c.id);
+      PY.pyodide.globals.set("_girdi", JSON.stringify(v));
+      var raw = PY.pyodide.runPython(
+        "import json\n" +
+        "json.dumps(hesapla(_metrik, **json.loads(_girdi)))");
+      var r = JSON.parse(raw);
+      return {value:r.deger, expl:r.ifade, dec:r.ondalik, detail:r.ayrinti,
+              unit:r.birim, durum:r.durum, engine:"python"};
+    }catch(err){
+      var msg = String(err);
+      /* Kullanıcı girdisi kaynaklı hata: motor sorunu değil, yedeğe geçme */
+      if(msg.indexOf("GecersizGirdi") !== -1 || msg.indexOf("ZeroDivisionError") !== -1) throw err;
+      setEngine("off", "Motor: JS yedeği — Python hatası");
+    }
+  }
+  var out = c.calc(v);
+  out.engine = "js";
+  return out;
+}
+
+function run(){
+  var c = CALC[+sel.value];
+  var r = readVals();
+  var out;
+  try { out = compute(c, r.v); } catch(e){ out = null; }
+  var box = document.getElementById("cResult");
+  if(!out || !isFinite(out.value)){
+    box.innerHTML = '<div class="result"><b>Hesaplanamadı.</b> Payda sıfır olamaz, parça bütünden büyük olamaz ve değerler geçerli aralıkta olmalı; alanları kontrol edin.</div>';
+    return;
+  }
+  var dec = (out.dec === undefined) ? 1 : out.dec;
+  var unit = out.unit || c.unit;
+  var html = '<div class="result">';
+  html += '<div class="big">' + fmt(out.value, dec) + ' <span>' + unit + '</span></div>';
+  html += '<div style="font-size:13px;color:var(--ink-soft);margin-top:6px">' + c.name +
+          ' · ' + (out.engine === "python" ? 'Python (Pyodide) ile hesaplandı' : 'JavaScript ile hesaplandı') +
+          (r.missing ? ' · <i>boş alanlar için örnek değer kullanıldı</i>' : '') + '</div>';
+
+  if(document.getElementById("oFormula").checked){
+    html += '<div class="formula">' + c.formula + '<br><span style="color:var(--ink-soft);font-size:15px">= ' +
+            out.expl + ' = <b>' + fmt(out.value, dec) + '</b> ' + unit + '</span></div>';
+  }
+  if(out.detail && out.detail.length){
+    html += '<dl>' + out.detail.map(function(d){
+      var val = (typeof d[1] === "number") ? d[1].toLocaleString("tr-TR") : d[1];
+      return '<dt>' + d[0] + '</dt><dd>' + val + '</dd>';
+    }).join("") + '</dl>';
+  }
+  if(document.getElementById("oInterp").checked){
+    if(c.durumMetin && out.durum){
+      html += '<div class="verdict ' + out.durum + '">' + c.durumMetin[out.durum] + '</div>';
+    } else if(c.bands){
+      var band = c.bands[c.bands.length-1];
+      for(var i=0;i<c.bands.length;i++){ if(out.value >= c.bands[i][0]){ band = c.bands[i]; break; } }
+      html += '<div class="verdict ' + band[1] + '">' + band[2] + '</div>';
+      if(c.bands.length > 1 && !c.noHeur){
+        html += '<div class="note" style="margin-top:12px">Yorum eşikleri standarttan değil, başlangıç varsayımlarından gelir; kendi hedeflerinizle değiştirin.</div>';
+      }
+    }
+    html += '<div class="note" style="margin-top:12px">' + c.note + '</div>';
+  }
+  if(document.getElementById("oPy").checked){
+    var args = c.fields.map(function(f){ return f.k + "=" + r.v[f.k]; }).join(", ");
+    var call = 'hesapla("' + c.id + '", ' + args + ')';
+    html += '<pre style="margin-top:16px"><i>&gt;&gt;&gt; from iso30406_metrikler import hesapla</i>\n' +
+            '&gt;&gt;&gt; ' + call + '["deger"]\n' + out.value + '\n\n' +
+            '<i># eşdeğer doğrudan çağrı</i>\n&gt;&gt;&gt; ' + c.py + '</pre>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+sel.addEventListener("change", function(){ buildFields(); run(); });
+document.getElementById("btnRun").addEventListener("click", run);
+document.getElementById("btnExample").addEventListener("click", function(){
+  var c = CALC[+sel.value];
+  c.fields.forEach(function(f){ document.getElementById("in_" + f.k).value = f.v; });
+  run();
+});
+["oFormula","oInterp","oPy"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", function(){
+    var all = document.getElementById("oFormula").checked &&
+              document.getElementById("oInterp").checked &&
+              document.getElementById("oPy").checked;
+    document.getElementById("oAll").checked = all;
+    run();
+  });
+});
+document.getElementById("oAll").addEventListener("change", function(){
+  var s = this.checked;
+  ["oFormula","oInterp","oPy"].forEach(function(id){ document.getElementById(id).checked = s; });
+  run();
+});
+
+/* --- tablodan hesaplayıcıya aktarma --- */
+document.getElementById("btnAktar").addEventListener("click", function(){
+  if(!TBL.ok){ loadTblExample(); }
+  var idx = CALC.map(function(c){ return c.id; }).indexOf("oncelik");
+  sel.value = idx; buildFields();
+  var ilk = TBL.ilk;
+  if(ilk){
+    document.getElementById("in_mevcut").value = ilk.m;
+    document.getElementById("in_istenen").value = ilk.i;
+    document.getElementById("in_oncelik").value = ilk.o;
+  }
+  run();
+  document.getElementById("hesaplayici").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* =========================================================
+   4) PYTHON MOTORU (Pyodide / WebAssembly)
+   Gömülü iso30406_metrikler.py modülü tarayıcı içinde
+   gerçek CPython ile çalıştırılır. Erişim yoksa JS yedeği
+   devrede kalır ve sonuçlar değişmez.
+   ========================================================= */
+var PY = {ready:false, busy:false, pyodide:null};
+
+var PYODIDE_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+  "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"
+];
+
+function setEngine(state, text){
+  var chip = document.getElementById("engStatus");
+  chip.className = "chip" + (state ? " " + state : "");
+  chip.textContent = text;
+}
+
+function loadScript(src){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function(){ resolve(src); };
+    s.onerror = function(){ reject(new Error(src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function pySource(){
+  return document.getElementById("pysrc").textContent;
+}
+
+async function initPython(){
+  if(PY.ready) return true;
+  if(PY.busy) return false;
+  PY.busy = true;
+  document.getElementById("btnPy").disabled = true;
+  setEngine("busy", "Motor: Pyodide indiriliyor…");
+  try{
+    if(typeof loadPyodide === "undefined"){
+      try { await loadScript(PYODIDE_URLS[0]); }
+      catch(e){ await loadScript(PYODIDE_URLS[1]); }
+    }
+    setEngine("busy", "Motor: Python başlatılıyor…");
+    PY.pyodide = await loadPyodide();
+
+    /* Modülü sanal dosya sistemine yazmadan, gerçek bir modül nesnesi olarak kur:
+       böylece __name__ != "__main__" olur ve _demo() kendiliğinden çalışmaz.
+       Kayıt exec'ten ÖNCE yapılır; @dataclass işlenirken modülü sys.modules'te arar. */
+    PY.pyodide.globals.set("_kaynak", pySource());
+    PY.pyodide.runPython(
+      "import sys, types\n" +
+      "_m = types.ModuleType('iso30406_metrikler')\n" +
+      "_m.__file__ = 'iso30406_metrikler.py'\n" +
+      "sys.modules['iso30406_metrikler'] = _m\n" +
+      "exec(compile(_kaynak, 'iso30406_metrikler.py', 'exec'), _m.__dict__)\n" +
+      "from iso30406_metrikler import *\n" +
+      "import iso30406_metrikler as m\n"
+    );
+    var sur = PY.pyodide.runPython(
+      "import sys\n'.'.join(str(x) for x in sys.version_info[:3])");
+    PY.ready = true;
+    setEngine("on", "Motor: Python " + sur + " (Pyodide)");
+    run();
+    return true;
+  }catch(e){
+    setEngine("off", "Motor: tarayıcı (JS) — Pyodide yüklenemedi");
+    document.getElementById("pyOut").textContent =
+      "Python motoru yüklenemedi. Bu genellikle çevrimdışı olmaktan ya da ağ kısıtından kaynaklanır.\n" +
+      "Sayfa çalışmaya devam eder; hesaplamalar JavaScript yedeğiyle aynı sonuçları verir.\n\n" + e;
+    return false;
+  }finally{
+    PY.busy = false;
+    document.getElementById("btnPy").disabled = false;
+  }
+}
+
+document.getElementById("btnPy").addEventListener("click", initPython);
+
+/* --- konsol --- */
+var VARSAYILAN_KOD =
+  'from iso30406_metrikler import *\n' +
+  'import iso30406_metrikler as m\n\n' +
+  '# Fazlar (Tablo A.1; 1–4 karşılığı türetilmiştir)\n' +
+  'print(" → ".join(f"{i + 1}={f}" for i, f in enumerate(FAZLAR)))\n' +
+  'print("Açık            :", faz_acigi(2, 4), "adım; ilerleme %", ilerleme_yuzde(2, 4))\n' +
+  'print("Öncelik puanı   :", oncelik_puani(2, 3))\n' +
+  'print("Küme ortalaması :", round(kume_ortalamasi(14, 7), 2), faz_adi(2.0))\n' +
+  'print("Madde uygulama  :", uygulama_yuzdesi(3, 4), "%")\n' +
+  'print("Anket yanıtı    :", yanit_orani(120, 84), "%")\n\n' +
+  '# 20 faktörlü değerlendirme tablosu (örnek veri)\n' +
+  't = ornek_tablo()\n' +
+  'for anahtar, deger in t.ozet().items():\n' +
+  '    print(f"{anahtar:<18}: {deger}")\n\n' +
+  '# Dağıtıcı, hesaplayıcının kullandığı arayüzdür:\n' +
+  'print(hesapla("acik", mevcut=2, istenen=4))\n\n' +
+  '# Uygulama denetimi: hangi adımlar eksik?\n' +
+  'for uyari in uygulama_denetimi(onem_belirlendi=True, mevcut_durum_olculdu=True):\n' +
+  '    print("!", uyari)\n';
+
+document.getElementById("pyCode").value = VARSAYILAN_KOD;
+
+async function runConsole(){
+  var out = document.getElementById("pyOut");
+  if(!PY.ready){
+    out.textContent = "Python motoru hazırlanıyor, ilk çalıştırma biraz sürebilir…";
+    var ok = await initPython();
+    if(!ok) return;
+  }
+  out.textContent = "çalışıyor…";
+  try{
+    PY.pyodide.globals.set("_kod", document.getElementById("pyCode").value);
+    var cikti = PY.pyodide.runPython(
+      "import io, contextlib, traceback\n" +
+      "_tampon = io.StringIO()\n" +
+      "with contextlib.redirect_stdout(_tampon), contextlib.redirect_stderr(_tampon):\n" +
+      "    try:\n" +
+      "        exec(_kod, globals())\n" +
+      "    except Exception:\n" +
+      "        traceback.print_exc()\n" +
+      "_tampon.getvalue()"
+    );
+    out.textContent = cikti && cikti.trim() ? cikti : "(çıktı yok)";
+  }catch(e){
+    out.textContent = "Hata: " + e;
+  }
+}
+
+document.getElementById("btnRunPy").addEventListener("click", runConsole);
+document.getElementById("btnReset").addEventListener("click", function(){
+  document.getElementById("pyCode").value = VARSAYILAN_KOD;
+  document.getElementById("pyOut").textContent = "Kod sıfırlandı.";
+});
+document.getElementById("btnDemo").addEventListener("click", function(){
+  document.getElementById("pyCode").value =
+    "import iso30406_metrikler as m\n\n" +
+    "# Modülün kendi doğrulama çıktısı (komut satırındaki\n" +
+    "# python3 iso30406_metrikler.py ile aynı sonucu verir)\n" +
+    "m._demo()\n";
+  runConsole();
+});
+
+/* modül kaynağını sayfada okunur kıl */
+document.getElementById("srcView").textContent = pySource().trim();
+
+buildTbl();
+loadTblExample();
+buildFields();
+run();
+</script>
+</body>
+</html>
