@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO/TS 30411 İşe Alım Kalitesi Metriği — Sınıflandırma ve Hesaplayıcı</title>
+<style>
+  :root{
+    --ink:#101418;
+    --ink-soft:#59636f;
+    --ink-faint:#8b95a1;
+    --line:#dde3ea;
+    --line-soft:#eef1f5;
+    --bg:#ffffff;
+    --canvas:#f6f8fa;
+    --accent:#0b5c8a;
+    --accent-soft:#e7f0f6;
+    --panel:#0e1520;
+    --panel-2:#16202e;
+    --panel-line:#28394f;
+    --out-ink:#8a3b12;  --out-bg:#fbeee6;
+    --eff-ink:#14615c;  --eff-bg:#e6f2f1;
+    --efc-ink:#33478c;  --efc-bg:#eaedf8;
+    --rea-ink:#7a5c00;  --rea-bg:#f8f1d9;
+    --cos-ink:#8c2f4b;  --cos-bg:#f9e8ee;
+    --ok:#1d6f42; --warn:#8a6100; --bad:#992121;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--canvas);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.62;
+  }
+  .sheet{max-width:1000px;margin:0 auto;background:var(--bg);padding:56px 60px 80px;
+    box-shadow:0 0 0 1px var(--line);}
+  @media(max-width:760px){ .sheet{padding:28px 20px 56px} }
+
+  h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:25px;margin:52px 0 4px;padding-bottom:8px;
+     border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  h3{font-size:17px;margin:32px 0 6px;letter-spacing:.01em}
+  h4{font-size:15px;margin:22px 0 4px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:12px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  small{color:var(--ink-soft)}
+  .lede{font-size:17px;color:var(--ink-soft)}
+
+  .srcbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 0;margin:0 0 26px;font-size:13.5px;color:var(--ink-soft)}
+  .srcbar b{color:var(--ink);font-weight:600}
+
+  .toc{background:var(--canvas);border:1px solid var(--line);padding:16px 20px;margin:26px 0 0;
+    font-size:14px;columns:2;column-gap:34px}
+  @media(max-width:640px){.toc{columns:1}}
+  .toc a{display:block;padding:3px 0;text-decoration:none;color:var(--ink)}
+  .toc a:hover{color:var(--accent);text-decoration:underline}
+  .toc b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 4px}
+
+  .keypoints li{margin:10px 0}
+  .keypoints b{font-weight:650}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink-soft);padding-bottom:6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:var(--canvas);font-weight:650;font-size:13px}
+  tbody tr:nth-child(even){background:#fcfdfe}
+  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;width:66px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink)}
+  .dot.o{background:var(--out-ink)} .dot.s{background:var(--eff-ink)} .dot.p{background:var(--efc-ink)}
+  .dot.r{background:var(--rea-ink)} .dot.c{background:var(--cos-ink)}
+
+  .tag{display:inline-block;font-size:11px;line-height:1.5;padding:1px 7px;border-radius:3px;
+    letter-spacing:.03em;white-space:nowrap;font-weight:600}
+  .tag.o{color:var(--out-ink);background:var(--out-bg)}
+  .tag.s{color:var(--eff-ink);background:var(--eff-bg)}
+  .tag.p{color:var(--efc-ink);background:var(--efc-bg)}
+  .tag.r{color:var(--rea-ink);background:var(--rea-bg)}
+  .tag.c{color:var(--cos-ink);background:var(--cos-bg)}
+  .tag.iso{color:#4a4a4a;background:#eeeeee}
+  .tag.lvl{color:#5a3a86;background:#f0eaf8}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--line-soft);padding:1px 5px;border-radius:3px}
+  pre{background:var(--panel);color:#e7eef6;border-radius:6px;padding:18px 20px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:14px 0}
+  pre b{color:#f0b866;font-weight:400}      /* anahtar kelime */
+  pre i{color:#7f8ea1;font-style:normal}    /* yorum */
+  pre u{color:#9fd28a;text-decoration:none} /* dize/sayı */
+  pre .fn{color:#79c0e8}
+  .filename{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin:14px 0 -8px}
+
+  .formula{font-family:var(--serif);font-size:16.5px;background:var(--canvas);
+    border-left:3px solid var(--accent);padding:12px 16px;margin:12px 0;overflow-x:auto}
+  .formula em{font-style:italic}
+
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 14px;color:var(--ink-soft);font-size:14px;margin:14px 0}
+
+  /* --- panel --- */
+  .panel{background:var(--panel);color:#dbe5f0;border-radius:8px;padding:22px 24px;margin:20px 0}
+  .panel h3{color:#fff;margin:0 0 4px;font-size:16px}
+  .panel .hint{color:#8fa2b8;font-size:13px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#8fa2b8;margin-bottom:5px}
+  .field label .req{color:#e08a5a}
+  select,input[type=number],input[type=text]{
+    width:100%;background:var(--panel-2);border:1px solid var(--panel-line);color:#eef4fb;
+    border-radius:5px;padding:9px 10px;font-family:var(--sans);font-size:14px}
+  input[type=number]{font-family:var(--mono)}
+  select:focus,input:focus{outline:2px solid #4a8fc0;outline-offset:1px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13.5px;color:#b9c7d6}
+  .checks label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .panel-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:5px;cursor:pointer;
+    border:1px solid transparent;padding:9px 18px}
+  .btn-run{background:#1c74ab;color:#fff}
+  .btn-run:hover{background:#2385c2}
+  .btn-ghost{background:transparent;color:#9fb3c9;border-color:var(--panel-line)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9fb3c9;
+    border:1px solid var(--panel-line);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7c8ea3}
+  .chip.busy::before{background:#e0a13c}
+  .chip.on::before{background:#4ec07a}
+  .chip.off::before{background:#c05a5a}
+
+  .console{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+  .console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+    background:var(--canvas);border-bottom:1px solid var(--line);padding:8px 12px;font-size:12.5px;color:var(--ink-soft)}
+  .console textarea{width:100%;border:0;display:block;background:var(--panel);color:#e7eef6;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:16px 20px;resize:vertical;min-height:190px}
+  .console textarea:focus{outline:2px solid #4a8fc0;outline-offset:-2px}
+  .console pre{margin:0;border-radius:0;background:#0a1017;border-top:1px solid var(--panel-line);min-height:64px}
+  .btn-sm{padding:6px 14px;font-size:13px}
+  details.src pre{max-height:420px;overflow:auto}
+  .btn-ghost:hover{color:#fff;border-color:#47607d}
+
+  .result{border:1px solid var(--line);border-top:3px solid var(--accent);padding:18px 20px;margin:18px 0}
+  .result .big{font-family:var(--serif);font-size:32px;line-height:1.1}
+  .result .big span{font-size:16px;color:var(--ink-soft);font-family:var(--sans)}
+  .result dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:14px 0 0;font-size:14px}
+  .result dt{color:var(--ink-soft)}
+  .result dd{margin:0;font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px;padding:10px 12px;font-size:14px;border-radius:4px;background:var(--canvas)}
+  .verdict.ok{color:var(--ok);background:#eef6f1}
+  .verdict.warn{color:var(--warn);background:#fbf5e7}
+  .verdict.bad{color:var(--bad);background:#faeeee}
+
+  /* --- matris --- */
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;
+    background:var(--canvas);border:1px solid var(--line);padding:14px 16px;margin:16px 0}
+  .filters label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .filters select,.filters input{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .matrix{font-size:13.5px}
+  .matrix th.rot{width:72px;text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom}
+  .matrix td.name{font-weight:500}
+  .matrix td.name em{display:block;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .matrix tr.group td{background:#f2f5f8;font-weight:650;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+  .count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+
+  /* --- pozisyon tablosu --- */
+  .postbl{font-size:13.5px}
+  .postbl input[type=text],.postbl input[type=date],.postbl input[type=number]{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .postbl input[type=text]{font-family:var(--sans)}
+  .postbl input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .postbl td.chk{text-align:center}
+  .postbl input[type=number]{text-align:right}
+  .postbl td:first-child{min-width:150px}
+  .postbl th.num,.postbl td.num{width:auto}
+  @media(max-width:760px){table{display:block;overflow-x:auto}}
+  .postbl td.calc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap}
+  .postbl tfoot td{background:var(--canvas);font-weight:650}
+  .tblbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+  .tblbar button{border-color:var(--line);color:var(--ink-soft);background:#fff}
+  .tblbar button:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tblbar .inline{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft)}
+  .tblbar .inline input{width:78px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .card{border:1px solid var(--line);border-top:3px solid var(--eff-ink);padding:12px 14px}
+  .card b{display:block;font-family:var(--serif);font-size:24px;line-height:1.2}
+  .card span{font-size:12px;color:var(--ink-soft)}
+  .card.alt{border-top-color:var(--efc-ink)}
+  .card.warn{border-top-color:var(--out-ink)}
+
+  details{border-bottom:1px solid var(--line);padding:12px 0}
+  summary{cursor:pointer;font-weight:600;font-size:15px}
+  summary::marker{color:var(--accent)}
+  details p{margin:10px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  @media (prefers-reduced-motion:no-preference){
+    .result{transition:border-color .2s}
+  }
+  @media print{
+    body{background:#fff} .sheet{box-shadow:none;max-width:none;padding:0}
+    .panel{background:#fff;color:#000;border:1px solid #000}
+    pre{background:#f4f4f4;color:#000}
+  }
+.postbl input[type=number]{min-width:56px}
+.postbl select{width:100%;padding:6px 4px;border:1px solid var(--line);border-radius:6px;font:inherit;font-size:13px;background:transparent;color:inherit}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>ISO/TS 30411 İşe Alım Kalitesi Metriği</h1>
+<div class="srcbar">
+  <span><b>Kaynak:</b> PD ISO/TS 30411:2018 — <i>Human resource management — Quality of hire metric</i></span>
+  <span><b>Kapsam:</b> 5 kullanıcı · 4 metrik ailesi · 40 metrik ve etken</span>
+  <span><b>Hesaplama:</b> gömülü Python modülü (Pyodide/WebAssembly)</span>
+  <span><b>Sürüm:</b> Ekim 2026</span>
+</div>
+
+<h2 id="genel">Genel Bakış</h2>
+<p>ISO/TS 30411:2018, <b>işe alım kalitesi</b> (quality of hire, QoH) metriğini tanımlayan bir teknik şartnamedir. Giriş bölümüne göre işe alım sürecinin ölçülmesi, analizi ve iyileştirilmesi esastır (ISO 30405); QoH, işe alım sürecinin etkinliğini belirlemek için kritiktir, kurumun
+performansı üzerinde dolaylı etkisi vardır ve yetenek kazanımı ekipleri için tek en önemli performans metriği olarak öne çıkmıştır. Şartname, QoH'yi farklı iş ve kurum koşullarına uyarlanabilen bir seçenekler dizisiyle ölçer:
+metrik yapısı amaç, formül, tanım ve kullanım biçimini (hedef kullanıcılar, yorum için bağlam etkenleri) içerir. Kapsam dışı olanlar "işe alımın etkisi" ve "işe alımın elde tutulması"dır; bunlar ayrı teknik şartnamelerle ele alınır. QoH, büyüklüğü, sektörü
+ya da türü ne olursa olsun her kuruma ölçeklenebilir olacak biçimde tasarlanmıştır. Bu sayfa, şartnamenin metriğini filtrelenebilir bir matrise; hesaplanabilir ölçüleri de formül + canlı hesaplayıcı + Python koduna dönüştürür.
+PD ISO/TS 30411:2018, ISO/TS 30411'in İngiltere uyarlamasıdır (yayımlanmış belge; ISO ilk baskısı 9 Temmuz 2018) ve BSI tarafından 31 Temmuz 2018'de yayımlanmıştır. İlişkili belgeler: işe alım kılavuzu ISO 30405, işgücü planlaması ISO 30409, terimler ISO 30400.</p>
+
+<h3>Önemli Noktalar</h3>
+<ul class="keypoints">
+  <li><b>Tanım:</b> işe alım kalitesi, çalışanın işe alım sonrası performansının, tanımlı bir dönemde işe alım öncesi beklentilerle karşılaştırılmış ölçümüdür (ISO 30400:2016, 6.9). İşe alım öncesi beklentiler, yeni işe alımların başarısını belirlemek için işe almadan önce konan en düşük kabul edilebilir performans ölçütleridir.</li>
+  <li><b>İki yaklaşım, biri ya da ikisi birden.</b> Yaklaşım A: performans hedeflerinin gerçekleşmesi (yeni işe alımların ortalama performans puanı). Yaklaşım B: bilgi, beceri ve yeteneklerde (KSA) hat yöneticisi ya da paydaşların memnuniyetinin işe alım öncesi beklentilerle karşılaştırılması (ortalama KSA puanı).</li>
+  <li><b>Üç yol gösterici ilke.</b> Kalite, gerçekleşen ile beklenen parametrelerin oranı ya da karşılaştırmasıdır; kalite çok boyutlu olabilir; her boyut tanımlı bir dönem için ölçülebilir (3, 6, 9 ay ya da 1 yıl).</li>
+  <li><b>Örnekler:</b> altı yeni işe alımın 1–5 ölçeğinde puanları 2, 2, 3, 4, 5, 4 → ortalama 3,33, kabul edilebilir 3'ün %11 üstünde. Tek bir yeni işe alımın beş KSA puanı 4, 2, 3, 4, 5 → ortalama 3,6, beklentinin %20 üstünde. Grup için ortalamaların ortalaması 3,5 ise 0,5 puan (%17) daha iyi.</li>
+  <li><b>Eğilim her zaman kalite değildir.</b> QoH'deki artış, diğer her şey normalken daha iyi bir işe alım kalitesine işaret eder; ancak olumlu ya da olumsuz eğilimler hat yöneticilerinin cömert ya da katı puanlama stillerinden de kaynaklanabilir.</li>
+  <li><b>Eşik altında süreç yeniden incelenir.</b> QoH kurum gereksinimlerinin altına düşerse karar vericiler işe alım sürecini yeniden inceler; ancak başka bağımlılıklar da dikkate alınmalıdır. QoH, işe alım sürecinin etkin olup olmadığına dair bir denetim noktasıdır.</li>
+  <li><b>KSA soruları sınanmalıdır.</b> Yaklaşım B'de sorular, elde tutma, müşteri büyümesi, gelir büyümesi ve kârlılık gibi önemli örgütsel çıktılarla ilişkili olduğundan emin olmak için test edilmelidir.</li>
+</ul>
+
+<div class="toc">
+  <b>İçindekiler</b>
+  <a href="#genel">Genel bakış ve önemli noktalar</a>
+  <a href="#nezaman">Ne zaman kullanılır</a>
+  <a href="#cerceve">Çerçeve ve metodoloji</a>
+  <a href="#ornekler">Şartnamenin hesaplanmış örnekleri</a>
+  <a href="#adimlar">Metrik seçim adımları</a>
+  <a href="#kavramlar">Temel kavramlar</a>
+  <a href="#matris">Metrik matrisi</a>
+  <a href="#tablo">Yeni işe alım tablosu</a>
+  <a href="#formuller">Formüller ve tanımlar</a>
+  <a href="#hesaplayici">Hesaplayıcı</a>
+  <a href="#python">Python kod örnekleri</a>
+  <a href="#yorum">Sonuçların yorumlanması</a>
+  <a href="#sinirlamalar">Sınırlamalar</a>
+  <a href="#raporlama">Metriklerin raporlanması</a>
+  <a href="#ilgili">İlgili standartlar</a>
+  <a href="#sss">Sıkça sorulan sorular</a>
+</div>
+
+<h2 id="nezaman">Ne Zaman Kullanılır</h2>
+<ul>
+  <li><b>İşe alım sürecinin etkinliğini değerlendirirken:</b> QoH, kurumun işe alım sürecinin, beceri ve performans beklentileri bakımından gereken özelliklere sahip yeteneği işe alıp almadığını gösteren kritik bilgiyi verir (madde 4).</li>
+  <li><b>Yeni işe alımın işe ve kurum değerlerine uyumunu görmek için:</b> metrik, yeni çalışanın işin gereklerine ve/veya kurumun değerlerine ne ölçüde uyduğunu değerlendirir.</li>
+  <li><b>Yeni işe alımlara ölçülebilir hedefler atandığında (Yaklaşım A):</b> değerlendirme dönemi sonunda performans, atanmış hedeflere göre ölçülür; derecelendirmeler kurumsal hedeflere ulaşmaya bağlı olduğundan ve hat yöneticisinin memnuniyetini de yansıttığından güçlü ve nesnel bir göstergedir.</li>
+  <li><b>Hat yöneticisi ve paydaşların KSA memnuniyetini ölçmek için (Yaklaşım B):</b> deneme süresi sonunda yeni işe alımın bilgi, beceri ve yeteneklerinden memnuniyet ya da memnuniyetsizlik anketle alınır.</li>
+  <li><b>Yetenek kazanımı, işgücü planlaması ve insan sermayesi raporlamasında:</b> metrik, işgücü planlaması, örgüt tasarımı ve geliştirme, yetenek yönetimi ve yedekleme planlaması ile işe alım ve insan sermayesi raporlamasıyla ilgilenen herkes için uygundur (Kapsam).</li>
+  <li><b>İşe alım sürecini iyileştirme kararlarında:</b> QoH kurum gereksinimlerinin altına düşünce karar vericiler süreci yeniden incelemeye yönlendirilir.</li>
+</ul>
+<div class="note">Bu belge bir <b>ölçme</b> belgesidir ve yalnızca <i>işe alım kalitesini</i> ölçer. "İşe alımın etkisi" (yeni çalışanın kurumun başarısına katkısı) ve "işe alımın elde tutulması" kapsam dışıdır; bunlar ayrı belgelerde ele alınır. Şartname hangi puanın "iyi" olduğuna eşik koymaz; kabul edilebilir düzey işe alım öncesi beklentilerden gelir.</div>
+
+<h2 id="cerceve">Çerçeve ve Metodoloji</h2>
+
+<h3>İki yaklaşım</h3>
+<p>Kuruma göre iş performans ölçütleri değiştiği için QoH ölçümü her zaman bağlama dayanır. Şartname iki uygulanabilir, ancak tek olmayan seçenek sunar; kurumlar birini ya da ikisini birden kullanabilir.</p>
+<table>
+  <thead><tr><th>Yaklaşım</th><th>Madde</th><th>Formül ve tanım</th><th>Ne zaman uygun</th></tr></thead>
+  <tbody>
+    <tr><td><b>A — Performans hedefleri ve hedef karşılaştırması</b></td><td>5.2</td>
+      <td>Yeni işe alım(lar)ın ortalama performans puanı: değerlendirme dönemi sonundaki performans puanları toplamı ÷ toplam yeni işe alım.</td>
+      <td>Yeni işe alıma ölçülebilir hedefler atandığında; dönem sonunda performans atanmış hedeflere göre değerlendirilir.</td></tr>
+    <tr><td><b>B — KSA memnuniyeti ve beklenti karşılaştırması</b></td><td>5.3</td>
+      <td>Yeni işe alımın KSA'larının ortalama puanı: deneme süresi sonunda KSA puanları toplamı ÷ toplam KSA maddesi. Grup için ortalamaların ortalaması alınır.</td>
+      <td>Hat yöneticisi ya da paydaşlardan anketle yeni işe alımın bilgi, beceri ve yeteneklerinden memnuniyeti alınabildiğinde.</td></tr>
+  </tbody>
+</table>
+
+<h3>Yol gösterici ilkeler (madde 4)</h3>
+<ul>
+  <li><b>Kalite bir orandır ya da karşılaştırmadır:</b> gerçekleşen parametrelerin beklenen parametrelerle karşılaştırılması.</li>
+  <li><b>Kalite çok boyutlu olabilir:</b> performans hedefleri ile KSA memnuniyeti iki ayrı boyuttur.</li>
+  <li><b>Her boyut tanımlı bir dönem için ölçülebilir:</b> 3 ay, 6 ay, 9 ay ya da 1 yıl; kurum yeni işe alımın performansını ne kadar süre değerlendireceğine karar vermelidir.</li>
+</ul>
+
+<h3>Formüller</h3>
+<table>
+  <thead><tr><th>Ölçü</th><th>Formül</th><th>Değişkenler</th></tr></thead>
+  <tbody>
+    <tr><td><b>Yaklaşım A</b> (5.2.2, 5.2.3)</td><td style="font-family:var(--serif)">Ortalama performans puanı = Σ puan &divide; yeni işe alım sayısı</td>
+      <td>Altı yeni işe alım, 1–5 ölçeği (1 en düşük, 3 kabul edilebilir, 5 en yüksek). Örnek: (2 + 2 + 3 + 4 + 5 + 4) ÷ 6 = 20 ÷ 6 = 3,33; kabul edilebilir 3'ün %11 üstünde.</td></tr>
+    <tr><td><b>Yaklaşım B</b> (5.3.2, 5.3.3)</td><td style="font-family:var(--serif)">Ortalama KSA puanı = Σ KSA puanı &divide; KSA madde sayısı</td>
+      <td>Beş madde: ürün/hizmet bilgisi, fikirleri ikna edici anlatma, ödevlerin zamanlılığı, problem çözme, ilişki yönetimi; 1 zayıf … 5 üstün. Örnek: 4, 2, 3, 4, 5 → 18 ÷ 5 = 3,6; beklentinin %20 üstünde.</td></tr>
+    <tr><td><b>Grup için QoH</b> (5.3.4)</td><td style="font-family:var(--serif)">Ortalamaların ortalaması</td>
+      <td>Altı yeni işe alımın genel ortalama puanı 3,5 ise kabul edilebilir düzeyden 0,5 puan (%17) iyidir.</td></tr>
+  </tbody>
+</table>
+
+<h3>Kullanım biçimi ve yorum için bağlam (madde 5.2.4, 5.3.5)</h3>
+<ul>
+  <li>Diğer her şey normalken QoH değerindeki artış daha iyi, azalış kalitede bozulma anlamına gelir.</li>
+  <li>Olumlu ya da olumsuz eğilimler her zaman kaliteyi yansıtmaz; hat yöneticilerinin farklı (cömert/katı) performans puanlama stillerinden kaynaklanabilir.</li>
+  <li>Kurumlar yeni işe alımların performansını ne kadar süre değerlendireceklerine (3, 6, 9 ya da 12 ay) karar vermelidir.</li>
+  <li>Bağlam etkenleri: işe alım başına maliyet, işe alma süresi, devir ve elde tutma oranı; yaklaşım A için ayrıca işe alımın etkisi. Bunlar kurumun büyüklüğüne, türüne, sektörüne ve büyüme evresine göre değişebilir.</li>
+  <li>Yaklaşım B'de sorular, örgütsel çıktılarla (elde tutma, müşteri büyümesi, gelir büyümesi, kârlılık gibi) ilişkili olduğundan emin olmak için test edilmelidir.</li>
+</ul>
+
+<h3>Hedef kullanıcılar</h3>
+<p>Her iki yaklaşım için şartname hedef kullanıcıyı şöyle belirtir: "Bu belge, bu işlevi yürüten, analiz eden ya da raporlayan herkes tarafından kullanılabilir." Ayrı bir iç/dış kullanıcı listesi verilmez; matristeki kullanıcı sütunları bu sayfanın sınıflandırmasıdır.</p>
+
+<h2 id="ornekler">Şartnamenin Hesaplanmış Örnekleri</h2>
+<p>Şartname tablo vermez; iki yaklaşım için sayısal örnek verir. Sayılar şartnamedeki örneklerdir; gerçek bir kuruma ait değildir.</p>
+
+<h3>Örnek A — Altı yeni işe alımın performans puanı</h3>
+<p>Performans ölçeği 1–5'tir (1 en düşük, 3 kabul edilebilir, 5 en yüksek).</p>
+<table>
+  <thead><tr><th>Çalışan</th><th class="num">Performans puanı</th></tr></thead>
+  <tbody>
+    <tr><td>A</td><td class="num">2</td></tr>
+    <tr><td>B</td><td class="num">2</td></tr>
+    <tr><td>C</td><td class="num">3</td></tr>
+    <tr><td>D</td><td class="num">4</td></tr>
+    <tr><td>E</td><td class="num">5</td></tr>
+    <tr><td>F</td><td class="num">4</td></tr>
+    <tr><td><b>Yeni işe alım ortalaması</b></td><td class="num"><b>(2+2+3+4+5+4) ÷ 6 = 20 ÷ 6 = 3,33</b></td></tr>
+  </tbody>
+</table>
+<p>Şartname, ölçek orta noktası olan 3'ü işe alım öncesi beklenti sayar; QoH 3,33'tür ve kabul edilebilir performansın %11 üstündedir (3,33 ÷ 3 ≈ 1,11).</p>
+
+<h3>Örnek B — Bir yeni işe alımın KSA puanları</h3>
+<p>Ölçek: 1 zayıf, 2 ortalamanın altı, 3 kabul edilebilir, 4 ortalamanın üstü, 5 üstün. Varsayım: her KSA için işe alım öncesi beklenti en az 3 (kabul edilebilir).</p>
+<table>
+  <thead><tr><th>KSA maddesi (şartnamedeki örnek)</th><th class="num">Puan</th></tr></thead>
+  <tbody>
+    <tr><td>a) Şirket ürün ve hizmetlerine ilişkin bilgi</td><td class="num">4</td></tr>
+    <tr><td>b) Fikirleri ikna edici biçimde aktarabilme</td><td class="num">2</td></tr>
+    <tr><td>c) Görevlerin zamanlılığı</td><td class="num">3</td></tr>
+    <tr><td>d) Problem çözme becerileri</td><td class="num">4</td></tr>
+    <tr><td>e) İlişkileri yönetme</td><td class="num">5</td></tr>
+    <tr><td><b>Ortalama</b></td><td class="num"><b>18 ÷ 5 = 3,6</b></td></tr>
+  </tbody>
+</table>
+<p>Ortalama 3,6'dır ve işe alım öncesi beklentinin %20 üstündedir. Grup için ortalamaların ortalaması alınır: altı yeni işe alımın genel ortalaması 3,5 ise kabul edilebilir düzeyden 0,5 puan (%17) iyidir. KSA maddeleri yalnızca örnektir; kurum kendi beceri envanterinden uygun soruları seçebilir.</p>
+
+<h2 id="adimlar">Metrik Seçim Adımları</h2>
+<ol>
+  <li><b>İşe alım öncesi beklentileri yazın.</b> Yeni işe alımların başarısını belirleyen en düşük kabul edilebilir performans ölçütlerini işe almadan önce belirleyin (ör. 1–5 ölçeğinde 3).</li>
+  <li><b>Yaklaşımı seçin.</b> Ölçülebilir hedefler atanabiliyorsa A; hat yöneticisi/paydaş memnuniyeti ölçülecekse B; ikisi birlikte de kullanılabilir.</li>
+  <li><b>Değerlendirme dönemini belirleyin.</b> 3, 6, 9 ya da 12 ay; yaklaşım B için deneme süresi sonu. Aynı dönemi tüm işe alım kohortlarında kullanın.</li>
+  <li><b>Ölçeği ve soruları tanımlayın.</b> Puanlama ölçeği ve KSA soruları (kurumun beceri envanterinden); soruların örgütsel çıktılarla ilişkisini sınayın.</li>
+  <li><b>Puanlayıcıları hizalayın.</b> Hat yöneticilerinin cömert/katı stillerini dengelemek için ortak puanlama rehberi ve kalibrasyon kullanın.</li>
+  <li><b>Yeni işe alım puanlarını toplayın.</b> Her kişi için A puanı ve/veya KSA puanları; grup için ortalamaların ortalaması.</li>
+  <li><b>Beklentiyle karşılaştırın.</b> Ortalamayı işe alım öncesi beklentiyle kıyaslayın (puan farkı ve yüzde).</li>
+  <li><b>Bağlamı yazın.</b> İşe alım başına maliyet, işe alma süresi, devir ve elde tutma oranı, kurum büyüklüğü, türü, sektörü ve büyüme evresi.</li>
+</ol>
+
+<h2 id="kavramlar">Temel Kavramlar</h2>
+<p>Şartname 3. maddesinde ISO 30400'den alınan ve kendi altı terimi verir. Aşağıdaki tablo bu terimlerin ve metinde geçen diğer kavramların kısa özetleridir. Açıklamalar özgün olarak yazılmıştır; bağlayıcı olan şartnamenin kendi metnidir.</p>
+<table>
+  <thead><tr><th style="width:90px">Madde</th><th style="width:250px">Kavram</th><th>Açıklama</th></tr></thead>
+  <tbody>
+    <tr><td><b>3.1</b></td><td>İşe alım kalitesi <small>(quality of hire)</small></td>
+      <td>Çalışanın işe alımdan sonraki performansının, tanımlı bir dönemde işe alım öncesi beklentilerle karşılaştırılarak ölçülmesi.</td></tr>
+    <tr><td><b>3.2</b></td><td>İşe alımın etkisi <small>(impact of hire)</small></td>
+      <td>Yeni işe alımın tanımlı bir dönemde kurumun başarısına katkısının ölçülmesi; bu şartnamenin kapsamı dışında.</td></tr>
+    <tr><td><b>3.3</b></td><td>Elde tutma oranı <small>(retention rate)</small></td>
+      <td>Tanımlı bir dönemde elde tutulan toplam işgücünün oranı.</td></tr>
+    <tr><td><b>3.4</b></td><td>Devir oranı <small>(turnover rate)</small></td>
+      <td>Tanımlı bir dönemde ayrılmaların toplam işgücüne oranı; ayrılmalar gönüllü ya da gönülsüz olabilir.</td></tr>
+    <tr><td><b>3.5</b></td><td>İşe alım öncesi beklentiler <small>(pre-hire expectations)</small></td>
+      <td>Yeni işe alımların başarısını belirlemek için işe almadan önce konan en düşük kabul edilebilir performans ölçütleri.</td></tr>
+    <tr><td><b>3.6</b></td><td>Performans <small>(performance)</small></td>
+      <td>Ölçülebilir sonuç; nitel ya da nicel bulgulara ilişkin olabilir; insan kaynaklarında insanların, grupların ya da kurumların işi yerine getirmesi ya da başarmasıyla ilgilidir.</td></tr>
+    <tr><td><b>5.3</b></td><td>Bilgi, beceri ve yetenekler <small>(KSA)</small></td>
+      <td>Yaklaşım B'de yeni işe alımın hat yöneticisi/paydaşlarca puanlanan nitelikleri.</td></tr>
+    <tr><td><b>Giriş</b></td><td>Müşteri memnuniyeti olarak kalite</td>
+      <td>Jac Fitz-Enz'e göre kalite müşteri tarafından tanımlanır ve müşterinin memnuniyetine bağlıdır; işe alımda kalite, paydaşların yeni işe alımın performansından memnuniyetidir ve beklentileri karşılayan ya da aşan ürün/hizmet yüzdesi olarak değerlendirilebilir.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="matris">Metrik Matrisi</h2>
+<p>Aşağıdaki tablo, şartnamenin tanımladığı ve türettiği ölçüler ile bağlam etkenlerinin kullanıcı × süreç aşaması × raporlama sınıflandırmasıdır. Şartname hedef kullanıcıyı genel olarak belirttiği için
+kullanıcı, bölüm ve raporlama sınıflandırması bu sayfanın yazarlık sınıflandırmasıdır. Filtreleri değiştirdiğinizde tablo anında daralır.</p>
+
+<div class="filters">
+  <div><label for="fUser">Kullanıcı</label>
+    <select id="fUser">
+      <option value="">Tümü</option>
+      <option value="hr">İK ve yetenek kazanımı</option>
+      <option value="exec">Üst yönetim</option>
+      <option value="line">Hat yönetimi</option>
+      <option value="fin">Finans ve planlama</option>
+      <option value="ext">Dış paydaş</option>
+    </select></div>
+  <div><label for="fStage">Metrik bölümü</label>
+    <select id="fStage">
+      <option value="">Tümü</option>
+      <option value="amac">Amaç ve ilkeler (madde 4)</option>
+      <option value="yaka">Yaklaşım A (madde 5.2)</option>
+      <option value="yakb">Yaklaşım B (madde 5.3)</option>
+      <option value="baglam">Bağlam ve kapsam</option>
+    </select></div>
+  <div><label for="fType">Metrik ailesi</label>
+    <select id="fType">
+      <option value="">Tümü</option>
+      <option value="p">Yaklaşım A: performans hedefleri</option>
+      <option value="c">Yaklaşım B: KSA memnuniyeti</option>
+      <option value="s">Grup ve karşılaştırma</option>
+      <option value="o">Ölçüm, bağlam ve ilkeler</option>
+    </select></div>
+  <div><label for="fRep">Raporlama</label>
+    <select id="fRep">
+      <option value="">Tümü</option>
+      <option value="ic">İç raporlama</option>
+      <option value="dis">Dış raporlama</option>
+    </select></div>
+  <div><label for="fQ">Metrik adında ara</label>
+    <input type="text" id="fQ" placeholder="ör. performans"></div>
+</div>
+
+<div class="count" id="mCount"></div>
+<table class="matrix">
+  <thead><tr>
+    <th>Metrik</th>
+    <th class="rot">İK / yetenek kazanımı</th>
+    <th class="rot">Üst yönetim</th>
+    <th class="rot">Hat yönetimi</th>
+    <th class="rot">Finans / planlama</th>
+    <th class="rot">Dış paydaş</th>
+  </tr></thead>
+  <tbody id="mBody"></tbody>
+</table>
+<div class="legend">
+  <span><span class="dot p"></span> yaklaşım A</span>
+  <span><span class="dot c"></span> yaklaşım B</span>
+  <span><span class="dot s"></span> grup ve karşılaştırma</span>
+  <span><span class="dot o"></span> ölçüm, bağlam ve ilkeler</span>
+  <span><span class="tag lvl">hesaplayıcı</span> bu sayfada hesaplanabilen metrik</span>
+  <span>Hesaplayıcıya bağlı metrikler <b>koyu</b> işaretlenmiştir.</span>
+</div>
+
+<h2 id="tablo">Yeni İşe Alım Tablosu</h2>
+<p>Yeni işe alımlarınızın performans puanını (yaklaşım A) ve isterseniz beş KSA madde puanını (yaklaşım B) girin; işe alım öncesi beklentiyi ve puan ölçeğini ayarlayın. Kişi başına KSA ortalaması ve beklenti farkları, ayrıca grup ortalaması (A: puanların ortalaması; B: ortalamaların ortalaması)
+ve beklentiyi karşılama payı anında güncellenir. Örnek veri şartnamenin sayılarıdır: altı yeni işe alımın performans puanları (2, 2, 3, 4, 5, 4) ve ilk kişi için şartnamedeki KSA puanları (4, 2, 3, 4, 5); diğer kişilerin KSA puanları şartnamede verilmediği için boştur.</p>
+
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnek">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizle">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsv">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktar">Hesaplayıcıya aktar</button>
+  <span class="inline"><label for="beklenti">İşe alım öncesi beklenti</label>
+    <input type="number" id="beklenti" min="0" step="any" value="3"></span>
+  <span class="inline"><label for="olcAlt">Ölçek alt</label>
+    <input type="number" id="olcAlt" step="any" value="1"></span>
+  <span class="inline"><label for="olcUst">Ölçek üst</label>
+    <input type="number" id="olcUst" step="any" value="5"></span>
+</div>
+
+<table class="postbl">
+  <thead><tr>
+    <th>Yeni işe alım</th>
+    <th class="num">A: performans</th>
+    <th class="num">KSA 1</th><th class="num">KSA 2</th><th class="num">KSA 3</th><th class="num">KSA 4</th><th class="num">KSA 5</th>
+    <th class="calc" style="width:80px">B: KSA ortalaması</th>
+    <th class="calc" style="width:80px">A beklenti farkı (%)</th>
+    <th class="calc" style="width:80px">B beklenti farkı (%)</th>
+  </tr></thead>
+  <tbody id="pBody"></tbody>
+  <tfoot><tr>
+    <td>Grup</td>
+    <td class="calc" id="tA">—</td>
+    <td class="calc" colspan="5" id="tN">—</td>
+    <td class="calc" id="tB">—</td>
+    <td class="calc" id="tAF">—</td>
+    <td class="calc" id="tBF">—</td>
+  </tr></tfoot>
+</table>
+
+<div class="cards" id="pCards"></div>
+<div class="note" id="pNot"></div>
+
+<h2 id="formuller">Formüller ve Tanımlar</h2>
+<p>Şartname iki ortalama formülü verir: yaklaşım A ve yaklaşım B; grup için ortalamaların ortalaması alınır. Karşılaştırma yüzdeleri örneklerde yer alır (%11, %20, %17), ancak formül olarak yazılmamıştır. Aşağıda şartnamenin formülleri ile onlardan
+türetilen yardımcı hesaplar bulunur; türetilmiş olanlar notlarında belirtilmiştir.</p>
+<table>
+  <thead><tr><th>Metrik</th><th>Formül</th><th>Not</th></tr></thead>
+  <tbody id="fBody"></tbody>
+</table>
+
+<h2 id="hesaplayici">Hesaplayıcı</h2>
+<p>Metriği seçin, alanları doldurun; sonuç, formülün yerine konmuş hâli ve yorum aşağıda görünür.
+Kurulum gerekmez, veriler tarayıcıdan çıkmaz.</p>
+
+<div class="panel">
+  <h3>İşe Alım Kalitesi Hesaplayıcısı</h3>
+  <p class="hint">Alanlar seçtiğiniz metriğe göre değişir. Ortalamalar puan ölçeğinde (ör. 1–5), beklenti farkı ve karşılama payı yüzde olarak verilir.</p>
+  <div class="grid">
+    <div class="field" style="grid-column:1/-1">
+      <label for="cMetric">Metrik <span class="req">*</span></label>
+      <select id="cMetric"></select>
+    </div>
+  </div>
+  <div class="grid" id="cFields" style="margin-top:14px"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="oAll"> Tümünü seç</label>
+    <label><input type="checkbox" id="oFormula" checked> Formülün açık hâli</label>
+    <label><input type="checkbox" id="oInterp" checked> Yorum ve eşik</label>
+    <label><input type="checkbox" id="oPy"> Python karşılığı</label>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-run" id="btnRun">Hesapla</button>
+    <button class="btn-ghost" id="btnExample">Örnek veriyi yükle</button>
+    <button class="btn-ghost" id="btnPy">Python motorunu yükle</button>
+    <span class="chip" id="engStatus">Motor: tarayıcı (JavaScript)</span>
+  </div>
+  <p class="hint" style="margin:14px 0 0">Python motoru seçildiğinde hesaplama, bu sayfaya gömülü
+  <code style="background:#1c2836;color:#cfe0f0">iso30411_metrikler.py</code> modülünün
+  <code style="background:#1c2836;color:#cfe0f0">hesapla()</code> fonksiyonu tarafından, tarayıcı içinde
+  çalışan gerçek bir CPython yorumlayıcısında (Pyodide/WebAssembly) yapılır. İlk yüklemede yaklaşık
+  10–12 MB indirilir; sonrası önbellekten gelir. Çevrimdışıysanız sayfa JavaScript yedeğiyle
+  aynı sonuçları vermeye devam eder.</p>
+</div>
+
+<div id="cResult"></div>
+
+<h2 id="python">Python Kod Örnekleri</h2>
+<p>Bu sayfadaki hesaplamalar JavaScript'te taklit edilmez: modülün tamamı sayfaya gömülüdür ve
+Pyodide (WebAssembly üzerinde CPython) ile tarayıcı içinde çalıştırılır. Hesaplayıcıda Python motorunu
+seçtiğinizde her sonuç <code>hesapla()</code> fonksiyonundan gelir. Aynı dosya
+(<code>iso30411_metrikler.py</code>) komut satırında da bağımsız çalışır; doğrudan çalıştırıldığında
+örnek değerlerle doğrulama çıktısı üretir.</p>
+
+<div class="filename">iso30411_metrikler.py (özet)</div>
+<pre><i># --- Ortalamalar ---</i>
+
+<b>def</b> <span class="fn">ortalama_puan</span>(toplam, adet):
+    <i>"""Yaklaşım A: puanlar toplamı ÷ yeni işe alım; yaklaşım B: KSA puanları ÷ madde sayısı."""</i>
+    <b>return</b> toplam / adet
+
+<b>def</b> <span class="fn">ortalamalarin_ortalamasi</span>(*ortalamalar):
+    <i>"""Grup için QoH: bireysel ortalamaların ortalaması (5.3.4)."""</i>
+    <b>return</b> sum(ortalamalar) / len(ortalamalar)
+
+<i># --- Karşılaştırma ---</i>
+
+<b>def</b> <span class="fn">beklenti_farki_yuzde</span>(ortalama, beklenti):
+    <i>"""Örnekler: 3,33 → %11; 3,6 → %20; 3,5 → %17 (beklenti 3)."""</i>
+    <b>return</b> <u>100</u> * (ortalama - beklenti) / beklenti
+
+<b>def</b> <span class="fn">karsilama_orani</span>(toplam, karsilayan):
+    <i>"""Beklentiyi karşılayan ya da aşan yeni işe alımların yüzdesi (türetilmiş)."""</i>
+    <b>return</b> <u>100</u> * karsilayan / toplam
+</pre>
+
+<h3>Çalıştırılabilir konsol</h3>
+<p>Aşağıdaki kod, sayfaya gömülü modüle karşı çalışır. <b>Kodu çalıştır</b> düğmesi Python motorunu
+(yüklü değilse) indirir, modülü içe aktarır ve çıktıyı altta gösterir. Kodu serbestçe değiştirebilir,
+kendi verinizi yazabilirsiniz; her şey tarayıcıda kalır.</p>
+
+<div class="console">
+  <div class="console-bar">
+    <span>iso30411_metrikler modülüne karşı çalışır · Python 3 (Pyodide)</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button class="btn-run btn-sm" id="btnRunPy">Kodu çalıştır</button>
+      <button class="btn-ghost btn-sm" id="btnDemo" style="border-color:var(--line);color:var(--ink-soft)">Tam demoyu yükle</button>
+      <button class="btn-ghost btn-sm" id="btnReset" style="border-color:var(--line);color:var(--ink-soft)">Sıfırla</button>
+    </span>
+  </div>
+  <textarea id="pyCode" spellcheck="false"></textarea>
+  <pre id="pyOut">Çıktı burada görünecek. İlk çalıştırmada Python motoru indirilir (10–12 MB).</pre>
+</div>
+
+<details class="src"><summary>Gömülü modülün tam kaynağı (iso30411_metrikler.py)</summary>
+  <pre id="srcView">yükleniyor…</pre>
+</details>
+
+<h2 id="yorum">Sonuçların Yorumlanması</h2>
+<ul>
+  <li><b>Beklentiyle kıyaslayın, mutlak puanla değil.</b> QoH, gerçekleşen ile beklenen parametrelerin karşılaştırmasıdır. 3,33'lük ortalama kendi başına iyi ya da kötü değildir; beklenti 3 ise %11 üstte, 4 ise %17 altta demektir.</li>
+  <li><b>Ortalama ile dağılımı birlikte görün.</b> Örnekte ortalama 3,33 iken altı yeni işe alımdan ikisi (2 ve 2) kabul edilebilir düzeyin altındadır. Beklentiyi karşılama payı ortalamanın gizlediğini gösterir (bu sayfada türetilmiş bir ölçüdür).</li>
+  <li><b>Puanlayıcı etkisini ayırın.</b> Şartnameye göre eğilimler, hat yöneticilerinin cömert ya da katı puanlama stillerinden kaynaklanabilir. Aynı yeni işe alım farklı yöneticilerde farklı puan alabilir; ortak rehber ve kalibrasyon kullanın.</li>
+  <li><b>İki yaklaşımı birbiriyle karıştırmayın.</b> A, hedef gerçekleşmesini, B KSA memnuniyetini ölçer; aynı kişi için farklı sonuç verebilir. İkisini birlikte kullanıyorsanız ayrı raporlayın.</li>
+  <li><b>Gruplarda ortalamaların ortalamasını kullanın.</b> Şartname grup için ortalamanın ortalamasını alır; kişi başına madde sayısı farklıysa bu, tüm puanların basit ortalamasından farklı çıkabilir.</li>
+  <li><b>Düşüş işe alım sürecini işaret eder, ama tek neden değildir.</b> QoH kurum gereksiniminin altına inince karar vericiler süreci yeniden incelemeli; yine de başka bağımlılıklar (işe alım başına maliyet, işe alma süresi, devir ve elde tutma, işe alımın etkisi) dikkate alınmalıdır.</li>
+  <li><b>Dönemi sabit tutun.</b> 3 aylık ile 12 aylık değerlendirme aynı kişiler için farklı sonuç verebilir; kohortlar arası karşılaştırmada aynı dönemi kullanın.</li>
+</ul>
+
+<h2 id="sinirlamalar">Sınırlamalar</h2>
+<ul>
+  <li><b>Şartnamenin örneğinde "0,5 kat" ifadesi yanlıştır.</b> Madde 5.3.4 grup ortalaması 3,5 için "0,5 times (17 %) better than acceptable" der; 0,5 bir kat değil, 0,5 <i>puan</i> farktır (0,5 ÷ 3 = %17). Bu sayfada ifade puan farkı olarak verilmiştir.</li>
+  <li><b>Yaklaşım A'da ölçek orta noktası "median" diye adlandırılır.</b> Şartname 3'ü "median rating" ve işe alım öncesi beklenti olarak anar; 1–5 ölçeğinin orta noktasıdır, istatistiksel medyan değil. Kendi ölçeğinizde beklentiyi ölçek ortasından bağımsız olarak, işe almadan önce yazın.</li>
+  <li><b>Yaklaşım B'nin örnek anketi ifadeyle ölçek uyuşmaz.</b> Örnek, "aşağıdaki ifadelere katılma derecenizi belirtin" der ama puan ölçeği "zayıf … üstün" kalite ölçeğidir. Bu sayfada ölçek olduğu gibi verilmiş, istem ifadesi KSA kalite puanı olarak okunmuştur.</li>
+  <li><b>Tanım ile formül yaklaşım B'de grup hesabını belirsiz bırakır.</b> 5.3.3 "KSA puanlarının toplamı ÷ toplam KSA maddesi" der; grup için ayrıca "ortalamaların ortalaması" gerekir. Kişiler arasında farklı sayıda madde yanıtlandıysa iki yöntem farklı sonuç verebilir; hesaplayıcı ortalamaların ortalamasını alır.</li>
+  <li><b>Şartname eşik vermez.</b> Hangi QoH değerinin "iyi" ya da "kurum gereksiniminin altında" olduğu kuruma bırakılmıştır; hesaplayıcıdaki yorum satırları standarttan değil, bu sayfanın yorumlarındandır.</li>
+  <li><b>Bağlam etkenlerinin kapsamı iki yaklaşımda farklı yazılmıştır.</b> Yaklaşım A işe alımın etkisini de sayar; yaklaşım B yalnızca işe alım başına maliyet, işe alma süresi, devir ve elde tutma oranını. İşe alımın etkisi kapsam dışı (madde 1) olduğu hâlde A'nın bağlam listesinde geçer.</li>
+  <li>Beklentiyi karşılama payı, ölçekteki göreli konum ve beklenti farkının puan olarak verilmesi şartnamede formül olarak yoktur; bu sayfada türetilmiştir. Örnek tablo verisi (KSA puanlarının yalnızca bir kişide bulunması) şartname örneklerinin sınırlı olmasındandır.</li>
+  <li>Şartname puanın kaç değerlendiriciden geldiğini ya da nasıl birleştirileceğini tanımlamaz; küçük gruplarda (6 kişi gibi) ortalama, tek bir puandan belirgin etkilenir. Az sayıda vakada bireysel puanları da verin.</li>
+  <li>Bu sayfadaki örnek sayılar şartnameden alınmıştır; gerçek bir kuruma ait değildir.</li>
+</ul>
+
+<h2 id="raporlama">Metriklerin Raporlanması</h2>
+<table>
+  <thead><tr><th>Alıcı</th><th>Ne görmek ister</th><th>Rapor biçimi</th></tr></thead>
+  <tbody>
+    <tr><td>İK ve yetenek kazanımı</td>
+      <td>İki yaklaşımın ortalamaları, kohort ve işe alım kanalı kırılımı, beklentiyi karşılama payı, puanlayıcı farkları</td>
+      <td>Analitik rapor, her değerlendirme dönemi sonunda</td></tr>
+    <tr><td>Üst yönetim</td>
+      <td>Grup QoH'si, beklentiye göre farkı ve eğilimi; bağlam etkenleriyle birlikte (işe alım maliyeti, işe alma süresi, devir)</td>
+      <td>Skor kartı, dönemsel</td></tr>
+    <tr><td>Hat yönetimi</td>
+      <td>Kendi yeni işe alımlarının puanları ve KSA geri bildirimi; kalibrasyon rehberi</td>
+      <td>Birim raporu, dönem sonu</td></tr>
+    <tr><td>Finans ve planlama</td>
+      <td>İşe alım öncesi beklentiler, QoH ve işe alım başına maliyet, işe alma süresi ile ilişkisi</td>
+      <td>Bütçe ekli rapor, çeyreklik</td></tr>
+    <tr><td>Dış paydaş (yatırımcı, analist, düzenleyici)</td>
+      <td>Gerekirse yöntem dipnotuyla birlikte özet QoH göstergesi (insan sermayesi raporlaması bağlamında)</td>
+      <td>Yıllık rapor</td></tr>
+  </tbody>
+</table>
+<p><b>Her raporda bulunması gerekenler:</b> kullanılan yaklaşım (A, B ya da ikisi), puanlama ölçeği ve işe alım öncesi beklenti, değerlendirme dönemi (3, 6, 9, 12 ay), yeni işe alım sayısı, grup hesabı yöntemi, puanlayıcı sayısı ve kalibrasyon, KSA sorularının doğrulama durumu ile bağlam etkenleri.</p>
+
+<h2 id="ilgili">İlgili Standartlar</h2>
+<ul>
+  <li><b>ISO 30400</b> — insan kaynakları yönetimi terimler sözlüğü; işe alım kalitesi, işe alımın etkisi, elde tutma ve devir oranı ile performans tanımları buradan gelir (6.9–6.12, 4.12).</li>
+  <li><b>ISO 30405</b> — işe alım kılavuzu; işe alım sürecinin ölçülmesi, analizi ve iyileştirilmesinin esas olduğu belge.</li>
+  <li><b>ISO 30409</b> — işgücü planlaması; QoH'nin ilgili olduğu alanlardan biri.</li>
+  <li><b>ISO 30408</b> — insan yönetişimi kılavuzu.</li>
+  <li><b>"İşe alımın etkisi" ve "işe alımın elde tutulması" şartnameleri</b> — bu belgenin kapsamı dışındaki ölçüler; ayrı teknik şartnamelerle ele alınır.</li>
+  <li><b>Fitz-Enz (2009), Boudreau ve Ramstad (2001)</b> — şartnamenin kaynakçasındaki çalışmalar: insan sermayesinin yatırım getirisi ve işe alım için tedarik zinciri ölçümü.</li>
+</ul>
+
+<h2 id="sss">Sıkça Sorulan Sorular</h2>
+<details><summary>İşe alım kalitesi nedir?</summary>
+<p>Çalışanın işe alım sonrası performansının, tanımlı bir dönemde işe alım öncesi beklentilerle karşılaştırılarak ölçülmesidir. İşe alım sürecinin etkinliğini yansıtır ve yeni işe alımın işin gereklerine ve/veya kurumun değerlerine ne kadar uyduğunu değerlendirir.</p></details>
+
+<details><summary>İki yaklaşım arasında nasıl seçim yapılır?</summary>
+<p>Yeni işe alıma ölçülebilir hedefler atanıyorsa yaklaşım A (ortalama performans puanı) uygundur. Hat yöneticisi ya da paydaşlardan bilgi, beceri ve yetenek memnuniyeti alınıyorsa yaklaşım B (ortalama KSA puanı) uygundur. Şartname ikisinin birlikte kullanılmasına da izin verir.</p></details>
+
+<details><summary>Ortalama performans puanı nasıl hesaplanır?</summary>
+<p>Yeni işe alımların değerlendirme dönemi sonundaki performans puanları toplanır ve toplam yeni işe alım sayısına bölünür. Örnekte (2 + 2 + 3 + 4 + 5 + 4) ÷ 6 = 3,33; 1–5 ölçeğinde kabul edilebilir düzey 3 olduğu için sonuç beklentinin %11 üstündedir.</p></details>
+
+<details><summary>Grup için KSA puanı nasıl alınır?</summary>
+<p>Her yeni işe alımın KSA puanlarının ortalaması alınır, sonra grup için bu ortalamaların ortalaması hesaplanır. Altı yeni işe alımın genel ortalaması 3,5 ise kabul edilebilir düzeyden 0,5 puan, yani %17 daha iyidir.</p></details>
+
+<details><summary>Değerlendirme dönemi ne kadar olmalı?</summary>
+<p>Şartname 3, 6, 9 ya da 12 ay önerir ve kurumun karar vermesini ister. Yaklaşım B'de KSA puanları deneme süresi tamamlandığında alınır. Seçtiğiniz dönemi tüm kohortlarda aynı tutun.</p></details>
+
+<details><summary>QoH düşerse ne yapmalıyım?</summary>
+<p>QoH kurum gereksinimlerinin altına inerse bu bilgi, karar vericileri işe alım sürecini yeniden incelemeye yönlendirir. Yine de başka bağımlılıklar dikkate alınmalıdır: işe alım başına maliyet, işe alma süresi, devir ve elde tutma oranı ve puanlayıcıların cömert ya da katı stilleri.</p></details>
+
+<details><summary>KSA sorularını nasıl seçmeliyim?</summary>
+<p>Şartname soruların, elde tutma, müşteri büyümesi, gelir büyümesi ve kârlılık gibi önemli örgütsel çıktılarla ilişkili olduğundan emin olmak için test edilmesini ister. Örnekteki maddeler yalnızca örnektir; kurum kendi beceri envanterinden uygun soruları seçebilir.</p></details>
+
+<details><summary>İşe alımın etkisi ya da elde tutulması bu metrikte var mı?</summary>
+<p>Hayır. Kapsam bunları dışarıda bırakır; ayrı teknik şartnamelerle ele alınır. QoH yalnızca yeni işe alımın performansını işe alım öncesi beklentiyle karşılaştırır.</p></details>
+
+<footer>
+  ISO/TS 30411:2018 çerçevesinden üretilmiş çalışma aracı. Metrik adları, sınıflandırma ve formüller şartnameye dayanır; açıklamalar, örnek değerler ve kod özgün olarak yazılmıştır. Örneklerdeki sayılar şartnameden alınmıştır.
+  Şartnamenin kendisi telif korumalıdır ve bu sayfa onun yerine geçmez.
+</footer>
+
+</div>
+
+<script type="text/x-python" id="pysrc">
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+iso30411_metrikler.py
+=====================
+ISO/TS 30411:2018 (Human resource management — Quality of hire metric)
+çerçevesindeki işe alım kalitesi (QoH) metriğinin Python karşılığı.
+
+Teknik şartname işe alım kalitesini, çalışanın işe alım sonrası performansının
+işe alım öncesi beklentilerle karşılaştırılması olarak tanımlar ve iki yaklaşım sunar:
+  A) Performans hedeflerinin gerçekleşmesi: yeni işe alımların ortalama performans puanı
+  B) Bilgi, beceri ve yeteneklerde (KSA) beklentilere göre memnuniyet: ortalama KSA puanı
+Modül üç bölüme ayrılmıştır:
+
+    1) Ortalamalar  — yaklaşım A ve B ortalamaları, grup için ortalamaların ortalaması
+    2) Karşılaştırma — beklenti farkı, beklentiyi karşılama oranı
+    3) Yardımcı yapılar — yeni işe alım tablosu, denetim, dağıtıcı
+
+Kullanım:
+    from iso30411_metrikler import ortalama_puan, beklenti_farki_yuzde
+    ortalama_puan(20, 6)               ->  3.3333...
+    beklenti_farki_yuzde(3.3333, 3)    ->  11.11...
+
+Doğrudan çalıştırıldığında (python3 iso30411_metrikler.py) tüm fonksiyonlar
+örnek verilerle çalıştırılır ve sonuçlar tablo hâlinde yazdırılır.
+
+Not: Metrik adları, sınıflandırma ve formüller ISO/TS 30411:2018'e dayanır.
+Beklentiyi karşılama oranı ve ölçekteki göreli konum şartnamede formül olarak
+verilmez; bu modülde türetilmiş hesaplardır. Kod ve açıklamalar özgün olarak
+yazılmıştır; şartnamenin kendisi telif korumalıdır.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+__all__ = [
+    "GecersizGirdi",
+    # ortalamalar
+    "ortalama_puan", "ortalamalarin_ortalamasi",
+    # karşılaştırma
+    "beklenti_farki_yuzde", "beklenti_farki_puan", "karsilama_orani", "olcekte_konum",
+    # yardımcı
+    "YeniIsealim", "QoHTablosu", "ornek_tablo", "qoh_denetimi",
+    "hesapla", "METRIK_LISTESI",
+]
+
+
+class GecersizGirdi(ValueError):
+    """Girdiler tutarsız: payda sıfır, puan ölçek dışında vb."""
+
+
+def _bol(pay: float, payda: float, ad: str = "payda") -> float:
+    if payda <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return pay / payda
+
+
+def _olcek(alt: float, ust: float) -> None:
+    if ust <= alt:
+        raise GecersizGirdi("ölçek üst sınırı alt sınırdan büyük olmalı")
+
+
+def _ortalama_kontrol(ort: float, alt: float, ust: float) -> None:
+    _olcek(alt, ust)
+    if ort < alt or ort > ust:
+        raise GecersizGirdi("ortalama ölçek sınırları içinde olmalı")
+
+
+# ---------------------------------------------------------------------------
+# 1) Ortalamalar (madde 5.2 ve 5.3)
+# ---------------------------------------------------------------------------
+
+def ortalama_puan(toplam: float, adet: float) -> float:
+    """Puanların toplamı ÷ kişi (ya da madde) sayısı.
+
+    Yaklaşım A (5.2.3): yeni işe alımların değerlendirme dönemi sonundaki
+    performans puanları toplamı ÷ toplam yeni işe alım.
+    Yaklaşım B (5.3.3): KSA puanları toplamı ÷ toplam KSA maddesi.
+    """
+    if toplam < 0:
+        raise GecersizGirdi("puan toplamı negatif olamaz")
+    return _bol(toplam, adet, "kişi ya da madde sayısı")
+
+
+def ortalamalarin_ortalamasi(*ortalamalar: float) -> float:
+    """Grup için işe alım kalitesi: bireysel ortalamaların ortalaması (5.3.4)."""
+    if not ortalamalar:
+        raise GecersizGirdi("en az bir ortalama gerekir")
+    for o in ortalamalar:
+        if o < 0:
+            raise GecersizGirdi("ortalama negatif olamaz")
+    return sum(ortalamalar) / len(ortalamalar)
+
+
+# ---------------------------------------------------------------------------
+# 2) Karşılaştırma
+# ---------------------------------------------------------------------------
+
+def beklenti_farki_puan(ortalama: float, beklenti: float) -> float:
+    """Ortalama − işe alım öncesi beklenti (puan)."""
+    return ortalama - beklenti
+
+
+def beklenti_farki_yuzde(ortalama: float, beklenti: float) -> float:
+    """(ortalama − beklenti) ÷ beklenti × 100.
+
+    Şartname örnekleri: 3,33 → beklentinin %11 üstünde; 3,6 → %20; 3,5 → %17.
+    """
+    return 100 * (ortalama - beklenti) / _beklenti(beklenti)
+
+
+def _beklenti(beklenti: float) -> float:
+    if beklenti <= 0:
+        raise GecersizGirdi("beklenti sıfırdan büyük olmalı")
+    return beklenti
+
+
+def karsilama_orani(toplam: float, karsilayan: float) -> float:
+    """Beklentiyi karşılayan ya da aşan yeni işe alımların yüzdesi (türetilmiş).
+
+    Girişteki "beklentileri karşılayan ya da aşan ürün/hizmet yüzdesi" tanımından
+    esinlenir; şartname bu oranı formül olarak vermez.
+    """
+    if toplam <= 0:
+        raise GecersizGirdi("toplam sıfırdan büyük olmalı")
+    if karsilayan < 0 or karsilayan > toplam:
+        raise GecersizGirdi("karşılayan 0 ile toplam arasında olmalı")
+    return 100 * karsilayan / toplam
+
+
+def olcekte_konum(ortalama: float, alt: float, ust: float) -> float:
+    """Ortalamanın ölçek içindeki konumu (%): (ortalama − alt) ÷ (üst − alt) × 100 (türetilmiş)."""
+    _ortalama_kontrol(ortalama, alt, ust)
+    return 100 * (ortalama - alt) / (ust - alt)
+
+
+# ---------------------------------------------------------------------------
+# 3) Yardımcı yapılar: yeni işe alım tablosu
+# ---------------------------------------------------------------------------
+
+@dataclass
+class YeniIsealim:
+    """Tek bir yeni işe alımın puanları."""
+    ad: str
+    performans: float | None = None          # yaklaşım A
+    ksa: list = field(default_factory=list)  # yaklaşım B madde puanları
+
+    def ksa_ortalama(self) -> float:
+        return ortalama_puan(sum(self.ksa), len(self.ksa))
+
+
+@dataclass
+class QoHTablosu:
+    """Yeni işe alımlar tablosu."""
+    kisiler: list = field(default_factory=list)
+    beklenti: float = 3
+    alt: float = 1
+    ust: float = 5
+
+    def ekle(self, ad, performans=None, ksa=None) -> "QoHTablosu":
+        for p in ([performans] if performans is not None else []) + list(ksa or []):
+            if p < self.alt or p > self.ust:
+                raise GecersizGirdi("puan ölçek sınırları içinde olmalı")
+        self.kisiler.append(YeniIsealim(ad, performans, list(ksa or [])))
+        return self
+
+    def ozet(self) -> dict:
+        a = [k.performans for k in self.kisiler if k.performans is not None]
+        b = [k.ksa_ortalama() for k in self.kisiler if k.ksa]
+        ort_a = ortalama_puan(sum(a), len(a))
+        out = {
+            "yeni_isealim": len(self.kisiler),
+            "a_ortalama": round(ort_a, 2),
+            "a_beklenti_farki_yuzde": round(beklenti_farki_yuzde(ort_a, self.beklenti), 1),
+            "a_karsilama_yuzde": round(karsilama_orani(len(a), sum(1 for p in a if p >= self.beklenti)), 1),
+        }
+        if b:
+            ort_b = ortalamalarin_ortalamasi(*b)
+            out["b_ortalama"] = round(ort_b, 2)
+            out["b_beklenti_farki_yuzde"] = round(beklenti_farki_yuzde(ort_b, self.beklenti), 1)
+        return out
+
+
+def ornek_tablo() -> QoHTablosu:
+    """Şartnamenin örnekleri: yaklaşım A için altı yeni işe alım (2, 2, 3, 4, 5, 4);
+    yaklaşım B için A kişisinin KSA puanları (4, 2, 3, 4, 5)."""
+    t = QoHTablosu()
+    t.ekle("A", 2, [4, 2, 3, 4, 5])
+    for ad, p in (("B", 2), ("C", 3), ("D", 4), ("E", 5), ("F", 4)):
+        t.ekle(ad, p)
+    return t
+
+
+def qoh_denetimi(beklenti_onceden_yazili: bool = False,
+                 donem_tanimli: bool = False,
+                 olcek_belgeli: bool = False,
+                 puanlama_tutarli: bool = False,
+                 anket_dogrulanmis: bool = False,
+                 baglam_notlari: bool = False,
+                 kapsam_ayri: bool = False) -> list:
+    """Bir QoH raporunun eksiklerini listeler.
+
+    Maddeler ISO/TS 30411'in 4 ve 5. maddelerindeki beklentilerden türetilmiştir;
+    bir uygunluk sınaması değil, hazırlık kontrol listesidir.
+    """
+    kontroller = [
+        (beklenti_onceden_yazili, "İşe alım öncesi beklentiler (kabul edilebilir en düşük performans ölçütleri) işe alımdan önce yazılmamış."),
+        (donem_tanimli, "Değerlendirme dönemi (3, 6, 9 ya da 12 ay) tanımlanmamış."),
+        (olcek_belgeli, "Puanlama ölçeği ve kabul edilebilir düzey (ör. 1–5; 3 kabul edilebilir) belgelenmemiş."),
+        (puanlama_tutarli, "Hat yöneticilerinin cömert/katı puanlama farkları dengelenmemiş; eğilim kaliteyi değil puanlama stilini yansıtabilir."),
+        (anket_dogrulanmis, "KSA soruları, elde tutma, müşteri/gelir büyümesi ve kârlılık gibi örgütsel çıktılarla ilişki açısından sınanmamış."),
+        (baglam_notlari, "Bağlam etkenleri (işe alım başına maliyet, işe alma süresi, devir ve elde tutma oranı) yazılmamış."),
+        (kapsam_ayri, "İşe alımın etkisi ve işe alımın elde tutulması bu metrikle karıştırılıyor; ayrı belgelerle ölçülür."),
+    ]
+    return [metin for tamam, metin in kontroller if not tamam]
+
+
+# ---------------------------------------------------------------------------
+# 4) Dağıtıcı: hesaplayıcı arayüzünün kullandığı tek giriş noktası
+# ---------------------------------------------------------------------------
+
+METRIK_LISTESI = ["performans", "ksa", "grup", "fark", "karsilama"]
+
+
+def _g(x) -> str:
+    """Sayıyı, bilimsel gösterim kullanmadan en kısa biçimde yazar."""
+    return f"{x:.12g}"
+
+
+def _ort_ayrinti(ort: float, beklenti: float, alt: float, ust: float) -> list:
+    return [["Beklenti farkı (puan)", round(beklenti_farki_puan(ort, beklenti), 2)],
+            ["Beklentinin üstünde ya da altında (%)", round(beklenti_farki_yuzde(ort, beklenti), 1)],
+            ["Ölçekteki göreli konum (%)", round(olcekte_konum(ort, alt, ust), 1)]]
+
+
+def hesapla(metrik: str, **g) -> dict:
+    """Metrik kimliği ve girdilerle hesabı yapar; sözlük döndürür.
+
+    Dönen anahtarlar: deger, ifade (formülün yerine konmuş hâli), ondalik,
+    birim, ayrinti (etiket–değer çiftleri).
+    """
+    if metrik == "performans":
+        d = ortalama_puan(g["puan_toplami"], g["kisi"])
+        _ortalama_kontrol(d, g["alt"], g["ust"])
+        return {"deger": d, "ondalik": 2, "birim": "ortalama performans puanı",
+                "ifade": f"{_g(g['puan_toplami'])} ÷ {_g(g['kisi'])}",
+                "ayrinti": _ort_ayrinti(d, g["beklenti"], g["alt"], g["ust"])}
+
+    if metrik == "ksa":
+        d = ortalama_puan(g["ksa_toplami"], g["madde"])
+        _ortalama_kontrol(d, g["alt"], g["ust"])
+        return {"deger": d, "ondalik": 2, "birim": "ortalama KSA puanı",
+                "ifade": f"{_g(g['ksa_toplami'])} ÷ {_g(g['madde'])}",
+                "ayrinti": _ort_ayrinti(d, g["beklenti"], g["alt"], g["ust"])}
+
+    if metrik == "grup":
+        o = [g[f"o{i}"] for i in range(1, 7)]
+        d = ortalamalarin_ortalamasi(*o)
+        _ortalama_kontrol(d, g["alt"], g["ust"])
+        return {"deger": d, "ondalik": 2, "birim": "grup QoH (ortalamaların ortalaması)",
+                "ifade": "(" + " + ".join(_g(x) for x in o) + ") ÷ 6",
+                "ayrinti": _ort_ayrinti(d, g["beklenti"], g["alt"], g["ust"])
+                           + [["En düşük bireysel ortalama", min(o)], ["En yüksek bireysel ortalama", max(o)]]}
+
+    if metrik == "fark":
+        d = beklenti_farki_yuzde(g["ortalama"], g["beklenti"])
+        return {"deger": d, "ondalik": 1, "birim": "% (beklentinin üstünde)",
+                "ifade": f"({_g(g['ortalama'])} − {_g(g['beklenti'])}) ÷ {_g(g['beklenti'])} × 100",
+                "ayrinti": [["Beklenti farkı (puan)", round(beklenti_farki_puan(g["ortalama"], g["beklenti"]), 2)],
+                            ["Ortalamanın beklentiye oranı", round(g["ortalama"] / g["beklenti"], 2)]]}
+
+    if metrik == "karsilama":
+        d = karsilama_orani(g["toplam_yeni"], g["karsilayan"])
+        return {"deger": d, "ondalik": 1, "birim": "% (beklentiyi karşılayan ya da aşan)",
+                "ifade": f"{_g(g['karsilayan'])} ÷ {_g(g['toplam_yeni'])} × 100",
+                "ayrinti": [["Beklentinin altında kalan yeni işe alım", g["toplam_yeni"] - g["karsilayan"]],
+                            ["Beklentinin altında kalan pay (%)", round(100 - d, 1)]]}
+
+    raise ValueError(f"Bilinmeyen metrik: {metrik}")
+
+
+# ---------------------------------------------------------------------------
+# 5) Doğrulama çıktısı
+# ---------------------------------------------------------------------------
+
+def _demo() -> None:
+    cizgi = "-" * 64
+    print("ISO/TS 30411 — doğrulama çıktısı")
+    print(cizgi)
+
+    print("Yaklaşım A (6 yeni işe alım; ölçek 1–5, beklenti 3)")
+    a = ortalama_puan(2 + 2 + 3 + 4 + 5 + 4, 6)
+    print(f"  ortalama {a:.2f}  -> beklentinin %{beklenti_farki_yuzde(a, 3):.0f} üstünde")
+    print("Yaklaşım B (tek kişi, 5 KSA maddesi)")
+    b = ortalama_puan(4 + 2 + 3 + 4 + 5, 5)
+    print(f"  ortalama {b:.1f}  -> beklentinin %{beklenti_farki_yuzde(b, 3):.0f} üstünde")
+    print(f"Grup (ortalamaların ortalaması 3,5): %{beklenti_farki_yuzde(3.5, 3):.0f} (0,5 puan)")
+    print(cizgi)
+
+    t = ornek_tablo()
+    for anahtar, deger in t.ozet().items():
+        print(f"{anahtar:<24}: {deger}")
+    print(cizgi)
+
+    print("Dağıtıcı örneği:")
+    print(hesapla("performans", puan_toplami=20, kisi=6, beklenti=3, alt=1, ust=5))
+    print(cizgi)
+
+    print("Rapor denetimi (hiçbir ön koşulu sağlamayan bir kurum için):")
+    for u in qoh_denetimi():
+        print(" !", u)
+
+
+if __name__ == "__main__":
+    _demo()
+</script>
+<script>
+/* =========================================================
+   1) METRİK VERİ TABANI
+   u: kullanıcılar (hr İK ve yetenek kazanımı / exec üst yönetim / line hat yönetimi /
+      fin finans ve planlama / ext dış paydaş)
+   st: bölüm (amac madde 4, yaka madde 5.2, yakb madde 5.3, baglam)
+   r: raporlama (ic, dis)
+   t: aile (p yaklaşım A / c yaklaşım B / s grup ve karşılaştırma / o ölçüm, bağlam ve ilkeler)
+   calc: bu sayfadaki hesaplayıcı kimliği
+   k: ek etiket (ctx bağlam etkeni, onk ön koşul, tur türetilmiş, ilke yol gösterici ilke)
+   ========================================================= */
+var METRICS = [
+ {g:"Yaklaşım A: performans hedefleri ve hedef karşılaştırması", t:"p", items:[
+  {n:"Yeni işe alımın ortalama performans puanı", st:"yaka", r:["ic","dis"], calc:"performans", d:"Değerlendirme dönemi sonunda performans puanları toplamı ÷ toplam yeni işe alım; örnek 3,33 (5.2.2, 5.2.3)", u:["hr","exec","line","fin","ext"]},
+  {n:"Bireysel performans puanı", st:"yaka", r:["ic"], d:"Hat yöneticisinin atanmış hedeflere göre verdiği derecelendirme; örnek 2, 2, 3, 4, 5, 4 (5.2.3)", u:["hr","line"]},
+  {n:"Performans derecelendirme ölçeği (1–5)", st:"yaka", r:["ic"], k:"onk", d:"1 en düşük, 3 kabul edilebilir, 5 en yüksek (5.2.3)", u:["hr","line","exec"]},
+  {n:"Ölçülebilir hedeflerin yeni işe alıma atanması", st:"yaka", r:["ic"], k:"onk", d:"Bu çerçeve, yeni işe alıma ölçülebilir hedefler atandığında yararlıdır (5.2.1)", u:["hr","line"]},
+  {n:"Hedef–gerçekleşme karşılaştırması", st:"yaka", r:["ic"], d:"Değerlendirme dönemi sonunda performans atanmış hedeflere göre değerlendirilir (5.2.1)", u:["hr","line","exec"]},
+  {n:"Hat yöneticisi memnuniyetinin yansıması", st:"yaka", r:["ic"], k:"ctx", d:"Derecelendirmeler hat yöneticisinin memnuniyet düzeyini de yakalar (5.2.1)", u:["hr","line"]},
+  {n:"Beklentinin üstünde / altında fark (%)", st:"yaka", r:["ic","dis"], calc:"fark", d:"Örnek: 3,33, kabul edilebilir 3'ün %11 üstünde (5.2.3)", u:["hr","exec","line","ext"]},
+  {n:"Beklentiyi karşılayan ya da aşan yeni işe alım payı", st:"yaka", r:["ic"], k:"tur", calc:"karsilama", d:"Kalite = beklentileri karşılayan ya da aşan yüzde (Giriş); şartnamede formül yok", u:["hr","exec","line"]},
+  {n:"Ölçekteki göreli konum", st:"yaka", r:["ic"], k:"tur", calc:"performans", d:"(ortalama − alt) ÷ (üst − alt); şartnamede yok", u:["hr","exec"]}
+ ]},
+ {g:"Yaklaşım B: KSA memnuniyeti ve beklenti karşılaştırması", t:"c", items:[
+  {n:"Yeni işe alımın ortalama KSA puanı", st:"yakb", r:["ic","dis"], calc:"ksa", d:"Deneme süresi sonunda KSA puanları toplamı ÷ toplam KSA maddesi; örnek 18 ÷ 5 = 3,6 (5.3.2, 5.3.3)", u:["hr","exec","line","fin","ext"]},
+  {n:"Hat yöneticisi / paydaş KSA anketi", st:"yakb", r:["ic"], k:"onk", d:"Yeni işe alımın KSA'larından memnuniyet/memnuniyetsizlik, işe alım öncesi beklentilerle karşılaştırılır (5.3.1)", u:["hr","line"]},
+  {n:"Bilgi: şirket ürün ve hizmetleri", st:"yakb", r:["ic"], d:"Örnek KSA maddesi (5.3.3)", u:["hr","line"]},
+  {n:"Fikirleri ikna edici biçimde aktarabilme", st:"yakb", r:["ic"], d:"Örnek KSA maddesi (5.3.3)", u:["hr","line"]},
+  {n:"Görevlerin zamanlılığı", st:"yakb", r:["ic"], d:"Örnek KSA maddesi (5.3.3)", u:["hr","line"]},
+  {n:"Problem çözme becerileri", st:"yakb", r:["ic"], d:"Örnek KSA maddesi (5.3.3)", u:["hr","line"]},
+  {n:"İlişkileri yönetme", st:"yakb", r:["ic"], d:"Örnek KSA maddesi (5.3.3)", u:["hr","line"]},
+  {n:"KSA puanlama ölçeği (1 zayıf … 5 üstün)", st:"yakb", r:["ic"], k:"onk", d:"Zayıf, ortalamanın altı, kabul edilebilir, ortalamanın üstü, üstün (5.3.3)", u:["hr","line"]},
+  {n:"KSA için işe alım öncesi beklenti (en az 3)", st:"yakb", r:["ic"], k:"onk", d:"Varsayım: her KSA için en az 3 (kabul edilebilir) (5.3.4)", u:["hr","line","exec"]},
+  {n:"KSA beklenti farkı (%)", st:"yakb", r:["ic","dis"], calc:"fark", d:"Örnek: 3,6, beklentinin %20 üstünde (5.3.4)", u:["hr","exec","line","ext"]},
+  {n:"Soruların örgütsel çıktılarla ilişkisinin sınanması", st:"yakb", r:["ic"], k:"onk", d:"Elde tutma, müşteri büyümesi, gelir büyümesi, kârlılık ile korelasyon (5.3.1)", u:["hr","exec","fin"]},
+  {n:"Kurumun beceri envanterinden soru seçimi", st:"yakb", r:["ic"], k:"onk", d:"Örnek KSA'lar yalnızca örnektir (5.3.4)", u:["hr","line"]}
+ ]},
+ {g:"Grup ve karşılaştırma", t:"s", items:[
+  {n:"Grup için QoH: ortalamaların ortalaması", st:"yakb", r:["ic","dis"], calc:"grup", d:"Grup için ortalamaların ortalaması alınır; örnek genel ortalama 3,5 (5.3.4)", u:["hr","exec","line","fin","ext"]},
+  {n:"Grup beklenti farkı (puan ve %)", st:"yakb", r:["ic","dis"], calc:"fark", d:"Örnek: 3,5, kabul edilebilir düzeyden 0,5 puan (%17) iyi (5.3.4)", u:["hr","exec","ext"]},
+  {n:"İki yaklaşımın birlikte kullanımı", st:"amac", r:["ic"], d:"Kurumlar bir ya da iki seçeneği birden kullanabilir (5.1)", u:["hr","exec"]},
+  {n:"QoH eğilimi (dönemden döneme)", st:"amac", r:["ic","dis"], d:"Artış daha iyi, azalış kalitede bozulma; her zaman kaliteyi yansıtmaz (5.2.4.1, 5.3.5.1)", u:["hr","exec","ext"]},
+  {n:"Kohort / işe alım kanalı kırılımı", st:"amac", r:["ic"], k:"tur", d:"Aynı dönemle ölçülen kohortları karşılaştırmak; şartnamede yok", u:["hr","exec","fin"]},
+  {n:"Kabul edilebilir performans (beklenti) düzeyi", st:"amac", r:["ic"], k:"onk", d:"İşe almadan önce konan en düşük kabul edilebilir performans ölçütleri (3.5)", u:["hr","exec","line"]}
+ ]},
+ {g:"Ölçüm, bağlam ve ilkeler", t:"o", items:[
+  {n:"Amaç: işe alım sürecinin etkinliği", st:"amac", r:["ic","dis"], k:"ilke", d:"Yeni işe alımın işin gereklerine ve/veya kurum değerlerine uyumu (4)", u:["hr","exec","ext"]},
+  {n:"İlke: kalite gerçekleşen ile beklenenin oranı/karşılaştırması", st:"amac", r:["ic"], k:"ilke", d:"Yol gösterici ilke (4)", u:["hr","exec"]},
+  {n:"İlke: kalite çok boyutlu olabilir", st:"amac", r:["ic"], k:"ilke", d:"Yol gösterici ilke (4)", u:["hr","exec"]},
+  {n:"İlke: her boyut tanımlı dönem için ölçülür (3, 6, 9 ay ya da 1 yıl)", st:"amac", r:["ic"], k:"ilke", d:"Yol gösterici ilke (4)", u:["hr","line"]},
+  {n:"Eşiğin altında işe alım sürecinin yeniden incelenmesi", st:"amac", r:["ic"], d:"QoH kurum gereksiniminin altına düşünce karar vericiler süreci yeniden inceler (4)", u:["hr","exec"]},
+  {n:"Değerlendirme dönemi: 3, 6, 9 ya da 12 ay", st:"baglam", r:["ic"], k:"onk", d:"Kurum yeni işe alımın performansını ne kadar süre değerlendireceğine karar vermelidir (5.2.4.1)", u:["hr","line"]},
+  {n:"Puanlayıcı stilleri: cömert / katı", st:"baglam", r:["ic"], k:"ctx", d:"Eğilimler kaliteyi değil puanlama stilini yansıtabilir (5.2.4.1, 5.3.5.1)", u:["hr","line","exec"]},
+  {n:"İşe alım başına maliyet", st:"baglam", r:["ic"], k:"ctx", d:"Bağlam etkeni; kurum büyüklüğü, türü, sektörü ve büyüme evresine göre değişir (5.2.4.1, 5.3.5.1)", u:["hr","fin","exec"]},
+  {n:"İşe alma süresi", st:"baglam", r:["ic"], k:"ctx", d:"Bağlam etkeni (5.2.4.1, 5.3.5.1)", u:["hr","line","exec"]},
+  {n:"Devir oranı ve elde tutma oranı", st:"baglam", r:["ic","dis"], k:"ctx", d:"Bağlam etkeni (3.3, 3.4, 5.2.4.1)", u:["hr","exec","fin","ext"]},
+  {n:"İşe alımın etkisi (yalnızca yaklaşım A bağlamı)", st:"baglam", r:["ic"], k:"ctx", d:"Şartname A'nın bağlam listesinde sayar; ölçüsü kapsam dışıdır (5.2.4.1)", u:["hr","exec"]},
+  {n:"Kurum büyüklüğü, türü, sektörü ve büyüme evresi", st:"baglam", r:["ic","dis"], k:"ctx", d:"Bağlam etkenlerinin değişkenliği (5.2.4.1, 5.3.5.1)", u:["hr","exec","ext"]},
+  {n:"Kapsam dışı: işe alımın etkisi ve işe alımın elde tutulması", st:"baglam", r:["ic"], k:"onk", d:"Ayrı teknik şartnamelerle ele alınır (Kapsam)", u:["hr","exec"]}
+ ]}
+];
+
+var USERS = ["hr","exec","line","fin","ext"];
+var AILE_AD = {p:"yaklaşım A", c:"yaklaşım B", s:"grup ve karşılaştırma", o:"ölçüm ve bağlam"};
+var EK_AD = {ctx:"bağlam etkeni", onk:"ön koşul", tur:"türetilmiş", ilke:"ilke"};
+
+/* --- matris çizimi --- */
+function renderMatrix(){
+  var fu = document.getElementById("fUser").value;
+  var fs = document.getElementById("fStage").value;
+  var ft = document.getElementById("fType").value;
+  var fr = document.getElementById("fRep").value;
+  var fq = document.getElementById("fQ").value.toLocaleLowerCase("tr");
+  var body = document.getElementById("mBody");
+  var html = "", shown = 0;
+
+  METRICS.forEach(function(grp){
+    if(ft && grp.t !== ft) return;
+    var rows = "";
+    grp.items.forEach(function(m){
+      if(fu && m.u.indexOf(fu) === -1) return;
+      if(fs && m.st !== fs) return;
+      if(fr && m.r.indexOf(fr) === -1) return;
+      if(fq && m.n.toLocaleLowerCase("tr").indexOf(fq) === -1) return;
+      shown++;
+      var cells = USERS.map(function(u){
+        if(m.u.indexOf(u) === -1) return '<td class="num"></td>';
+        var mark = '<span class="dot ' + grp.t + '"></span>';
+        return '<td class="num" title="' + m.n + '">' + (m.calc ? '<b>' + mark + '</b>' : mark) + '</td>';
+      }).join("");
+      var tags = '<span class="tag ' + grp.t + '">' + AILE_AD[grp.t] + '</span>' +
+                 (m.k ? ' <span class="tag lvl">' + EK_AD[m.k] + '</span>' : "") +
+                 (m.iso ? ' <span class="tag iso">30414</span>' : "") +
+                 (m.calc ? ' <span class="tag lvl">hesaplayıcı</span>' : "") +
+                 (m.r.indexOf("dis") !== -1 ? ' <span class="tag iso">dış rapor</span>' : "");
+      rows += '<tr><td class="name">' + (m.calc ? '<b>' + m.n + '</b>' : m.n) + ' ' + tags +
+              '<em>' + m.d + '</em></td>' + cells + '</tr>';
+    });
+    if(rows){
+      html += '<tr class="group"><td colspan="6">' + grp.g + '</td></tr>' + rows;
+    }
+  });
+
+  body.innerHTML = html || '<tr><td colspan="6">Bu filtre birleşimiyle eşleşen metrik yok.</td></tr>';
+  document.getElementById("mCount").textContent = shown + " metrik ve etken gösteriliyor.";
+}
+["fUser","fStage","fType","fRep","fQ"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", renderMatrix);
+});
+renderMatrix();
+
+/* =========================================================
+   2) YENİ İŞE ALIM TABLOSU
+   ========================================================= */
+var SATIR = 10;
+var KSA_N = 5;
+/* ad, performans (A), KSA 1–5 (B) — şartnamenin örnekleri */
+var ORNEK_TBL = [
+  ["A", 2, [4,2,3,4,5]],
+  ["B", 2, []],
+  ["C", 3, []],
+  ["D", 4, []],
+  ["E", 5, []],
+  ["F", 4, []]
+];
+
+function buildTbl(){
+  var html = "";
+  for(var i=0;i<SATIR;i++){
+    html += '<tr><td><input type="text" id="p_ad_' + i + '" placeholder="Kişi ' + (i+1) + '"></td>' +
+      '<td><input type="number" step="any" id="p_a_' + i + '"></td>';
+    for(var k=0;k<KSA_N;k++) html += '<td><input type="number" step="any" id="p_k' + k + '_' + i + '"></td>';
+    html += '<td class="calc" id="p_b_' + i + '">—</td><td class="calc" id="p_af_' + i + '">—</td><td class="calc" id="p_bf_' + i + '">—</td></tr>';
+  }
+  document.getElementById("pBody").innerHTML = html;
+  document.getElementById("pBody").querySelectorAll("input").forEach(function(el){ el.addEventListener("input", computeTbl); });
+  ["beklenti","olcAlt","olcUst"].forEach(function(id){ document.getElementById(id).addEventListener("input", computeTbl); });
+}
+
+function pVal(id){
+  var el = document.getElementById(id);
+  var v = el && el.value !== "" ? parseFloat(el.value) : NaN;
+  return isNaN(v) ? null : v;
+}
+
+var TBL = {n:0, toplamA:0, n_a:0, ok:false, beklenti:3};
+
+function computeTbl(){
+  var f2 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:2, maximumFractionDigits:2}); };
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var bek = parseFloat(document.getElementById("beklenti").value);
+  var alt = parseFloat(document.getElementById("olcAlt").value);
+  var ust = parseFloat(document.getElementById("olcUst").value);
+  var olcOk = !isNaN(bek) && bek > 0 && !isNaN(alt) && !isNaN(ust) && ust > alt;
+  var aList = [], bList = [], kisi = 0, hatali = 0, karsilayan = 0;
+
+  for(var i=0;i<SATIR;i++){
+    var a = pVal("p_a_" + i), ks = [];
+    for(var k=0;k<KSA_N;k++){ var kv = pVal("p_k" + k + "_" + i); if(kv !== null) ks.push(kv); }
+    var cb = document.getElementById("p_b_" + i), caf = document.getElementById("p_af_" + i), cbf = document.getElementById("p_bf_" + i);
+    cb.textContent = caf.textContent = cbf.textContent = "—";
+    if(a === null && !ks.length) continue;
+    var bozuk = !olcOk || (a !== null && (a < alt || a > ust)) || ks.some(function(x){ return x < alt || x > ust; });
+    if(bozuk){ hatali++; cb.textContent = "tutarsız"; continue; }
+    kisi++;
+    if(a !== null){ aList.push(a); caf.textContent = f1(100 * (a - bek) / bek); if(a >= bek) karsilayan++; }
+    if(ks.length){
+      var ort = ks.reduce(function(s,x){ return s + x; }, 0) / ks.length;
+      bList.push(ort); cb.textContent = f2(ort); cbf.textContent = f1(100 * (ort - bek) / bek);
+    }
+  }
+
+  var meanA = aList.length ? aList.reduce(function(s,x){ return s + x; }, 0) / aList.length : null;
+  var meanB = bList.length ? bList.reduce(function(s,x){ return s + x; }, 0) / bList.length : null;
+  document.getElementById("tA").textContent = meanA !== null ? f2(meanA) : "—";
+  document.getElementById("tN").textContent = kisi ? (kisi + " kişi · A: " + aList.length + " · B: " + bList.length) : "—";
+  document.getElementById("tB").textContent = meanB !== null ? f2(meanB) : "—";
+  document.getElementById("tAF").textContent = meanA !== null ? f1(100 * (meanA - bek) / bek) : "—";
+  document.getElementById("tBF").textContent = meanB !== null ? f1(100 * (meanB - bek) / bek) : "—";
+
+  var kart = document.getElementById("pCards");
+  var ok = olcOk && meanA !== null;
+  TBL = {n:kisi, toplamA: aList.reduce(function(s,x){ return s + x; }, 0), n_a:aList.length, ok:ok, beklenti:olcOk ? bek : 3};
+  if(!ok){
+    kart.innerHTML = "";
+    document.getElementById("pNot").textContent = !olcOk ? "Beklenti sıfırdan büyük, ölçek üst sınırı alt sınırdan büyük olmalı." :
+      (hatali ? "Tutarsız satır var: puanlar ölçek sınırları içinde olmalı." : "Tabloya yeni işe alımların puanlarını girin ya da örnek veriyi yükleyin.");
+    return;
+  }
+  var kartlar = '';
+  kartlar += '<div class="card"><b>' + f2(meanA) + '</b><span>A: ortalama performans puanı</span></div>';
+  kartlar += '<div class="card"><b>' + (meanB !== null ? f2(meanB) : "—") + '</b><span>B: ortalamaların ortalaması (KSA)</span></div>';
+  kartlar += '<div class="card alt"><b>' + (100 * (meanA - bek) / bek > 0 ? "+" : "") + f1(100 * (meanA - bek) / bek) + ' %</b><span>A: beklentiye göre fark</span></div>';
+  kartlar += '<div class="card alt"><b>' + (meanB !== null ? (100 * (meanB - bek) / bek > 0 ? "+" : "") + f1(100 * (meanB - bek) / bek) + ' %' : "—") + '</b><span>B: beklentiye göre fark</span></div>';
+  kartlar += '<div class="card warn"><b>' + f1(100 * karsilayan / aList.length) + ' %</b><span>Beklentiyi karşılayan ya da aşan (A)</span></div>';
+  kartlar += '<div class="card warn"><b>' + kisi + '</b><span>Yeni işe alım sayısı</span></div>';
+  kart.innerHTML = kartlar;
+
+  var not = "A: " + f2(TBL.toplamA) + " ÷ " + aList.length + " = " + f2(meanA) + "; beklenti " + bek + ". ";
+  if(meanB !== null) not += "B: " + bList.length + " kişinin KSA ortalamalarının ortalaması = " + f2(meanB) + ". ";
+  if(hatali) not += hatali + " tutarsız satır hesaba katılmadı. ";
+  not += "Beklentiyi karşılayan pay şartnamede yoktur, türetilmiştir. Az sayıda kişide ortalama tek bir puandan belirgin etkilenir.";
+  document.getElementById("pNot").textContent = not;
+}
+
+function loadTblExample(){
+  for(var i=0;i<SATIR;i++){
+    var s = ORNEK_TBL[i];
+    document.getElementById("p_ad_" + i).value = s ? s[0] : "";
+    document.getElementById("p_a_" + i).value = s && s[1] !== null ? s[1] : "";
+    for(var k=0;k<KSA_N;k++) document.getElementById("p_k" + k + "_" + i).value = s && s[2][k] !== undefined ? s[2][k] : "";
+  }
+  document.getElementById("beklenti").value = 3;
+  document.getElementById("olcAlt").value = 1;
+  document.getElementById("olcUst").value = 5;
+  computeTbl();
+}
+
+document.getElementById("btnOrnek").addEventListener("click", loadTblExample);
+document.getElementById("btnTemizle").addEventListener("click", function(){
+  for(var i=0;i<SATIR;i++){
+    document.getElementById("p_ad_" + i).value = "";
+    document.getElementById("p_a_" + i).value = "";
+    for(var k=0;k<KSA_N;k++) document.getElementById("p_k" + k + "_" + i).value = "";
+  }
+  computeTbl();
+});
+document.getElementById("btnCsv").addEventListener("click", function(){
+  var satir = ["Yeni isealim;A performans;KSA 1;KSA 2;KSA 3;KSA 4;KSA 5;B KSA ortalamasi"];
+  for(var i=0;i<SATIR;i++){
+    var a = pVal("p_a_" + i), ks = [];
+    for(var k=0;k<KSA_N;k++) ks.push(pVal("p_k" + k + "_" + i));
+    var dolu = ks.filter(function(x){ return x !== null; });
+    if(a === null && !dolu.length) continue;
+    var ad = document.getElementById("p_ad_" + i).value.trim() || ("Kisi " + (i+1));
+    var ort = dolu.length ? (dolu.reduce(function(s,x){ return s + x; }, 0) / dolu.length).toFixed(2) : "";
+    satir.push([ad, a === null ? "" : a].concat(ks.map(function(x){ return x === null ? "" : x; })).concat([ort]).join(";"));
+  }
+  var blob = new Blob(["\ufeff" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var el = document.createElement("a");
+  el.href = URL.createObjectURL(blob);
+  el.download = "iso30411_yeni_isealim.csv";
+  el.click();
+  URL.revokeObjectURL(el.href);
+});
+
+/* =========================================================
+   3) FORMÜL TABLOSU + HESAPLAYICI
+   Alan adları gömülü Python modülünün hesapla() imzasıyla birebir aynıdır.
+   ========================================================= */
+function gerek(kosul, mesaj){ if(!kosul) throw new Error("GecersizGirdi: " + mesaj); }
+function bolOk(pay, payda, ad){ gerek(payda > 0, ad + " sıfırdan büyük olmalı"); return pay / payda; }
+/* Python round() ile aynı davranış: tam yarım değerlerde en yakın çifte yuvarlar */
+function pyround(x, n){
+  var m = Math.pow(10, n), y = x * m, f = Math.floor(y);
+  if(y - f === 0.5) return (f % 2 === 0 ? f : f + 1) / m;
+  return Math.round(y) / m;
+}
+function r1(x){ return pyround(x, 1); }
+function r2(x){ return pyround(x, 2); }
+function olcekOk(alt, ust){ gerek(ust > alt, "ölçek üst sınırı alt sınırdan büyük olmalı"); }
+function ortOk(ort, alt, ust){ olcekOk(alt, ust); gerek(ort >= alt && ort <= ust, "ortalama ölçek sınırları içinde olmalı"); }
+function beklentiFarki(ort, bek){ gerek(bek > 0, "beklenti sıfırdan büyük olmalı"); return 100 * (ort - bek) / bek; }
+function ortAyrinti(ort, bek, alt, ust){
+  return [["Beklenti farkı (puan)", r2(ort - bek)],
+          ["Beklentinin üstünde ya da altında (%)", r1(beklentiFarki(ort, bek))],
+          ["Ölçekteki göreli konum (%)", r1(100 * (ort - alt) / (ust - alt))]];
+}
+
+var CALC = [
+ {id:"performans", name:"Yaklaşım A: ortalama performans puanı", grp:"Yaklaşım A", noHeur:true,
+  formula:"Ortalama performans puanı = &Sigma; performans puanı &divide; yeni işe alım sayısı",
+  note:"Şartname madde 5.2.2 ve 5.2.3: değerlendirme dönemi sonundaki performans puanları toplamı ÷ toplam yeni işe alım. Örnek: altı yeni işe alım (2, 2, 3, 4, 5, 4) → 20 ÷ 6 = 3,33; ölçek orta noktası olan 3 işe alım öncesi beklentidir ve QoH bunun %11 üstündedir. Ölçekteki göreli konum türetilmiştir.",
+  fields:[{k:"puan_toplami",l:"Performans puanları toplamı",v:20,step:0.1},{k:"kisi",l:"Yeni işe alım sayısı",v:6},
+          {k:"beklenti",l:"İşe alım öncesi beklenti (kabul edilebilir puan)",v:3,step:0.1},{k:"alt",l:"Ölçek alt sınırı",v:1,step:0.5},{k:"ust",l:"Ölçek üst sınırı",v:5,step:0.5}],
+  unit:"ortalama performans puanı",
+  py:"ortalama_puan(toplam=20, adet=6)",
+  calc:function(v){
+    gerek(v.puan_toplami >= 0, "puan toplamı negatif olamaz");
+    var d = bolOk(v.puan_toplami, v.kisi, "kişi ya da madde sayısı");
+    ortOk(d, v.alt, v.ust);
+    return {value:d, dec:2, expl:v.puan_toplami + " ÷ " + v.kisi, detail:ortAyrinti(d, v.beklenti, v.alt, v.ust)}; },
+  bands:[[0,"ok","Şartname eşik vermez: QoH'yi işe alım öncesi beklentiyle, önceki kohortlarla ve puanlayıcı stilleriyle birlikte okuyun; eğilim her zaman kaliteyi yansıtmaz (madde 5.2.4.1)."]]},
+
+ {id:"ksa", name:"Yaklaşım B: ortalama KSA puanı", grp:"Yaklaşım B", noHeur:true,
+  formula:"Ortalama KSA puanı = &Sigma; KSA puanı &divide; KSA madde sayısı",
+  note:"Şartname madde 5.3.2 ve 5.3.3: deneme süresi sonunda yeni işe alımın KSA puanları toplamı ÷ toplam KSA maddesi. Örnek: 4, 2, 3, 4, 5 → 18 ÷ 5 = 3,6; her KSA için beklenti en az 3 varsayımıyla beklentinin %20 üstünde. Madde örnekleri yalnızca örnektir.",
+  fields:[{k:"ksa_toplami",l:"KSA puanları toplamı",v:18,step:0.1},{k:"madde",l:"KSA madde sayısı",v:5},
+          {k:"beklenti",l:"İşe alım öncesi beklenti (her KSA için en az)",v:3,step:0.1},{k:"alt",l:"Ölçek alt sınırı",v:1,step:0.5},{k:"ust",l:"Ölçek üst sınırı",v:5,step:0.5}],
+  unit:"ortalama KSA puanı",
+  py:"ortalama_puan(toplam=18, adet=5)",
+  calc:function(v){
+    gerek(v.ksa_toplami >= 0, "puan toplamı negatif olamaz");
+    var d = bolOk(v.ksa_toplami, v.madde, "kişi ya da madde sayısı");
+    ortOk(d, v.alt, v.ust);
+    return {value:d, dec:2, expl:v.ksa_toplami + " ÷ " + v.madde, detail:ortAyrinti(d, v.beklenti, v.alt, v.ust)}; },
+  bands:[[0,"ok","Soruların elde tutma, müşteri ve gelir büyümesi, kârlılık gibi örgütsel çıktılarla ilişkisini sınayın (madde 5.3.1)."]]},
+
+ {id:"grup", name:"Grup için QoH: ortalamaların ortalaması", grp:"Grup ve karşılaştırma", noHeur:true,
+  formula:"Grup QoH = (Ortalama<sub>1</sub> + &hellip; + Ortalama<sub>6</sub>) &divide; 6",
+  note:"Şartname madde 5.3.4: grup için QoH hesaplanırken ortalamaların ortalaması alınır. Örnek: altı yeni işe alımın genel ortalaması 3,5 ise kabul edilebilir düzeyden 0,5 puan (%17) iyidir. Varsayılan altı ortalama örnek amaçlıdır (toplamı 21,0); şartname yalnızca genel ortalamayı verir.",
+  fields:[{k:"o1",l:"1. yeni işe alım ortalaması",v:3.6,step:0.1},{k:"o2",l:"2. yeni işe alım ortalaması",v:3,step:0.1},{k:"o3",l:"3. yeni işe alım ortalaması",v:4,step:0.1},
+          {k:"o4",l:"4. yeni işe alım ortalaması",v:3.5,step:0.1},{k:"o5",l:"5. yeni işe alım ortalaması",v:3.4,step:0.1},{k:"o6",l:"6. yeni işe alım ortalaması",v:3.5,step:0.1},
+          {k:"beklenti",l:"İşe alım öncesi beklenti",v:3,step:0.1},{k:"alt",l:"Ölçek alt sınırı",v:1,step:0.5},{k:"ust",l:"Ölçek üst sınırı",v:5,step:0.5}],
+  unit:"grup QoH (ortalamaların ortalaması)",
+  py:"ortalamalarin_ortalamasi(3.6, 3, 4, 3.5, 3.4, 3.5)",
+  calc:function(v){
+    var o = [v.o1, v.o2, v.o3, v.o4, v.o5, v.o6];
+    o.forEach(function(x){ gerek(x >= 0, "ortalama negatif olamaz"); });
+    var d = o.reduce(function(s,x){ return s + x; }, 0) / o.length;
+    ortOk(d, v.alt, v.ust);
+    return {value:d, dec:2, expl:"(" + o.join(" + ") + ") ÷ 6",
+      detail:ortAyrinti(d, v.beklenti, v.alt, v.ust).concat([["En düşük bireysel ortalama", Math.min.apply(null, o)], ["En yüksek bireysel ortalama", Math.max.apply(null, o)]])}; },
+  bands:[[0,"ok","Grup ortalaması bireysel dağılımı gizler: en düşük ve en yüksek ortalamaya da bakın; az sayıda kişide tek bir puan sonucu belirgin değiştirir."]]},
+
+ {id:"fark", name:"Beklenti farkı (%)", grp:"Grup ve karşılaştırma", noHeur:true,
+  formula:"Beklenti farkı = ((Ortalama &minus; Beklenti) &divide; Beklenti) &times; 100",
+  note:"Şartname örneklerinde yazılı yüzdeleri üretir: 3,33 → %11, 3,6 → %20, 3,5 → %17 (beklenti 3). Formül şartnamede yazılı değildir; örnekten türetilmiştir. Şartnamenin grup örneğindeki \"0,5 kat\" ifadesi bir kat değil, 0,5 puan farktır.",
+  fields:[{k:"ortalama",l:"Ortalama puan",v:3.5,step:0.01},{k:"beklenti",l:"İşe alım öncesi beklenti",v:3,step:0.1}],
+  unit:"% (beklentinin üstünde)",
+  py:"beklenti_farki_yuzde(ortalama=3.5, beklenti=3)",
+  calc:function(v){
+    var d = beklentiFarki(v.ortalama, v.beklenti);
+    return {value:d, dec:1, expl:"(" + v.ortalama + " − " + v.beklenti + ") ÷ " + v.beklenti + " × 100",
+      detail:[["Beklenti farkı (puan)", r2(v.ortalama - v.beklenti)],
+              ["Ortalamanın beklentiye oranı", r2(v.ortalama / v.beklenti)]]}; },
+  bands:[[0,"ok","Negatif değer beklentinin altını gösterir; QoH kurum gereksiniminin altındaysa işe alım süreci yeniden incelenir, ancak başka bağımlılıklar da gözetilmelidir (madde 4)."]]},
+
+ {id:"karsilama", name:"Beklentiyi karşılama oranı", grp:"Grup ve karşılaştırma", noHeur:true,
+  formula:"Karşılama oranı = (Beklentiyi karşılayan ya da aşan yeni işe alım &divide; Toplam yeni işe alım) &times; 100",
+  note:"Giriş bölümü, işe alımda kalitenin paydaşların memnuniyeti ve beklentileri karşılayan ya da aşan yüzde olarak değerlendirilebileceğini söyler (Fitz-Enz). Şartname bu oranı formülle vermez; bu hesap türetilmiştir. Örnek: 2, 2, 3, 4, 5, 4 puanlarında 3 ve üstü 4 kişi → %66,7.",
+  fields:[{k:"toplam_yeni",l:"Toplam yeni işe alım",v:6},{k:"karsilayan",l:"Beklentiyi karşılayan ya da aşan",v:4}],
+  unit:"% (beklentiyi karşılayan ya da aşan)",
+  py:"karsilama_orani(toplam=6, karsilayan=4)",
+  calc:function(v){
+    gerek(v.toplam_yeni > 0, "toplam sıfırdan büyük olmalı");
+    gerek(v.karsilayan >= 0 && v.karsilayan <= v.toplam_yeni, "karşılayan 0 ile toplam arasında olmalı");
+    var d = 100 * v.karsilayan / v.toplam_yeni;
+    return {value:d, dec:1, expl:v.karsilayan + " ÷ " + v.toplam_yeni + " × 100",
+      detail:[["Beklentinin altında kalan yeni işe alım", v.toplam_yeni - v.karsilayan],
+              ["Beklentinin altında kalan pay (%)", r1(100 - d)]]}; },
+  bands:[[0,"ok","Ortalama beklentiyi aşsa bile bir kısım yeni işe alım beklentinin altında kalabilir; ortalama ile birlikte bu payı da raporlayın."]]}
+];
+
+/* --- formül tablosu --- */
+(function(){
+  var rows = CALC.map(function(c){
+    return '<tr><td><b>' + c.name + '</b></td><td><span style="font-family:var(--serif)">' +
+           c.formula + '</span></td><td>' + c.note + '</td></tr>';
+  }).join("");
+  document.getElementById("fBody").innerHTML = rows;
+})();
+
+/* --- hesaplayıcı --- */
+var sel = document.getElementById("cMetric");
+CALC.forEach(function(c, i){
+  var o = document.createElement("option");
+  o.value = i; o.textContent = c.grp + " — " + c.name;
+  sel.appendChild(o);
+});
+
+function buildFields(){
+  var c = CALC[+sel.value];
+  document.getElementById("cFields").innerHTML = c.fields.map(function(f){
+    return '<div class="field"><label for="in_' + f.k + '">' + f.l + '</label>' +
+      '<input type="number" id="in_' + f.k + '" value="" step="' + (f.step || "any") + '" placeholder="' + f.v + '"></div>';
+  }).join("");
+  document.getElementById("cFields").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", run);
+  });
+}
+
+function readVals(){
+  var c = CALC[+sel.value], v = {}, missing = false;
+  c.fields.forEach(function(f){
+    var el = document.getElementById("in_" + f.k);
+    var raw = el && el.value !== "" ? parseFloat(el.value) : NaN;
+    if(isNaN(raw)){ missing = true; v[f.k] = f.v; } else { v[f.k] = raw; }
+  });
+  return {v:v, missing:missing};
+}
+
+function fmt(x, dec){
+  if(!isFinite(x)) return "—";
+  return x.toLocaleString("tr-TR", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+
+/* Hesaplama motoru: Python hazırsa gömülü modül, değilse JS yedeği */
+function compute(c, v){
+  if(PY.ready){
+    try{
+      PY.pyodide.globals.set("_metrik", c.id);
+      PY.pyodide.globals.set("_girdi", JSON.stringify(v));
+      var raw = PY.pyodide.runPython(
+        "import json\n" +
+        "json.dumps(hesapla(_metrik, **json.loads(_girdi)))");
+      var r = JSON.parse(raw);
+      return {value:r.deger, expl:r.ifade, dec:r.ondalik, detail:r.ayrinti,
+              unit:r.birim, durum:r.durum, engine:"python"};
+    }catch(err){
+      var msg = String(err);
+      /* Kullanıcı girdisi kaynaklı hata: motor sorunu değil, yedeğe geçme */
+      if(msg.indexOf("GecersizGirdi") !== -1 || msg.indexOf("ZeroDivisionError") !== -1) throw err;
+      setEngine("off", "Motor: JS yedeği — Python hatası");
+    }
+  }
+  var out = c.calc(v);
+  out.engine = "js";
+  return out;
+}
+
+function run(){
+  var c = CALC[+sel.value];
+  var r = readVals();
+  var out;
+  try { out = compute(c, r.v); } catch(e){ out = null; }
+  var box = document.getElementById("cResult");
+  if(!out || !isFinite(out.value)){
+    box.innerHTML = '<div class="result"><b>Hesaplanamadı.</b> Payda sıfır olamaz, parça bütünden büyük olamaz ve değerler geçerli aralıkta olmalı; alanları kontrol edin.</div>';
+    return;
+  }
+  var dec = (out.dec === undefined) ? 1 : out.dec;
+  var unit = out.unit || c.unit;
+  var html = '<div class="result">';
+  html += '<div class="big">' + fmt(out.value, dec) + ' <span>' + unit + '</span></div>';
+  html += '<div style="font-size:13px;color:var(--ink-soft);margin-top:6px">' + c.name +
+          ' · ' + (out.engine === "python" ? 'Python (Pyodide) ile hesaplandı' : 'JavaScript ile hesaplandı') +
+          (r.missing ? ' · <i>boş alanlar için örnek değer kullanıldı</i>' : '') + '</div>';
+
+  if(document.getElementById("oFormula").checked){
+    html += '<div class="formula">' + c.formula + '<br><span style="color:var(--ink-soft);font-size:15px">= ' +
+            out.expl + ' = <b>' + fmt(out.value, dec) + '</b> ' + unit + '</span></div>';
+  }
+  if(out.detail && out.detail.length){
+    html += '<dl>' + out.detail.map(function(d){
+      var val = (typeof d[1] === "number") ? d[1].toLocaleString("tr-TR") : d[1];
+      return '<dt>' + d[0] + '</dt><dd>' + val + '</dd>';
+    }).join("") + '</dl>';
+  }
+  if(document.getElementById("oInterp").checked){
+    if(c.durumMetin && out.durum){
+      html += '<div class="verdict ' + out.durum + '">' + c.durumMetin[out.durum] + '</div>';
+    } else if(c.bands){
+      var band = c.bands[c.bands.length-1];
+      for(var i=0;i<c.bands.length;i++){ if(out.value >= c.bands[i][0]){ band = c.bands[i]; break; } }
+      html += '<div class="verdict ' + band[1] + '">' + band[2] + '</div>';
+      if(c.bands.length > 1 && !c.noHeur){
+        html += '<div class="note" style="margin-top:12px">Yorum eşikleri standarttan değil, başlangıç varsayımlarından gelir; kendi hedeflerinizle değiştirin.</div>';
+      }
+    }
+    html += '<div class="note" style="margin-top:12px">' + c.note + '</div>';
+  }
+  if(document.getElementById("oPy").checked){
+    var args = c.fields.map(function(f){ return f.k + "=" + r.v[f.k]; }).join(", ");
+    var call = 'hesapla("' + c.id + '", ' + args + ')';
+    html += '<pre style="margin-top:16px"><i>&gt;&gt;&gt; from iso30411_metrikler import hesapla</i>\n' +
+            '&gt;&gt;&gt; ' + call + '["deger"]\n' + out.value + '\n\n' +
+            '<i># eşdeğer doğrudan çağrı</i>\n&gt;&gt;&gt; ' + c.py + '</pre>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+sel.addEventListener("change", function(){ buildFields(); run(); });
+document.getElementById("btnRun").addEventListener("click", run);
+document.getElementById("btnExample").addEventListener("click", function(){
+  var c = CALC[+sel.value];
+  c.fields.forEach(function(f){ document.getElementById("in_" + f.k).value = f.v; });
+  run();
+});
+["oFormula","oInterp","oPy"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", function(){
+    var all = document.getElementById("oFormula").checked &&
+              document.getElementById("oInterp").checked &&
+              document.getElementById("oPy").checked;
+    document.getElementById("oAll").checked = all;
+    run();
+  });
+});
+document.getElementById("oAll").addEventListener("change", function(){
+  var s = this.checked;
+  ["oFormula","oInterp","oPy"].forEach(function(id){ document.getElementById(id).checked = s; });
+  run();
+});
+
+/* --- tablodan hesaplayıcıya aktarma --- */
+document.getElementById("btnAktar").addEventListener("click", function(){
+  if(!TBL.ok){ loadTblExample(); }
+  var idx = CALC.map(function(c){ return c.id; }).indexOf("performans");
+  sel.value = idx; buildFields();
+  document.getElementById("in_puan_toplami").value = TBL.toplamA;
+  document.getElementById("in_kisi").value = TBL.n_a;
+  document.getElementById("in_beklenti").value = TBL.beklenti;
+  run();
+  document.getElementById("hesaplayici").scrollIntoView({behavior:"smooth", block:"start"});
+});
+
+/* =========================================================
+   4) PYTHON MOTORU (Pyodide / WebAssembly)
+   Gömülü iso30411_metrikler.py modülü tarayıcı içinde
+   gerçek CPython ile çalıştırılır. Erişim yoksa JS yedeği
+   devrede kalır ve sonuçlar değişmez.
+   ========================================================= */
+var PY = {ready:false, busy:false, pyodide:null};
+
+var PYODIDE_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+  "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"
+];
+
+function setEngine(state, text){
+  var chip = document.getElementById("engStatus");
+  chip.className = "chip" + (state ? " " + state : "");
+  chip.textContent = text;
+}
+
+function loadScript(src){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function(){ resolve(src); };
+    s.onerror = function(){ reject(new Error(src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function pySource(){
+  return document.getElementById("pysrc").textContent;
+}
+
+async function initPython(){
+  if(PY.ready) return true;
+  if(PY.busy) return false;
+  PY.busy = true;
+  document.getElementById("btnPy").disabled = true;
+  setEngine("busy", "Motor: Pyodide indiriliyor…");
+  try{
+    if(typeof loadPyodide === "undefined"){
+      try { await loadScript(PYODIDE_URLS[0]); }
+      catch(e){ await loadScript(PYODIDE_URLS[1]); }
+    }
+    setEngine("busy", "Motor: Python başlatılıyor…");
+    PY.pyodide = await loadPyodide();
+
+    /* Modülü sanal dosya sistemine yazmadan, gerçek bir modül nesnesi olarak kur:
+       böylece __name__ != "__main__" olur ve _demo() kendiliğinden çalışmaz.
+       Kayıt exec'ten ÖNCE yapılır; @dataclass işlenirken modülü sys.modules'te arar. */
+    PY.pyodide.globals.set("_kaynak", pySource());
+    PY.pyodide.runPython(
+      "import sys, types\n" +
+      "_m = types.ModuleType('iso30411_metrikler')\n" +
+      "_m.__file__ = 'iso30411_metrikler.py'\n" +
+      "sys.modules['iso30411_metrikler'] = _m\n" +
+      "exec(compile(_kaynak, 'iso30411_metrikler.py', 'exec'), _m.__dict__)\n" +
+      "from iso30411_metrikler import *\n" +
+      "import iso30411_metrikler as m\n"
+    );
+    var sur = PY.pyodide.runPython(
+      "import sys\n'.'.join(str(x) for x in sys.version_info[:3])");
+    PY.ready = true;
+    setEngine("on", "Motor: Python " + sur + " (Pyodide)");
+    run();
+    return true;
+  }catch(e){
+    setEngine("off", "Motor: tarayıcı (JS) — Pyodide yüklenemedi");
+    document.getElementById("pyOut").textContent =
+      "Python motoru yüklenemedi. Bu genellikle çevrimdışı olmaktan ya da ağ kısıtından kaynaklanır.\n" +
+      "Sayfa çalışmaya devam eder; hesaplamalar JavaScript yedeğiyle aynı sonuçları verir.\n\n" + e;
+    return false;
+  }finally{
+    PY.busy = false;
+    document.getElementById("btnPy").disabled = false;
+  }
+}
+
+document.getElementById("btnPy").addEventListener("click", initPython);
+
+/* --- konsol --- */
+var VARSAYILAN_KOD =
+  'from iso30411_metrikler import *\n' +
+  'import iso30411_metrikler as m\n\n' +
+  '# Yaklaşım A: 6 yeni işe alım, ölçek 1-5, beklenti 3\n' +
+  'a = ortalama_puan(2 + 2 + 3 + 4 + 5 + 4, 6)\n' +
+  'print("A ortalama        :", round(a, 2))\n' +
+  'print("Beklenti farkı    :", round(beklenti_farki_yuzde(a, 3), 1), "%")\n\n' +
+  '# Yaklaşım B: tek kişi, 5 KSA maddesi\n' +
+  'b = ortalama_puan(4 + 2 + 3 + 4 + 5, 5)\n' +
+  'print("B ortalama        :", b, "->", round(beklenti_farki_yuzde(b, 3)), "%")\n\n' +
+  '# Grup: ortalamaların ortalaması\n' +
+  'g = ortalamalarin_ortalamasi(3.6, 3, 4, 3.5, 3.4, 3.5)\n' +
+  'print("Grup QoH          :", g, "->", round(beklenti_farki_yuzde(g, 3)), "%")\n' +
+  'print("Karşılama oranı   :", round(karsilama_orani(6, 4), 1), "%")\n\n' +
+  '# Yeni işe alım tablosu (şartname örnekleri)\n' +
+  't = ornek_tablo()\n' +
+  'for anahtar, deger in t.ozet().items():\n' +
+  '    print(f"{anahtar:<24}: {deger}")\n\n' +
+  '# Dağıtıcı, hesaplayıcının kullandığı arayüzdür:\n' +
+  'print(hesapla("performans", puan_toplami=20, kisi=6, beklenti=3, alt=1, ust=5))\n\n' +
+  '# Rapor denetimi: hangi ön koşullar eksik?\n' +
+  'for uyari in qoh_denetimi(beklenti_onceden_yazili=True, donem_tanimli=True):\n' +
+  '    print("!", uyari)\n';
+
+document.getElementById("pyCode").value = VARSAYILAN_KOD;
+
+async function runConsole(){
+  var out = document.getElementById("pyOut");
+  if(!PY.ready){
+    out.textContent = "Python motoru hazırlanıyor, ilk çalıştırma biraz sürebilir…";
+    var ok = await initPython();
+    if(!ok) return;
+  }
+  out.textContent = "çalışıyor…";
+  try{
+    PY.pyodide.globals.set("_kod", document.getElementById("pyCode").value);
+    var cikti = PY.pyodide.runPython(
+      "import io, contextlib, traceback\n" +
+      "_tampon = io.StringIO()\n" +
+      "with contextlib.redirect_stdout(_tampon), contextlib.redirect_stderr(_tampon):\n" +
+      "    try:\n" +
+      "        exec(_kod, globals())\n" +
+      "    except Exception:\n" +
+      "        traceback.print_exc()\n" +
+      "_tampon.getvalue()"
+    );
+    out.textContent = cikti && cikti.trim() ? cikti : "(çıktı yok)";
+  }catch(e){
+    out.textContent = "Hata: " + e;
+  }
+}
+
+document.getElementById("btnRunPy").addEventListener("click", runConsole);
+document.getElementById("btnReset").addEventListener("click", function(){
+  document.getElementById("pyCode").value = VARSAYILAN_KOD;
+  document.getElementById("pyOut").textContent = "Kod sıfırlandı.";
+});
+document.getElementById("btnDemo").addEventListener("click", function(){
+  document.getElementById("pyCode").value =
+    "import iso30411_metrikler as m\n\n" +
+    "# Modülün kendi doğrulama çıktısı (komut satırındaki\n" +
+    "# python3 iso30411_metrikler.py ile aynı sonucu verir)\n" +
+    "m._demo()\n";
+  runConsole();
+});
+
+/* modül kaynağını sayfada okunur kıl */
+document.getElementById("srcView").textContent = pySource().trim();
+
+buildTbl();
+loadTblExample();
+buildFields();
+run();
+</script>
+</body>
+</html>
