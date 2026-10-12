@@ -1,0 +1,2214 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ISO 30415 Çeşitlilik ve Kapsayıcılık — Sınıflandırma ve Hesaplayıcı</title>
+<style>
+  :root{
+    --ink:#101418;
+    --ink-soft:#59636f;
+    --ink-faint:#8b95a1;
+    --line:#dde3ea;
+    --line-soft:#eef1f5;
+    --bg:#ffffff;
+    --canvas:#f6f8fa;
+    --accent:#0b5c8a;
+    --accent-soft:#e7f0f6;
+    --panel:#0e1520;
+    --panel-2:#16202e;
+    --panel-line:#28394f;
+    --out-ink:#8a3b12;  --out-bg:#fbeee6;
+    --eff-ink:#14615c;  --eff-bg:#e6f2f1;
+    --efc-ink:#33478c;  --efc-bg:#eaedf8;
+    --rea-ink:#7a5c00;  --rea-bg:#f8f1d9;
+    --cos-ink:#8c2f4b;  --cos-bg:#f9e8ee;
+    --ok:#1d6f42; --warn:#8a6100; --bad:#992121;
+    --serif:"Iowan Old Style",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--canvas);color:var(--ink);
+    font-family:var(--sans);font-size:16px;line-height:1.62;
+  }
+  .sheet{max-width:1000px;margin:0 auto;background:var(--bg);padding:56px 60px 80px;
+    box-shadow:0 0 0 1px var(--line);}
+  @media(max-width:760px){ .sheet{padding:28px 20px 56px} }
+
+  h1{font-family:var(--serif);font-size:36px;line-height:1.15;margin:0 0 14px;letter-spacing:-.01em}
+  h2{font-family:var(--serif);font-size:25px;margin:52px 0 4px;padding-bottom:8px;
+     border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  h3{font-size:17px;margin:32px 0 6px;letter-spacing:.01em}
+  h4{font-size:15px;margin:22px 0 4px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+  p{margin:12px 0}
+  a{color:var(--accent)}
+  ul,ol{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+  small{color:var(--ink-soft)}
+  .lede{font-size:17px;color:var(--ink-soft)}
+
+  .srcbar{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline;
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:10px 0;margin:0 0 26px;font-size:13.5px;color:var(--ink-soft)}
+  .srcbar b{color:var(--ink);font-weight:600}
+
+  .toc{background:var(--canvas);border:1px solid var(--line);padding:16px 20px;margin:26px 0 0;
+    font-size:14px;columns:2;column-gap:34px}
+  @media(max-width:640px){.toc{columns:1}}
+  .toc a{display:block;padding:3px 0;text-decoration:none;color:var(--ink)}
+  .toc a:hover{color:var(--accent);text-decoration:underline}
+  .toc b{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin:8px 0 4px}
+
+  .keypoints li{margin:10px 0}
+  .keypoints b{font-weight:650}
+
+  table{border-collapse:collapse;width:100%;font-size:14px;margin:16px 0}
+  caption{caption-side:top;text-align:left;font-size:13px;color:var(--ink-soft);padding-bottom:6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  thead th{background:var(--canvas);font-weight:650;font-size:13px}
+  tbody tr:nth-child(even){background:#fcfdfe}
+  td.num,th.num{text-align:center;font-variant-numeric:tabular-nums;width:66px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ink)}
+  .dot.o{background:var(--out-ink)} .dot.s{background:var(--eff-ink)} .dot.p{background:var(--efc-ink)}
+  .dot.r{background:var(--rea-ink)} .dot.c{background:var(--cos-ink)}
+
+  .tag{display:inline-block;font-size:11px;line-height:1.5;padding:1px 7px;border-radius:3px;
+    letter-spacing:.03em;white-space:nowrap;font-weight:600}
+  .tag.o{color:var(--out-ink);background:var(--out-bg)}
+  .tag.s{color:var(--eff-ink);background:var(--eff-bg)}
+  .tag.p{color:var(--efc-ink);background:var(--efc-bg)}
+  .tag.r{color:var(--rea-ink);background:var(--rea-bg)}
+  .tag.c{color:var(--cos-ink);background:var(--cos-bg)}
+  .tag.iso{color:#4a4a4a;background:#eeeeee}
+  .tag.lvl{color:#5a3a86;background:#f0eaf8}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--line-soft);padding:1px 5px;border-radius:3px}
+  pre{background:var(--panel);color:#e7eef6;border-radius:6px;padding:18px 20px;overflow-x:auto;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;margin:14px 0}
+  pre b{color:#f0b866;font-weight:400}      /* anahtar kelime */
+  pre i{color:#7f8ea1;font-style:normal}    /* yorum */
+  pre u{color:#9fd28a;text-decoration:none} /* dize/sayı */
+  pre .fn{color:#79c0e8}
+  .filename{font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin:14px 0 -8px}
+
+  .formula{font-family:var(--serif);font-size:16.5px;background:var(--canvas);
+    border-left:3px solid var(--accent);padding:12px 16px;margin:12px 0;overflow-x:auto}
+  .formula em{font-style:italic}
+
+  .note{border-left:3px solid var(--line);padding:2px 0 2px 14px;color:var(--ink-soft);font-size:14px;margin:14px 0}
+
+  /* --- panel --- */
+  .panel{background:var(--panel);color:#dbe5f0;border-radius:8px;padding:22px 24px;margin:20px 0}
+  .panel h3{color:#fff;margin:0 0 4px;font-size:16px}
+  .panel .hint{color:#8fa2b8;font-size:13px;margin:0 0 16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+  .field label{display:block;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:#8fa2b8;margin-bottom:5px}
+  .field label .req{color:#e08a5a}
+  select,input[type=number],input[type=text]{
+    width:100%;background:var(--panel-2);border:1px solid var(--panel-line);color:#eef4fb;
+    border-radius:5px;padding:9px 10px;font-family:var(--sans);font-size:14px}
+  input[type=number]{font-family:var(--mono)}
+  select:focus,input:focus{outline:2px solid #4a8fc0;outline-offset:1px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:16px;font-size:13.5px;color:#b9c7d6}
+  .checks label{display:flex;gap:7px;align-items:center;cursor:pointer}
+  .panel-foot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  button{font-family:var(--sans);font-size:14px;font-weight:600;border-radius:5px;cursor:pointer;
+    border:1px solid transparent;padding:9px 18px}
+  .btn-run{background:#1c74ab;color:#fff}
+  .btn-run:hover{background:#2385c2}
+  .btn-ghost{background:transparent;color:#9fb3c9;border-color:var(--panel-line)}
+  .chip{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#9fb3c9;
+    border:1px solid var(--panel-line);border-radius:99px;padding:5px 12px;white-space:nowrap}
+  .chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#7c8ea3}
+  .chip.busy::before{background:#e0a13c}
+  .chip.on::before{background:#4ec07a}
+  .chip.off::before{background:#c05a5a}
+
+  .console{border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:14px 0}
+  .console-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+    background:var(--canvas);border-bottom:1px solid var(--line);padding:8px 12px;font-size:12.5px;color:var(--ink-soft)}
+  .console textarea{width:100%;border:0;display:block;background:var(--panel);color:#e7eef6;
+    font-family:var(--mono);font-size:12.5px;line-height:1.65;padding:16px 20px;resize:vertical;min-height:190px}
+  .console textarea:focus{outline:2px solid #4a8fc0;outline-offset:-2px}
+  .console pre{margin:0;border-radius:0;background:#0a1017;border-top:1px solid var(--panel-line);min-height:64px}
+  .btn-sm{padding:6px 14px;font-size:13px}
+  details.src pre{max-height:420px;overflow:auto}
+  .btn-ghost:hover{color:#fff;border-color:#47607d}
+
+  .result{border:1px solid var(--line);border-top:3px solid var(--accent);padding:18px 20px;margin:18px 0}
+  .result .big{font-family:var(--serif);font-size:32px;line-height:1.1}
+  .result .big span{font-size:16px;color:var(--ink-soft);font-family:var(--sans)}
+  .result dl{display:grid;grid-template-columns:auto 1fr;gap:4px 18px;margin:14px 0 0;font-size:14px}
+  .result dt{color:var(--ink-soft)}
+  .result dd{margin:0;font-variant-numeric:tabular-nums}
+  .verdict{margin-top:14px;padding:10px 12px;font-size:14px;border-radius:4px;background:var(--canvas)}
+  .verdict.ok{color:var(--ok);background:#eef6f1}
+  .verdict.warn{color:var(--warn);background:#fbf5e7}
+  .verdict.bad{color:var(--bad);background:#faeeee}
+
+  /* --- matris --- */
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;
+    background:var(--canvas);border:1px solid var(--line);padding:14px 16px;margin:16px 0}
+  .filters label{display:block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:4px}
+  .filters select,.filters input{background:#fff;border:1px solid var(--line);color:var(--ink)}
+  .matrix{font-size:13.5px}
+  .matrix th.rot{width:72px;text-align:center;font-size:11.5px;line-height:1.25;vertical-align:bottom}
+  .matrix td.name{font-weight:500}
+  .matrix td.name em{display:block;font-style:normal;font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .matrix tr.group td{background:#f2f5f8;font-weight:650;font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft)}
+  .count{font-size:13px;color:var(--ink-soft);margin:8px 0}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-soft);margin:10px 0 0}
+
+  /* --- pozisyon tablosu --- */
+  .postbl{font-size:13.5px}
+  .postbl input[type=text],.postbl input[type=date],.postbl input[type=number]{
+    width:100%;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .postbl input[type=text]{font-family:var(--sans)}
+  .postbl input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+  .postbl td.chk{text-align:center}
+  .postbl input[type=number]{text-align:right}
+  .postbl td:first-child{min-width:150px}
+  .postbl th.num,.postbl td.num{width:auto}
+  @media(max-width:760px){table{display:block;overflow-x:auto}}
+  .postbl td.calc{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink-soft);white-space:nowrap}
+  .postbl tfoot td{background:var(--canvas);font-weight:650}
+  .tblbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0}
+  .tblbar button{border-color:var(--line);color:var(--ink-soft);background:#fff}
+  .tblbar button:hover{color:var(--ink);border-color:var(--ink-faint)}
+  .tblbar .inline{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink-soft)}
+  .tblbar .inline input{width:78px;background:#fff;border:1px solid var(--line);color:var(--ink);
+    border-radius:4px;padding:5px 7px;font-family:var(--mono);font-size:13px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+  .card{border:1px solid var(--line);border-top:3px solid var(--eff-ink);padding:12px 14px}
+  .card b{display:block;font-family:var(--serif);font-size:24px;line-height:1.2}
+  .card span{font-size:12px;color:var(--ink-soft)}
+  .card.alt{border-top-color:var(--efc-ink)}
+  .card.warn{border-top-color:var(--out-ink)}
+
+  details{border-bottom:1px solid var(--line);padding:12px 0}
+  summary{cursor:pointer;font-weight:600;font-size:15px}
+  summary::marker{color:var(--accent)}
+  details p{margin:10px 0 0;font-size:15px;color:var(--ink-soft)}
+
+  footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-faint)}
+  @media (prefers-reduced-motion:no-preference){
+    .result{transition:border-color .2s}
+  }
+  @media print{
+    body{background:#fff} .sheet{box-shadow:none;max-width:none;padding:0}
+    .panel{background:#fff;color:#000;border:1px solid #000}
+    pre{background:#f4f4f4;color:#000}
+  }
+.postbl input[type=number]{min-width:56px}
+.postbl input[type=text]{min-width:100px}
+.postbl th,.postbl td{padding-left:5px;padding-right:5px}
+.tblbar .inline input{width:90px}
+.figcap{font-size:12.5px;color:var(--ink-soft);margin-top:6px}
+.cyc{margin:14px 0;border:2px dashed var(--line);border-radius:16px;padding:10px 12px}
+.cyc-top,.cyc-bot{text-align:center;font-size:13px;color:var(--ink-soft);padding:4px}
+.cyc-mid{display:flex;gap:8px;align-items:stretch}
+.cyc-side{flex:0 0 70px;display:flex;flex-direction:column;justify-content:center;text-align:center;font-size:11px;color:var(--ink-soft)}
+.cyc-grid{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.cyc-cell{border:1px solid var(--line);border-radius:8px;padding:8px 6px;text-align:center;font-size:12.5px;background:var(--paper,#fff)}
+.cyc-cell small{display:block;color:var(--ink-soft);font-size:11px}
+.cyc-wide{grid-column:1/-1}.cyc-core{background:rgba(70,120,200,.14);border-color:rgba(70,120,200,.5);font-weight:600}
+@media(max-width:760px){.cyc-side{flex-basis:44px;font-size:9px}.cyc-cell{font-size:11px;padding:6px 3px}}
+.bars{margin:10px 0}.br-row{display:flex;align-items:center;gap:10px;margin:5px 0}
+.br-lab{flex:0 0 250px;font-size:13px}.br-track{flex:1;height:22px;background:rgba(120,130,150,.10);border-radius:4px}
+.br-bar{display:block;height:100%;border-radius:4px;font-size:12px;line-height:22px;padding:0 6px;color:#fff;min-width:22px;box-sizing:border-box}
+.br-p{background:#6b7a90}.br-c{background:#3d78c4}.br-s{background:#b5651d}.br-r{background:#2e8b57}.br-o{background:#8e44ad}
+.br-sum{font-size:12.5px;color:var(--ink-soft);margin-top:6px}
+@media(max-width:760px){.br-lab{flex-basis:130px;font-size:12px}}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+<h1>ISO 30415 Çeşitlilik ve Kapsayıcılık</h1>
+<div class="srcbar">
+  <span><b>Kaynak:</b> BS ISO 30415:2021 — <i>Human resource management — Diversity and inclusion</i></span>
+  <span><b>Kapsam:</b> 5 kullanıcı · 5 madde grubu · 202 madde ve unsur</span>
+  <span><b>Hesaplama:</b> gömülü Python modülü (Pyodide/WebAssembly)</span>
+  <span><b>Sürüm:</b> Ekim 2026</span>
+</div>
+
+<h2 id="genel">Genel Bakış</h2>
+<p>ISO 30415:2021, kurumlarda <b>çeşitlilik ve kapsayıcılığı</b> (Ç&K) yerleştirmeye yönelik uluslararası bir rehberdir; ISO/TC 260 tarafından hazırlanmış ilk baskıdır. BS ISO 30415:2021, ISO standardının İngiltere uyarlamasıdır ve BS 76005:2017'nin yerini alır (BS 76005, 1 Mayıs 2023'te geri çekilecektir; geç tarih, İngiltere'deki kurumların taahhütlerini göstermeye devam edebilmesi içindir).
+Giriş bölümüne göre kapsayıcı bir işyeri; kurumsal sistem, politika, süreç ve uygulamalardaki eşitsizlikleri ve kişilerin bilinçli ve bilinçsiz önyargılarını ve davranışlarını ele alan <b>süregelen bir taahhüt</b> gerektirir. Standart; ön koşulları, hesap verebilirlik ve sorumlulukları, kapsayıcı kültürü ve bir Ç&K çerçevesini, ardından
+<b>İK yaşam döngüsünün dokuz aşamasını</b> (işgücü planlaması, ücretlendirme, işe alım, işe başlama, öğrenme ve gelişim, performans yönetimi, halefiyet, hareketlilik, istihdamın sona ermesi), ürün ve hizmetleri, tedarik zincirini ve dış paydaşları kapsar. Her madde için <b>eylemler</b>, <b>çeşitlilik boyutuna göre bölümlenerek analiz edilebilecek ölçü örnekleri</b> ve <b>olası çıktılar</b> verir; Ek A'da tüm eylemler bir öz değerlendirme listesinde derlenmiştir.
+Bu sayfa, standardın unsurlarını filtrelenebilir bir matrise; Ek A'yı canlı bir öz değerlendirme tablosuna; ölçü örneklerini grup karşılaştırma tablosuna, türetilmiş formüllere, canlı bir hesaplayıcıya ve Python koduna dönüştürür. Sayısal bölümler standarda değil bu sayfaya aittir ve her yerde "türetilmiş" olarak işaretlenmiştir. İlişkili belgeler: ISO 30400 (terimler), ISO 30408 (insan yönetişimi), ISO 30409 (işgücü planlaması), ISO 30414 (insan sermayesi raporlaması), ISO 30405 (işe alım).</p>
+
+<h3>Önemli Noktalar</h3>
+<ul class="keypoints">
+  <li><b>Altı ön koşul (madde 4).</b> Çeşitliliği tanımak, etkin yönetmek, hesap verebilir davranmak, kapsayıcı çalışmak, kapsayıcı iletişim kurmak ve savunuculuk yapmak. Bunlar Ç&K çerçevesinin temelidir; Giriş dört destek sayar (ön koşullar, sorumluluklar, değerleme ve kapsayıcı işyeri, hedef–eylem–ölçü–çıktı).</li>
+  <li><b>Hesap verebilirlik zinciri (madde 5).</b> Yönetim organı ve üst yönetim ilke ve hedefleri belirler ve kaynak sağlar; liderler çerçeveyi kurar; işlevsel alanların yöneticileri sorumluluğu devralır; herkesin bireysel sorumluluğu vardır. Yıllık raporda Ç&K fırsat ve riskleri ile ilerleme, kanıt ve iş gücü demografik verisiyle anlatılmalıdır.</li>
+  <li><b>Planla–uygula–kontrol et–gözden geçir (Şekil 1).</b> Ç&K çerçevesi merkezi bileşendir; döngü etkiler, eylemler, ölçüler ve çıktılar üzerinden işler; hepsi kurumun bağlamı içindedir.</li>
+  <li><b>177 eylem, 83 ölçü örneği, 86 çıktı örneği.</b> Madde 5–11'de eylemler "kurumlar şunu yapmalı", ölçüler "kurum için önemli olabilecek ölçü örnekleri", çıktılar "olası çıktılar" olarak sunulur. Ölçülerin çoğu "bütünleşik ve çeşitlilik boyutuna göre bölümlenmiş" analiz edilmelidir.</li>
+  <li><b>Çeşitlilik boyutları.</b> Yaş, engellilik, cinsiyet, cinsel yönelim, toplumsal cinsiyet kimliği, ırk, renk, uyruk, etnik ya da ulusal köken, din ya da inanç ve sosyo-ekonomik bağlam gibi özellikler; çoğu ülkede hukuki gerekliliklerle ilişkili olabilir (3.7). Boyutların kesişimi (3.15) tanınmalıdır.</li>
+  <li><b>Teknoloji ve önyargı.</b> Algoritmalar, makine öğrenmesi ve otomatik İK sistemleri önyargı riski taşır; işe alımdan sona erişe kadar kararlar denetim ve denge mekanizmalarıyla desteklenmelidir (5.4, 8.1, 8.4).</li>
+  <li><b>Yalnızca İK değil.</b> Standart ürün ve hizmet tasarımını, tedarikçi çeşitliliğini ve tedarik zincirinde insana yakışır işi, dış paydaşlarla ilişkileri de kapsar (9–11).</li>
+</ul>
+
+<div class="toc">
+  <b>İçindekiler</b>
+  <a href="#genel">Genel bakış ve önemli noktalar</a>
+  <a href="#nezaman">Ne zaman kullanılır</a>
+  <a href="#cerceve">Çerçeve ve metodoloji</a>
+  <a href="#maddeler">Madde 5–11 özeti</a>
+  <a href="#adimlar">Uygulama adımları</a>
+  <a href="#kavramlar">Temel kavramlar</a>
+  <a href="#matris">Madde matrisi</a>
+  <a href="#tablo">Ek A öz değerlendirme tablosu</a>
+  <a href="#grup">Grup karşılaştırma tablosu</a>
+  <a href="#formuller">Formüller ve tanımlar</a>
+  <a href="#hesaplayici">Hesaplayıcı</a>
+  <a href="#python">Python kod örnekleri</a>
+  <a href="#yorum">Sonuçların yorumlanması</a>
+  <a href="#sinirlamalar">Sınırlamalar</a>
+  <a href="#raporlama">Çıktıların iletilmesi</a>
+  <a href="#ilgili">İlgili standartlar</a>
+  <a href="#sss">Sıkça sorulan sorular</a>
+</div>
+
+<h2 id="nezaman">Ne Zaman Kullanılır</h2>
+<p>Standart; yönetişim organı, liderler, iş gücü ve tanınmış temsilcileri ile diğer paydaşlar dahil her tür ve ölçekteki kuruma (kamu, özel, devlet, STK; sektör ve büyüklükten bağımsız) yöneliktir. Küçük kurumlara ya da özel bir İK işlevi olmayanlara Ç&K faaliyetlerini yapılandırılmış biçimde yönetmek için çerçeve sunar; büyük kurumlara hedeflerine ulaşmada ve insanlar, topluluklar ve toplum üzerindeki etkiyi değerlendirmede yardım eder. Bağımsız ve dış doğrulamayı da destekleyebilir.</p>
+<ul>
+  <li><b>Ç&K taahhüdünü kurarken:</b> ön koşullar, yönetişim ve liderlik sorumlulukları, çerçeve ve ilke ve hedeflerin belirlenmesi (4–6).</li>
+  <li><b>Kapsayıcı kültür oluştururken:</b> ses mekanizmaları, davranış beklentileri, çatışma çözümü, demografik veri toplama ve raporlama (7).</li>
+  <li><b>İK süreçlerini gözden geçirirken:</b> planlamadan işten çıkarmaya her aşamada eylem, ölçü ve çıktılar; algoritma ve otomasyon önyargısı (8).</li>
+  <li><b>Ürün, hizmet ve tedarik zincirinde:</b> kapsayıcı tasarım, pazarlama dili, tedarikçi çeşitliliği ve sözleşme maddeleri (9, 10).</li>
+  <li><b>Dış paydaşlarla ilişkilerde:</b> yatırımcılar, topluluklar, eğitim kurumları, düzenleyiciler ve savunuculuk grupları (11).</li>
+  <li><b>Mevcut durumu değerlendirirken:</b> Ek A'daki öz değerlendirme listesi; ölçü ve çıktı örnekleri kanıt olarak kullanılır.</li>
+</ul>
+<div class="note">Standart <b>sendika ya da iş konseyi ilişkilerinin özel yönlerini, ülkeye özgü uyumu, yasal gereklilikleri ve davaları</b> ele almaz (madde 1). Bir sertifikasyon şartnamesi ya da uygunluk sınavı da değildir: eylemler "yapmalı" kipindedir, ancak her kurumun yaklaşımını bağlamına göre belirlemesi beklenir. Boyutlara göre analiz edilen kişisel veriler için yerel veri koruma mevzuatı ayrıca uygulanır.</div>
+
+<h2 id="cerceve">Çerçeve ve Metodoloji</h2>
+
+<h3>Şekil 1 — Kurumsal çeşitlilik ve kapsayıcılık</h3>
+<p>Standardın Şekil 1'i, Ç&K çerçevesini merkezde ve diğer bileşenleri bir yap-boz gibi çevresinde gösterir; çevresinde "Planla – Uygula – Kontrol et – Gözden geçir" döngüsü, dıştan "Kurumsal bağlam" ve üstte "Ç&K ön koşulları" yer alır. Aşağıdaki çizim bu şemanın yeniden çizimidir; ilgili bileşenler standardın maddeleriyle eşleştirilmiştir.</p>
+<div class="cyc">
+  <div class="cyc-top">Ç&K ön koşulları (madde 4) &nbsp;·&nbsp; <b>PLANLA</b> ← etkiler</div>
+  <div class="cyc-mid">
+    <div class="cyc-side cyc-l"><b>GÖZDEN GEÇİR</b><br>çıktılar</div>
+    <div class="cyc-grid">
+      <div class="cyc-cell cyc-wide">Yönetişim <small>5.2</small></div>
+      <div class="cyc-cell">Liderlik <small>5.3</small></div><div class="cyc-cell">Devredilen sorumluluklar <small>5.4</small></div>
+      <div class="cyc-cell">Ç&K ilke ve stratejik hedefler <small>5.1, 6</small></div><div class="cyc-cell cyc-core">Ç&K çerçevesi <small>6</small></div><div class="cyc-cell">İK yaşam döngüsü <small>8</small></div>
+      <div class="cyc-cell">Kurumsal sürdürülebilirlik <small>9–11</small></div><div class="cyc-cell cyc-core">Kapsayıcı kültür <small>7</small></div><div class="cyc-cell">Politika, süreç ve uygulamalar <small>5.4, 8</small></div>
+      <div class="cyc-cell">Tedarik zinciri <small>10</small></div><div class="cyc-cell">İş gücü <small>5.5</small></div><div class="cyc-cell">Ürün ve hizmetler <small>9</small></div>
+      <div class="cyc-cell cyc-wide">Paydaşlar <small>11</small></div>
+    </div>
+    <div class="cyc-side cyc-r"><b>UYGULA</b><br>eylemler</div>
+  </div>
+  <div class="cyc-bot"><b>KONTROL ET</b> ← ölçüler &nbsp;·&nbsp; Kurumsal bağlam</div>
+</div>
+<p class="figcap">Çizim yapısal bir düzendir: hücrelerin konumu standardın şemasına benzer; ancak standart bileşenler arası ilişkiyi sözlü olarak anlatmaz, şema yalnızca düzeni gösterir. Ölçüler, çıktılar ve eylemler her madde için ayrı ayrı verilir.</p>
+
+<h3>Her madde dört parçadan oluşur</h3>
+<table>
+  <thead><tr><th style="width:150px">Parça</th><th>Ne içerir</th><th style="width:260px">Bu sayfada</th></tr></thead>
+  <tbody>
+    <tr><td><b>Genel</b></td><td>Konunun tanımı, ilişkili standartlar ve kurumun dikkat etmesi gereken noktalar</td><td>Matriste "ilke ve kavram" unsurları</td></tr>
+    <tr><td><b>Eylemler</b></td><td>"Kurumlar şunu yapmalı" biçiminde Ç&K hedeflerine ulaşmak için atılacak adımlar (toplam 177, Ek A'da derlenmiş)</td><td>Matriste eylem unsuru; öz değerlendirme tablosu</td></tr>
+    <tr><td><b>Ölçüler</b></td><td>Kurum için önemli olabilecek, bütünleşik ve çeşitlilik boyutuna göre bölümlenmiş analiz edilecek ölçü örnekleri (83)</td><td>Matriste ölçü unsurları; hesaplayıcı</td></tr>
+    <tr><td><b>Çıktılar</b></td><td>Etkili uygulamanın olası sonuç örnekleri (86)</td><td>Matriste çıktı unsurları</td></tr>
+  </tbody>
+</table>
+<p>Ölçüler birer örnektir: standart hangisinin kullanılacağını, nasıl hesaplanacağını ya da hedefini belirtmez; "kurum için önemli" olanları seçmek kuruma bırakılır (5.4, 6.2). Ölçülerin bölümlenmesi, ayrımcılık ve veri koruma açısından dikkat gerektirir.</p>
+
+<h2 id="maddeler">Madde 5–11 Özeti</h2>
+<p>Aşağıdaki tablo her maddenin odağını ve eylem, ölçü ve çıktı sayısını verir; çubuk grafik Ek A'daki eylemlerin maddelere dağılımını gösterir (Şekil 2, türetilmiştir — standardın eylemleri sayılmıştır).</p>
+<table>
+  <thead><tr><th style="width:70px">Madde</th><th style="width:230px">Başlık</th><th>Odak</th><th class="num" style="width:62px">Eylem</th><th class="num" style="width:62px">Ölçü</th><th class="num" style="width:62px">Çıktı</th></tr></thead>
+  <tbody>
+    <tr><td><b>5</b></td><td>Hesap verebilirlik ve sorumluluklar</td><td>Yönetişim (5.2: 4 eylem), liderlik (5.3: 8), devredilen sorumluluklar (5.4: 15), bireysel sorumluluklar (5.5: 4)</td><td class="num">31</td><td class="num">—</td><td class="num">—</td></tr>
+    <tr><td><b>6</b></td><td>Ç&K çerçevesi</td><td>İlke ve hedefler, ölçüler, fırsat ve riskler, çıktı ve etkiler; çerçeve sorumlusu</td><td class="num">13</td><td class="num">8</td><td class="num">10</td></tr>
+    <tr><td><b>7</b></td><td>Kapsayıcı kültür</td><td>İletişim, ses, davranış beklentileri, çatışma çözümü, demografik veri, itibar</td><td class="num">11</td><td class="num">10</td><td class="num">12</td></tr>
+    <tr><td><b>8.2</b></td><td>İşgücü planlaması</td><td>Planda Ç&K, demografik karşılaştırma, az temsil</td><td class="num">7</td><td class="num">4</td><td class="num">4</td></tr>
+    <tr><td><b>8.3</b></td><td>Ücretlendirme</td><td>Eşit değerde iş için eşit ücret, anomali ve farklar</td><td class="num">9</td><td class="num">4</td><td class="num">4</td></tr>
+    <tr><td><b>8.4</b></td><td>İşe alım</td><td>Çeşitli kanallar, önyargısız araçlar, aşama verisi, uyumlaştırma</td><td class="num">14</td><td class="num">6</td><td class="num">4</td></tr>
+    <tr><td><b>8.5</b></td><td>İşe başlama</td><td>Yapılandırılmış süreç, uyumlaştırma, destek kaynakları, ilk 6 ay</td><td class="num">10</td><td class="num">8</td><td class="num">5</td></tr>
+    <tr><td><b>8.6</b></td><td>Öğrenme ve gelişim</td><td>Erişilebilir öğrenme, kapsayıcı içerik, müdahale becerileri, lider gelişimi</td><td class="num">11</td><td class="num">7</td><td class="num">7</td></tr>
+    <tr><td><b>8.7</b></td><td>Performans yönetimi</td><td>Önyargısız ölçütler, yapıcı geri bildirim, derecelendirici önyargısı</td><td class="num">12</td><td class="num">6</td><td class="num">9</td></tr>
+    <tr><td><b>8.8</b></td><td>Halefiyet planlaması</td><td>Çeşitli halef havuzu, erişim, mentorluk</td><td class="num">9</td><td class="num">7</td><td class="num">6</td></tr>
+    <tr><td><b>8.9</b></td><td>İşgücü hareketliliği</td><td>Geçici görev, yer değiştirme, uzaktan alternatifler, aile koşulları</td><td class="num">11</td><td class="num">5</td><td class="num">5</td></tr>
+    <tr><td><b>8.10</b></td><td>İstihdamın sona ermesi</td><td>Yapılandırılmış, tarafsız ve saygılı süreç; ayrımcı olmayan ölçütler</td><td class="num">11</td><td class="num">5</td><td class="num">5</td></tr>
+    <tr><td><b>9</b></td><td>Ürün ve hizmetler</td><td>Kapsayıcı tasarım ve sunum, müşteri geri bildirimi</td><td class="num">9</td><td class="num">4</td><td class="num">6</td></tr>
+    <tr><td><b>10</b></td><td>Tedarik ve tedarik zinciri</td><td>Tedarikçi çeşitliliği, sözleşme maddeleri, izleme</td><td class="num">9</td><td class="num">5</td><td class="num">5</td></tr>
+    <tr><td><b>11</b></td><td>Dış paydaş ilişkileri</td><td>İhtiyaç ve güç analizi, dış erişim, medya algısı</td><td class="num">10</td><td class="num">4</td><td class="num">4</td></tr>
+  </tbody>
+  <tfoot><tr><td></td><td><b>Toplam</b></td><td></td><td class="num"><b>177</b></td><td class="num"><b>83</b></td><td class="num"><b>86</b></td></tr></tfoot>
+</table>
+<p class="figcap">Madde 5'te yalnızca eylemler vardır (ölçü ve çıktı bölümü yoktur). 6.3 ve 7.3'te "kendini değerli hissedenlerin yüzdesi" ölçüsü ortaktır; sayımda her iki maddede ayrı sayılmıştır.</p>
+<h3>Şekil 2 — Madde başına eylem sayısı (Tablo A.1)</h3>
+<div class="bars" id="barChart"></div>
+
+<h2 id="adimlar">Uygulama Adımları</h2>
+<ol>
+  <li><b>Ön koşulları sağlayın (4).</b> Çeşitliliği tanıyın, etkin yönetişim kurun, hesap verebilir, kapsayıcı ve iletişimde kapsayıcı olun, savunuculuk yapın.</li>
+  <li><b>Hesap verebilirliği tanımlayın (5).</b> Yönetim organı ve üst yönetim ilke ve hedefleri koysun ve kaynak ayırsın; sorumluluğu işlevsel alanlara ve uzmanlara devredin.</li>
+  <li><b>Çerçeveyi kurun (6).</b> Ç&K ilke ve hedefleri, sorumluluklar, eylemler, geçerli ve güvenilir ölçüler, fırsat ve riskler, olası çıktılar; çerçevenin bakımından sorumlu bir lider.</li>
+  <li><b>Kapsayıcı kültürü destekleyin (7).</b> İletişim, ses mekanizmaları, davranış beklentileri, çatışma çözümü ve demografik verinin etik toplanması.</li>
+  <li><b>İK yaşam döngüsünü gözden geçirin (8).</b> Dokuz aşamanın her birinde eylemleri uygulayın; algoritma ve otomasyon önyargısını denetleyin.</li>
+  <li><b>Ürün, tedarik ve dış paydaşlara yayın (9–11).</b> Kapsayıcı tasarım, tedarikçi çeşitliliği ve sözleşme maddeleri, dış erişim.</li>
+  <li><b>Ölçün ve kanıtlayın (6.3, 7.3, 8.x.3).</b> Kurum için önemli ölçüleri seçin; bütünleşik ve boyuta göre bölümlenmiş analiz edin; Ek A'daki listeyle kanıtları toplayın.</li>
+  <li><b>Raporlayın ve gözden geçirin (5.3, 6.2).</b> Yıllık raporda anlatı, kanıt ve iş gücü demografik verisi; hedefleri düzenli gözden geçirin ve çıktıları paydaşlarla paylaşın.</li>
+</ol>
+
+<h2 id="kavramlar">Temel Kavramlar</h2>
+<p>Standart 3. maddesinde ISO 30400'e ek olarak 19 terim tanımlar. Aşağıdaki tablo bu terimlerin kısa özetidir. Açıklamalar özgün olarak yazılmıştır; bağlayıcı olan standardın kendi metnidir.</p>
+<table>
+  <thead><tr><th style="width:70px">Madde</th><th style="width:240px">Kavram</th><th>Açıklama</th></tr></thead>
+  <tbody>
+    <tr><td><b>3.1</b></td><td>Erişilebilirlik <small>(accessibility)</small></td><td>İşyeri ortamlarının, sistemlerin, ürün ve hizmetlerin en geniş insan kitlesince erişilebilir ve kullanılabilir olma ölçüsü.</td></tr>
+    <tr><td><b>3.2</b></td><td>Uyumlaştırma <small>(accommodate)</small></td><td>Farklı yeteneklerdeki kişilerin işe erişmesi ve katkı vermesi için tesis, çalışma saati, görev, ekipman ve bilgi erişilebilirliğinde ayarlama yapma.</td></tr>
+    <tr><td><b>3.3</b></td><td>Hesap verebilirlik <small>(accountability)</small></td><td>Kişi ya da kurumun faaliyetlerini açıklama ve sorumluluğunu kabul etme yükümlülüğü; sonuçları şeffaf biçimde paylaşmayı içerebilir.</td></tr>
+    <tr><td><b>3.4</b></td><td>Olumsuz etki <small>(adverse impact)</small></td><td>Birey ve gruplar için dezavantajlı ve olası ayrımcı sonuç.</td></tr>
+    <tr><td><b>3.5</b></td><td>Önyargı <small>(bias)</small></td><td>Tarafsız yargıyı engelleyen önceden oluşmuş ya da mantıksız eğilim, yönelim ya da görüş; bilinçsiz, bilinçli ya da sistematik olabilir.</td></tr>
+    <tr><td><b>3.6</b></td><td>İnsana yakışır iş <small>(decent work)</small></td><td>Özgürlük, eşitlik, güvenlik ve insan onuru koşullarında yapılan iş.</td></tr>
+    <tr><td><b>3.7</b></td><td>Çeşitlilik <small>(diversity)</small></td><td>İnsanlar arasındaki farklılıkların ve benzerliklerin özellikleri; yaş, engellilik, cinsiyet, cinsel yönelim, toplumsal cinsiyet kimliği, ırk, renk, uyruk, etnik ya da ulusal köken, din ya da inanç ve sosyo-ekonomik bağlam gibi boyutları içerir.</td></tr>
+    <tr><td><b>3.8</b></td><td>Çalışan kaynak grubu <small>(ERG)</small></td><td>Ortak demografik ve diğer çeşitlilik boyutlarını paylaşan kişiler ve müttefikleri; deneyim paylaşan ve Ç&K'yı teşvik eden bir ağ; bütçe ve lider sponsorla desteklenebilir.</td></tr>
+    <tr><td><b>3.9</b></td><td>Eşitlik <small>(equality)</small></td><td>Statü, hak, fırsat ya da sonuçlarda eşit olma durumu.</td></tr>
+    <tr><td><b>3.10</b></td><td>Hakkaniyet <small>(equity)</small></td><td>Politika, süreç ve uygulamaların adil uygulanması ve bireysel ihtiyaçların tanınması ilkesi.</td></tr>
+    <tr><td><b>3.11</b></td><td>Adillik <small>(fairness)</small></td><td>Herkesin mümkün olduğunca sistematik önyargıdan uzak, hakkaniyetli usullere tabi olması ilkesi.</td></tr>
+    <tr><td><b>3.12</b></td><td>Kapsayıcılık <small>(inclusion)</small></td><td>Kurumsal bağlamlarda tüm paydaşları dahil etme uygulaması; farklı gruplardan paydaşların kabul edilmesi, karşılanması, sesinin olması ve aidiyet duygusu geliştirmesi; bilgi, beceri ve yeteneğe dayalı fırsat ve kaynaklara erişim.</td></tr>
+    <tr><td><b>3.13</b></td><td>Kapsayıcı kültür <small>(inclusive culture)</small></td><td>İnsan ve kurum davranışını etkileyen, en geniş paydaş kitlesinin bakış açılarını ve katkılarını dahil eden ve değer veren değerler, inançlar ve uygulamalar.</td></tr>
+    <tr><td><b>3.14</b></td><td>Kapsayıcı davranış <small>(inclusive behaviour)</small></td><td>Kapsayıcılığı teşvik eden davranış; herkesin sesinin olmasını sağlama ve her paydaşın bakış açısını ve katkısını kabul edip değer verme.</td></tr>
+    <tr><td><b>3.15</b></td><td>Kesişimsellik <small>(intersectionality)</small></td><td>Bir kişinin kimliğinin parçası olan bir ya da birkaç çeşitlilik boyutunun ve diğer kişisel özelliklerin birleşimi; yaşam ve iş deneyimlerini etkiler.</td></tr>
+    <tr><td><b>3.16</b></td><td>İşe başlama <small>(onboarding)</small></td><td>Kişileri kuruma, kültüre, beklentilere, politikalara, insanlara ve rollere hoş geldin süreci.</td></tr>
+    <tr><td><b>3.17</b></td><td>Kurumsal yönetişim <small>(organizational governance)</small></td><td>Kurumun hedefleri doğrultusunda karar aldığı ve uyguladığı sistem (ISO 26000:2010, 2.13).</td></tr>
+    <tr><td><b>3.18</b></td><td>Dış erişim <small>(outreach)</small></td><td>Kurumun daha geniş bir paydaş grubuyla etkileşim kurmak için yürüttüğü faaliyetler.</td></tr>
+    <tr><td><b>3.19</b></td><td>Ses <small>(voice)</small></td><td>İnsanların görüşlerini ileterek kendilerini etkileyen konulara etki etme biçimi; anketler, ERG'ler, danışma ve müzakereler gibi resmî ve gayriresmî mekanizmalarla; dış paydaşların beklenti ve kaygıları da dahil.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="matris">Madde Matrisi</h2>
+<p>Aşağıdaki tablo, standardın giriş, ön koşul, sorumluluk, eylem, ölçü ve çıktı unsurlarının kullanıcı × bölüm × unsur türü sınıflandırmasıdır. Eylemler ve çıktılar, bu sayfada madde başına özetlenmiştir; ölçüler tek tek yer alır; 5. madde sorumlulukları tek tek yer alır. Kullanıcı sütunları standardın kapsam maddesindeki paydaş gruplarına dayanır; bölüm sınıflandırması ve kullanıcı atamaları bu sayfanın yazarlık sınıflandırmasıdır. Filtreleri değiştirdiğinizde tablo anında daralır.</p>
+
+<div class="filters">
+  <div><label for="fUser">Kullanıcı</label>
+    <select id="fUser">
+      <option value="">Tümü</option>
+      <option value="gov">Yönetişim organı ve üst yönetim</option>
+      <option value="hr">İK ve Ç&K sorumluları</option>
+      <option value="mgr">Yöneticiler</option>
+      <option value="emp">Çalışanlar, temsilciler ve ERG'ler</option>
+      <option value="ext">Tedarikçiler, müşteriler, dış paydaşlar</option>
+    </select></div>
+  <div><label for="fStage">Bölüm</label>
+    <select id="fStage">
+      <option value="">Tümü</option>
+      <option value="giris">Giriş, kapsam ve terimler (Giriş, 1–3)</option>
+      <option value="onkosul">Ön koşullar (4)</option>
+      <option value="sorumluluk">Hesap verebilirlik ve sorumluluklar (5)</option>
+      <option value="cerceve">Ç&K çerçevesi (6)</option>
+      <option value="kultur">Kapsayıcı kültür (7)</option>
+      <option value="yasam">İK yaşam döngüsü (8)</option>
+      <option value="urun">Ürün ve hizmetler (9)</option>
+      <option value="tedarik">Tedarik ve tedarik zinciri (10)</option>
+      <option value="dis">Dış paydaş ilişkileri (11)</option>
+      <option value="ek">Ek A</option>
+    </select></div>
+  <div><label for="fType">Madde grubu</label>
+    <select id="fType">
+      <option value="">Tümü</option>
+      <option value="p">İlke ve sorumluluk</option>
+      <option value="c">Çerçeve ve kültür</option>
+      <option value="s">İK yaşam döngüsü</option>
+      <option value="r">Ürün, tedarik ve dış paydaş</option>
+      <option value="o">Ek A</option>
+    </select></div>
+  <div><label for="fRep">Unsur türü</label>
+    <select id="fRep">
+      <option value="">Tümü</option>
+      <option value="ilke">İlke ve kavram</option>
+      <option value="eylem">Eylem</option>
+      <option value="olcu">Ölçü</option>
+      <option value="cikti">Çıktı</option>
+    </select></div>
+  <div><label for="fQ">Madde adında ara</label>
+    <input type="text" id="fQ" placeholder="ör. ücret"></div>
+</div>
+
+<div class="count" id="mCount"></div>
+<table class="matrix">
+  <thead><tr>
+    <th>Madde / unsur</th>
+    <th class="rot">Yönetişim ve üst yönetim</th>
+    <th class="rot">İK ve Ç&K sorumluları</th>
+    <th class="rot">Yöneticiler</th>
+    <th class="rot">Çalışanlar ve temsilciler</th>
+    <th class="rot">Dış paydaşlar ve tedarikçiler</th>
+  </tr></thead>
+  <tbody id="mBody"></tbody>
+</table>
+<div class="legend">
+  <span><span class="dot p"></span> ilke ve sorumluluk</span>
+  <span><span class="dot c"></span> çerçeve ve kültür</span>
+  <span><span class="dot s"></span> İK yaşam döngüsü</span>
+  <span><span class="dot r"></span> ürün, tedarik, dış paydaş</span>
+  <span><span class="dot o"></span> Ek A</span>
+  <span><span class="tag lvl">hesaplayıcı</span> bu sayfada hesaplanabilen unsur</span>
+  <span>Hesaplayıcıya bağlı unsurlar <b>koyu</b> işaretlenmiştir.</span>
+</div>
+
+<h2 id="tablo">Ek A Öz Değerlendirme Tablosu</h2>
+<p>Ek A (bilgilendirici), madde 5–11'deki tüm Ç&K eylemlerini derler ve kurumların mevcut durumunu standardın önerdiği eylemlerle karşılaştırmasına yardım eder; her eylem için bir "destekleyici kanıt" sütunu bırakır. Aşağıdaki tablo bu listenin sayısal özetidir: her madde için kurumunuzda <b>tam uygulanan</b> ve <b>kısmen uygulanan</b> eylem sayısını girin (eylem sayıları standarttandır). Kapsama, kısmen uygulananı yarım sayarak bu sayfada türetilmiştir;
+<b>hedef kapsama</b> kurumca belirlenir (varsayılan %70 yalnızca örnektir). Örnek veri örnek amaçlıdır. Kanıtları tek tek tutmak için matristeki eylem özetlerini ve Ek A'nın kendi tablosunu kullanın.</p>
+
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnek">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizle">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsv">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktar">Hesaplayıcıya aktar</button>
+</div>
+<div class="tblbar">
+  <span class="inline"><label for="tHedef">Hedef kapsama (%)</label><input type="number" id="tHedef" step="any" value="70"></span>
+</div>
+
+<table class="postbl">
+  <thead><tr>
+    <th style="width:60px">Madde</th><th>Konu</th>
+    <th class="num">Eylem sayısı</th><th class="num">Tam uygulanan</th><th class="num">Kısmen uygulanan</th>
+    <th class="calc" style="width:90px">Kapsama (%)</th>
+    <th class="calc" style="width:170px">Durum</th>
+  </tr></thead>
+  <tbody id="pBody"></tbody>
+  <tfoot><tr>
+    <td>Toplam</td><td></td>
+    <td class="calc" id="tTop">—</td><td class="calc" id="tUyg">—</td><td class="calc" id="tKis">—</td>
+    <td class="calc" id="tKap">—</td><td class="calc" id="tDur">—</td>
+  </tr></tfoot>
+</table>
+
+<div class="cards" id="pCards"></div>
+<div class="note" id="pNot"></div>
+
+<h2 id="grup">Grup Karşılaştırma Tablosu</h2>
+<p>Standart, ölçülerin "bütünleşik ve çeşitlilik boyutuna göre bölümlenmiş" analiz edilmesini ister (ör. 6.3, 8.4.3, 8.7.3). Bu tablo, tek bir çeşitlilik boyutundaki gruplar (ör. kadın/erkek ya da yaş bantları) için dört ölçü örneğini birlikte hesaplar: <b>temsil</b> (iş gücü payı ile referans nüfus payı, 8.2.2), <b>aşama geçişi</b> (başvuran ve seçilen sayıları, 8.4.3), <b>ücret farkı</b> (8.3.3) ve <b>ayrılma oranı</b> (8.10.3).
+<b>İlk dolu satır referans gruptur.</b> Hesaplar bu sayfada türetilmiştir; standart eşik vermez. Küçük gruplarda sonuçlar kişileri ele verebilir; kurumunuzun asgari raporlama büyüklüğüne dikkat edin. Örnek veri örnek amaçlıdır.</p>
+<div class="tblbar">
+  <button class="btn-ghost" id="btnOrnekG">Örnek veriyi yükle</button>
+  <button class="btn-ghost" id="btnTemizleG">Tabloyu temizle</button>
+  <button class="btn-ghost" id="btnCsvG">CSV olarak indir</button>
+  <button class="btn-ghost" id="btnAktarG">Hesaplayıcıya aktar</button>
+</div>
+<table class="postbl">
+  <thead><tr>
+    <th>Grup</th>
+    <th class="num">Kadro</th><th class="num">Referans nüfus payı (%)</th><th class="num">Başvuran</th><th class="num">Seçilen</th><th class="num">Ortalama ücret</th><th class="num">Ayrılan</th>
+    <th class="calc" style="width:80px">Temsil endeksi</th><th class="calc" style="width:80px">Etki oranı</th><th class="calc" style="width:80px">Ücret farkı (%)</th><th class="calc" style="width:80px">Ayrılma (%)</th>
+  </tr></thead>
+  <tbody id="gBody"></tbody>
+  <tfoot><tr>
+    <td>Toplam</td>
+    <td class="calc" id="gKad">—</td><td class="calc">—</td><td class="calc" id="gBas">—</td><td class="calc" id="gSec">—</td><td class="calc">—</td><td class="calc" id="gAyr">—</td>
+    <td class="calc">—</td><td class="calc">—</td><td class="calc">—</td><td class="calc">—</td>
+  </tr></tfoot>
+</table>
+<div class="cards" id="gCards"></div>
+<div class="note" id="gNot"></div>
+
+<h2 id="formuller">Formüller ve Tanımlar</h2>
+<p>Standart hiçbir formül, ölçek ya da birim vermez; her madde için ölçü <i>örnekleri</i> sıralar ve bunların çeşitlilik boyutuna göre analiz edilmesini ister. Aşağıdaki hesaplar, bu örnekleri sayıya dökmek için <b>bu sayfada türetilmiştir</b>; yalnızca sayı olarak verilen ölçüler (şikâyet sayısı, uyumlaştırma sayısı gibi) çalışan başına orana çevrilmiştir.</p>
+<table>
+  <thead><tr><th>Hesap</th><th>Formül</th><th>Not</th></tr></thead>
+  <tbody id="fBody"></tbody>
+</table>
+
+<h2 id="hesaplayici">Hesaplayıcı</h2>
+<p>Hesabı seçin, alanları doldurun; sonuç, formülün yerine konmuş hâli ve yorum aşağıda görünür.
+Kurulum gerekmez, veriler tarayıcıdan çıkmaz.</p>
+
+<div class="panel">
+  <h3>Çeşitlilik ve Kapsayıcılık Hesaplayıcısı</h3>
+  <p class="hint">Alanlar seçtiğiniz hesaba göre değişir. Sayılar ve tutarlar girilir; sonuçlar türetilmiştir ve standart eşik içermez. Hesapları boyuta göre bölümleyerek yeniden çalıştırın.</p>
+  <div class="grid">
+    <div class="field" style="grid-column:1/-1">
+      <label for="cMetric">Hesap <span class="req">*</span></label>
+      <select id="cMetric"></select>
+    </div>
+  </div>
+  <div class="grid" id="cFields" style="margin-top:14px"></div>
+  <div class="checks">
+    <label><input type="checkbox" id="oAll"> Tümünü seç</label>
+    <label><input type="checkbox" id="oFormula" checked> Formülün açık hâli</label>
+    <label><input type="checkbox" id="oInterp" checked> Yorum ve eşik</label>
+    <label><input type="checkbox" id="oPy"> Python karşılığı</label>
+  </div>
+  <div class="panel-foot">
+    <button class="btn-run" id="btnRun">Hesapla</button>
+    <button class="btn-ghost" id="btnExample">Örnek veriyi yükle</button>
+    <button class="btn-ghost" id="btnPy">Python motorunu yükle</button>
+    <span class="chip" id="engStatus">Motor: tarayıcı (JavaScript)</span>
+  </div>
+  <p class="hint" style="margin:14px 0 0">Python motoru seçildiğinde hesaplama, bu sayfaya gömülü
+  <code style="background:#1c2836;color:#cfe0f0">iso30415_metrikler.py</code> modülünün
+  <code style="background:#1c2836;color:#cfe0f0">hesapla()</code> fonksiyonu tarafından, tarayıcı içinde
+  çalışan gerçek bir CPython yorumlayıcısında (Pyodide/WebAssembly) yapılır. İlk yüklemede yaklaşık
+  10–12 MB indirilir; sonrası önbellekten gelir. Çevrimdışıysanız sayfa JavaScript yedeğiyle
+  aynı sonuçları vermeye devam eder.</p>
+</div>
+
+<div id="cResult"></div>
+
+<h2 id="python">Python Kod Örnekleri</h2>
+<p>Bu sayfadaki hesaplamalar JavaScript'te taklit edilmez: modülün tamamı sayfaya gömülüdür ve
+Pyodide (WebAssembly üzerinde CPython) ile tarayıcı içinde çalıştırılır. Hesaplayıcıda Python motorunu
+seçtiğinizde her sonuç <code>hesapla()</code> fonksiyonundan gelir. Aynı dosya
+(<code>iso30415_metrikler.py</code>) komut satırında da bağımsız çalışır; doğrudan çalıştırıldığında
+örnek değerlerle doğrulama çıktısı üretir.</p>
+
+<div class="filename">iso30415_metrikler.py (özet)</div>
+<pre><i># --- Ölçüler (madde 6.3, 7.3, 8.x.3) ---</i>
+
+<b>def</b> <span class="fn">temsil_endeksi</span>(grup, toplam, ref_pay):
+    <i>"""İş gücü payı ÷ referans nüfus payı × 100 (100 = eşit temsil)."""</i>
+    <b>return</b> <u>100</u> * (grup / toplam) / (ref_pay / <u>100</u>)
+
+<b>def</b> <span class="fn">gecis_orani</span>(grup_gecen, grup_basvuran, ref_gecen, ref_basvuran):
+    <i>"""Grubun aşama geçiş oranı ÷ referans grubun aşama geçiş oranı."""</i>
+    <b>return</b> (grup_gecen / grup_basvuran) / (ref_gecen / ref_basvuran)
+
+<b>def</b> <span class="fn">ucret_farki</span>(ref_ort, grup_ort):
+    <i>"""(referans − grup) ÷ referans × 100 (%)."""</i>
+    <b>return</b> <u>100</u> * (ref_ort - grup_ort) / ref_ort
+
+<b>def</b> <span class="fn">ayrilma_orani</span>(ayrilan, kadro):
+    <i>"""Ayrılan ÷ ortalama kadro × 100 (%)."""</i>
+    <b>return</b> <u>100</u> * ayrilan / kadro
+
+<i># --- Ek A ---</i>
+
+<b>def</b> <span class="fn">kapsama</span>(toplam, uygulanan, kismen=<u>0</u>):
+    <i>"""(uygulanan + 0,5 × kısmen) ÷ toplam × 100 (%)."""</i>
+    <b>return</b> <u>100</u> * (uygulanan + <u>0.5</u> * kismen) / toplam
+</pre>
+
+<h3>Çalıştırılabilir konsol</h3>
+<p>Aşağıdaki kod, sayfaya gömülü modüle karşı çalışır. <b>Kodu çalıştır</b> düğmesi Python motorunu
+(yüklü değilse) indirir, modülü içe aktarır ve çıktıyı altta gösterir. Kodu serbestçe değiştirebilir,
+kendi verinizi yazabilirsiniz; her şey tarayıcıda kalır.</p>
+
+<div class="console">
+  <div class="console-bar">
+    <span>iso30415_metrikler modülüne karşı çalışır · Python 3 (Pyodide)</span>
+    <span style="display:flex;gap:8px;align-items:center">
+      <button class="btn-run btn-sm" id="btnRunPy">Kodu çalıştır</button>
+      <button class="btn-ghost btn-sm" id="btnDemo" style="border-color:var(--line);color:var(--ink-soft)">Tam demoyu yükle</button>
+      <button class="btn-ghost btn-sm" id="btnReset" style="border-color:var(--line);color:var(--ink-soft)">Sıfırla</button>
+    </span>
+  </div>
+  <textarea id="pyCode" spellcheck="false"></textarea>
+  <pre id="pyOut">Çıktı burada görünecek. İlk çalıştırmada Python motoru indirilir (10–12 MB).</pre>
+</div>
+
+<details class="src"><summary>Gömülü modülün tam kaynağı (iso30415_metrikler.py)</summary>
+  <pre id="srcView">yükleniyor…</pre>
+</details>
+
+<h2 id="yorum">Sonuçların Yorumlanması</h2>
+<ul>
+  <li><b>Standart hedef ya da eşik vermez.</b> Ölçüler "kurum için önemli olabilecek örnekler"dir; hangi oranın yeterli olduğu kurumun hedeflerine, bağlamına ve yerel mevzuatına bağlıdır. Sayıları kendi başlangıç verinize, zaman içindeki eğilime ve ilgili sektör, bölge ve ulusal nüfus profillerine göre okuyun.</li>
+  <li><b>Bölümlenmiş okuyun.</b> Bütünleşik bir oran farkları gizleyebilir: örneğin toplam kapsayıcılık memnuniyeti yüksek olsa da belirli bir grupta düşük olabilir. Ancak boyutlara göre bölümleme küçük gruplarda kişileri ele verebilir; asgari raporlama büyüklüğü belirleyin ve veri koruma mevzuatına uyun (7.2).</li>
+  <li><b>Temsil endeksi tek başına bir hedef değildir.</b> 100 eşit temsil demektir, ancak standart çıktı olarak "iş gücünün ilgili sektör, bölge ve ulusal nüfus profilleriyle karşılaştırılabilir ve hizmet verilen toplulukları temsil etmesini" sayar (6.4); asıl önemli olan, seviyelere (kıdem, yönetim, yönetişim organı) göre de bakmaktır ve gruba, kuruma ve ülkeye göre referansın nasıl seçileceğidir.</li>
+  <li><b>Etki oranı bir tarama göstergesidir.</b> Düşük bir oran, aşamadaki ölçütlerin ya da otomatik sistemlerin gözden geçirilmesi gerektiğine işaret eder; tek başına ayrımcılığın kanıtı ya da hukuki değerlendirme değildir. Örneklem küçükse tesadüfi dalgalanma olabilir.</li>
+  <li><b>Ücret farkını doğru düzeyde karşılaştırın.</b> Ortalama ücret farkı iş içeriği, kıdem, kademe ve konumdan etkilenir; standart, farkları iş aileleri, konumlar ve ücret yapıları içinde ve arasında incelemeyi söyler (8.3.2). Açıklanamayan farklar "eşit değerde iş için eşit ücret" ilkesi açısından ele alınır.</li>
+  <li><b>Şikâyet sayısı iki yönlü okunur.</b> Düşük sayı hem sorunun azlığını hem de bildirim eksikliğini gösterebilir; güvenli bildirim ortamı (5.4) ve çözüm sonuçlarıyla birlikte değerlendirin. Yüksek sayı, güvenin arttığını da gösterebilir.</li>
+  <li><b>Önce kanıt, sonra puan.</b> Ek A, her eylem için "destekleyici kanıt" ister; kapsama yüzdesi kanıtın yerine geçmez. Hedefin altındaki maddelerde eksik eylemleri belirleyip boşluk kapatma stratejisi yazın.</li>
+  <li><b>Ölçüleri çıktılarla ilişkilendirin.</b> Ölçü örnekleri, çıktıların kanıtı olarak seçilir (Ek A giriş paragrafı); yalnızca sayı toplamak yerine hangi çıktının kanıtlandığını belirtin.</li>
+</ul>
+
+<h2 id="sinirlamalar">Sınırlamalar</h2>
+<ul>
+  <li><b>Standart formül, eşik ya da hedef vermez.</b> Ölçüler yalnızca sözlü örneklerdir. Bu sayfadaki temsil endeksi, etki oranı, ücret farkı, olumlu yanıt, katılım, kabul, ayrılma ve şikâyet oranları, halefiyet payları, tedarikçi harcama payı ve kapsama puanı türetilmiştir. Etki oranı için anılan 0,8 eşiği standarttan değil, bazı ülkelerdeki uygulamadan gelen bir tarama göstergesidir ve hukuki değerlendirme değildir (standart ülkeye özgü uyumu kapsam dışı bırakır).</li>
+  <li><b>ISO/TS 30410 atıfları kaynakçayla örtüşmez.</b> 8.5.1 "işe alım kalitesi (quality of hire) için ISO/TS 30410'a bakınız" der; oysa kaynakçada [7] ISO/TS 30410:2018 "Impact of hire metric" (işe alımın etkisi), [8] ise ISO/TS 30411 "Quality of hire metric" (işe alım kalitesi) olarak yer alır. 8.2.1 de işgücü planlaması için ISO/TS 30410'u anar; kaynakçadaki başlığı işgücü planlamasıyla ilgili değildir. [7] ayrıca tarihli (2018) verilirken diğer ISO atıfları tarihsizdir.</li>
+  <li><b>Kapsam dışı bırakılan konular metinde geçer.</b> Madde 1 sendika ve iş konseyi ilişkilerinin özel yönlerini ele almadığını söyler; buna rağmen 7.2, 8.3, 8.10.2 ve 8.10.4 gibi maddelerde iş gücü temsilcileri, iş konseyleri ve sendikalarla danışma ve destek anılır. Standart bunları ilişkilerin özel yönleri olarak değil, geri bildirim ve destek kanalları olarak ele alır.</li>
+  <li><b>Ek A özet bir listedir.</b> Tablo A.1 yalnızca 5–11. maddelerin eylemlerini derler (177); ölçü ve çıktı örnekleri için ayrı kontrol listesi yoktur ve kanıt sütunu boştur. Madde 5.1 genel paragrafı ve 6, 7, 8 ve diğer maddelerin "Genel" paragrafları eylem olarak sayılmaz. Bazı eylem metinleri ana metinle küçük ifade farkları taşır (ör. 5.4'teki 14. eylemde parantez, 6.2'deki beşinci eylemde virgül kullanımı); bu sayfa eylemleri ana metinden sayar, Ek A ile sayıları birebir örtüşür.</li>
+  <li><b>Ölçü örneklerinin biçimi tutarsızdır.</b> 6.3–10.3 "kurum için önemli olabilecek, bütünleşik ve çeşitlilik boyutuna göre bölümlenmiş ölçüler" der; 11.3 bölümleme ifadesini içermez. Ölçüler bazen sayı ("şikâyet sayısı"), bazen yüzde ("kendini değerli hissedenlerin yüzdesi"), bazen eğilim ya da etkililik değerlendirmesi olarak ifade edilir; ortak bir ölçek yoktur.</li>
+  <li><b>Çıktılar ölçülebilir değildir.</b> Bazı çıktılar ("kapsayıcı davranış", "aidiyet", "güven") doğrudan ölçü örneklerine bağlanmamıştır; hangi ölçünün hangi çıktıyı kanıtladığı eşleştirmesi standartta yoktur. Matristeki hesaplayıcı bağlantıları bu sayfanın yorumudur.</li>
+  <li><b>Şekil 1 sözlü anlatıma bağlı değildir.</b> Şekilde yer alan on iki bileşenin (ör. kurumsal sürdürülebilirlik, paydaşlar) ilişkisi metinde ayrıntılandırılmaz; 6.1 yalnızca çerçevenin merkezi bileşen olduğunu söyler. Bu sayfadaki çizim, bileşenleri standardın maddeleriyle eşleştirir; eşleştirme yazarlık yorumudur.</li>
+  <li><b>Veri toplama ve gizlilik yerel kurala bağlıdır.</b> Demografik veri toplama (7.2) ve bölümlenmiş analiz, ülkeye göre farklı yasal sınırlara tabidir; standart bunları ele almaz. Grup tablosunun örnek verisi ve %70 hedefi örnek amaçlıdır.</li>
+  <li><b>Sayım ve sınıflandırma yazarlık yorumudur.</b> 177 eylem, 83 ölçü ve 86 çıktı sayıları standardın maddeleri sayılarak bu sayfada hesaplanmıştır; matristeki kullanıcı ve bölüm atamaları ve eylem ile çıktıların madde başına özetlenmesi de bu sayfaya aittir. Şekil 1 yeniden çizimdir, Şekil 2 türetilmiştir.</li>
+</ul>
+
+<h2 id="raporlama">Çıktıların İletilmesi</h2>
+<table>
+  <thead><tr><th>Alıcı</th><th>Ne görmek ister</th><th>Biçim</th></tr></thead>
+  <tbody>
+    <tr><td>Yönetişim organı ve üst yönetim</td>
+      <td>Ç&K ilke ve hedefleri, fırsat ve risk dereceleri, hedeflere karşı ilerleme, kaynak kullanımı, yıllık rapor anlatısı ve iş gücü demografik verisi (5.3)</td>
+      <td>Yönetim kurulu raporu, yıllık rapor</td></tr>
+    <tr><td>İK ve Ç&K sorumluları</td>
+      <td>Yaşam döngüsü aşamalarına göre ölçüler, bölümlenmiş analiz, orantısız etki eğilimleri, şikâyet ve çözüm verisi, Ek A kapsaması ve kanıtlar</td>
+      <td>Panolar ve ayrıntılı raporlar, dönemsel</td></tr>
+    <tr><td>Yöneticiler</td>
+      <td>Ekibe ilişkin geri bildirim, kapsayıcı davranış beklentileri, uyumlaştırma talepleri, ilgili süreçlerdeki ölçüler (işe alım, performans, halefiyet)</td>
+      <td>Ekip özeti ve eylem rehberi</td></tr>
+    <tr><td>Çalışanlar, temsilciler ve ERG'ler</td>
+      <td>Kurumun hedefleri ve ilerlemesi, ses mekanizmaları, şikâyet ve destek kanalları, sonuçların genel özeti (bireyleri ele vermeden)</td>
+      <td>Duyuru, forum, istişare, ERG toplantıları</td></tr>
+    <tr><td>Tedarikçiler, müşteriler ve dış paydaşlar</td>
+      <td>Ç&K ilke ve beklentileri, sözleşme maddeleri, tedarikçi erişimi, ilerleme ve etki bilgisi (11.2)</td>
+      <td>Web sitesi, yıllık rapor, tedarikçi forumları</td></tr>
+  </tbody>
+</table>
+<p><b>Her Ç&K raporunda bulunması gerekenler:</b> ilke ve hedefler; sorumluluklar; fırsat ve riskler (teknoloji ve otomatik sistemler dahil); seçilen ölçüler, tanımları ve bölümleme boyutları; veri toplama yöntemi ve gizlilik korumaları; hedeflere karşı ilerleme ve önceki dönemle karşılaştırma; çıktılar ve etkiler; sınırlamalar; eylem planı ve gözden geçirme dönemi.</p>
+
+<h2 id="ilgili">İlgili Standartlar</h2>
+<ul>
+  <li><b>ISO 30400</b> — insan kaynakları yönetimi terimler sözlüğü (tek normatif atıf).</li>
+  <li><b>ISO 30408</b> — insan yönetişimi; kapsayıcı kültür (7.1) ve Giriş'te anılır.</li>
+  <li><b>ISO 30409</b> — işgücü planlaması; 8.2.1.</li>
+  <li><b>ISO 30405</b> — işe alım; 8.4.1.</li>
+  <li><b>ISO 30414</b> — iç ve dış insan sermayesi raporlaması; 5.3 ve 6.2'de yıllık raporlama.</li>
+  <li><b>ISO/TR 30406</b> — kurumlar için sürdürülebilir istihdam edilebilirlik yönetimi; 6.1.</li>
+  <li><b>ISO/TS 30410 ve 30411</b> — işe alımın etkisi ve kalitesi; atıf karışıklığı için Sınırlamalar bölümüne bakın.</li>
+  <li><b>ISO 10667 serisi</b> — insanları değerlendirme hizmetleri; 8.4–8.7.</li>
+  <li><b>ISO 26000:2010</b> — sosyal sorumluluk rehberi; "hesap verebilirlik", "insana yakışır iş" ve "kurumsal yönetişim" tanımlarının kaynağı.</li>
+  <li><b>ILO ve BM belgeleri</b> — fırsat eşitliği ve muamele eşitliği standartları, ILO Temel İlkeler ve Haklar Bildirgesi, BM İş ve İnsan Hakları Rehber İlkeleri, 2030 Gündemi (kaynakça [10]–[13]); SKA 5, 8, 9 ve 10.</li>
+</ul>
+
+<h2 id="sss">Sıkça Sorulan Sorular</h2>
+<details><summary>ISO 30415 nedir ve BS 76005'ten farkı nedir?</summary>
+<p>Kurumlarda çeşitlilik ve kapsayıcılığı yerleştirmek için uluslararası bir rehberdir. BS ISO 30415:2021, BS 76005:2017'nin yerini alır ve onun ilke yaklaşımı ile İK yaşam döngüsü yapısını genişleterek ürün ve hizmetler, paydaş ilişkileri ve tedarik zincirinde insana yakışır işi de kapsar.</p></details>
+
+<details><summary>Çeşitlilik ile kapsayıcılık arasındaki fark nedir?</summary>
+<p>Çeşitlilik, insanlar arasındaki farklılık ve benzerliklerin özellikleridir (3.7); kapsayıcılık ise tüm paydaşları kurumsal bağlamlara dahil etme uygulamasıdır: kabul edilme, karşılanma, söz sahibi olma ve aidiyet (3.12). Biri bileşimle, diğeri bu bileşimin nasıl yönetildiğiyle ilgilidir.</p></details>
+
+<details><summary>Altı ön koşul nedir?</summary>
+<p>Çeşitliliği tanımak, etkin yönetmek, hesap verebilir davranmak, kapsayıcı çalışmak, kapsayıcı iletişim kurmak ve Ç&K'yı savunmak ve onun öncülüğünü yapmak (madde 4).</p></details>
+
+<details><summary>Standart sayısal hedef ya da ölçü formülü veriyor mu?</summary>
+<p>Hayır. Her madde için ölçü örnekleri verir ve bunların bütünleşik ve çeşitlilik boyutuna göre bölümlenerek analiz edilmesini önerir; hangilerinin kullanılacağı ve hedefleri kurum belirler. Bu sayfadaki oranlar türetilmiştir.</p></details>
+
+<details><summary>Kurumum küçük; yine de uygulayabilir miyim?</summary>
+<p>Evet. Standart ölçeklenebilir olacak biçimde yazılmıştır ve özel bir İK işlevi olmayan kurumlara Ç&K faaliyetlerini yapılandırılmış biçimde yönetmek için çerçeve sunar. Kapsama tablosunda uygulanabilir olmayan eylemleri "neden gerekmediği" notuyla belgeleyin.</p></details>
+
+<details><summary>Demografik veri toplamak zorunda mıyım?</summary>
+<p>Standart, kişileri veriyi paylaşmaya teşvik etmeyi (verinin sistemleri iyileştirmek ve farkları gidermek için kullanılacağını açıklayarak) ve verinin etik ve yasal gereklere uygun toplanıp yorumlanmasını ister (7.2). Zorunluluk ve sınırlar ülkeye göre değişir ve standart bunları ele almaz.</p></details>
+
+<details><summary>Algoritma ve otomatik İK sistemleri hakkında ne söylüyor?</summary>
+<p>İK yaşam döngüsünün tamamında dijital dönüşüm, algoritma ve otomasyon önyargı olasılığı açısından tanınmalıdır (8.1); işe alım, değerlendirme, performans ve karar süreçlerinde araç ve algoritmalar şeffaf, adil ve ayrımcı olmayan biçimde geliştirilmeli ve kullanılmalıdır (8.4.2, 5.4, 6.2).</p></details>
+
+<details><summary>Ek A'daki listeyi nasıl kullanırım?</summary>
+<p>Tablo A.1, 177 eylemi derler; kurumlar mevcut durumlarını değerlendirmek için kullanabilir. Her eylem için "destekleyici kanıt" kaydedin; ölçü ve çıktı örnekleri bu kanıtın nasıl gösterileceğine rehberlik eder. Bu sayfadaki tablo yalnızca sayısal bir özet sağlar.</p></details>
+
+<footer>
+  ISO 30415:2021 çerçevesinden üretilmiş çalışma aracı. İlkeler, eylemler, ölçü ve çıktı örnekleri ve kavramlar standarda dayanır; açıklamalar, örnek değerler, oranlar ve kod özgün olarak yazılmıştır. Standardın kendisi telif korumalıdır ve bu sayfa onun yerine geçmez.
+</footer>
+
+</div>
+
+<script type="text/x-python" id="pysrc">
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+iso30415_metrikler.py
+=====================
+BS ISO 30415:2021 (Human resource management — Diversity and inclusion) çerçevesindeki
+çeşitlilik ve kapsayıcılık (Ç&K) ölçüm örneklerinin ve Ek A öz değerlendirme listesinin
+Python karşılığı.
+
+Standart bir rehberdir: her madde için eylemler, "bütünleşik ve bölümlenmiş çeşitlilik
+boyutuna göre analiz edilebilecek" ölçü örnekleri ve olası çıktılar verir; formül, eşik
+ya da hedef vermez. Bu modüldeki tüm oranlar bu ölçü örneklerini sayıya dökmek için
+TÜRETİLMİŞTİR. Modül üç bölüme ayrılmıştır:
+
+    1) Ölçüler    — katılım, olumlu yanıt, temsil, geçiş (etki) oranı, ücret farkı, kabul,
+                    ayrılma, şikâyet, halefiyet, tedarikçi çeşitliliği
+    2) Yapılar    — Ek A öz değerlendirme tablosu, grup (segment) tablosu, ön koşul denetimi
+    3) Dağıtıcı   — hesaplayıcının kullandığı tek giriş noktası
+
+Kullanım:
+    from iso30415_metrikler import temsil_endeksi, gecis_orani
+    temsil_endeksi(30, 200, 48)            ->  31.25
+    gecis_orani(18, 60, 40, 100)           ->  0.75
+
+Doğrudan çalıştırıldığında (python3 iso30415_metrikler.py) tüm fonksiyonlar
+örnek verilerle çalıştırılır ve sonuçlar tablo hâlinde yazdırılır.
+
+Not: Kavramlar ve ölçü örnekleri ISO 30415:2021'e dayanır. Oranlar, endeksler, kapsama
+puanlaması ve denetim kuralları bu modülde türetilmiştir. Kod ve açıklamalar özgün olarak
+yazılmıştır; standardın kendisi telif korumalıdır.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass, field
+
+__all__ = [
+    "GecersizGirdi", "ALANLAR",
+    "katilim_orani", "olumlu_oran", "temsil_endeksi", "gecis_orani", "ucret_farki",
+    "kabul_orani", "ayrilma_orani", "sikayet_orani", "halefiyet", "tedarikci_cesitliligi", "kapsama",
+    "Alan", "OzDegerlendirme", "ornek_tablo", "Grup", "GrupTablosu", "ornek_gruplar",
+    "on_kosul_denetimi", "hesapla", "METRIK_LISTESI",
+]
+
+
+class GecersizGirdi(ValueError):
+    """Girdiler tutarsız: payda sıfır, negatif değer, parça bütünü aşıyor vb."""
+
+
+# Ek A (Tablo A.1): her madde için eylem sayısı (standarttaki "organizations should" eylemleri)
+ALANLAR = [
+    ("5.2", "Kurumsal yönetişim", 4),
+    ("5.3", "Kurumsal liderlik", 8),
+    ("5.4", "Devredilen Ç&K sorumlulukları", 15),
+    ("5.5", "Bireysel sorumluluklar", 4),
+    ("6", "Ç&K çerçevesi", 13),
+    ("7", "Kapsayıcı kültür", 11),
+    ("8.2", "İşgücü planlaması", 7),
+    ("8.3", "Ücretlendirme", 9),
+    ("8.4", "İşe alım", 14),
+    ("8.5", "İşe başlama", 10),
+    ("8.6", "Öğrenme ve gelişim", 11),
+    ("8.7", "Performans yönetimi", 12),
+    ("8.8", "Halefiyet planlaması", 9),
+    ("8.9", "İşgücü hareketliliği", 11),
+    ("8.10", "İstihdamın sona ermesi", 11),
+    ("9", "Ürün ve hizmetler", 9),
+    ("10", "Tedarik ve tedarik zinciri", 9),
+    ("11", "Dış paydaş ilişkileri", 10),
+]
+
+
+def _bol(pay: float, payda: float, ad: str = "payda") -> float:
+    if payda <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return pay / payda
+
+
+def _negatif_yok(**degerler: float) -> None:
+    for ad, v in degerler.items():
+        if v < 0:
+            raise GecersizGirdi(f"{ad} negatif olamaz")
+
+
+def _parca(parca: float, butun: float, ad: str) -> None:
+    if parca > butun:
+        raise GecersizGirdi(f"{ad} bütünü aşamaz")
+
+
+# ---------------------------------------------------------------------------
+# 1) Ölçüler (madde 6.3, 7.3, 8.2.3–8.10.3, 9.3, 10.3)
+# ---------------------------------------------------------------------------
+
+def katilim_orani(katilan: float, hedef_kitle: float) -> float:
+    """Katılım, paylaşım ya da tamamlama oranı: katılan ÷ hedef kitle × 100 (%)."""
+    _negatif_yok(katilan=katilan)
+    _parca(katilan, hedef_kitle, "katılan sayısı hedef kitleyi")
+    return 100 * _bol(katilan, hedef_kitle, "hedef kitle")
+
+
+def olumlu_oran(olumlu: float, yanit: float) -> float:
+    """Olumlu yanıt oranı (ör. 'değerli hissediyorum'): olumlu ÷ yanıt × 100 (%)."""
+    _negatif_yok(olumlu=olumlu)
+    _parca(olumlu, yanit, "olumlu yanıt sayısı toplam yanıtı")
+    return 100 * _bol(olumlu, yanit, "toplam yanıt")
+
+
+def temsil_endeksi(grup: float, toplam: float, ref_pay: float) -> float:
+    """Temsil endeksi: gruptaki işgücü payı ÷ referans nüfus payı × 100 (100 = eşit temsil)."""
+    _negatif_yok(grup=grup, ref_pay=ref_pay)
+    _parca(grup, toplam, "grup kadrosu toplam kadroyu")
+    if ref_pay > 100:
+        raise GecersizGirdi("referans pay yüzde 100'ü aşamaz")
+    return 100 * _bol(grup / _pozitif(toplam, "toplam kadro"), ref_pay / 100, "referans pay")
+
+
+def _pozitif(x: float, ad: str) -> float:
+    if x <= 0:
+        raise GecersizGirdi(f"{ad} sıfırdan büyük olmalı")
+    return x
+
+
+def gecis_orani(grup_gecen: float, grup_basvuran: float, ref_gecen: float, ref_basvuran: float) -> float:
+    """Etki (geçiş) oranı: grubun aşama geçiş oranı ÷ referans grubun aşama geçiş oranı."""
+    _negatif_yok(grup_gecen=grup_gecen, ref_gecen=ref_gecen)
+    _parca(grup_gecen, grup_basvuran, "geçen sayısı başvuran sayısını")
+    _parca(ref_gecen, ref_basvuran, "referans geçen sayısı referans başvuranı")
+    g = _bol(grup_gecen, grup_basvuran, "grup başvuran sayısı")
+    r = _bol(ref_gecen, ref_basvuran, "referans başvuran sayısı")
+    return _bol(g, r, "referans geçiş oranı")
+
+
+def ucret_farki(ref_ort: float, grup_ort: float) -> float:
+    """Ücret farkı (%): (referans ortalama − grup ortalaması) ÷ referans ortalama × 100."""
+    _negatif_yok(grup_ort=grup_ort)
+    return 100 * _bol(ref_ort - grup_ort, ref_ort, "referans ortalama ücret")
+
+
+def kabul_orani(teklif: float, kabul: float) -> float:
+    """Teklif ya da görevlendirme kabul oranı: kabul ÷ teklif × 100 (%)."""
+    _negatif_yok(kabul=kabul)
+    _parca(kabul, teklif, "kabul sayısı teklif sayısını")
+    return 100 * _bol(kabul, teklif, "teklif sayısı")
+
+
+def ayrilma_orani(ayrilan: float, kadro: float) -> float:
+    """Ayrılma (devir) oranı: ayrılan ÷ ortalama kadro × 100 (%)."""
+    _negatif_yok(ayrilan=ayrilan)
+    return 100 * _bol(ayrilan, kadro, "ortalama kadro")
+
+
+def sikayet_orani(sikayet: float, calisan: float) -> float:
+    """Her 1000 çalışan için şikâyet, olay ya da iddia sayısı."""
+    _negatif_yok(sikayet=sikayet)
+    return 1000 * _bol(sikayet, calisan, "çalışan sayısı")
+
+
+def halefiyet(kadro: float, aday: float, yerlesen: float) -> dict:
+    """Halef adayı payı, yerleştirilen payı ve adaylardan yerleştirilen payı (%)."""
+    _negatif_yok(aday=aday, yerlesen=yerlesen)
+    _parca(aday, kadro, "halef adayı sayısı kadroyu")
+    _parca(yerlesen, aday, "yerleştirilen sayısı aday sayısını")
+    return {"aday_payi": 100 * _bol(aday, kadro, "kadro"),
+            "yerlesen_payi": 100 * yerlesen / kadro,
+            "adaydan_yerlesen": 100 * _bol(yerlesen, aday, "halef adayı sayısı")}
+
+
+def tedarikci_cesitliligi(ayrik_harcama: float, toplam_harcama: float) -> float:
+    """Temsil edilmeyen gruplara ait işletmelere yapılan harcamanın toplam harcamadaki payı (%)."""
+    _negatif_yok(ayrik_harcama=ayrik_harcama)
+    _parca(ayrik_harcama, toplam_harcama, "ayrılan harcama toplam harcamayı")
+    return 100 * _bol(ayrik_harcama, toplam_harcama, "toplam harcama")
+
+
+def kapsama(toplam: float, uygulanan: float, kismen: float = 0) -> float:
+    """Eylemlerin uygulama kapsaması (%): (uygulanan + 0,5 × kısmen) ÷ toplam × 100."""
+    _negatif_yok(uygulanan=uygulanan, kismen=kismen)
+    if uygulanan + kismen > toplam:
+        raise GecersizGirdi("uygulanan ve kısmen uygulanan toplamı eylem sayısını aşamaz")
+    return 100 * _bol(uygulanan + 0.5 * kismen, toplam, "eylem sayısı")
+
+
+# ---------------------------------------------------------------------------
+# 2) Yapılar: Ek A öz değerlendirme tablosu, grup tablosu, ön koşul denetimi
+# ---------------------------------------------------------------------------
+
+@dataclass
+class Alan:
+    """Ek A'daki bir madde için öz değerlendirme satırı."""
+    kod: str
+    ad: str
+    toplam: int
+    uygulanan: float = 0
+    kismen: float = 0
+
+    def kapsama(self) -> float:
+        return kapsama(self.toplam, self.uygulanan, self.kismen)
+
+
+@dataclass
+class OzDegerlendirme:
+    """Tablo A.1 öz değerlendirme tablosu. Hedef kapsama kurumca belirlenir (varsayılan %70)."""
+    alanlar: list = field(default_factory=lambda: [Alan(k, a, n) for k, a, n in ALANLAR])
+    hedef: float = 70.0
+
+    def gir(self, kod: str, uygulanan: float, kismen: float = 0) -> "OzDegerlendirme":
+        for a in self.alanlar:
+            if a.kod == kod:
+                a.uygulanan, a.kismen = uygulanan, kismen
+                a.kapsama()  # doğrulama
+                return self
+        raise GecersizGirdi(f"bilinmeyen madde: {kod}")
+
+    def ozet(self) -> dict:
+        toplam = sum(a.toplam for a in self.alanlar)
+        uyg = sum(a.uygulanan for a in self.alanlar)
+        kis = sum(a.kismen for a in self.alanlar)
+        oranlar = [(a.kapsama(), a.kod) for a in self.alanlar]
+        en_zayif = oranlar[0]
+        for o in oranlar[1:]:
+            if o[0] < en_zayif[0]:
+                en_zayif = o
+        return {
+            "alan_sayisi": len(self.alanlar),
+            "toplam_eylem": toplam,
+            "genel_kapsama": round(kapsama(toplam, uyg, kis), 1),
+            "hedef_alti": [k for o, k in oranlar if o < self.hedef],
+            "en_zayif": en_zayif[1],
+        }
+
+
+def ornek_tablo() -> OzDegerlendirme:
+    """Örnek amaçlı doldurulmuş tablo (standart bu sayıları vermez)."""
+    t = OzDegerlendirme()
+    for kod, u, k in [("5.2", 3, 1), ("5.3", 5, 2), ("5.4", 8, 4), ("5.5", 3, 1), ("6", 8, 3), ("7", 6, 3),
+                      ("8.2", 3, 2), ("8.3", 5, 2), ("8.4", 7, 4), ("8.5", 5, 3), ("8.6", 6, 3), ("8.7", 6, 3),
+                      ("8.8", 3, 3), ("8.9", 4, 3), ("8.10", 5, 3), ("9", 4, 2), ("10", 3, 2), ("11", 4, 3)]:
+        t.gir(kod, u, k)
+    return t
+
+
+@dataclass
+class Grup:
+    """Bir çeşitlilik boyutundaki grup (ör. kadın/erkek, yaş bandı). İlk grup referans alınır."""
+    ad: str
+    kadro: float
+    ref_pay: float
+    basvuran: float
+    secilen: float
+    ort_ucret: float
+    ayrilan: float
+
+
+@dataclass
+class GrupTablosu:
+    """Gruplara göre temsil, geçiş, ücret ve ayrılma karşılaştırması (ilk satır referans)."""
+    gruplar: list = field(default_factory=list)
+
+    def ekle(self, ad, kadro, ref_pay, basvuran, secilen, ort_ucret, ayrilan) -> "GrupTablosu":
+        self.gruplar.append(Grup(ad, kadro, ref_pay, basvuran, secilen, ort_ucret, ayrilan))
+        return self
+
+    def ozet(self) -> dict:
+        toplam = sum(g.kadro for g in self.gruplar)
+        ref = self.gruplar[0]
+        satirlar = {}
+        for g in self.gruplar:
+            satirlar[g.ad] = {
+                "temsil": round(temsil_endeksi(g.kadro, toplam, g.ref_pay), 1),
+                "gecis": round(gecis_orani(g.secilen, g.basvuran, ref.secilen, ref.basvuran), 2),
+                "ucret_farki": round(ucret_farki(ref.ort_ucret, g.ort_ucret), 1),
+                "ayrilma": round(ayrilma_orani(g.ayrilan, g.kadro), 1),
+            }
+        return {"referans": ref.ad, "toplam_kadro": toplam, "gruplar": satirlar}
+
+
+def ornek_gruplar() -> GrupTablosu:
+    """Örnek amaçlı üç grup (standart bu sayıları vermez)."""
+    t = GrupTablosu()
+    t.ekle("Grup A (referans)", 120, 50, 100, 30, 5000, 12)
+    t.ekle("Grup B", 70, 48, 90, 18, 4600, 9)
+    t.ekle("Grup C", 10, 2, 10, 2, 4900, 2)
+    return t
+
+
+def on_kosul_denetimi(cesitliligi_taniyor: bool = False,
+                      etkin_yonetisim: bool = False,
+                      hesap_verebilir_davraniyor: bool = False,
+                      kapsayici_calisiyor: bool = False,
+                      kapsayici_iletisim: bool = False,
+                      savunuculuk_yapiyor: bool = False) -> list:
+    """Madde 4'teki altı ön koşula göre eksikleri listeler (hazırlık kontrol listesi, uygunluk sınaması değil)."""
+    kontroller = [
+        (cesitliligi_taniyor, "Çeşitliliğin tanınması: tüm insanlar bireysel ve grup olarak değerli sayılmıyor, boyutların kesişimi gözetilmiyor."),
+        (etkin_yonetisim, "Etkin yönetişim: liderlik taahhüdü kapsayıcı yönetişim sistemleri, politika ve uygulamalarla gösterilmiyor."),
+        (hesap_verebilir_davraniyor, "Hesap verebilir davranış: etik, sosyal sorumlu ve herkes için insana yakışır işi destekleyen yaklaşım yok."),
+        (kapsayici_calisiyor, "Kapsayıcı çalışma: erişilebilir ve saygılı, aidiyet duygusunu besleyen çalışma ortamı sağlanmıyor."),
+        (kapsayici_iletisim, "Kapsayıcı iletişim: iletişime farklı biçimlerde erişen ve onu farklı anlayan insanların ihtiyaçları karşılanmıyor."),
+        (savunuculuk_yapiyor, "Savunuculuk: kapsayıcı uygulamaları ve paydaş ilişkilerini etkin biçimde teşvik eden bir çaba yok."),
+    ]
+    return [metin for tamam, metin in kontroller if not tamam]
+
+
+# ---------------------------------------------------------------------------
+# 3) Dağıtıcı: hesaplayıcı arayüzünün kullandığı tek giriş noktası
+# ---------------------------------------------------------------------------
+
+METRIK_LISTESI = ["katilim", "olumlu", "temsil", "gecis", "ucret", "kabul",
+                  "devir", "sikayet", "halef", "tedarik", "kapsama"]
+
+
+def _g(x) -> str:
+    """Sayıyı, bilimsel gösterim kullanmadan en kısa biçimde yazar."""
+    return f"{x:.12g}"
+
+
+def hesapla(metrik: str, **g) -> dict:
+    """Metrik kimliği ve girdilerle hesabı yapar; sözlük döndürür.
+
+    Dönen anahtarlar: deger, ifade (formülün yerine konmuş hâli), ondalik,
+    birim, ayrinti (etiket–değer çiftleri).
+    """
+    if metrik == "katilim":
+        d = katilim_orani(g["katilan"], g["hedef_kitle"])
+        return {"deger": d, "ondalik": 1, "birim": "% (katılan ÷ hedef kitle)",
+                "ifade": f"{_g(g['katilan'])} ÷ {_g(g['hedef_kitle'])} × 100",
+                "ayrinti": [["Katılmayan", round(g["hedef_kitle"] - g["katilan"], 2)],
+                            ["Katılmayanların payı (%)", round(100 - d, 1)]]}
+
+    if metrik == "olumlu":
+        d = olumlu_oran(g["olumlu"], g["yanit"])
+        return {"deger": d, "ondalik": 1, "birim": "% (olumlu ÷ yanıt)",
+                "ifade": f"{_g(g['olumlu'])} ÷ {_g(g['yanit'])} × 100",
+                "ayrinti": [["Olumlu olmayan yanıt", round(g["yanit"] - g["olumlu"], 2)],
+                            ["Olumlu olmayanların payı (%)", round(100 - d, 1)]]}
+
+    if metrik == "temsil":
+        d = temsil_endeksi(g["grup"], g["toplam"], g["ref_pay"])
+        pay = 100 * g["grup"] / g["toplam"]
+        return {"deger": d, "ondalik": 1, "birim": "endeks (100 = eşit temsil)",
+                "ifade": f"({_g(g['grup'])} ÷ {_g(g['toplam'])}) ÷ ({_g(g['ref_pay'])} ÷ 100) × 100",
+                "ayrinti": [["Gruptaki işgücü payı (%)", round(pay, 1)],
+                            ["Referans paya göre fark (puan)", round(pay - g["ref_pay"], 1)]]}
+
+    if metrik == "gecis":
+        d = gecis_orani(g["grup_gecen"], g["grup_basvuran"], g["ref_gecen"], g["ref_basvuran"])
+        return {"deger": d, "ondalik": 2, "birim": "oran (grup ÷ referans)",
+                "ifade": f"({_g(g['grup_gecen'])} ÷ {_g(g['grup_basvuran'])}) ÷ ({_g(g['ref_gecen'])} ÷ {_g(g['ref_basvuran'])})",
+                "ayrinti": [["Grubun geçiş oranı (%)", round(100 * g["grup_gecen"] / g["grup_basvuran"], 1)],
+                            ["Referansın geçiş oranı (%)", round(100 * g["ref_gecen"] / g["ref_basvuran"], 1)]]}
+
+    if metrik == "ucret":
+        d = ucret_farki(g["ref_ort"], g["grup_ort"])
+        return {"deger": d, "ondalik": 1, "birim": "% (referansa göre fark)",
+                "ifade": f"({_g(g['ref_ort'])} − {_g(g['grup_ort'])}) ÷ {_g(g['ref_ort'])} × 100",
+                "ayrinti": [["Mutlak fark", round(g["ref_ort"] - g["grup_ort"], 2)],
+                            ["Grup ücreti / referans ücret (%)", round(100 * g["grup_ort"] / g["ref_ort"], 1)]]}
+
+    if metrik == "kabul":
+        d = kabul_orani(g["teklif"], g["kabul"])
+        return {"deger": d, "ondalik": 1, "birim": "% (kabul ÷ teklif)",
+                "ifade": f"{_g(g['kabul'])} ÷ {_g(g['teklif'])} × 100",
+                "ayrinti": [["Kabul edilmeyen teklif", round(g["teklif"] - g["kabul"], 2)]]}
+
+    if metrik == "devir":
+        d = ayrilma_orani(g["ayrilan"], g["kadro"])
+        return {"deger": d, "ondalik": 1, "birim": "% (ayrılan ÷ kadro)",
+                "ifade": f"{_g(g['ayrilan'])} ÷ {_g(g['kadro'])} × 100",
+                "ayrinti": [["Referans orana göre (kat)", round(_bol(d, g["ref_oran"], "referans oran"), 2)]]}
+
+    if metrik == "sikayet":
+        d = sikayet_orani(g["sikayet"], g["calisan"])
+        return {"deger": d, "ondalik": 1, "birim": "her 1000 çalışan için",
+                "ifade": f"{_g(g['sikayet'])} ÷ {_g(g['calisan'])} × 1000",
+                "ayrinti": [["Çalışan başına yüzde", round(100 * g["sikayet"] / g["calisan"], 2)]]}
+
+    if metrik == "halef":
+        h = halefiyet(g["kadro"], g["aday"], g["yerlesen"])
+        return {"deger": h["aday_payi"], "ondalik": 1, "birim": "% (halef adayı ÷ kadro)",
+                "ifade": f"{_g(g['aday'])} ÷ {_g(g['kadro'])} × 100",
+                "ayrinti": [["Yerleştirilenlerin kadroya payı (%)", round(h["yerlesen_payi"], 1)],
+                            ["Adaylardan yerleştirilen (%)", round(h["adaydan_yerlesen"], 1)]]}
+
+    if metrik == "tedarik":
+        d = tedarikci_cesitliligi(g["ayrik_harcama"], g["toplam_harcama"])
+        return {"deger": d, "ondalik": 1, "birim": "% (ayrılan harcama ÷ toplam)",
+                "ifade": f"{_g(g['ayrik_harcama'])} ÷ {_g(g['toplam_harcama'])} × 100",
+                "ayrinti": [["Diğer harcama", round(g["toplam_harcama"] - g["ayrik_harcama"], 2)]]}
+
+    if metrik == "kapsama":
+        d = kapsama(g["toplam"], g["uygulanan"], g["kismen"])
+        return {"deger": d, "ondalik": 1, "birim": "% (kapsama)",
+                "ifade": f"({_g(g['uygulanan'])} + 0,5 × {_g(g['kismen'])}) ÷ {_g(g['toplam'])} × 100",
+                "ayrinti": [["Hiç uygulanmayan eylem", round(g["toplam"] - g["uygulanan"] - g["kismen"], 2)],
+                            ["Yalnızca tam uygulananların payı (%)", round(100 * g["uygulanan"] / g["toplam"], 1)]]}
+
+    raise ValueError(f"Bilinmeyen metrik: {metrik}")
+
+
+# ---------------------------------------------------------------------------
+# 4) Doğrulama çıktısı
+# ---------------------------------------------------------------------------
+
+def _demo() -> None:
+    cizgi = "-" * 64
+    print("ISO 30415 — doğrulama çıktısı")
+    print(cizgi)
+    print(f"Paylaşım (360/600)       : %{katilim_orani(360, 600):.1f}")
+    print(f"Değerli hissedenler      : %{olumlu_oran(310, 420):.1f}")
+    print(f"Temsil endeksi (30/200)  : {temsil_endeksi(30, 200, 48):.1f}")
+    print(f"Etki oranı               : {gecis_orani(18, 60, 40, 100):.2f}")
+    print(f"Ücret farkı              : %{ucret_farki(5000, 4600):.1f}")
+    print(f"Teklif kabulü (40/50)    : %{kabul_orani(50, 40):.1f}")
+    print(f"Ayrılma                  : %{ayrilma_orani(9, 70):.1f}")
+    print(f"Şikâyet (6/600)          : {sikayet_orani(6, 600):.1f} / 1000")
+    print(f"Halefiyet                : {halefiyet(600, 60, 24)}")
+    print(f"Tedarikçi çeşitliliği    : %{tedarikci_cesitliligi(1.2, 12):.1f}")
+    print(f"Kapsama (13, 8, 3)       : %{kapsama(13, 8, 3):.1f}")
+    print(cizgi)
+
+    t = ornek_tablo()
+    for anahtar, deger in t.ozet().items():
+        print(f"{anahtar:<14}: {deger}")
+    print(cizgi)
+    for anahtar, deger in ornek_gruplar().ozet().items():
+        print(f"{anahtar:<14}: {deger}")
+    print(cizgi)
+
+    print("Dağıtıcı örneği:")
+    print(hesapla("katilim", katilan=360, hedef_kitle=600))
+    print(cizgi)
+
+    print("Ön koşul denetimi (hiçbirini sağlamayan bir kurum için):")
+    for u in on_kosul_denetimi():
+        print(" !", u)
+
+
+if __name__ == "__main__":
+    _demo()
+</script>
+<script>
+/* =========================================================
+   1) MADDE VERİ TABANI
+   u: kullanıcılar (gov yönetişim organı ve üst yönetim / hr İK ve Ç&K sorumluları / mgr yöneticiler /
+      emp çalışanlar, temsilciler ve ERG'ler / ext tedarikçiler, müşteriler, dış paydaşlar ve denetçiler)
+   st: bölüm (giris, onkosul, sorumluluk, cerceve, kultur, yasam, urun, tedarik, dis, ek)
+   r: unsur türü (ilke, eylem, olcu, cikti)
+   t: aile (p ilke ve sorumluluk / c çerçeve ve kültür / s İK yaşam döngüsü / r ürün, tedarik, dış paydaş / o Ek A)
+   calc: bu sayfadaki hesaplayıcı kimliği
+   k: ek etiket (ctx bağlam, tur türetilmiş)
+   ========================================================= */
+var METRICS = [
+ {g:"Giriş, kapsam, terimler ve ön koşullar (Giriş, madde 1–4)", t:"p", items:[
+  {n:"Giriş: kapsayıcı işyeri için süregelen taahhüt", st:"giris", r:["ilke"], d:"Eşitsizlikleri, bilinçli ve bilinçsiz önyargıları ve davranışları sistem, politika, süreç ve uygulamalarda ele almak", u:["gov", "hr", "mgr", "emp", "ext"]},
+  {n:"Giriş: kuruma özgü yaklaşım", st:"giris", r:["ilke"], d:"Karar vericiler Ç&K'yı strateji ve iş süreçlerine kurumsal bağlama göre entegre eder", u:["gov", "hr", "mgr"]},
+  {n:"Giriş: cesaret ve hassas konularla yüzleşme", st:"giris", r:["ilke"], d:"Kapsayıcı olmayan davranışlar, kültürel normlar ve haksız ya da ayrımcı uygulamalar (insan ya da teknoloji kaynaklı) etkin biçimde ele alınır", u:["gov", "hr", "mgr"]},
+  {n:"Giriş: SKA 5, 8, 9, 10 ve işteki insan hakları", st:"giris", r:["ilke"], d:"Toplumsal cinsiyet eşitliği, insana yakışır iş, sanayi ve yenilik, eşitsizliklerin azaltılması; ISO 30408 ile bağlantılı", u:["gov", "hr", "ext"]},
+  {n:"Giriş: standardın dört desteği", st:"giris", r:["ilke"], d:"Ön koşullar; hesap verebilirlik ve sorumluluklar; çeşitliliği değerlendirme ve kapsayıcı işyeri; hedef, fırsat, risk, eylem, ölçü, çıktı ve etkiler", u:["gov", "hr", "mgr", "emp", "ext"]},
+  {n:"Giriş: planla-uygula-kontrol et-gözden geçir döngüsü (Şekil 1)", st:"giris", r:["ilke"], d:"İK yaşam döngüsü, ürün ve hizmetler, tedarik zinciri ve dış paydaşlar boyunca sürekli iyileştirme", u:["gov", "hr", "mgr"]},
+  {n:"Kapsam: tüm kurum türleri ve büyüklükleri", st:"giris", r:["ilke"], d:"Kamu, özel, devlet ve STK; büyüklük, faaliyet, sektör ve ülke gereklerinden bağımsız ölçeklenebilir (1)", u:["gov", "hr", "ext"]},
+  {n:"Kapsam: ön koşullar, sorumluluklar, eylemler, ölçüler, çıktılar", st:"giris", r:["ilke"], d:"Standart önerilen eylemleri, önerilen ölçüleri ve olası çıktıları sunar (1)", u:["gov", "hr", "mgr", "emp", "ext"]},
+  {n:"Kapsam dışı: sendika ve iş konseyi ilişkileri, ülkeye özgü uyum", st:"giris", r:["ilke"], k:"ctx", d:"Ülkeye özgü uyum, yasal gerekler ve dava süreçleri ele alınmaz (1)", u:["hr", "emp", "ext"]},
+  {n:"Normatif atıf: ISO 30400 (2)", st:"giris", r:["ilke"], d:"Tek normatif atıf: İK yönetimi terimler sözlüğü", u:["hr", "ext"]},
+  {n:"Terimler: çeşitlilik ve kesişimsellik (3.7, 3.15)", st:"giris", r:["ilke"], d:"Kişiler arasındaki fark ve benzerlik özellikleri; boyutların bir kimlikte kesişmesi", u:["hr", "mgr", "emp"]},
+  {n:"Terimler: kapsayıcılık, kapsayıcı kültür ve davranış (3.12–3.14)", st:"giris", r:["ilke"], d:"Tüm paydaşları dahil etme uygulaması; değerler, inançlar ve uygulamalar; kapsayıcılığı teşvik eden davranış", u:["gov", "hr", "mgr", "emp"]},
+  {n:"Terimler: eşitlik, hakkaniyet, adillik (3.9–3.11)", st:"giris", r:["ilke"], d:"Statü, hak, fırsat ya da sonuçlarda eşit olma durumu; bireysel ihtiyaçların tanınarak adil uygulama; sistematik önyargıdan uzak usuller", u:["hr", "mgr", "emp"]},
+  {n:"Terimler: önyargı ve olumsuz etki (3.4, 3.5)", st:"giris", r:["ilke"], d:"Tarafsız yargıyı engelleyen ön yargı ya da mantıksız eğilim; bireyler ve gruplar için dezavantajlı ve olası ayrımcı sonuç", u:["hr", "mgr", "emp"]},
+  {n:"Terimler: erişilebilirlik ve uyumlaştırma (3.1, 3.2)", st:"giris", r:["ilke"], d:"Çalışma ortamı, sistem, ürün ve hizmetlerin en geniş insan kitlesince kullanılabilirliği; farklı yetenekteki kişilerin işe erişimi için ayarlama", u:["hr", "mgr", "emp", "ext"]},
+  {n:"Terimler: çalışan kaynak grubu (3.8)", st:"giris", r:["ilke"], d:"Ortak boyutları paylaşan kişiler ve müttefikleri; bütçe ve lider sponsorla desteklenebilir", u:["gov", "hr", "emp"]},
+  {n:"Terimler: ses (3.19)", st:"giris", r:["ilke"], d:"Görüşleri iletme ve etkileme biçimi: anketler, ERG'ler, danışma, temsilciler; dış paydaşların beklentileri de dahil", u:["hr", "mgr", "emp", "ext"]},
+  {n:"Terimler: hesap verebilirlik, yönetişim, insana yakışır iş (3.3, 3.6, 3.17)", st:"giris", r:["ilke"], d:"Faaliyetlerini açıklama yükümlülüğü; karar alma sistemi; özgürlük, eşitlik, güvenlik ve insan onuru koşullarında iş", u:["gov", "hr", "ext"]},
+  {n:"Terimler: işe başlama ve dış erişim (3.16, 3.18)", st:"giris", r:["ilke"], d:"Kişileri kuruma, kültüre, beklentilere ve rollere hoş geldin süreci; geniş paydaş kitlesiyle etkileşim faaliyetleri", u:["hr", "mgr", "ext"]},
+  {n:"Ön koşul: çeşitliliği tanıma (4)", st:"onkosul", r:["ilke"], d:"Tüm insanları bireysel ve grup olarak değerli saymak; boyutların kesişimi; özelliklerin yasayla korunabileceğini bilmek", u:["gov", "hr", "mgr", "emp", "ext"]},
+  {n:"Ön koşul: etkin yönetişim (4)", st:"onkosul", r:["ilke"], d:"Liderlik taahhüdünü kapsayıcı yönetişim sistemleri, politika, süreç ve uygulamalarla göstermek", u:["gov", "hr", "mgr"]},
+  {n:"Ön koşul: hesap verebilir davranma (4)", st:"onkosul", r:["ilke"], d:"Etik ve sosyal sorumlu davranmak; herkes için üretken istihdam ve insana yakışır iş", u:["gov", "hr", "mgr", "ext"]},
+  {n:"Ön koşul: kapsayıcı çalışma (4)", st:"onkosul", r:["ilke"], d:"Erişilebilir ve saygılı, aidiyet duygusunu besleyen çalışma ortamı", u:["hr", "mgr", "emp"]},
+  {n:"Ön koşul: kapsayıcı iletişim (4)", st:"onkosul", r:["ilke"], d:"İletişime farklı biçimlerde erişen, onu farklı anlayan kişilerin ihtiyaçlarını tanıyıp yanıtlamak", u:["hr", "mgr", "emp", "ext"]},
+  {n:"Ön koşul: savunuculuk ve öncülük (4)", st:"onkosul", r:["ilke"], d:"Kapsayıcı kurum uygulamalarını ve paydaş ilişkilerini etkin biçimde teşvik etmek", u:["gov", "hr", "mgr", "ext"]}
+ ]},
+ {g:"Hesap verebilirlik ve sorumluluklar (madde 5)", t:"p", items:[
+  {n:"Genel: yönetim organı ve üst yönetim hesap verebilir (5.1)", st:"sorumluluk", r:["ilke"], d:"Ç&K ilke ve hedefleri bir çerçeveyle teslim edilir; politika ve süreçlere entegre edilir", u:["gov", "hr"]},
+  {n:"Genel: kaynak, zaman ve fon (5.1)", st:"sorumluluk", r:["ilke"], d:"Ç&K girişimleri için kaynak, zaman, destek ve yeterli finansman sağlanması", u:["gov", "hr"]},
+  {n:"Genel: sorumluluğun uzmanlara devri (5.1)", st:"sorumluluk", r:["ilke"], d:"Ç&K sorumluluğu uzmanlığı ve anlayışı olan kişilere devredilir; devralanlar planlar, uygular, izler ve etkililiği gözden geçirir", u:["gov", "hr", "mgr"]},
+  {n:"Genel: herkesin rolü ve sorumluluğu (5.1)", st:"sorumluluk", r:["ilke"], d:"Herkes Ç&K ilkelerinin gerçekleştirilmesinde ve kapsayıcı kültürün sürdürülmesinde rol alır", u:["gov", "hr", "mgr", "emp", "ext"]},
+  {n:"Yönetişim: üst yöneticileri yönlendirme (5.2)", st:"sorumluluk", r:["eylem"], d:"Ç&K ilke ve hedeflerini kurma ve kaynak ayırma konusunda üst yöneticileri yönlendirmek", u:["gov"]},
+  {n:"Yönetişim: taahhüt ve rol model olma (5.2)", st:"sorumluluk", r:["eylem"], d:"Ç&K ilkeleriyle tutarlı davranışlara rol model olmak", u:["gov"]},
+  {n:"Yönetişim: uygunsuz davranışa karşı koruma (5.2)", st:"sorumluluk", r:["eylem"], calc:"sikayet", d:"Uygunsuz davranışı ele almak; karşı çıkanları ve etkilenenleri korumak ve desteklemek", u:["gov", "hr", "emp"]},
+  {n:"Yönetişim: üst yöneticileri hesap vermeye çağırma (5.2)", st:"sorumluluk", r:["eylem"], d:"Fırsat ve riskleri değerlendirirken, performans ve ilerlemeyi gözden geçirirken üst yöneticileri sorumlu tutmak", u:["gov"]},
+  {n:"Liderlik: ilke, hedef ve çerçeve oluşturma (5.3)", st:"sorumluluk", r:["eylem"], d:"Ç&K ilke ve hedefleri ile bunları gerçekleştirecek destek çerçevesini kurmak", u:["gov", "hr"]},
+  {n:"Liderlik: kapsayıcı kültürü kolaylaştırma (5.3)", st:"sorumluluk", r:["eylem"], d:"Beklenti ve sorumlulukları belirlemek, tüm paydaşlara iletmek, kapsayıcı ilişkiler ve ortak değerler kurmak", u:["gov", "hr", "mgr"]},
+  {n:"Liderlik: rol model, beklenti, ödüllendirme (5.3)", st:"sorumluluk", r:["eylem"], d:"Kapsayıcı davranışa rol model olmak, davranış beklentileri koymak, uygunsuzluğu ele almak, kapsayıcı uygulamaları ödüllendirmek", u:["gov", "hr", "mgr"]},
+  {n:"Liderlik: işlevsel liderlere sorumluluk verme (5.3)", st:"sorumluluk", r:["eylem"], d:"Ç&K hedeflerinin gerçekleştirilmesi sorumluluğunu işlevsel alanların liderlerine atamak", u:["gov", "hr", "mgr"]},
+  {n:"Liderlik: sistem ve süreçleri hizalama (5.3)", st:"sorumluluk", r:["eylem"], d:"Tüm işlevlerde sistem, politika, süreç ve uygulamaları Ç&K ilke ve hedefleriyle uyumlu kılmak", u:["gov", "hr", "mgr"]},
+  {n:"Liderlik: kaynak ayırma (5.3)", st:"sorumluluk", r:["eylem"], d:"Girişim, ERG ve yönlendirme komitelerini sponsorlamak; katılım için zaman ve destek ayırmak", u:["gov", "hr"]},
+  {n:"Liderlik: ürün ve hizmet etkisini gözden geçirme (5.3)", st:"sorumluluk", r:["eylem"], d:"Ürün ve hizmetlerin pazar bölümleri ve geniş paydaş kitlesi üzerindeki sonuç ve etkisini incelemek", u:["gov", "mgr", "ext"]},
+  {n:"Liderlik: yıllık raporda Ç&K anlatısı (5.3)", st:"sorumluluk", r:["eylem"], calc:"kapsama", d:"Yıllık raporda fırsat ve riskler ile ilerlemenin sağlam kanıt ve demografik verilerle açıklanması (ISO 30414)", u:["gov", "hr", "ext"]},
+  {n:"Devredilen: işlevsel sistemlere gömme (5.4)", st:"sorumluluk", r:["eylem"], d:"Ç&K ilkelerini işlevsel sistem, politika, süreç ve uygulamalara yerleştirmek", u:["hr", "mgr"]},
+  {n:"Devredilen: bilgi paylaşımı ve rehberlik (5.4)", st:"sorumluluk", r:["eylem"], d:"Ç&K bilgi ve uzmanlığını paylaşmak; savunuculuk ve rehberlik yapmak", u:["hr", "mgr"]},
+  {n:"Devredilen: rol model olma (5.4)", st:"sorumluluk", r:["eylem"], d:"Kapsayıcı davranışları göstermek ve rol model olmak", u:["mgr"]},
+  {n:"Devredilen: kaynak kullanımı (5.4)", st:"sorumluluk", r:["eylem"], d:"Fırsat, risk, kısıt ve zorluklara yanıt için kaynak dağıtmak", u:["hr", "mgr"]},
+  {n:"Devredilen: erişim ve uyumlaştırma (5.4)", st:"sorumluluk", r:["eylem"], d:"Demografik olarak az temsil edilen grupların katılımını artıran erişim ve uyumlaştırmaları sağlamak", u:["hr", "mgr", "emp"]},
+  {n:"Devredilen: önyargıya karşı denetim ve denge (5.4)", st:"sorumluluk", r:["eylem"], d:"İşe giriş, kurum içi akış ve çıkışa ilişkin kararları kanıta dayandırmak, teknolojilerdeki önyargı dahil", u:["hr", "mgr"]},
+  {n:"Devredilen: İK yaşam döngüsü boyunca teşvik (5.4)", st:"sorumluluk", r:["eylem"], d:"Ç&K ilke ve hedeflerini yaşam döngüsünün tüm aşamalarında teşvik etmek", u:["hr", "mgr"]},
+  {n:"Devredilen: açık iletişim kanalları (5.4)", st:"sorumluluk", r:["eylem"], d:"Farklı bakış açılarının saygıyla ve önyargısız alınması", u:["hr", "mgr", "emp"]},
+  {n:"Devredilen: güvenli ortam, şikâyet ve ihbar (5.4)", st:"sorumluluk", r:["eylem"], calc:"sikayet", d:"Ç&K kaygı ve şikâyetlerinin güvenle dile getirilmesi; ihbarcılar dahil adil uygulama", u:["hr", "mgr", "emp"]},
+  {n:"Devredilen: paydaş geri bildirimi (5.4)", st:"sorumluluk", r:["eylem"], d:"Etki, sonuç, zorluk ve eğilimleri belirlemek için paydaş geri bildirimini dikkate almak", u:["hr", "mgr", "emp", "ext"]},
+  {n:"Devredilen: sözleşme ve dış ilişkilerle teşvik (5.4)", st:"sorumluluk", r:["eylem"], calc:"tedarik", d:"Tedarik zinciri sözleşmeleri, müşteri ve topluluk ilişkileriyle Ç&K ilkelerini teşvik etmek", u:["hr", "mgr", "ext"]},
+  {n:"Devredilen: çeşitlilik verisini belirleme ve analiz (5.4)", st:"sorumluluk", r:["eylem"], calc:"temsil", d:"Etkileri ölçmek için çeşitlilik verisini belirlemek ve analiz etmek", u:["hr", "mgr"]},
+  {n:"Devredilen: kurumca önemli ölçüt ve ölçüler (5.4)", st:"sorumluluk", r:["eylem"], d:"Kurum için önemli Ç&K ölçütlerini ve ilgili ölçüleri belirlemek", u:["hr", "mgr"]},
+  {n:"Devredilen: politika etkisini değerlendirme (5.4)", st:"sorumluluk", r:["eylem"], d:"Politika, süreç ve uygulamaların kapsayıcı işyeri üzerindeki etkisini (kuruma giriş, kurum içi akış ve çıkış dahil) değerlendirmek", u:["hr", "mgr"]},
+  {n:"Devredilen: durumu gözden geçirme ve raporlama (5.4)", st:"sorumluluk", r:["eylem"], d:"Hedeflere karşı durumu, risk ve fırsatları, değişiklik önerilerini gözden geçirmek ve yıllık rapora aktarmak", u:["hr", "mgr"]},
+  {n:"Bireysel: saygı ve adillik (5.5)", st:"sorumluluk", r:["eylem"], d:"Meslektaşlara, müşterilere, tedarikçilere ve diğer paydaşlara saygı ve adaletle davranmak", u:["gov", "hr", "mgr", "emp", "ext"]},
+  {n:"Bireysel: beklentileri karşılama (5.5)", st:"sorumluluk", r:["eylem"], d:"Kurumun Ç&K ilke ve hedeflerine ilişkin beklentileri karşılamak", u:["mgr", "emp"]},
+  {n:"Bireysel: kapsayıcı davranma (5.5)", st:"sorumluluk", r:["eylem"], d:"Kapsayıcılığı, güveni ve aidiyeti etkin biçimde beslemek", u:["mgr", "emp"]},
+  {n:"Bireysel: endişeleri dile getirme ve uygunsuzluğa karşı durma (5.5)", st:"sorumluluk", r:["eylem"], calc:"sikayet", d:"Kaygıları dile getirmek ve uygunsuz davranışa karşı çıkmak", u:["mgr", "emp"]}
+ ]},
+ {g:"Ç&K çerçevesi ve kapsayıcı kültür (madde 6–7)", t:"c", items:[
+  {n:"Çerçeve: bileşenleri (6.1)", st:"cerceve", r:["ilke"], d:"İlke ve hedefler; hesap verebilirlik ve sorumluluklar; eylemler; geçerli ve güvenilir ölçüler; fırsat ve riskler (teknolojiler dahil); olası çıktı ve etkiler", u:["gov", "hr"]},
+  {n:"Çerçeve: lider görevlendirme (6.1)", st:"cerceve", r:["ilke"], d:"Çerçevenin bakımı, sürekli iyileştirilmesi ve geçerliliğinden sorumlu bir lider", u:["gov", "hr"]},
+  {n:"Çerçeve: sürdürülebilir istihdam edilebilirlik (6.1)", st:"cerceve", r:["ilke"], k:"ctx", d:"Sürdürülebilir istihdam edilebilirlik için ISO/TR 30406'ya bakılır", u:["hr"]},
+  {n:"Çerçeve eylemleri (6.2): 13 eylem", st:"cerceve", r:["eylem"], calc:"kapsama", d:"Sorumlu atama, gerekçe oluşturma, liderlerin taahhüdü, politikalara entegrasyon, önemli ölçüleri belirleme, çalışanı bilgilendirme, hedef hizalama, risk yönetimi, adillik incelemesi, algı verisi, tedarik ve dış paydaş sonuçları, düzenli gözden geçirme ve raporlama", u:["gov", "hr", "mgr"]},
+  {n:"Ölçü (6.3): fırsat ve risk derecelerindeki değişim", st:"cerceve", r:["olcu"], d:"Belirlenen Ç&K fırsat ve risk derecelendirmelerinin değişimi", u:["gov", "hr"]},
+  {n:"Ölçü (6.3): faaliyetlerin hedeflere etkililiği", st:"cerceve", r:["olcu"], d:"Başlangıç verisine, kaynak dağıtımına, zorluk ve kısıtlara göre faaliyetlerin Ç&K hedeflerine etkililiği", u:["gov", "hr"]},
+  {n:"Ölçü (6.3): paydaşlarla ilişkinin etkililiği", st:"cerceve", r:["olcu"], d:"Tüm paydaşlarla Ç&K ilişkisinin etkililiği", u:["hr", "ext"]},
+  {n:"Ölçü (6.3): liderlik taahhüdünün farkındalığa etkisi", st:"cerceve", r:["olcu"], d:"Liderlik taahhüdünün çalışan ve paydaş farkındalığına etkisi", u:["gov", "hr"]},
+  {n:"Ölçü (6.3): bilgi erişilebilirliği ve iletişim etkililiği", st:"cerceve", r:["olcu"], d:"Bilginin erişilebilirliği ve iletişim yöntem ve ortamlarının etkililiği", u:["hr", "mgr", "emp"]},
+  {n:"Ölçü (6.3): geri bildirim eğilimleri", st:"cerceve", r:["olcu"], d:"İstenen ve istenmeyen geri bildirimlerdeki eğilimler", u:["hr", "mgr", "emp", "ext"]},
+  {n:"Ölçü (6.3, 7.3): kendini değerli hissedenlerin yüzdesi", st:"cerceve", r:["olcu"], calc:"olumlu", d:"Kurum tarafından değerli hissettiğini belirten çalışanların payı", u:["gov", "hr", "mgr", "emp"]},
+  {n:"Ölçü (6.3): Ç&K olay sayısı", st:"cerceve", r:["olcu"], calc:"sikayet", d:"Şikâyet ve itiraz gibi bildirilen Ç&K olaylarının sayısı", u:["hr", "mgr", "emp"]},
+  {n:"Çıktılar (6.4): 10 örnek", st:"cerceve", r:["cikti"], calc:"temsil", d:"Taahhüt ve sorumlulukların netliği; öncelikler; hizalı hedefler; farkındalık ve katılım; adil politikalar; ilgili nüfus profiline benzer ve topluluğu temsil eden iş gücü; tedarik zincirine olumlu etki; kanıtın düzenli iletilmesi; başarılı strateji", u:["gov", "hr", "mgr", "emp", "ext"]},
+  {n:"Kültür: tanımı ve belirleyicileri (7.1)", st:"kultur", r:["ilke"], d:"Vizyon, misyon ve strateji; liderlerin yaklaşımı; ilke, değer, inanç ve davranışlar; yaşanmış deneyimin ifadesi; adil erişim ve karşılıklı saygı", u:["gov", "hr", "mgr"]},
+  {n:"Kültür: insan yönetişimi (7.1)", st:"kultur", r:["ilke"], k:"ctx", d:"İnsan yönetişimi için ISO 30408'e bakılır", u:["gov", "hr"]},
+  {n:"Kültür eylemleri: iletişim ve erişim (7.2)", st:"kultur", r:["eylem"], d:"Ç&K'yı iletişim, bağlılık ve dış erişim faaliyetleri, İK yaşam döngüsü ve paydaş ilişkileriyle önceliklendirmek ve teşvik etmek", u:["gov", "hr", "mgr"]},
+  {n:"Kültür eylemleri: etik ve mevzuata uygun veri (7.2)", st:"kultur", r:["eylem"], calc:"katilim", d:"Verinin toplanması, yorumlanması ve kullanımında etik ve yasal hususların uygulanması", u:["hr"]},
+  {n:"Kültür eylemleri: demografik veri paylaşımı (7.2)", st:"kultur", r:["eylem"], calc:"katilim", d:"Verinin sistemleri iyileştirmek ve farkları gidermek için kullanılacağını açıklayarak paylaşımı teşvik etmek", u:["hr", "mgr", "emp"]},
+  {n:"Kültür eylemleri: ses mekanizmaları (7.2)", st:"kultur", r:["eylem"], d:"Odak grupları, anketler, öneri sistemleri gibi görüş bildirme ve değişiklik önerme mekanizmaları", u:["hr", "emp"]},
+  {n:"Kültür eylemleri: davranış beklentileri (7.2)", st:"kultur", r:["eylem"], d:"Kapsayıcı ve saygılı davranışın önemini vurgulayan davranış beklentilerini iletmek", u:["hr", "mgr", "emp"]},
+  {n:"Kültür eylemleri: çatışma çözümü (7.2)", st:"kultur", r:["eylem"], calc:"sikayet", d:"İşyeri çatışmasını (zorbalık, taciz, mikro saldırı, misilleme) belirleme, inceleme ve çözme mekanizmaları", u:["hr", "mgr", "emp"]},
+  {n:"Kültür eylemleri: kültür geri bildirimi (7.2)", st:"kultur", r:["eylem"], d:"Bireyler, ERG'ler, odak grupları, komiteler, temsilciler, iş konseyleri ve sendikalardan kültür geri bildirimi", u:["hr", "emp"]},
+  {n:"Kültür eylemleri: sağlık ve devir verisi (7.2)", st:"kultur", r:["eylem"], calc:"devir", d:"Çeşitlilik boyutuna göre sağlık, güvenlik, esenlik, devamsızlık, personel devri ve elde tutma verisi", u:["hr"]},
+  {n:"Kültür eylemleri: çatışma verisi (7.2)", st:"kultur", r:["eylem"], calc:"sikayet", d:"Olay, uyuşmazlık, disiplin, şikâyet ve çözüm sonuçları verisi", u:["hr"]},
+  {n:"Kültür eylemleri: itibar içgörüsü (7.2)", st:"kultur", r:["eylem"], d:"Dahili ve harici, istenen ve istenmeyen geri bildirimle kapsayıcı kurum itibarını görmek", u:["hr", "ext"]},
+  {n:"Kültür eylemleri: raporlama (7.2)", st:"kultur", r:["eylem"], calc:"kapsama", d:"Kapsayıcı kültürün gelişimi, iş gücü bileşimi, fırsat ve riskler ile eylem planlarını raporlamak", u:["gov", "hr"]},
+  {n:"Ölçü (7.3): Ç&K iletişiminin etkililiği", st:"kultur", r:["olcu"], d:"Hangi yöntem, biçim ve kanalların en etkili olduğu", u:["hr", "mgr"]},
+  {n:"Ölçü (7.3): dış erişim faaliyetlerinin etkililiği", st:"kultur", r:["olcu"], d:"Paydaşların Ç&K ilke ve hedeflerine ilişkin farkındalığı", u:["hr", "ext"]},
+  {n:"Ölçü (7.3): demografik veri paylaşanların yüzdesi", st:"kultur", r:["olcu"], calc:"katilim", d:"Kişisel demografik verisini paylaşan çalışanların payı", u:["hr"]},
+  {n:"Ölçü (7.3): yönetişim organı ve iş gücü bileşimindeki değişim", st:"kultur", r:["olcu"], calc:"temsil", d:"Bileşim değişimleri", u:["gov", "hr"]},
+  {n:"Ölçü (7.3): sağlık, devamsızlık, devir ve elde tutma verisi", st:"kultur", r:["olcu"], calc:"devir", d:"Eğilim ve olumsuz etkileri belirlemek için", u:["hr"]},
+  {n:"Ölçü (7.3): işyeri çatışması verisi", st:"kultur", r:["olcu"], calc:"sikayet", d:"Olay, uyuşmazlık, disiplin, şikâyet ve çözüm sonuçları", u:["hr", "mgr"]},
+  {n:"Ölçü (7.3): orantısız ve olumsuz etki verisi", st:"kultur", r:["olcu"], calc:"gecis", d:"Politika, süreç ve uygulamalardan doğan orantısız ve olumsuz etkiler", u:["gov", "hr"]},
+  {n:"Ölçü (7.3): geri bildirim eğilimleri", st:"kultur", r:["olcu"], d:"Kapsayıcı kurum olarak konumun ve Ç&K etkilerinin anlaşılması", u:["hr", "ext"]},
+  {n:"Ölçü (7.3): belirlenen Ç&K risklerinin sayı ve düzeyindeki değişim", st:"kultur", r:["olcu"], d:"Risk sayısı ve derecesi", u:["gov", "hr"]},
+  {n:"Çıktılar (7.4): 12 örnek", st:"kultur", r:["cikti"], d:"Ölçülebilir olumlu sonuçlar; güven ve önyargıya karşı duruş; tam potansiyele ulaşma fırsatı; iş birliği ve bilgi paylaşımı; ses ve saygı; kesişimselliğin tanınması; aidiyet; bağlılık; yaratıcılık ve inovasyon; daha güvenli ortam; olumlu itibar; hizmet iyileşmesi", u:["gov", "hr", "mgr", "emp", "ext"]}
+ ]},
+ {g:"İK yaşam döngüsü (madde 8)", t:"s", items:[
+  {n:"Yaşam döngüsü: kavram ve dokuz bileşen (8.1)", st:"yasam", r:["ilke"], d:"İşe girişten ayrılışa kişinin kurumla ilişkisinin ana aşamaları; planlama, ücret, işe alım, işe başlama, öğrenme, performans, halefiyet, hareketlilik ve sona erme", u:["hr", "mgr"]},
+  {n:"Yaşam döngüsü: güven, adillik, saygı, şeffaflık; algoritmalar (8.1)", st:"yasam", r:["ilke"], d:"Dijital dönüşüm, algoritma ve otomasyonun önyargı olasılığı tanınır", u:["hr", "mgr", "ext"]},
+  {n:"İşgücü planlaması: genel (8.2.1)", st:"yasam", r:["ilke"], k:"ctx", d:"Arz, talep ve beceri gereklerini açıkça ortaya koyan plan; demografik veri; ISO 30409 ve ISO/TS 30410", u:["hr", "mgr"]},
+  {n:"İşgücü planlaması eylemleri: 7 eylem (8.2.2)", st:"yasam", r:["eylem"], calc:"temsil", d:"Plana Ç&K ilkelerini katmak, fırsat ve riskleri belirlemek, iş aileleri ve boyutları belirtmek, dış nüfus profilleriyle karşılaştırmak, kapsayıcılık fırsatlarını belirlemek ve etkiyi gözden geçirmek", u:["hr", "mgr"]},
+  {n:"Ölçü (8.2.3): arz ve talep ile temsil farkı", st:"yasam", r:["olcu"], calc:"temsil", d:"Rol gereklerine göre mevcut arz ve talep; demografik fazla ve az temsil", u:["hr"]},
+  {n:"Ölçü (8.2.3): fırsat sayısına karşı yerleştirme", st:"yasam", r:["olcu"], calc:"gecis", d:"Plan döneminde belirlenen iş ve ilerleme fırsatlarına karşı az temsil edilen gruptan yerleştirme sayısı", u:["hr"]},
+  {n:"Ölçü (8.2.3): olumsuz ve orantısız etki eğilimleri", st:"yasam", r:["olcu"], calc:"gecis", d:"Eğilimler", u:["hr"]},
+  {n:"Ölçü (8.2.3): stratejilerin etkililiği", st:"yasam", r:["olcu"], d:"Stratejilerin Ç&K hedeflerine ve plandaki fırsat ve risklere etkililiği", u:["hr", "mgr"]},
+  {n:"Çıktılar (8.2.4): 4 örnek", st:"yasam", r:["cikti"], d:"Plandaki Ç&K hedefleri; fırsat ve risklerin ele alınması; bilgi-beceri açığı ile demografik fazla ve az temsilin giderilmesi; planlamanın sonuçlarının değerlendirilmesi", u:["hr", "mgr"]},
+  {n:"Ücretlendirme: genel (8.3.1)", st:"yasam", r:["ilke"], d:"Ücret ve yan haklar; sabit ve değişken ödemeler; toplu pazarlık; ücret anomalileri ve farklarının giderilmesi", u:["hr", "mgr", "emp"]},
+  {n:"Ücretlendirme eylemleri: 9 eylem (8.3.2)", st:"yasam", r:["eylem"], calc:"ucret", d:"Eşit değerde iş için eşit ücret, yan hakların hizalanması, erişilebilir iletişim, cinsiyet ve diğer boyutlara göre ücret verisi, memnuniyet verisi, düzenli gözden geçirme ve raporlama", u:["hr", "mgr", "emp"]},
+  {n:"Ölçü (8.3.3): ücret ve yan hak farkları", st:"yasam", r:["olcu"], calc:"ucret", d:"İş aileleri, coğrafi konumlar ve ücret yapıları (bant, kademe, ölçek) içinde ve arasında anomali ve farkları belirlemek", u:["hr"]},
+  {n:"Ölçü (8.3.3): politika ve süreçlerin adilliğinden memnuniyet", st:"yasam", r:["olcu"], calc:"olumlu", d:"Ücret ve yan hak politika, süreç ve uygulamalarının adilliğine ilişkin memnuniyet ya da memnuniyetsizlik", u:["hr", "emp"]},
+  {n:"Ölçü (8.3.3): sonuçların adilliğinden memnuniyet", st:"yasam", r:["olcu"], calc:"olumlu", d:"Ücret ve yan hak sonuçlarının adilliğine ilişkin memnuniyet", u:["hr", "emp"]},
+  {n:"Ölçü (8.3.3): şikâyet ve uyuşmazlık sayısı", st:"yasam", r:["olcu"], calc:"sikayet", d:"Ücret ve yan haklara ilişkin şikâyet ve uyuşmazlıkların sayı ve türü", u:["hr", "mgr"]},
+  {n:"Çıktılar (8.3.4): 4 örnek", st:"yasam", r:["cikti"], d:"Adil ve şeffaf politikalar; eşit değerde iş için eşit ücret; ücret farklarının giderilmesi; paydaşlarca kapsayıcı işveren olarak tanınma", u:["hr", "emp"]},
+  {n:"İşe alım: genel (8.4.1)", st:"yasam", r:["ilke"], d:"Çeşitli ve erişilebilir kanallar; çeşitli istihdam biçimleri; işe dönenler; algoritma ve makine öğrenmesi önyargısı; ISO 10667 ve ISO 30405", u:["hr", "mgr", "ext"]},
+  {n:"İşe alım eylemleri: 14 eylem (8.4.2)", st:"yasam", r:["eylem"], calc:"gecis", d:"Stratejileri plana ve Ç&K ilkelerine uyumlu kılmak, şeffaf ve ayrımcı olmayan araçlar, çeşitli kanallar ve olumlu görseller, işe alım kuruluşlarına Ç&K şartları, işleri esnek ve erişilebilir tasarlamak, geçerli ve adil değerlendirme, aşama verisi", u:["hr", "mgr", "ext"]},
+  {n:"Ölçü (8.4.3): dış erişimden ilgi gösterenlerin sayısı", st:"yasam", r:["olcu"], calc:"katilim", d:"Kurumda çalışmak için ilgi gösteren kişi sayısı", u:["hr"]},
+  {n:"Ölçü (8.4.3): işe alım aşamalarında ilerleyenlerin sayısı", st:"yasam", r:["olcu"], calc:"gecis", d:"Dış kaynaklı faaliyetler dahil her aşamada ilerleyenlerin sayısı", u:["hr", "mgr"]},
+  {n:"Ölçü (8.4.3): talep edilen ve karşılanan uyumlaştırma sayısı", st:"yasam", r:["olcu"], calc:"katilim", d:"Uyumlaştırma talepleri ve karşılananların sayı ve türü", u:["hr", "mgr"]},
+  {n:"Ölçü (8.4.3): önyargı ya da ayrımcılığa ilişkin şikâyet ve iddia sayısı", st:"yasam", r:["olcu"], calc:"sikayet", d:"Önyargı ya da ayrımcılığa ilişkin şikâyet, olay ve iddia sayısı", u:["hr"]},
+  {n:"Ölçü (8.4.3): yapılan teklif ve kabul sayısı", st:"yasam", r:["olcu"], calc:"kabul", d:"Teklif sayısına karşı kabuller ve kabul edilmeme nedenleri", u:["hr", "mgr"]},
+  {n:"Ölçü (8.4.3): stratejilerin etkililiği, devir ve elde tutma", st:"yasam", r:["olcu"], calc:"devir", d:"Strateji, kaynak, kanal ve yöntemlerin farklı dönemlerdeki etkililiği", u:["hr", "mgr"]},
+  {n:"Çıktılar (8.4.4): 4 örnek", st:"yasam", r:["cikti"], d:"Hedeflerin karşılanması; topluluğu temsil eden işe alım; önyargı ve ayrımcılık risklerinin ele alınması; adil ve kapsayıcı iş yeri algısı", u:["hr", "mgr", "ext"]},
+  {n:"İşe başlama: genel (8.5.1)", st:"yasam", r:["ilke"], k:"ctx", d:"Planlı gözden geçirme aşamalarıyla hoş geldin süreci; Ç&K ilke ve hedeflerinin tanıtımı; ISO/TS 30410", u:["hr", "mgr", "emp"]},
+  {n:"İşe başlama eylemleri: 10 eylem (8.5.2)", st:"yasam", r:["eylem"], calc:"katilim", d:"Yapılandırılmış süreç, bireysel gereksinimler ve uyumlaştırma, öğrenme ve gelişim ihtiyaçları, davranış beklentileri, destek kaynakları (yardım hatları, ERG'ler), memnuniyet ve önyargı verisi", u:["hr", "mgr", "emp"]},
+  {n:"Ölçü (8.5.3): işe başlamayı tamamlayan sayısı ve memnuniyeti", st:"yasam", r:["olcu"], calc:"katilim", d:"İşe başlama faaliyetlerini tamamlayan kişi sayısı ve memnuniyet düzeyleri", u:["hr"]},
+  {n:"Ölçü (8.5.3): yapılan uyumlaştırma sayısı", st:"yasam", r:["olcu"], calc:"katilim", d:"Bireysel ihtiyaçları karşılayan uyumlaştırmaların sayı ve türü", u:["hr", "mgr"]},
+  {n:"Ölçü (8.5.3): destek kaynaklarının kullanımı", st:"yasam", r:["olcu"], d:"Yardım hattı, çalışan destek ve ERG kullanım sayıları", u:["hr", "emp"]},
+  {n:"Ölçü (8.5.3): gelişim fırsatlarının sunulması ve kabulü", st:"yasam", r:["olcu"], calc:"kabul", d:"Koçluk ve mentorluk dahil sunulan ve kabul edilen fırsat sayısı", u:["hr", "mgr"]},
+  {n:"Ölçü (8.5.3): Ç&K farkındalığı anketleri", st:"yasam", r:["olcu"], calc:"olumlu", d:"İlke, politika, süreç ve uygulamaların farkındalığı ve anlaşılması", u:["hr"]},
+  {n:"Ölçü (8.5.3): önyargı ve ayrımcılık şikâyetleri", st:"yasam", r:["olcu"], calc:"sikayet", d:"Alınan ve ele alınan şikâyet sayısı", u:["hr"]},
+  {n:"Ölçü (8.5.3): işe başlama sırasında ve 6 ay içinde ayrılanlar", st:"yasam", r:["olcu"], calc:"devir", d:"İşe başlamayı tamamlamadan sonraki 6 ay içinde ayrılma ve kalma nedenleri ve sayısı", u:["hr", "mgr"]},
+  {n:"Ölçü (8.5.3): hoş karşılandığını ve dahil edildiğini belirtenler", st:"yasam", r:["olcu"], calc:"olumlu", d:"Anketlerde kendini hoş karşılanmış ve dahil edilmiş hissedenlerin sayısı", u:["hr", "emp"]},
+  {n:"Çıktılar (8.5.4): 5 örnek", st:"yasam", r:["cikti"], d:"Hoş karşılanma, ihtiyaçların karşılanması, Ç&K farkındalığı, kaynaklara erişim bilgisi ve kapsayıcı davranış", u:["hr", "mgr", "emp"]},
+  {n:"Öğrenme ve gelişim: genel (8.6.1)", st:"yasam", r:["ilke"], d:"Kapsayıcılık tüm öğrenme ve gelişimin temel ilkesidir; adil fırsat önyargıyı azaltır", u:["hr", "mgr", "emp"]},
+  {n:"Öğrenme eylemleri: 11 eylem (8.6.2)", st:"yasam", r:["eylem"], calc:"katilim", d:"Erişilebilir öğrenme, kaynak, ihtiyaç analizi, koçluk ve mentorluk, Ç&K ilkelerinin entegrasyonu, kapsayıcı içerik ve eğitmenler, müdahale becerileri, lider gelişimi, etkililik verisi", u:["hr", "mgr"]},
+  {n:"Ölçü (8.6.3): öğrenme etkinliklerine katılanların sayısı", st:"yasam", r:["olcu"], calc:"katilim", d:"Katılımcı sayısı", u:["hr"]},
+  {n:"Ölçü (8.6.3): etkinlik sonrası geri bildirim ve memnuniyet", st:"yasam", r:["olcu"], calc:"olumlu", d:"Değerlendirme ve memnuniyet düzeyleri", u:["hr"]},
+  {n:"Ölçü (8.6.3): bağımsız gözlem puanları", st:"yasam", r:["olcu"], d:"Öğrenme etkinlikleri ve sunucuları için bağımsız gözlem puanları", u:["hr"]},
+  {n:"Ölçü (8.6.3): yapılan uyumlaştırma sayısı", st:"yasam", r:["olcu"], calc:"katilim", d:"Sayı ve tür", u:["hr"]},
+  {n:"Ölçü (8.6.3): anlayış ve davranış değişimi", st:"yasam", r:["olcu"], d:"Kişinin, meslektaşın ve yöneticinin bildirdiği değişimler", u:["hr", "mgr"]},
+  {n:"Ölçü (8.6.3): bireysel performans ve kapsayıcı davranışa etki", st:"yasam", r:["olcu"], d:"Etkililik verileri", u:["hr", "mgr"]},
+  {n:"Ölçü (8.6.3): kurumsal sonuçlara etki", st:"yasam", r:["olcu"], d:"Öğrenme ve gelişimin kurumsal sonuçlara etkisi", u:["hr", "gov"]},
+  {n:"Çıktılar (8.6.4): 7 örnek", st:"yasam", r:["cikti"], d:"Neden önemli olduğunun anlaşılması; tasarlanmış kapsayıcılık; eşit erişim; iletişim ve iş birliği becerileri; önyargıyı tanıma ve karşı durma; kapsayıcı davranış; performans ve rekabet avantajı", u:["hr", "mgr", "emp"]},
+  {n:"Performans yönetimi: genel (8.7.1)", st:"yasam", r:["ilke"], d:"Beklentiler, hesap verebilirlik ve yapıcı geri bildirim; kapsayıcı davranışı ödüllendirme ve önyargılı davranışı ele alma", u:["hr", "mgr", "emp"]},
+  {n:"Performans eylemleri: 12 eylem (8.7.2)", st:"yasam", r:["eylem"], calc:"katilim", d:"Önyargıyı en aza indiren ölçütler, Ç&K'ya hizalı hedefler, yapıcı geri bildirim, orantılı disiplin, memnuniyetsizlik mekanizmaları, derecelendirici önyargısı izleme, davranış verisi", u:["hr", "mgr"]},
+  {n:"Ölçü (8.7.3): performans yönetimine katılanların sayısı", st:"yasam", r:["olcu"], calc:"katilim", d:"Katılımcı sayısı", u:["hr"]},
+  {n:"Ölçü (8.7.3): derecelendirme eğilimleri ve orantısız etki", st:"yasam", r:["olcu"], calc:"gecis", d:"Derecelendirme ve sonuç eğilimleri", u:["hr"]},
+  {n:"Ölçü (8.7.3): süreçten memnuniyet", st:"yasam", r:["olcu"], calc:"olumlu", d:"Performans yönetimi sürecine ilişkin memnuniyet ya da memnuniyetsizlik", u:["hr", "emp"]},
+  {n:"Ölçü (8.7.3): sonuçlardan memnuniyet", st:"yasam", r:["olcu"], calc:"olumlu", d:"Sonuçlara ilişkin memnuniyet", u:["hr", "emp"]},
+  {n:"Ölçü (8.7.3): kapsayıcı davranış örnekleri", st:"yasam", r:["olcu"], d:"Bildirilen örnek sayısı", u:["hr", "mgr"]},
+  {n:"Ölçü (8.7.3): Ç&K'ya aykırı davranış örnekleri", st:"yasam", r:["olcu"], calc:"sikayet", d:"Bildirilen örnek sayısı", u:["hr", "mgr"]},
+  {n:"Çıktılar (8.7.4): 9 örnek", st:"yasam", r:["cikti"], d:"Her aşamaya Ç&K'nın katılması; kapsayıcı liderlik; hedeflerin karşılanması; adil ve yapıcı ilişkiler; öğrenme ihtiyaçlarının ele alınması; önyargı ve ayrımcılığa karşı duruş; aidiyet, tatmin ve elde tutma; performans", u:["hr", "mgr", "emp"]},
+  {n:"Halefiyet planlaması: genel (8.8.1)", st:"yasam", r:["ilke"], d:"Kritik pozisyonlar için çeşitli halef havuzu; geliştirme fırsatlarına erişim", u:["gov", "hr", "mgr"]},
+  {n:"Halefiyet eylemleri: 9 eylem (8.8.2)", st:"yasam", r:["eylem"], calc:"halef", d:"İlkelerin entegrasyonu, erişilebilir iletişim, performans sonuçlarıyla hazır adayları belirleme, önyargı riskleri, az temsil edilen gruplara erişim ve mentorluk, memnuniyet verisi, kararların gözden geçirilmesi", u:["hr", "mgr"]},
+  {n:"Ölçü (8.8.3): her aşamada yer alanların sayısı", st:"yasam", r:["olcu"], calc:"halef", d:"Halefiyet sürecinin her aşamasındaki kişi sayısı", u:["hr"]},
+  {n:"Ölçü (8.8.3): halef adayı olarak belirlenenlerin yüzdesi", st:"yasam", r:["olcu"], calc:"halef", d:"İş gücü içindeki oran", u:["hr"]},
+  {n:"Ölçü (8.8.3): halefiyet pozisyonlarına yerleştirilenlerin yüzdesi", st:"yasam", r:["olcu"], calc:"halef", d:"İş gücü içindeki oran", u:["hr"]},
+  {n:"Ölçü (8.8.3): politika ve süreçlerin adilliğinden memnuniyet", st:"yasam", r:["olcu"], calc:"olumlu", d:"Memnuniyet ya da memnuniyetsizlik", u:["hr", "emp"]},
+  {n:"Ölçü (8.8.3): sonuçların adilliğinden memnuniyet", st:"yasam", r:["olcu"], calc:"olumlu", d:"Memnuniyet ya da memnuniyetsizlik", u:["hr", "emp"]},
+  {n:"Ölçü (8.8.3): halefiyet şikâyetleri", st:"yasam", r:["olcu"], calc:"sikayet", d:"Sayı ve tür", u:["hr"]},
+  {n:"Ölçü (8.8.3): halefiyet derecelendirme ve sonuç eğilimleri", st:"yasam", r:["olcu"], calc:"gecis", d:"Olumsuz ve orantısız etkiler", u:["hr"]},
+  {n:"Çıktılar (8.8.4): 6 örnek", st:"yasam", r:["cikti"], d:"Şeffaf ve adil süreçler; sistematik gözden geçirme; farkındalık; etkili bireysel gelişim planları; hazır çeşitli halef havuzu; en geniş kesimin temsili", u:["gov", "hr", "mgr", "emp"]},
+  {n:"Hareketlilik: genel (8.9.1)", st:"yasam", r:["ilke"], d:"Geçici görev, ödünç görevlendirme, yurt dışına gönderme, içeri alma ve geri çağırma; uzaktan çalışma seçeneği; esneklik, sağlık, güvenlik, göç etkileri", u:["hr", "mgr", "emp"]},
+  {n:"Hareketlilik eylemleri: 11 eylem (8.9.2)", st:"yasam", r:["eylem"], calc:"kabul", d:"Ç&K'yı önceleme, fırsat ve riskleri izleme, görevleri performans ve halefiyetle hizalama, adil teklif, destek ve aile koşulları, reddedenlerin gelecekte ele alınması, yer değiştirmesiz alternatifler, yatırım getirisi", u:["hr", "mgr", "emp"]},
+  {n:"Ölçü (8.9.3): kabul ve ret yüzdeleri", st:"yasam", r:["olcu"], calc:"kabul", d:"Hareketlilik fırsatlarını kabul eden ve reddedenlerin yüzdesi ve ret nedenleri", u:["hr", "emp"]},
+  {n:"Ölçü (8.9.3): görevlendirmelerin etkisi", st:"yasam", r:["olcu"], d:"Yer değiştirmeli ve yer değiştirmesiz görevlendirmelerin etki ve etkililiği", u:["hr", "mgr"]},
+  {n:"Ölçü (8.9.3): sonuç eğilimleri", st:"yasam", r:["olcu"], calc:"gecis", d:"Olumsuz ve orantısız etki eğilimleri", u:["hr"]},
+  {n:"Ölçü (8.9.3): şikâyet sayısı", st:"yasam", r:["olcu"], calc:"sikayet", d:"Hareketlilik süreçlerine ilişkin şikâyetler", u:["hr"]},
+  {n:"Ölçü (8.9.3): adillik memnuniyeti", st:"yasam", r:["olcu"], calc:"olumlu", d:"Politika, süreç, uygulama ve sonuçların adilliğine ilişkin memnuniyet", u:["hr", "emp"]},
+  {n:"Çıktılar (8.9.4): 5 örnek", st:"yasam", r:["cikti"], d:"Şeffaf ve adil süreçler; farkındalık; gelişim ve ilerleme; fırsat ve risklerin ele alınması; en geniş kesimin temsili", u:["hr", "mgr", "emp"]},
+  {n:"İstihdamın sona ermesi: genel (8.10.1)", st:"yasam", r:["ilke"], d:"İstifa, emeklilik, işten çıkarma, performans ya da davranış, sağlık ya da ölüm; yapılandırılmış, şeffaf, tarafsız ve saygılı yaklaşım", u:["hr", "mgr", "emp"]},
+  {n:"Sona erme eylemleri: 11 eylem (8.10.2)", st:"yasam", r:["eylem"], calc:"devir", d:"Ç&K ilkelerinin dahil edilmesi, özen, işten çıkarmadan önce uyumlaştırma, ayrımcı olmayan kıdem ve fesih ölçütleri, destek ve itiraz mekanizmaları, devir verisi, çıkış görüşmeleri, katkıların tanınması, bağlantıyı sürdürme, şikâyetleri inceleme", u:["hr", "mgr", "emp"]},
+  {n:"Ölçü (8.10.3): devir ve elde tutma eğilimleri", st:"yasam", r:["olcu"], calc:"devir", d:"Boyuta göre bütünleşik ve bölümlenmiş analiz", u:["hr"]},
+  {n:"Ölçü (8.10.3): sona erme süreçlerine ilişkin geri bildirim", st:"yasam", r:["olcu"], d:"İstenen ve istenmeyen geri bildirim eğilimleri", u:["hr", "ext"]},
+  {n:"Ölçü (8.10.3): çıkış görüşmesi verisi", st:"yasam", r:["olcu"], d:"Olumlu sonuçlar ve olumsuz etkiler", u:["hr"]},
+  {n:"Ölçü (8.10.3): alternatif ya da esnek çalışma talepleri", st:"yasam", r:["olcu"], d:"Talep sayısı ve nasıl ele alındıkları", u:["hr", "mgr", "emp"]},
+  {n:"Ölçü (8.10.3): fesih itiraz ve şikâyetleri", st:"yasam", r:["olcu"], calc:"sikayet", d:"Sayı ve nedenler; dış tarafa taşınan vakalar dahil", u:["hr", "emp"]},
+  {n:"Çıktılar (8.10.4): 5 örnek", st:"yasam", r:["cikti"], d:"Şeffaf, tarafsız süreçler; danışma mekanizmalarına saygı; onurlu muamele ve kişisel veri güvenliği; farkındalık ve olumsuz etkilenmeme; kapsayıcı işveren itibarı", u:["hr", "emp", "ext"]}
+ ]},
+ {g:"Ürün ve hizmetler, tedarik ve dış paydaşlar (madde 9–11)", t:"r", items:[
+  {n:"Ürün ve hizmetler: genel (9.1)", st:"urun", r:["ilke"], d:"Tasarım, geliştirme ve sunuma katılanlar insana yakışır iş, güvenli koşullar ve saygılı muamele görür; kapsayıcı dil ve görseller", u:["gov", "mgr", "ext"]},
+  {n:"Ürün ve hizmet eylemleri: 9 eylem (9.2)", st:"urun", r:["eylem"], calc:"olumlu", d:"Ç&K'nın tasarıma entegrasyonu, çalışma uygulamalarını savunma, pazar araştırması, geniş paydaş perspektifi, olumlu görseller, müşteri hizmeti ve memnuniyet geri bildirimi, pazar fırsat ve risk verisi", u:["mgr", "ext"]},
+  {n:"Ölçü (9.3): ürün ve hizmet kullanımındaki eğilimler", st:"urun", r:["olcu"], d:"Olumlu ya da olumsuz eğilimler", u:["mgr", "ext"]},
+  {n:"Ölçü (9.3): olumlu müşteri hizmeti örnekleri", st:"urun", r:["olcu"], calc:"sikayet", d:"Kapsayıcı davranışı anan bildirimler", u:["mgr", "ext"]},
+  {n:"Ölçü (9.3): olumsuz müşteri hizmeti örnekleri", st:"urun", r:["olcu"], calc:"sikayet", d:"Kapsayıcı olmayan davranışı anan bildirimler", u:["mgr", "ext"]},
+  {n:"Ölçü (9.3): çalışma ortamına ilişkin geri bildirim", st:"urun", r:["olcu"], d:"İnsanlara nasıl davranıldığına dair eğilimler", u:["hr", "emp"]},
+  {n:"Çıktılar (9.4): 6 örnek", st:"urun", r:["cikti"], d:"Geniş kitlenin ihtiyacını karşılama; etkili pazarlama; yenilik; insana yakışır iş; iletişim, ekip çalışması ve verimlilik; kapsayıcı ürün ve hizmet sağlayıcı itibarı", u:["mgr", "emp", "ext"]},
+  {n:"Tedarik: genel (10.1)", st:"tedarik", r:["ilke"], d:"İhale, tedarikçi seçimi, sözleşme ve yönetim aşamaları; tedarikçi çeşitliliği; ortaklardan insana yakışır iş beklentisi", u:["gov", "mgr", "ext"]},
+  {n:"Tedarik eylemleri: 9 eylem (10.2)", st:"tedarik", r:["eylem"], calc:"tedarik", d:"Her aşamaya Ç&K'yı katmak, tedarikçi erişimi, sadeleştirme, İK uygulamalarını değerlendirme, sözleşme maddeleri, izleme, tedarikçi forumları, harcama verisi, düzenli gözden geçirme", u:["mgr", "ext"]},
+  {n:"Ölçü (10.3): aşamalarda ilerleyen kuruluşların sayısı", st:"tedarik", r:["olcu"], calc:"gecis", d:"Mülkiyete göre ihale aşamalarında ilerleyen ve ilgi kaydeden kuruluş sayısı", u:["mgr", "ext"]},
+  {n:"Ölçü (10.3): tedarik zinciri harcama tutarı", st:"tedarik", r:["olcu"], calc:"tedarik", d:"Tedarik zincirindeki kuruluşlara yapılan harcama", u:["mgr", "ext"]},
+  {n:"Ölçü (10.3): tedarik ortaklarının çalışan sayısı", st:"tedarik", r:["olcu"], d:"Ortakların çalıştırdığı kişi sayısı", u:["mgr", "ext"]},
+  {n:"Ölçü (10.3): sözleşme ihlallerini gösteren şikâyetler", st:"tedarik", r:["olcu"], calc:"sikayet", d:"Önyargı ya da ayrımcılığa ilişkin şikâyet, olay ve iddia sayısı", u:["mgr", "ext"]},
+  {n:"Ölçü (10.3): tedarik faaliyetlerinin etkililiği", st:"tedarik", r:["olcu"], d:"Farklı aşamalarda etkililik", u:["mgr", "ext"]},
+  {n:"Çıktılar (10.4): 5 örnek", st:"tedarik", r:["cikti"], d:"Tedarikçi çeşitliliği stratejisinin etkililiği; ortakların süregelen taahhüdü; İK uygulamalarının hizalanması; insana yakışır iş için tanınma; itibar", u:["gov", "mgr", "ext"]},
+  {n:"Dış paydaşlar: genel (11.1)", st:"dis", r:["ilke"], d:"Yatırımcılar, topluluklar, eğitim kurumları, düzenleyiciler, savunuculuk grupları; proaktif, kapsayıcı ve iş birlikçi yaklaşım", u:["gov", "hr", "ext"]},
+  {n:"Dış paydaş eylemleri: 10 eylem (11.2)", st:"dis", r:["eylem"], calc:"kapsama", d:"İhtiyaçları tanıma, önem ve etkiyi değerlendirme, stratejiler, dış erişim, iletişim, medya raporlarını inceleme, deneyim paylaşımı, etki izleme ve raporlama", u:["gov", "hr", "ext"]},
+  {n:"Ölçü (11.3): paydaş ihtiyaç ve beklentilerindeki değişim", st:"dis", r:["olcu"], d:"İhtiyaç, beklenti, ilgi, güç ve etkideki değişimler", u:["gov", "hr", "ext"]},
+  {n:"Ölçü (11.3): dış erişimin etkililiği", st:"dis", r:["olcu"], d:"Olumlu ve olumsuz geri bildirime dayalı", u:["hr", "ext"]},
+  {n:"Ölçü (11.3): paydaşlarla yürütülen Ç&K girişimlerinin sayısı", st:"dis", r:["olcu"], d:"Girişimlerin sayısı ve sonuçlarının etkililiği", u:["gov", "hr", "ext"]},
+  {n:"Ölçü (11.3): dış paydaşların kurumun taahhüdüne ilişkin algısı", st:"dis", r:["olcu"], calc:"olumlu", d:"Haber ve sosyal medyada yansıyan algı", u:["gov", "ext"]},
+  {n:"Çıktılar (11.4): 4 örnek", st:"dis", r:["cikti"], d:"En geniş dış paydaş kitlesiyle etkileşim; kamusal destek; bilgi ve iyi uygulama paylaşımı; Ç&K ve sosyal sorumluluk tanınırlığı", u:["gov", "hr", "ext"]}
+ ]},
+ {g:"Ek A: öz değerlendirme listesi", t:"o", items:[
+  {n:"Tablo A.1: öz değerlendirme listesi", st:"ek", r:["eylem"], calc:"kapsama", d:"Madde 5–11'deki tüm Ç&K eylemlerinin (177) derlenmiş listesi; her eylem için destekleyici kanıt sütunu", u:["gov", "hr", "mgr"]},
+  {n:"Ek A: kanıt ve boşluk kapatma stratejileri", st:"ek", r:["eylem"], calc:"kapsama", d:"Ölçü ve çıktı örnekleri, eylemlerin karşılandığının kanıtlanması için kullanılır; fırsat ve riskleri belirlemeye ve boşluk kapatma stratejilerine yardım eder", u:["hr", "mgr"]},
+  {n:"Ek A: kuruma göre kanıt biçimi", st:"ek", r:["ilke"], k:"ctx", d:"Her kurum eylemlere uyduğunu kanıtlama biçiminde farklıdır; bağlam ve büyüklüğe göre belirlenir", u:["gov", "hr", "ext"]}
+ ]}
+];
+
+var USERS = ["gov","hr","mgr","emp","ext"];
+var AILE_AD = {p:"ilke ve sorumluluk", c:"çerçeve ve kültür", s:"İK yaşam döngüsü", r:"ürün, tedarik ve dış paydaş", o:"Ek A"};
+var TUR_AD = {ilke:"ilke ve kavram", eylem:"eylem", olcu:"ölçü", cikti:"çıktı"};
+var EK_AD = {ctx:"bağlam", tur:"türetilmiş"};
+
+/* --- matris çizimi --- */
+function renderMatrix(){
+  var fu = document.getElementById("fUser").value;
+  var fs = document.getElementById("fStage").value;
+  var ft = document.getElementById("fType").value;
+  var fr = document.getElementById("fRep").value;
+  var fq = document.getElementById("fQ").value.toLocaleLowerCase("tr");
+  var body = document.getElementById("mBody");
+  var html = "", shown = 0;
+
+  METRICS.forEach(function(grp){
+    if(ft && grp.t !== ft) return;
+    var rows = "";
+    grp.items.forEach(function(m){
+      if(fu && m.u.indexOf(fu) === -1) return;
+      if(fs && m.st !== fs) return;
+      if(fr && m.r.indexOf(fr) === -1) return;
+      if(fq && m.n.toLocaleLowerCase("tr").indexOf(fq) === -1) return;
+      shown++;
+      var cells = USERS.map(function(u){
+        if(m.u.indexOf(u) === -1) return '<td class="num"></td>';
+        var mark = '<span class="dot ' + grp.t + '"></span>';
+        return '<td class="num" title="' + m.n + '">' + (m.calc ? '<b>' + mark + '</b>' : mark) + '</td>';
+      }).join("");
+      var tags = '<span class="tag ' + grp.t + '">' + AILE_AD[grp.t] + '</span>' +
+                 ' <span class="tag lvl">' + TUR_AD[m.r[0]] + '</span>' + (m.k ? ' <span class="tag lvl">' + EK_AD[m.k] + '</span>' : "") +
+                 (m.calc ? ' <span class="tag lvl">hesaplayıcı</span>' : "") +
+                 "";
+      rows += '<tr><td class="name">' + (m.calc ? '<b>' + m.n + '</b>' : m.n) + ' ' + tags +
+              '<em>' + m.d + '</em></td>' + cells + '</tr>';
+    });
+    if(rows){
+      html += '<tr class="group"><td colspan="6">' + grp.g + '</td></tr>' + rows;
+    }
+  });
+
+  body.innerHTML = html || '<tr><td colspan="6">Bu filtre birleşimiyle eşleşen metrik yok.</td></tr>';
+  document.getElementById("mCount").textContent = shown + " metrik ve etken gösteriliyor.";
+}
+["fUser","fStage","fType","fRep","fQ"].forEach(function(id){
+  document.getElementById(id).addEventListener("input", renderMatrix);
+});
+renderMatrix();
+
+/* =========================================================
+   2) ŞEKİL 2: EK A ÖZ DEĞERLENDİRME TABLOSUNDAKİ EYLEM SAYILARI (madde başına)
+   ========================================================= */
+var ALANLAR = [
+  ["5.2","Kurumsal yönetişim",4,"p"], ["5.3","Kurumsal liderlik",8,"p"], ["5.4","Devredilen Ç&K sorumlulukları",15,"p"], ["5.5","Bireysel sorumluluklar",4,"p"],
+  ["6","Ç&K çerçevesi",13,"c"], ["7","Kapsayıcı kültür",11,"c"],
+  ["8.2","İşgücü planlaması",7,"s"], ["8.3","Ücretlendirme",9,"s"], ["8.4","İşe alım",14,"s"], ["8.5","İşe başlama",10,"s"],
+  ["8.6","Öğrenme ve gelişim",11,"s"], ["8.7","Performans yönetimi",12,"s"], ["8.8","Halefiyet planlaması",9,"s"],
+  ["8.9","İşgücü hareketliliği",11,"s"], ["8.10","İstihdamın sona ermesi",11,"s"],
+  ["9","Ürün ve hizmetler",9,"r"], ["10","Tedarik ve tedarik zinciri",9,"r"], ["11","Dış paydaş ilişkileri",10,"r"]
+];
+(function(){
+  var maks = 0;
+  ALANLAR.forEach(function(a){ if(a[2] > maks) maks = a[2]; });
+  var toplam = 0, h = "";
+  ALANLAR.forEach(function(a){
+    toplam += a[2];
+    h += '<div class="br-row"><span class="br-lab">' + a[0] + ' ' + a[1] + '</span><span class="br-track"><span class="br-bar br-' + a[3] + '" style="width:' + (100 * a[2] / maks) + '%">' + a[2] + '</span></span></div>';
+  });
+  h += '<div class="br-sum">Toplam: ' + toplam + ' eylem (Tablo A.1, madde 5–11)</div>';
+  document.getElementById("barChart").innerHTML = h;
+})();
+
+/* =========================================================
+   3) EK A ÖZ DEĞERLENDİRME TABLOSU
+   ========================================================= */
+var SATIR = ALANLAR.length;
+/* örnek amaçlı: tam uygulanan, kısmen uygulanan */
+var ORNEK_TBL = [[3,1],[5,2],[8,4],[3,1],[8,3],[6,3],[3,2],[5,2],[7,4],[5,3],[6,3],[6,3],[3,3],[4,3],[5,3],[4,2],[3,2],[4,3]];
+
+function buildTbl(){
+  var html = "";
+  for(var i=0;i<SATIR;i++){
+    var a = ALANLAR[i];
+    html += '<tr><td><b>' + a[0] + '</b></td><td>' + a[1] + '</td><td class="num">' + a[2] + '</td>' +
+      '<td><input type="number" min="0" step="1" id="p_u_' + i + '"></td>' +
+      '<td><input type="number" min="0" step="1" id="p_k_' + i + '"></td>' +
+      '<td class="calc" id="p_kap_' + i + '">—</td><td class="calc" id="p_dur_' + i + '">—</td></tr>';
+  }
+  document.getElementById("pBody").innerHTML = html;
+  document.getElementById("pBody").querySelectorAll("input").forEach(function(el){ el.addEventListener("input", computeTbl); });
+  document.getElementById("tHedef").addEventListener("input", computeTbl);
+  buildSeg();
+}
+
+function pv(k, i){
+  var v = parseFloat(document.getElementById("p_" + k + "_" + i).value);
+  return isNaN(v) ? null : v;
+}
+
+var TBL = {n:0, ok:false, ilk:null};
+
+function computeTbl(){
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var hedef = parseFloat(document.getElementById("tHedef").value);
+  var hedefOk = !isNaN(hedef) && hedef >= 0 && hedef <= 100;
+  var n = 0, hatali = 0, sT = 0, sU = 0, sK = 0, ilk = null, alti = 0, zayif = null, guclu = null;
+
+  for(var i=0;i<SATIR;i++){
+    var a = ALANLAR[i];
+    var u = pv("u", i), k = pv("k", i);
+    var cK = document.getElementById("p_kap_" + i), cD = document.getElementById("p_dur_" + i);
+    cK.textContent = "—"; cD.textContent = "—";
+    if(u === null && k === null) continue;
+    if(u === null) u = 0;
+    if(k === null) k = 0;
+    if(u < 0 || k < 0 || u + k > a[2] || !hedefOk){
+      hatali++; cD.textContent = "tutarsız"; continue;
+    }
+    n++; sT += a[2]; sU += u; sK += k;
+    var kap = 100 * (u + 0.5 * k) / a[2];
+    cK.textContent = f1(kap);
+    if(kap < hedef){ alti++; cD.textContent = "hedefin altında (" + f1(kap - hedef) + " puan)"; }
+    else cD.textContent = "hedefte";
+    if(zayif === null || kap < zayif[0]) zayif = [kap, a[0]];
+    if(guclu === null || kap > guclu[0]) guclu = [kap, a[0]];
+    if(ilk === null) ilk = {toplam:a[2], uygulanan:u, kismen:k};
+  }
+
+  var ok = n > 0;
+  document.getElementById("tTop").textContent = n ? sT : "—";
+  document.getElementById("tUyg").textContent = n ? sU : "—";
+  document.getElementById("tKis").textContent = n ? sK : "—";
+  document.getElementById("tKap").textContent = n ? f1(100 * (sU + 0.5 * sK) / sT) : "—";
+  document.getElementById("tDur").textContent = n ? (alti + " / " + n + " madde hedefin altında") : "—";
+
+  var kart = document.getElementById("pCards");
+  TBL = {n:n, ok:ok, ilk:ilk};
+  if(!ok){
+    kart.innerHTML = "";
+    document.getElementById("pNot").textContent = hatali ? "Tutarsız satır var: sayılar negatif olmamalı, uygulanan ile kısmen uygulananın toplamı eylem sayısını aşmamalı; hedef 0–100 arasında olmalı." :
+      "Her madde için uygulanan ve kısmen uygulanan eylem sayısını girin ya da örnek veriyi yükleyin.";
+    return;
+  }
+  var kartlar = '';
+  kartlar += '<div class="card"><b>' + f1(100 * (sU + 0.5 * sK) / sT) + ' %</b><span>Genel kapsama (değerlendirilen maddeler)</span></div>';
+  kartlar += '<div class="card"><b>' + f1(100 * sU / sT) + ' %</b><span>Yalnızca tam uygulananların payı</span></div>';
+  kartlar += '<div class="card alt"><b>' + n + '</b><span>Değerlendirilen madde</span></div>';
+  kartlar += '<div class="card alt"><b>' + alti + '</b><span>Hedefin altındaki madde</span></div>';
+  kartlar += '<div class="card warn"><b>' + zayif[1] + '</b><span>En düşük kapsama (' + f1(zayif[0]) + ' %)</span></div>';
+  kartlar += '<div class="card"><b>' + guclu[1] + '</b><span>En yüksek kapsama (' + f1(guclu[0]) + ' %)</span></div>';
+  kart.innerHTML = kartlar;
+
+  var not = "Kapsama = (uygulanan + 0,5 × kısmen) ÷ eylem sayısı × 100; bu puanlama ve hedef bu sayfada türetilmiştir, standart eşik ya da puanlama vermez; Ek A her eylem için yalnızca 'destekleyici kanıt' sütunu bırakır. ";
+  if(alti) not += "Hedefin altındaki maddelerin eylemlerini matriste süzün (Bölüm ve Unsur türü filtreleri). ";
+  if(hatali) not += hatali + " tutarsız satır hesaba katılmadı. ";
+  not += "Toplam, maddelerin eylemlerinin toplamıdır; madde oranlarının ortalaması değildir.";
+  document.getElementById("pNot").textContent = not;
+}
+
+function loadTblExample(){
+  for(var i=0;i<SATIR;i++){
+    document.getElementById("p_u_" + i).value = ORNEK_TBL[i][0];
+    document.getElementById("p_k_" + i).value = ORNEK_TBL[i][1];
+  }
+  computeTbl();
+}
+
+document.getElementById("btnOrnek").addEventListener("click", loadTblExample);
+document.getElementById("btnTemizle").addEventListener("click", function(){
+  for(var i=0;i<SATIR;i++){
+    document.getElementById("p_u_" + i).value = "";
+    document.getElementById("p_k_" + i).value = "";
+  }
+  computeTbl();
+});
+document.getElementById("btnCsv").addEventListener("click", function(){
+  var satir = ["Madde;Konu;Eylem sayisi;Uygulanan;Kismen;Kapsama %"];
+  for(var i=0;i<SATIR;i++){
+    var a = ALANLAR[i];
+    var u = pv("u", i), k = pv("k", i);
+    if(u === null && k === null) continue;
+    u = u === null ? 0 : u; k = k === null ? 0 : k;
+    if(u < 0 || k < 0 || u + k > a[2]) continue;
+    satir.push([a[0], a[1], a[2], u, k, (100 * (u + 0.5 * k) / a[2]).toFixed(1)].join(";"));
+  }
+  var blob = new Blob(["﻿" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a2 = document.createElement("a");
+  a2.href = URL.createObjectURL(blob);
+  a2.download = "iso30415_oz_degerlendirme.csv";
+  a2.click();
+  URL.revokeObjectURL(a2.href);
+});
+
+/* =========================================================
+   3b) GRUP (SEGMENT) TABLOSU: temsil, geçiş, ücret ve ayrılma
+   İlk dolu satır referans gruptur.
+   ========================================================= */
+var GSATIR = 8;
+var GALAN = ["kad","ref","bas","sec","ucr","ayr"];
+/* ad, kadro, referans pay %, başvuran, seçilen, ort. ücret, ayrılan — örnek amaçlı */
+var ORNEK_SEG = [
+  ["Grup A (referans)", 120, 50, 100, 30, 5000, 12],
+  ["Grup B", 70, 48, 90, 18, 4600, 9],
+  ["Grup C", 10, 2, 10, 2, 4900, 2]
+];
+
+function buildSeg(){
+  var html = "";
+  for(var i=0;i<GSATIR;i++){
+    html += '<tr><td><input type="text" id="g_ad_' + i + '" placeholder="Grup ' + (i+1) + '"></td>';
+    GALAN.forEach(function(k){ html += '<td><input type="number" min="0" step="any" id="g_' + k + '_' + i + '"></td>'; });
+    ["tem","gec","ucf","ayo"].forEach(function(k){ html += '<td class="calc" id="g_' + k + '_' + i + '">—</td>'; });
+    html += '</tr>';
+  }
+  document.getElementById("gBody").innerHTML = html;
+  document.getElementById("gBody").querySelectorAll("input").forEach(function(el){ el.addEventListener("input", computeSeg); });
+}
+function gv(k, i){
+  var v = parseFloat(document.getElementById("g_" + k + "_" + i).value);
+  return isNaN(v) ? null : v;
+}
+
+var SEG = {n:0, ok:false, ilk:null, ikinci:null};
+
+function computeSeg(){
+  var f1 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:1, maximumFractionDigits:1}); };
+  var f2 = function(x){ return x.toLocaleString("tr-TR", {minimumFractionDigits:2, maximumFractionDigits:2}); };
+  var rows = [], hatali = 0;
+  for(var i=0;i<GSATIR;i++){
+    var s = {i:i}; GALAN.forEach(function(k){ s[k] = gv(k, i); });
+    ["tem","gec","ucf","ayo"].forEach(function(k){ document.getElementById("g_" + k + "_" + i).textContent = "—"; });
+    if(s.kad === null && s.ref === null && s.bas === null && s.sec === null && s.ucr === null && s.ayr === null) continue;
+    s.ad = document.getElementById("g_ad_" + i).value.trim() || ("Grup " + (i+1));
+    if(!(s.kad > 0) || s.ref === null || s.ref < 0 || s.ref > 100 || (s.bas !== null && s.bas < 0) || (s.sec !== null && (s.sec < 0 || s.bas === null || s.sec > s.bas)) ||
+       (s.ucr !== null && !(s.ucr > 0)) || (s.ayr !== null && (s.ayr < 0 || s.ayr > s.kad))){
+      hatali++; document.getElementById("g_tem_" + i).textContent = "tutarsız"; continue;
+    }
+    rows.push(s);
+  }
+  var n = rows.length, tK = 0, tB = 0, tS = 0, tA = 0;
+  rows.forEach(function(s){ tK += s.kad; if(s.bas !== null){ tB += s.bas; } if(s.sec !== null){ tS += s.sec; } if(s.ayr !== null){ tA += s.ayr; } });
+  var ref = n ? rows[0] : null;
+  var enTem = null, enGec = null, enUcr = null, enAyr = null, ikinci = null;
+  rows.forEach(function(s, j){
+    var tem = 100 * (s.kad / tK) / (s.ref / 100);
+    var set = function(k, t){ document.getElementById("g_" + k + "_" + s.i).textContent = t; };
+    if(s.ref > 0){ set("tem", f1(tem)); if(enTem === null || Math.abs(tem - 100) > Math.abs(enTem[0] - 100)) enTem = [tem, s.ad]; }
+    else set("tem", "ref. pay 0");
+    if(s.bas > 0 && s.sec !== null && ref.bas > 0 && ref.sec > 0){
+      var gec = (s.sec / s.bas) / (ref.sec / ref.bas);
+      set("gec", f2(gec)); if(j > 0 && (enGec === null || gec < enGec[0])) enGec = [gec, s.ad];
+    }
+    if(s.ucr !== null && ref.ucr !== null){
+      var u = 100 * (ref.ucr - s.ucr) / ref.ucr;
+      set("ucf", f1(u)); if(j > 0 && (enUcr === null || Math.abs(u) > Math.abs(enUcr[0]))) enUcr = [u, s.ad];
+    }
+    if(s.ayr !== null){ var a = 100 * s.ayr / s.kad; set("ayo", f1(a)); if(enAyr === null || a > enAyr[0]) enAyr = [a, s.ad]; }
+    if(j === 1) ikinci = s;
+  });
+
+  document.getElementById("gKad").textContent = n ? tK : "—";
+  document.getElementById("gBas").textContent = n ? tB : "—";
+  document.getElementById("gSec").textContent = n ? tS : "—";
+  document.getElementById("gAyr").textContent = n ? tA : "—";
+  var kart = document.getElementById("gCards");
+  SEG = {n:n, ok:n > 0, ilk:ref, ikinci:ikinci, tK:tK};
+  if(!n){
+    kart.innerHTML = "";
+    document.getElementById("gNot").textContent = hatali ? "Tutarsız satır var: kadro sıfırdan büyük, referans pay 0–100, seçilen ≤ başvuran, ayrılan ≤ kadro, ücret pozitif olmalı." :
+      "Grupları girin ya da örnek veriyi yükleyin. İlk dolu satır referans gruptur.";
+    return;
+  }
+  var h = '<div class="card"><b>' + n + '</b><span>Karşılaştırılan grup</span></div>';
+  if(enTem) h += '<div class="card warn"><b>' + f1(enTem[0]) + '</b><span>Eşit temsilden en uzak endeks: ' + enTem[1] + '</span></div>';
+  if(enGec) h += '<div class="card warn"><b>' + f2(enGec[0]) + '</b><span>En düşük etki oranı: ' + enGec[1] + '</span></div>';
+  if(enUcr) h += '<div class="card warn"><b>' + f1(enUcr[0]) + ' %</b><span>En büyük ücret farkı: ' + enUcr[1] + '</span></div>';
+  if(enAyr) h += '<div class="card alt"><b>' + f1(enAyr[0]) + ' %</b><span>En yüksek ayrılma oranı: ' + enAyr[1] + '</span></div>';
+  kart.innerHTML = h;
+  var not = "Referans grup: " + ref.ad + ". Temsil endeksi = (gruptaki iş gücü payı ÷ referans nüfus payı) × 100; etki oranı = grubun seçilme oranı ÷ referansınki; ücret farkı = (referans − grup) ÷ referans × 100. Bütün oranlar bu sayfada türetilmiştir; standart eşik vermez. Ücret karşılaştırmasını iş ailesi ve kademe içinde yapın (8.3.2); kadrosu küçük gruplarda sonuçlar kişileri ele verebilir. ";
+  if(hatali) not += hatali + " tutarsız satır hesaba katılmadı.";
+  document.getElementById("gNot").textContent = not;
+}
+
+function loadSegExample(){
+  for(var i=0;i<GSATIR;i++){
+    var s = ORNEK_SEG[i];
+    document.getElementById("g_ad_" + i).value = s ? s[0] : "";
+    GALAN.forEach(function(k, j){ document.getElementById("g_" + k + "_" + i).value = s ? s[j+1] : ""; });
+  }
+  computeSeg();
+}
+document.getElementById("btnOrnekG").addEventListener("click", loadSegExample);
+document.getElementById("btnTemizleG").addEventListener("click", function(){
+  for(var i=0;i<GSATIR;i++){
+    document.getElementById("g_ad_" + i).value = "";
+    GALAN.forEach(function(k){ document.getElementById("g_" + k + "_" + i).value = ""; });
+  }
+  computeSeg();
+});
+document.getElementById("btnCsvG").addEventListener("click", function(){
+  var satir = ["Grup;Kadro;Referans pay %;Basvuran;Secilen;Ort ucret;Ayrilan;Temsil endeksi;Etki orani;Ucret farki %;Ayrilma %"];
+  var ref = null;
+  for(var i=0;i<GSATIR;i++){
+    var s = {}; GALAN.forEach(function(k){ s[k] = gv(k, i); });
+    if(!(s.kad > 0) || s.ref === null) continue;
+    if(ref === null) ref = s;
+    var tK = 0; for(var j=0;j<GSATIR;j++){ var kk = gv("kad", j); if(kk > 0) tK += kk; }
+    var ad = document.getElementById("g_ad_" + i).value.trim() || ("Grup " + (i+1));
+    satir.push([ad, s.kad, s.ref, s.bas === null ? "" : s.bas, s.sec === null ? "" : s.sec, s.ucr === null ? "" : s.ucr, s.ayr === null ? "" : s.ayr,
+      s.ref > 0 ? (100 * (s.kad / tK) / (s.ref / 100)).toFixed(1) : "",
+      (s.bas > 0 && s.sec !== null && ref.bas > 0 && ref.sec > 0) ? ((s.sec / s.bas) / (ref.sec / ref.bas)).toFixed(2) : "",
+      (s.ucr !== null && ref.ucr > 0) ? (100 * (ref.ucr - s.ucr) / ref.ucr).toFixed(1) : "",
+      s.ayr !== null ? (100 * s.ayr / s.kad).toFixed(1) : ""].join(";"));
+  }
+  var blob = new Blob(["﻿" + satir.join("\n")], {type:"text/csv;charset=utf-8"});
+  var a2 = document.createElement("a");
+  a2.href = URL.createObjectURL(blob);
+  a2.download = "iso30415_grup_karsilastirma.csv";
+  a2.click();
+  URL.revokeObjectURL(a2.href);
+});
+
+/* =========================================================
+   4) FORMÜL TABLOSU + HESAPLAYICI
+   Alan adları gömülü Python modülünün hesapla() imzasıyla birebir aynıdır.
+   ========================================================= */
+function gerek(kosul, mesaj){ if(!kosul) throw new Error("GecersizGirdi: " + mesaj); }
+function bolOk(pay, payda, ad){ gerek(payda > 0, ad + " sıfırdan büyük olmalı"); return pay / payda; }
+function negYok(v, ks){ ks.forEach(function(k){ gerek(v[k] >= 0, k + " negatif olamaz"); }); }
+/* Python round() ile aynı davranış: tam yarım değerlerde en yakın çifte yuvarlar */
+function pyround(x, n){
+  var m = Math.pow(10, n), y = x * m, f = Math.floor(y);
+  if(y - f === 0.5) return (f % 2 === 0 ? f : f + 1) / m;
+  return Math.round(y) / m;
+}
+function r1(x){ return pyround(x, 1); }
+function r2(x){ return pyround(x, 2); }
+function r3(x){ return pyround(x, 3); }
+
+var CALC = [
+ {id:"katilim", name:"Katılım, paylaşım ve tamamlama oranı", grp:"Ölçü", noHeur:true,
+  formula:"Oran = (Katılan &divide; Hedef kitle) &times; 100",
+  note:"Standart pek çok ölçüyü 'sayı' ve 'yüzde' olarak anar: demografik verisini paylaşan çalışan yüzdesi (7.3), işe başlamayı tamamlayan kişi sayısı (8.5.3), öğrenme ve performans yönetimine katılanlar (8.6.3, 8.7.3), uyumlaştırma talepleri (8.4.3). Oran bu sayfada türetilmiştir; hedef kitlenin ne olduğunu kurum belirler. Veri etik ve yasal gerekler gözetilerek toplanmalıdır (7.2).",
+  fields:[{k:"katilan",l:"Katılan / paylaşan / tamamlayan kişi",v:360},{k:"hedef_kitle",l:"Hedef kitle (kişi)",v:600}],
+  unit:"% (katılan ÷ hedef kitle)",
+  py:"hesapla('katilim', katilan=360, hedef_kitle=600)",
+  calc:function(v){
+    negYok(v, ["katilan"]);
+    gerek(v.katilan <= v.hedef_kitle, "katılan sayısı hedef kitleyi aşamaz");
+    var d = 100 * bolOk(v.katilan, v.hedef_kitle, "hedef kitle");
+    return {value:d, dec:1, expl:v.katilan + " ÷ " + v.hedef_kitle + " × 100",
+      detail:[["Katılmayan", r2(v.hedef_kitle - v.katilan)],
+              ["Katılmayanların payı (%)", r1(100 - d)]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Düşük paylaşım, verinin temsil gücünü zayıflatır; verinin neden toplandığını ve nasıl korunduğunu açıklamak katılımı artırır (7.2). Oranı çeşitlilik boyutuna göre bölümleyin."]]},
+
+ {id:"olumlu", name:"Olumlu yanıt oranı (kendini değerli hissedenler, memnuniyet)", grp:"Ölçü", noHeur:true,
+  formula:"Olumlu oran = (Olumlu yanıt &divide; Toplam yanıt) &times; 100",
+  note:"6.3 ve 7.3: kurum tarafından değerli hissettiğini belirten çalışanların yüzdesi. 8.3.3, 8.7.3, 8.8.3 ve 8.9.3: politika, süreç ve sonuçların adilliğinden memnuniyet ya da memnuniyetsizlik. Standart formül vermez; olumlu yanıtın tanımı (ör. 4–5 puan) kuruma aittir.",
+  fields:[{k:"olumlu",l:"Olumlu yanıt sayısı",v:310},{k:"yanit",l:"Toplam yanıt sayısı",v:420}],
+  unit:"% (olumlu ÷ yanıt)",
+  py:"hesapla('olumlu', olumlu=310, yanit=420)",
+  calc:function(v){
+    negYok(v, ["olumlu"]);
+    gerek(v.olumlu <= v.yanit, "olumlu yanıt sayısı toplam yanıtı aşamaz");
+    var d = 100 * bolOk(v.olumlu, v.yanit, "toplam yanıt");
+    return {value:d, dec:1, expl:v.olumlu + " ÷ " + v.yanit + " × 100",
+      detail:[["Olumlu olmayan yanıt", r2(v.yanit - v.olumlu)],
+              ["Olumlu olmayanların payı (%)", r1(100 - d)]]}; },
+  bands:[[0,"ok","Standart eşik vermez; asıl bilgi, oranın çeşitlilik boyutlarına göre bölümlenmiş hâlindedir. Gruplar arasındaki farkı ve zaman içindeki eğilimi okuyun."]]},
+
+ {id:"temsil", name:"Temsil endeksi (iş gücü ve referans nüfus)", grp:"Ölçü", noHeur:true,
+  formula:"Endeks = ((Gruptaki kadro &divide; Toplam kadro) &divide; (Referans nüfus payı &divide; 100)) &times; 100",
+  note:"8.2.2 ve 6.4: iş gücü bileşimini ilgili sektör, bölge ve ulusal nüfus profilleriyle karşılaştırın ve demografik olarak az temsil edilen grupları belirleyin; çıktılardan biri, iş gücünün hizmet verilen topluluğu temsil etmesidir. Endeks bu sayfada türetilmiştir: 100 eşit temsil, altı az temsil, üstü fazla temsil demektir. Standart hedef ya da eşik vermez.",
+  fields:[{k:"grup",l:"Gruptaki çalışan sayısı",v:30},{k:"toplam",l:"Toplam çalışan sayısı",v:200},{k:"ref_pay",l:"Referans nüfustaki grup payı (%)",v:48,step:0.1}],
+  unit:"endeks (100 = eşit temsil)",
+  py:"hesapla('temsil', grup=30, toplam=200, ref_pay=48)",
+  calc:function(v){
+    negYok(v, ["grup","ref_pay"]);
+    gerek(v.grup <= v.toplam, "grup kadrosu toplam kadroyu aşamaz");
+    gerek(v.ref_pay <= 100, "referans pay yüzde 100'ü aşamaz");
+    gerek(v.toplam > 0, "toplam kadro sıfırdan büyük olmalı");
+    var pay = 100 * v.grup / v.toplam;
+    var d = 100 * bolOk(v.grup / v.toplam, v.ref_pay / 100, "referans pay");
+    return {value:d, dec:1, expl:"(" + v.grup + " ÷ " + v.toplam + ") ÷ (" + v.ref_pay + " ÷ 100) × 100",
+      detail:[["Gruptaki işgücü payı (%)", r1(pay)],
+              ["Referans paya göre fark (puan)", r1(pay - v.ref_pay)]]}; },
+  bands:[[100,"ok","Grup, referans nüfustaki payına eşit ya da daha fazla temsil ediliyor; yine de seviyelere (kıdem, yönetim) göre bölümleyin."],
+         [0,"warn","Grup referans nüfusa göre az temsil ediliyor (8.2.2): nedenlerini (işe alım kanalı, ilerleme, ayrılma) araştırın. Standart eşik vermez; yönetim organı ve üst düzey gibi seviyelerde ayrıca bakın."]]},
+
+ {id:"gecis", name:"Aşama geçiş (etki) oranı", grp:"Ölçü", noHeur:true,
+  formula:"Etki oranı = (Grubun geçen &divide; başvuran) &divide; (Referansın geçen &divide; başvuran)",
+  note:"8.2.3, 8.4.3, 8.7.3, 8.8.3, 10.3: işe alım ve diğer süreç aşamalarında ilerleyenlerin sayısı ve olumsuz ve orantısız etki eğilimleri çeşitlilik boyutuna göre izlenir; 3.4 olumsuz etkiyi dezavantajlı ve olası ayrımcı sonuç diye tanımlar. Oran bu sayfada türetilmiştir. Standart eşik vermez.",
+  fields:[{k:"grup_gecen",l:"Grupta aşamayı geçen",v:18},{k:"grup_basvuran",l:"Gruptan başvuran",v:60},{k:"ref_gecen",l:"Referans grupta aşamayı geçen",v:40},{k:"ref_basvuran",l:"Referans gruptan başvuran",v:100}],
+  unit:"oran (grup ÷ referans)",
+  py:"hesapla('gecis', grup_gecen=18, grup_basvuran=60, ref_gecen=40, ref_basvuran=100)",
+  calc:function(v){
+    negYok(v, ["grup_gecen","ref_gecen"]);
+    gerek(v.grup_gecen <= v.grup_basvuran, "geçen sayısı başvuran sayısını aşamaz");
+    gerek(v.ref_gecen <= v.ref_basvuran, "referans geçen sayısı referans başvuranı aşamaz");
+    var g = bolOk(v.grup_gecen, v.grup_basvuran, "grup başvuran sayısı");
+    var r = bolOk(v.ref_gecen, v.ref_basvuran, "referans başvuran sayısı");
+    var d = bolOk(g, r, "referans geçiş oranı");
+    return {value:d, dec:2, expl:"(" + v.grup_gecen + " ÷ " + v.grup_basvuran + ") ÷ (" + v.ref_gecen + " ÷ " + v.ref_basvuran + ")",
+      detail:[["Grubun geçiş oranı (%)", r1(100 * v.grup_gecen / v.grup_basvuran)],
+              ["Referansın geçiş oranı (%)", r1(100 * v.ref_gecen / v.ref_basvuran)]]}; },
+  bands:[[0.8,"ok","Standart eşik vermez. Bazı ülkelerde 'beşte dört' (0,8) uygulaması yalnızca bir tarama göstergesi olarak kullanılır; bu bir hukuki değerlendirme değildir ve standart ülkeye özgü uyumu kapsam dışı bırakır. Küçük örneklemlerde dikkatli yorumlayın."],
+         [0,"warn","Grubun geçiş oranı referansın belirgin altında: olası orantısız etki. Aşamadaki ölçütleri, değerlendirme yöntemlerini ve otomatik sistemleri önyargı açısından inceleyin (8.4.2, 5.4)."]]},
+
+ {id:"ucret", name:"Ücret farkı (referans gruba göre)", grp:"Ölçü", noHeur:true,
+  formula:"Fark = ((Referans ortalama ücret &minus; Grup ortalama ücreti) &divide; Referans ortalama ücret) &times; 100",
+  note:"8.3.2 ve 8.3.3: ücret ve yan hak verilerinden iş aileleri, coğrafi konumlar ve ücret yapıları (bant, kademe, ölçek) içinde ve arasında cinsiyet ve diğer çeşitlilik boyutlarına ilişkin anomali ve farkları belirleyin. Fark yüzdesi bu sayfada türetilmiştir; standart formül ya da kabul edilebilir fark vermez. Mümkünse aynı iş ailesi ve kademe içinde karşılaştırın.",
+  fields:[{k:"ref_ort",l:"Referans grubun ortalama ücreti",v:5000},{k:"grup_ort",l:"Grubun ortalama ücreti",v:4600}],
+  unit:"% (referansa göre fark)",
+  py:"hesapla('ucret', ref_ort=5000, grup_ort=4600)",
+  calc:function(v){
+    negYok(v, ["grup_ort"]);
+    var d = 100 * bolOk(v.ref_ort - v.grup_ort, v.ref_ort, "referans ortalama ücret");
+    return {value:d, dec:1, expl:"(" + v.ref_ort + " − " + v.grup_ort + ") ÷ " + v.ref_ort + " × 100",
+      detail:[["Mutlak fark", r2(v.ref_ort - v.grup_ort)],
+              ["Grup ücreti / referans ücret (%)", r1(100 * v.grup_ort / v.ref_ort)]]}; },
+  bands:[[0.0000001,"warn","Grup ortalaması referansın altında: nedeni (iş içeriği, kıdem, kademe, konum) ayrıştırın; açıklanamayan fark 'eşit değerde iş için eşit ücret' ilkesi (8.3.2) açısından ele alınmalıdır."],
+         [-0.0000001,"ok","Ortalamalar eşit; yine de iş ailesi ve kademe bazında bakın."],
+         [-1e9,"warn","Fark referans grup aleyhine: yine de incelenmelidir (8.3.2 tüm çeşitlilik boyutlarına ilişkin anomali ve farkları sayar)."]]},
+
+ {id:"kabul", name:"Teklif ve görevlendirme kabul oranı", grp:"Ölçü", noHeur:true,
+  formula:"Kabul oranı = (Kabul edilen &divide; Yapılan teklif) &times; 100",
+  note:"8.4.3: yapılan teklif sayısı ile kabuller ve kabul edilmeme nedenleri. 8.9.3: hareketlilik fırsatlarını kabul eden ve reddedenlerin yüzdesi ve ret nedenleri. 8.5.3 ve 8.6.3: sunulan ve kabul edilen gelişim fırsatları. Oran bu sayfada türetilmiştir; boyuta göre bölümlenerek okunmalıdır.",
+  fields:[{k:"teklif",l:"Yapılan teklif / sunulan fırsat",v:50},{k:"kabul",l:"Kabul edilen",v:40}],
+  unit:"% (kabul ÷ teklif)",
+  py:"hesapla('kabul', teklif=50, kabul=40)",
+  calc:function(v){
+    negYok(v, ["kabul"]);
+    gerek(v.kabul <= v.teklif, "kabul sayısı teklif sayısını aşamaz");
+    var d = 100 * bolOk(v.kabul, v.teklif, "teklif sayısı");
+    return {value:d, dec:1, expl:v.kabul + " ÷ " + v.teklif + " × 100",
+      detail:[["Kabul edilmeyen teklif", r2(v.teklif - v.kabul)]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Reddedenlerin nedenlerini (aile koşulları, esneklik, erişilebilirlik) kaydedin; reddedenler gelecekteki görevlerde dezavantaj yaşamamalıdır (8.9.2)."]]},
+
+ {id:"devir", name:"Ayrılma (devir) oranı ve referansa göre kat", grp:"Ölçü", noHeur:true,
+  formula:"Ayrılma = (Ayrılan &divide; Ortalama kadro) &times; 100; Göreli = Ayrılma &divide; Referans ayrılma oranı",
+  note:"7.2, 7.3, 8.4.3, 8.5.3, 8.10.3: personel devri ve elde tutma, işe başlamadan sonraki 6 ay içindeki ayrılmalar ve nedenleri çeşitlilik boyutuna göre izlenir. Oran ve göreli oran bu sayfada türetilmiştir; hangi dönem ve kadro tanımının kullanılacağı kuruma aittir.",
+  fields:[{k:"ayrilan",l:"Dönemde ayrılan",v:9},{k:"kadro",l:"Ortalama kadro",v:70},{k:"ref_oran",l:"Referans ayrılma oranı (%)",v:10,step:0.1}],
+  unit:"% (ayrılan ÷ kadro)",
+  py:"hesapla('devir', ayrilan=9, kadro=70, ref_oran=10)",
+  calc:function(v){
+    negYok(v, ["ayrilan"]);
+    var d = 100 * bolOk(v.ayrilan, v.kadro, "ortalama kadro");
+    return {value:d, dec:1, expl:v.ayrilan + " ÷ " + v.kadro + " × 100",
+      detail:[["Referans orana göre (kat)", r2(bolOk(d, v.ref_oran, "referans oran"))]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Bir grubun ayrılma oranı referansın belirgin üstündeyse çıkış görüşmeleri ve dahil olma verileriyle nedenleri inceleyin (8.10.3)."]]},
+
+ {id:"sikayet", name:"Şikâyet ve olay oranı (her 1000 çalışan için)", grp:"Ölçü", noHeur:true,
+  formula:"Oran = (Şikâyet sayısı &divide; Çalışan sayısı) &times; 1000",
+  note:"6.3, 7.3, 8.4.3, 8.5.3, 8.7.3, 8.8.3, 8.9.3, 8.10.3, 9.3, 10.3: bildirilen Ç&K olaylarının, şikâyet, uyuşmazlık, itiraz ve iddiaların sayısı. Standart sayıyı ölçü olarak verir; çalışan başına normalleştirilmiş oran bu sayfada türetilmiştir. Düşük sayı güvenli ortamın değil, bildirim eksikliğinin de işareti olabilir (5.4: güvenli ortam).",
+  fields:[{k:"sikayet",l:"Dönemde bildirilen şikâyet / olay",v:6},{k:"calisan",l:"Çalışan sayısı",v:600}],
+  unit:"her 1000 çalışan için",
+  py:"hesapla('sikayet', sikayet=6, calisan=600)",
+  calc:function(v){
+    negYok(v, ["sikayet"]);
+    var d = 1000 * bolOk(v.sikayet, v.calisan, "çalışan sayısı");
+    return {value:d, dec:1, expl:v.sikayet + " ÷ " + v.calisan + " × 1000",
+      detail:[["Çalışan başına yüzde", r2(100 * v.sikayet / v.calisan)]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Düşük oran tek başına iyiye işaret etmez; bildirimden çekinilmediğinden emin olun, çözüm sonuçlarını ve boyutlara göre dağılımı izleyin (7.2)."]]},
+
+ {id:"halef", name:"Halefiyet: aday ve yerleştirme payları", grp:"Ölçü", noHeur:true,
+  formula:"Aday payı = (Halef adayı &divide; Kadro) &times; 100; Yerleştirme payı = (Yerleştirilen &divide; Kadro) &times; 100",
+  note:"8.8.3: halef adayı olarak belirlenen iş gücü yüzdesi ve halefiyet pozisyonlarına yerleştirilen iş gücü yüzdesi, çeşitlilik boyutuna göre. Oranlar bu sayfada türetilmiştir. Ana sonuç aday payıdır; ayrıntıda yerleştirme payı ve adaylardan yerleştirilen oran verilir.",
+  fields:[{k:"kadro",l:"Kadro (çalışan sayısı)",v:600},{k:"aday",l:"Halef adayı olarak belirlenen",v:60},{k:"yerlesen",l:"Halefiyet pozisyonlarına yerleştirilen",v:24}],
+  unit:"% (halef adayı ÷ kadro)",
+  py:"hesapla('halef', kadro=600, aday=60, yerlesen=24)",
+  calc:function(v){
+    negYok(v, ["aday","yerlesen"]);
+    gerek(v.aday <= v.kadro, "halef adayı sayısı kadroyu aşamaz");
+    gerek(v.yerlesen <= v.aday, "yerleştirilen sayısı aday sayısını aşamaz");
+    var d = 100 * bolOk(v.aday, v.kadro, "kadro");
+    return {value:d, dec:1, expl:v.aday + " ÷ " + v.kadro + " × 100",
+      detail:[["Yerleştirilenlerin kadroya payı (%)", r1(100 * v.yerlesen / v.kadro)],
+              ["Adaylardan yerleştirilen (%)", r1(100 * bolOk(v.yerlesen, v.aday, "halef adayı sayısı"))]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Aday havuzunun çeşitliliği ve az temsil edilen grupların aday olarak belirlenme payı için payı gruba göre bölümleyin (8.8.2, 8.8.4)."]]},
+
+ {id:"tedarik", name:"Tedarikçi çeşitliliği harcama payı", grp:"Ölçü", noHeur:true,
+  formula:"Pay = (Demografik olarak az temsil edilen grupların sahip olduğu işletmelere harcama &divide; Toplam harcama) &times; 100",
+  note:"10.2: demografik olarak az temsil edilen bireyler ya da gruplara ait kuruluşlarla ilgili harcama ve kuruluş sayısı verisi toplanır. 10.3: tedarik zincirindeki kuruluşlara harcanan tutar. Pay bu sayfada türetilmiştir; 'az temsil edilen grup sahipliği' tanımını ve hukuki sınırları kurum belirler.",
+  fields:[{k:"ayrik_harcama",l:"Az temsil edilen gruplara ait işletmelere harcama",v:1.2,step:0.1},{k:"toplam_harcama",l:"Toplam tedarik harcaması (aynı birim)",v:12,step:0.1}],
+  unit:"% (ayrılan harcama ÷ toplam)",
+  py:"hesapla('tedarik', ayrik_harcama=1.2, toplam_harcama=12)",
+  calc:function(v){
+    negYok(v, ["ayrik_harcama"]);
+    gerek(v.ayrik_harcama <= v.toplam_harcama, "ayrılan harcama toplam harcamayı aşamaz");
+    var d = 100 * bolOk(v.ayrik_harcama, v.toplam_harcama, "toplam harcama");
+    return {value:d, dec:1, expl:v.ayrik_harcama + " ÷ " + v.toplam_harcama + " × 100",
+      detail:[["Diğer harcama", r2(v.toplam_harcama - v.ayrik_harcama)]]}; },
+  bands:[[0,"ok","Standart eşik vermez. Pay tek başına başarı göstergesi değildir; tedarikçi sayısı, ihale aşamalarındaki ilerleme ve ortakların insana yakışır iş uygulamalarıyla birlikte okuyun (10.2–10.4)."]]},
+
+ {id:"kapsama", name:"Eylemlerin uygulama kapsaması (Ek A öz değerlendirme)", grp:"Uygulama", noHeur:true,
+  formula:"Kapsama = ((Uygulanan + 0,5 &times; Kısmen uygulanan) &divide; Eylem sayısı) &times; 100",
+  note:"Ek A (Tablo A.1): kurumlar tüm Ç&K eylemlerini mevcut durumlarını değerlendirmek için kullanabilir. Standart puanlama ya da eşik vermez, yalnızca 'destekleyici kanıt' sütunu bırakır. Kısmen uygulananın yarım sayılması ve hedef bu sayfada türetilmiştir; bir uygunluk sınaması değildir.",
+  fields:[{k:"toplam",l:"Maddedeki eylem sayısı",v:13},{k:"uygulanan",l:"Tam uygulanan eylem",v:8},{k:"kismen",l:"Kısmen uygulanan eylem",v:3}],
+  unit:"% (kapsama)",
+  py:"hesapla('kapsama', toplam=13, uygulanan=8, kismen=3)",
+  calc:function(v){
+    negYok(v, ["uygulanan","kismen"]);
+    gerek(v.uygulanan + v.kismen <= v.toplam, "uygulanan ve kısmen uygulanan toplamı eylem sayısını aşamaz");
+    var d = 100 * bolOk(v.uygulanan + 0.5 * v.kismen, v.toplam, "eylem sayısı");
+    return {value:d, dec:1, expl:"(" + v.uygulanan + " + 0,5 × " + v.kismen + ") ÷ " + v.toplam + " × 100",
+      detail:[["Hiç uygulanmayan eylem", r2(v.toplam - v.uygulanan - v.kismen)],
+              ["Yalnızca tam uygulananların payı (%)", r1(100 * v.uygulanan / v.toplam)]]}; },
+  bands:[[0,"ok","Hedefinizi önceden belirleyin; hedefin altındaki maddelerde kanıtı olmayan eylemleri boşluk kapatma stratejisine dönüştürün (Ek A)."]]}
+];
+
+/* --- formül tablosu --- */
+(function(){
+  var rows = CALC.map(function(c){
+    return '<tr><td><b>' + c.name + '</b></td><td><span style="font-family:var(--serif)">' +
+           c.formula + '</span></td><td>' + c.note + '</td></tr>';
+  }).join("");
+  document.getElementById("fBody").innerHTML = rows;
+})();
+
+/* --- hesaplayıcı --- */
+var sel = document.getElementById("cMetric");
+CALC.forEach(function(c, i){
+  var o = document.createElement("option");
+  o.value = i; o.textContent = c.grp + " — " + c.name;
+  sel.appendChild(o);
+});
+
+function buildFields(){
+  var c = CALC[+sel.value];
+  document.getElementById("cFields").innerHTML = c.fields.map(function(f){
+    return '<div class="field"><label for="in_' + f.k + '">' + f.l + '</label>' +
+      '<input type="number" id="in_' + f.k + '" value="" step="' + (f.step || "any") + '" placeholder="' + f.v + '"></div>';
+  }).join("");
+  document.getElementById("cFields").querySelectorAll("input").forEach(function(el){
+    el.addEventListener("input", run);
+  });
+}
+
+function readVals(){
+  var c = CALC[+sel.value], v = {}, missing = false;
+  c.fields.forEach(function(f){
+    var el = document.getElementById("in_" + f.k);
+    var raw = el && el.value !== "" ? parseFloat(el.value) : NaN;
+    if(isNaN(raw)){ missing = true; v[f.k] = f.v; } else { v[f.k] = raw; }
+  });
+  return {v:v, missing:missing};
+}
+
+function fmt(x, dec){
+  if(!isFinite(x)) return "—";
+  return x.toLocaleString("tr-TR", {minimumFractionDigits:dec, maximumFractionDigits:dec});
+}
+
+/* Hesaplama motoru: Python hazırsa gömülü modül, değilse JS yedeği */
+function compute(c, v){
+  if(PY.ready){
+    try{
+      PY.pyodide.globals.set("_metrik", c.id);
+      PY.pyodide.globals.set("_girdi", JSON.stringify(v));
+      var raw = PY.pyodide.runPython(
+        "import json\n" +
+        "json.dumps(hesapla(_metrik, **json.loads(_girdi)))");
+      var r = JSON.parse(raw);
+      return {value:r.deger, expl:r.ifade, dec:r.ondalik, detail:r.ayrinti,
+              unit:r.birim, durum:r.durum, engine:"python"};
+    }catch(err){
+      var msg = String(err);
+      /* Kullanıcı girdisi kaynaklı hata: motor sorunu değil, yedeğe geçme */
+      if(msg.indexOf("GecersizGirdi") !== -1 || msg.indexOf("ZeroDivisionError") !== -1) throw err;
+      setEngine("off", "Motor: JS yedeği — Python hatası");
+    }
+  }
+  var out = c.calc(v);
+  out.engine = "js";
+  return out;
+}
+
+function run(){
+  var c = CALC[+sel.value];
+  var r = readVals();
+  var out;
+  try { out = compute(c, r.v); } catch(e){ out = null; }
+  var box = document.getElementById("cResult");
+  if(!out || !isFinite(out.value)){
+    box.innerHTML = '<div class="result"><b>Hesaplanamadı.</b> Payda sıfır olamaz, parça bütünden büyük olamaz ve değerler geçerli aralıkta olmalı; alanları kontrol edin.</div>';
+    return;
+  }
+  var dec = (out.dec === undefined) ? 1 : out.dec;
+  var unit = out.unit || c.unit;
+  var html = '<div class="result">';
+  html += '<div class="big">' + fmt(out.value, dec) + ' <span>' + unit + '</span></div>';
+  html += '<div style="font-size:13px;color:var(--ink-soft);margin-top:6px">' + c.name +
+          ' · ' + (out.engine === "python" ? 'Python (Pyodide) ile hesaplandı' : 'JavaScript ile hesaplandı') +
+          (r.missing ? ' · <i>boş alanlar için örnek değer kullanıldı</i>' : '') + '</div>';
+
+  if(document.getElementById("oFormula").checked){
+    html += '<div class="formula">' + c.formula + '<br><span style="color:var(--ink-soft);font-size:15px">= ' +
+            out.expl + ' = <b>' + fmt(out.value, dec) + '</b> ' + unit + '</span></div>';
+  }
+  if(out.detail && out.detail.length){
+    html += '<dl>' + out.detail.map(function(d){
+      var val = (typeof d[1] === "number") ? d[1].toLocaleString("tr-TR") : d[1];
+      return '<dt>' + d[0] + '</dt><dd>' + val + '</dd>';
+    }).join("") + '</dl>';
+  }
+  if(document.getElementById("oInterp").checked){
+    if(c.durumMetin && out.durum){
+      html += '<div class="verdict ' + out.durum + '">' + c.durumMetin[out.durum] + '</div>';
+    } else if(c.bands){
+      var band = c.bands[c.bands.length-1];
+      for(var i=0;i<c.bands.length;i++){ if(out.value >= c.bands[i][0]){ band = c.bands[i]; break; } }
+      html += '<div class="verdict ' + band[1] + '">' + band[2] + '</div>';
+      if(c.bands.length > 1 && !c.noHeur){
+        html += '<div class="note" style="margin-top:12px">Yorum eşikleri standarttan değil, başlangıç varsayımlarından gelir; kendi hedeflerinizle değiştirin.</div>';
+      }
+    }
+    html += '<div class="note" style="margin-top:12px">' + c.note + '</div>';
+  }
+  if(document.getElementById("oPy").checked){
+    var args = c.fields.map(function(f){ return f.k + "=" + r.v[f.k]; }).join(", ");
+    var call = 'hesapla("' + c.id + '", ' + args + ')';
+    html += '<pre style="margin-top:16px"><i>&gt;&gt;&gt; from iso30415_metrikler import hesapla</i>\n' +
+            '&gt;&gt;&gt; ' + call + '["deger"]\n' + out.value + '\n\n' +
+            '<i># eşdeğer doğrudan çağrı</i>\n&gt;&gt;&gt; ' + c.py + '</pre>';
+  }
+  html += '</div>';
+  box.innerHTML = html;
+}
+
+sel.addEventListener("change", function(){ buildFields(); run(); });
+document.getElementById("btnRun").addEventListener("click", run);
+document.getElementById("btnExample").addEventListener("click", function(){
+  var c = CALC[+sel.value];
+  c.fields.forEach(function(f){ document.getElementById("in_" + f.k).value = f.v; });
+  run();
+});
+["oFormula","oInterp","oPy"].forEach(function(id){
+  document.getElementById(id).addEventListener("change", function(){
+    var all = document.getElementById("oFormula").checked &&
+              document.getElementById("oInterp").checked &&
+              document.getElementById("oPy").checked;
+    document.getElementById("oAll").checked = all;
+    run();
+  });
+});
+document.getElementById("oAll").addEventListener("change", function(){
+  var s = this.checked;
+  ["oFormula","oInterp","oPy"].forEach(function(id){ document.getElementById(id).checked = s; });
+  run();
+});
+
+/* --- tablolardan hesaplayıcıya aktarma --- */
+function hesapGit(id){
+  var idx = CALC.map(function(c){ return c.id; }).indexOf(id);
+  sel.value = idx; buildFields();
+}
+function hesapSon(){
+  run();
+  document.getElementById("hesaplayici").scrollIntoView({behavior:"smooth", block:"start"});
+}
+document.getElementById("btnAktar").addEventListener("click", function(){
+  if(!TBL.ok){ loadTblExample(); }
+  hesapGit("kapsama");
+  var ilk = TBL.ilk;
+  if(ilk){
+    document.getElementById("in_toplam").value = ilk.toplam;
+    document.getElementById("in_uygulanan").value = ilk.uygulanan;
+    document.getElementById("in_kismen").value = ilk.kismen;
+  }
+  hesapSon();
+});
+document.getElementById("btnAktarG").addEventListener("click", function(){
+  if(!SEG.ok){ loadSegExample(); }
+  hesapGit("temsil");
+  var s = SEG.ikinci || SEG.ilk;
+  if(s){
+    document.getElementById("in_grup").value = s.kad;
+    document.getElementById("in_toplam").value = SEG.tK;
+    document.getElementById("in_ref_pay").value = s.ref;
+  }
+  hesapSon();
+});
+
+/* =========================================================
+   4) PYTHON MOTORU (Pyodide / WebAssembly)
+   Gömülü iso30415_metrikler.py modülü tarayıcı içinde
+   gerçek CPython ile çalıştırılır. Erişim yoksa JS yedeği
+   devrede kalır ve sonuçlar değişmez.
+   ========================================================= */
+var PY = {ready:false, busy:false, pyodide:null};
+
+var PYODIDE_URLS = [
+  "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js",
+  "https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"
+];
+
+function setEngine(state, text){
+  var chip = document.getElementById("engStatus");
+  chip.className = "chip" + (state ? " " + state : "");
+  chip.textContent = text;
+}
+
+function loadScript(src){
+  return new Promise(function(resolve, reject){
+    var s = document.createElement("script");
+    s.src = src;
+    s.onload = function(){ resolve(src); };
+    s.onerror = function(){ reject(new Error(src)); };
+    document.head.appendChild(s);
+  });
+}
+
+function pySource(){
+  return document.getElementById("pysrc").textContent;
+}
+
+async function initPython(){
+  if(PY.ready) return true;
+  if(PY.busy) return false;
+  PY.busy = true;
+  document.getElementById("btnPy").disabled = true;
+  setEngine("busy", "Motor: Pyodide indiriliyor…");
+  try{
+    if(typeof loadPyodide === "undefined"){
+      try { await loadScript(PYODIDE_URLS[0]); }
+      catch(e){ await loadScript(PYODIDE_URLS[1]); }
+    }
+    setEngine("busy", "Motor: Python başlatılıyor…");
+    PY.pyodide = await loadPyodide();
+
+    /* Modülü sanal dosya sistemine yazmadan, gerçek bir modül nesnesi olarak kur:
+       böylece __name__ != "__main__" olur ve _demo() kendiliğinden çalışmaz.
+       Kayıt exec'ten ÖNCE yapılır; @dataclass işlenirken modülü sys.modules'te arar. */
+    PY.pyodide.globals.set("_kaynak", pySource());
+    PY.pyodide.runPython(
+      "import sys, types\n" +
+      "_m = types.ModuleType('iso30415_metrikler')\n" +
+      "_m.__file__ = 'iso30415_metrikler.py'\n" +
+      "sys.modules['iso30415_metrikler'] = _m\n" +
+      "exec(compile(_kaynak, 'iso30415_metrikler.py', 'exec'), _m.__dict__)\n" +
+      "from iso30415_metrikler import *\n" +
+      "import iso30415_metrikler as m\n"
+    );
+    var sur = PY.pyodide.runPython(
+      "import sys\n'.'.join(str(x) for x in sys.version_info[:3])");
+    PY.ready = true;
+    setEngine("on", "Motor: Python " + sur + " (Pyodide)");
+    run();
+    return true;
+  }catch(e){
+    setEngine("off", "Motor: tarayıcı (JS) — Pyodide yüklenemedi");
+    document.getElementById("pyOut").textContent =
+      "Python motoru yüklenemedi. Bu genellikle çevrimdışı olmaktan ya da ağ kısıtından kaynaklanır.\n" +
+      "Sayfa çalışmaya devam eder; hesaplamalar JavaScript yedeğiyle aynı sonuçları verir.\n\n" + e;
+    return false;
+  }finally{
+    PY.busy = false;
+    document.getElementById("btnPy").disabled = false;
+  }
+}
+
+document.getElementById("btnPy").addEventListener("click", initPython);
+
+/* --- konsol --- */
+var VARSAYILAN_KOD =
+  'from iso30415_metrikler import *\n' +
+  'import iso30415_metrikler as m\n\n' +
+  '# Ölçüler (bu sayfada türetilmiş oranlar)\n' +
+  'print("Veri paylaşımı  :", round(katilim_orani(360, 600), 1), "%")\n' +
+  'print("Temsil endeksi  :", round(temsil_endeksi(70, 200, 48), 1))\n' +
+  'print("Etki oranı      :", round(gecis_orani(18, 90, 30, 100), 2))\n' +
+  'print("Ücret farkı     :", round(ucret_farki(5000, 4600), 1), "%")\n' +
+  'print("Ayrılma         :", round(ayrilma_orani(9, 70), 1), "%")\n' +
+  'print("Şikâyet / 1000  :", sikayet_orani(6, 600))\n' +
+  'print("Halefiyet       :", halefiyet(600, 60, 24))\n\n' +
+  '# Ek A öz değerlendirme tablosu (177 eylem)\n' +
+  't = ornek_tablo()\n' +
+  'for anahtar, deger in t.ozet().items():\n' +
+  '    print(f"{anahtar:<14}: {deger}")\n\n' +
+  '# Grup tablosu: ilk grup referanstır\n' +
+  'print(ornek_gruplar().ozet())\n\n' +
+  '# Dağıtıcı, hesaplayıcının kullandığı arayüzdür:\n' +
+  'print(hesapla("kapsama", toplam=13, uygulanan=8, kismen=3))\n\n' +
+  '# Madde 4 ön koşul denetimi: hangi ön koşullar eksik?\n' +
+  'for uyari in on_kosul_denetimi(etkin_yonetisim=True, kapsayici_iletisim=True):\n' +
+  '    print("!", uyari)\n';
+
+document.getElementById("pyCode").value = VARSAYILAN_KOD;
+
+async function runConsole(){
+  var out = document.getElementById("pyOut");
+  if(!PY.ready){
+    out.textContent = "Python motoru hazırlanıyor, ilk çalıştırma biraz sürebilir…";
+    var ok = await initPython();
+    if(!ok) return;
+  }
+  out.textContent = "çalışıyor…";
+  try{
+    PY.pyodide.globals.set("_kod", document.getElementById("pyCode").value);
+    var cikti = PY.pyodide.runPython(
+      "import io, contextlib, traceback\n" +
+      "_tampon = io.StringIO()\n" +
+      "with contextlib.redirect_stdout(_tampon), contextlib.redirect_stderr(_tampon):\n" +
+      "    try:\n" +
+      "        exec(_kod, globals())\n" +
+      "    except Exception:\n" +
+      "        traceback.print_exc()\n" +
+      "_tampon.getvalue()"
+    );
+    out.textContent = cikti && cikti.trim() ? cikti : "(çıktı yok)";
+  }catch(e){
+    out.textContent = "Hata: " + e;
+  }
+}
+
+document.getElementById("btnRunPy").addEventListener("click", runConsole);
+document.getElementById("btnReset").addEventListener("click", function(){
+  document.getElementById("pyCode").value = VARSAYILAN_KOD;
+  document.getElementById("pyOut").textContent = "Kod sıfırlandı.";
+});
+document.getElementById("btnDemo").addEventListener("click", function(){
+  document.getElementById("pyCode").value =
+    "import iso30415_metrikler as m\n\n" +
+    "# Modülün kendi doğrulama çıktısı (komut satırındaki\n" +
+    "# python3 iso30415_metrikler.py ile aynı sonucu verir)\n" +
+    "m._demo()\n";
+  runConsole();
+});
+
+/* modül kaynağını sayfada okunur kıl */
+document.getElementById("srcView").textContent = pySource().trim();
+
+buildTbl();
+loadTblExample();
+buildFields();
+run();
+</script>
+</body>
+</html>
