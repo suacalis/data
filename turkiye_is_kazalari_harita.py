@@ -10,6 +10,8 @@ import folium
 from folium import plugins
 import json
 
+from arama.harita_arama import haritaya_arama_ekle
+
 def il_koordinatlari():
     """Türkiye illerinin koordinatları"""
     return {
@@ -151,6 +153,9 @@ def harita_olustur(df):
     # Marker cluster oluştur
     marker_cluster = plugins.MarkerCluster().add_to(m)
 
+    # Arama için: (il, ilçe) -> (marker değişken adı, koordinat)
+    isaretciler = {}
+
     # Her ilçe için marker ekle
     for _, row in ilce_grup.iterrows():
         koord = koordinat_hesapla(row['il'], row['ilce'], il_koord, ilce_offset)
@@ -200,12 +205,13 @@ def harita_olustur(df):
             renk = renk_belirle(row['kaza_sayisi'])
 
             # Marker ekle
-            folium.Marker(
+            isaretci = folium.Marker(
                 location=koord,
                 popup=folium.Popup(popup_html, max_width=300),
                 tooltip=f"{row['il']} - {row['ilce']}: {int(row['kaza_sayisi'])} kaza",
                 icon=folium.Icon(color=renk, icon='warning-sign', prefix='glyphicon')
             ).add_to(marker_cluster)
+            isaretciler[(row['il'], row['ilce'])] = (isaretci.get_name(), koord)
 
             # Ölümlü kaza varsa circle marker ekle
             if row['olumlu_kaza'] > 0:
@@ -248,6 +254,9 @@ def harita_olustur(df):
     </div>
     """
     m.get_root().html.add_child(folium.Element(legend_html))
+
+    # Arama kutusu (il / ilçe / sektör / tarih; bkz. KULLANIM_KILAVUZU.md)
+    haritaya_arama_ekle(m, df, isaretciler, marker_cluster)
 
     return m
 

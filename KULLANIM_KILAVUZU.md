@@ -12,6 +12,7 @@ Bu sistem, Türkiye genelinde işçi seviyesinde meydana gelen iş kazalarını 
 ✓ **Detaylı İstatistikler**: Her ilçe için popup içinde detaylı bilgiler
 ✓ **Ölümlü Kaza Vurgusu**: Ölümlü kazaların özel circle marker ile gösterimi
 ✓ **Canlı İstatistikler**: Sağ üst köşede genel istatistik kutusu
+✓ **Arama**: Sol üstteki kutuyla il, ilçe, sektör ve tarihe göre arama (aşağıya bakın)
 
 ## Kurulum
 
@@ -78,6 +79,39 @@ open turkiye_is_kazalari_harita.html
 # Windows
 start turkiye_is_kazalari_harita.html
 ```
+
+## Arama
+
+Haritanın sol üstündeki kutuya yazdıkça (250 ms bekleyerek) il/ilçe kayıtları aranır. Sonuca
+tıklayınca (veya ok tuşları + Enter) harita o ilçeye gider ve popup açılır. `Esc` veya kutuyu
+boşaltmak aramadan çıkar ve haritayı ilk görünüme döndürür. Her şey tarayıcıda çalışır; HTML
+dosyası tek başına yeterlidir.
+
+| Yazdığınız | Anlamı |
+|-----------|--------|
+| `kadikoy` | Büyük/küçük harf ve Türkçe karakterden bağımsız: `Kadıköy`, `KADIKÖY` ile eşleşir |
+| `kad` | Yazarken önek eşleşir (`Kadıköy`) |
+| `istanbul insaat` | Tüm sözcükler geçmeli (VE) |
+| `any:1 gebze sisli` | Sözcüklerden biri yeterli (VEYA) |
+| `-kadikoy` | Bu sözcüğü içerenleri çıkar |
+| `"gemi sokum"` | Tırnaklı ifade: sözcükler ardışık olmalı |
+| `il:ankara`, `ilce:kad*`, `sektor:insaat` | Yalnızca o alanda tam eşleşme (`*` joker) |
+| `-il:istanbul` | Alan filtresini olumsuzla |
+| `tarih:2024`, `tarih:2024-03`, `tarih:202403` | O yıl / ay verisi olanlar |
+| `olumlu:1` / `olumlu:0` | Ölümlü kaza olan / olmayan |
+
+Sıralama: il veya ilçe adında eşleşenler önce gelir, sonra BM25 ağırlığı, eşitlikte kaza sayısı
+büyük olan. Sonuçtaki gri etiket, hangi alanda eşleştiğini gösterir.
+
+Kod `arama/` klasöründedir (`arama_motoru.js` motor, `arama_arayuzu.js` arayüz,
+`harita_arama.py` Folium entegrasyonu). Testler:
+
+```bash
+node --test arama/arama_motoru.test.js
+python3 -m unittest discover -s arama -p "test_*.py"
+```
+
+Tasarım ve dayandığı kanıtlar için bkz. [ARAMA_KANITLARI.md](ARAMA_KANITLARI.md).
 
 ## Renk Kodları
 
